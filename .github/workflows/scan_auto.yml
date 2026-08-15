@@ -1,0 +1,163 @@
+name: Scan J1 Auto (tự động)
+
+on:
+  workflow_dispatch:
+    inputs:
+      min_j1:
+        description: 'Số lần J1 tối thiểu'
+        default: '4'
+      batch_start:
+        description: 'Seed bắt đầu batch này'
+        default: '1'
+      batch_size:
+        description: 'Seed mỗi runner'
+        default: '500000000'
+      total_target:
+        description: 'Tổng seed cần quét (dừng khi đạt)'
+        default: '600000000000'
+
+jobs:
+  scan:
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install requests
+      - name: Fetch data từ NhanAZ
+        run: |
+          python3 -c "
+          import requests,os
+          os.makedirs('data',exist_ok=True)
+          r=requests.get('https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv',timeout=60)
+          open('data/all.csv','w').write(r.text)
+          print(f'Downloaded {len(r.text.splitlines())} ky')
+          "
+      - name: Tính range seed
+        env:
+          BATCH_START: ${{ github.event.inputs.batch_start }}
+          BATCH_SIZE:  ${{ github.event.inputs.batch_size }}
+          CHUNK:       ${{ matrix.chunk }}
+        run: |
+          python3 -c "
+          import os
+          start=int(os.environ['BATCH_START'])
+          size=int(os.environ['BATCH_SIZE'])
+          chunk=int(os.environ['CHUNK'])
+          s=start+chunk*size
+          e=s+size-1
+          print(f'SCAN_START={s}')
+          print(f'SCAN_END={e}')
+          " >> $GITHUB_ENV
+      - name: Quét chunk ${{ matrix.chunk }}
+        env:
+          CSV_PATH: data/all.csv
+          OUT_PATH: results/chunk_${{ matrix.chunk }}.json
+          MIN_J1:   ${{ github.event.inputs.min_j1 }}
+        run: |
+          mkdir -p results
+          timeout 21000 python scan_j1_triple.py || true
+      - name: Commit chunk ${{ matrix.chunk }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase || true
+          git add results/chunk_${{ matrix.chunk }}.json || true
+          git diff --staged --quiet || git commit -m "scan chunk ${{ matrix.chunk }} seed $SCAN_START-$SCAN_END"
+          git push || true
+
+  next-batch:
+    needs: scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pull latest
+        run: git pull
+
+      - name: Merge kết quả batch này
+        run: |
+          python3 << 'EOF'
+          import json,glob,os
+          all_results=[]; scanned=0
+          for f in sorted(glob.glob('results/chunk_*.json')):
+              try:
+                  data=json.load(open(f))
+                  all_results.extend(data.get('results',[]))
+                  scanned+=data.get('scan_end',0)-data.get('scan_start',0)+1
+              except: pass
+          seen={}
+          for r in all_results:
+              s=r['seed']
+              if s not in seen or r['j1_count']>seen[s]['j1_count']: seen[s]=r
+          final=sorted(seen.values(),key=lambda x:-x['j1_count'])
+          os.makedirs('results',exist_ok=True)
+          json.dump({'total_scanned':scanned,'found':len(final),'results':final},
+                    open('results/final.json','w'),ensure_ascii=False,indent=1)
+          print(f'Tong da quet: {scanned:,} seeds')
+          print(f'Tim duoc: {len(final)} seeds')
+          for r in final:
+              print(f'  seed={r["seed"]} J1={r["j1_count"]}x')
+          EOF
+
+      - name: Commit final.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add results/final.json
+          git diff --staged --quiet || git commit -m "merge: batch ${{ github.event.inputs.batch_start }}"
+          git push
+
+      - name: Trigger batch tiếp theo (nếu chưa đủ)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BATCH_START: ${{ github.event.inputs.batch_start }}
+          BATCH_SIZE:  ${{ github.event.inputs.batch_size }}
+          TOTAL:       ${{ github.event.inputs.total_target }}
+          MIN_J1:      ${{ github.event.inputs.min_j1 }}
+        run: |
+          python3 -c "
+          import os,urllib.request,json
+
+          batch_start=int(os.environ['BATCH_START'])
+          batch_size=int(os.environ['BATCH_SIZE'])
+          total=int(os.environ['TOTAL'])
+          min_j1=os.environ['MIN_J1']
+          runners=20
+
+          next_start=batch_start+runners*batch_size
+          if next_start>total:
+              print(f'Hoan thanh! Da quet het {total:,} seeds.')
+              exit(0)
+
+          print(f'Trigger batch tiep: start={next_start:,}')
+          payload=json.dumps({
+              'ref':'main',
+              'inputs':{
+                  'min_j1':min_j1,
+                  'batch_start':str(next_start),
+                  'batch_size':str(batch_size),
+                  'total_target':str(total)
+              }
+          })
+          req=urllib.request.Request(
+              'https://api.github.com/repos/thuantn005/lotto-scan/actions/workflows/scan_auto.yml/dispatches',
+              data=payload.encode(),method='POST',
+              headers={
+                  'Authorization':f'Bearer {os.environ["GH_TOKEN"]}',
+                  'Content-Type':'application/json'
+              }
+          )
+          try:
+              urllib.request.urlopen(req)
+              pct=next_start/total*100
+              print(f'Triggered! Tien do: {pct:.1f}% ({next_start:,}/{total:,})')
+          except Exception as e:
+              print(f'Trigger failed: {e}')
+          "
