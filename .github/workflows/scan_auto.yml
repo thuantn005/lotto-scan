@@ -116,7 +116,7 @@ jobs:
 
       - name: Trigger batch tiếp theo (nếu chưa đủ)
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
           BATCH_START: ${{ github.event.inputs.batch_start }}
           BATCH_SIZE:  ${{ github.event.inputs.batch_size }}
           TOTAL:       ${{ github.event.inputs.total_target }}
