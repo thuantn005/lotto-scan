@@ -61,14 +61,21 @@ jobs:
           CSV_PATH: data/all.csv
           OUT_PATH: results/chunk_${{ matrix.chunk }}.json
           MIN_J1:   ${{ github.event.inputs.min_j1 }}
-        continue-on-error: true
         run: |
           mkdir -p results
+          # timeout tự nhiên (không phải lỗi) -> exit 124, coi là bình thường
+          # lỗi Python thật (crash) -> vẫn báo fail rõ ràng trên UI để biết mà sửa,
+          # nhưng KHÔNG dùng continue-on-error vì sẽ ẩn lỗi thật.
+          # fail-fast:false ở matrix đã đảm bảo 1 chunk lỗi không chặn 19 chunk kia.
           timeout 21000 python scan_j1_triple.py
-          echo "Exit code: $?"
-          # Không để lỗi ở bước này chặn các bước sau — commit vẫn chạy
-          # dù file kết quả rỗng hoặc không có (đã có check ở bước Commit)
-          true
+          code=$?
+          if [ $code -eq 124 ]; then
+            echo "Timeout tự nhiên sau 21000s — bình thường, dùng kết quả tạm"
+            exit 0
+          elif [ $code -ne 0 ]; then
+            echo "::warning::scan_j1_triple.py lỗi thật (exit $code) — xem log phía trên"
+            exit $code
+          fi
       - name: Commit chunk ${{ matrix.chunk }} (retry an toàn khi 20 runner push cùng lúc)
         run: |
           git config user.name "github-actions[bot]"
