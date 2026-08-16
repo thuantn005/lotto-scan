@@ -64,14 +64,58 @@ jobs:
         run: |
           mkdir -p results
           timeout 21000 python scan_j1_triple.py || true
-      - name: Commit chunk ${{ matrix.chunk }}
+      - name: Commit chunk ${{ matrix.chunk }} (retry an toàn khi 20 runner push cùng lúc)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase || true
-          git add results/chunk_${{ matrix.chunk }}.json || true
-          git diff --staged --quiet || git commit -m "scan chunk ${{ matrix.chunk }} seed $SCAN_START-$SCAN_END"
-          git push || true
+
+          # Nếu chưa có gì để commit thì bỏ qua sớm
+          if [ ! -f "results/chunk_${{ matrix.chunk }}.json" ]; then
+            echo "Không có file kết quả — bỏ qua"
+            exit 0
+          fi
+
+          # Retry push tối đa 15 lần, mỗi lần fetch+rebase mới nhất
+          # Giãn cách ngẫu nhiên để giảm va chạm giữa 20 runner
+          for i in $(seq 1 15); do
+            git add results/chunk_${{ matrix.chunk }}.json
+
+            if git diff --staged --quiet; then
+              echo "Không có thay đổi để commit"
+              break
+            fi
+
+            git commit -m "scan chunk ${{ matrix.chunk }} seed $SCAN_START-$SCAN_END" || true
+
+            if git push origin main; then
+              echo "✅ Push thành công (lần $i)"
+              break
+            fi
+
+            echo "⚠️ Push thất bại (lần $i) — fetch + rebase rồi thử lại"
+            sleep $((RANDOM % 20 + 5))
+            git fetch origin main
+            git rebase origin/main || {
+              echo "Rebase lỗi — dùng merge strategy ours để giữ file của mình"
+              git rebase --abort || true
+              git merge origin/main -X ours -m "merge: giữ chunk ${{ matrix.chunk }}" || true
+            }
+
+            if [ $i -eq 15 ]; then
+              echo "❌ Push thất bại sau 15 lần thử — LƯU KẾT QUẢ VÀO ARTIFACT DỰ PHÒNG"
+            fi
+          done
+
+      # Dự phòng: luôn upload artifact để không bao giờ mất data,
+      # kể cả khi commit thất bại hoàn toàn
+      - name: Upload artifact dự phòng
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chunk-${{ matrix.chunk }}-backup
+          path: results/chunk_${{ matrix.chunk }}.json
+          if-no-files-found: ignore
+          retention-days: 7
 
   next-batch:
     needs: scan
