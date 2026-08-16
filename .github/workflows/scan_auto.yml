@@ -125,29 +125,75 @@ jobs:
       - name: Pull latest
         run: git pull
 
-      - name: Merge kết quả batch này
+      # Fallback: tải mọi artifact dự phòng — bù các chunk push git thất bại
+      - name: Download artifact dự phòng (nếu có)
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          path: results/artifacts/
+          pattern: chunk-*-backup
+
+      - name: Gộp artifact vào results/ (bù chunk bị mất do git conflict)
+        run: |
+          mkdir -p results
+          for f in results/artifacts/*/*.json; do
+            [ -f "$f" ] || continue
+            name=$(basename "$f")
+            # Chỉ copy nếu chưa có bản chính thức trong results/
+            if [ ! -f "results/$name" ]; then
+              cp "$f" "results/$name"
+              echo "Bù từ artifact: $name"
+            fi
+          done
+
+      - name: Merge kết quả batch này (báo cáo đủ 20/20 chunk hay thiếu)
         run: |
           python3 << 'EOF'
           import json,glob,os
+
+          chunk_files = sorted(glob.glob('results/chunk_*.json'))
+          expected = 20
+          found = len(chunk_files)
+
           all_results=[]; scanned=0
-          for f in sorted(glob.glob('results/chunk_*.json')):
+          missing=[]
+          for i in range(expected):
+              f = f'results/chunk_{i}.json'
+              if f not in chunk_files:
+                  missing.append(i)
+                  continue
               try:
                   data=json.load(open(f))
                   all_results.extend(data.get('results',[]))
                   scanned+=data.get('scan_end',0)-data.get('scan_start',0)+1
-              except: pass
+              except Exception as e:
+                  print(f'Loi doc {f}: {e}')
+                  missing.append(i)
+
           seen={}
           for r in all_results:
               s=r['seed']
               if s not in seen or r['j1_count']>seen[s]['j1_count']: seen[s]=r
           final=sorted(seen.values(),key=lambda x:-x['j1_count'])
+
           os.makedirs('results',exist_ok=True)
-          json.dump({'total_scanned':scanned,'found':len(final),'results':final},
-                    open('results/final.json','w'),ensure_ascii=False,indent=1)
+          json.dump({
+              'total_scanned':scanned,
+              'chunks_found':found,
+              'chunks_expected':expected,
+              'chunks_missing':missing,
+              'found':len(final),
+              'results':final
+          }, open('results/final.json','w'),ensure_ascii=False,indent=1)
+
+          print(f'Chunks: {found}/{expected} (thieu: {missing})')
           print(f'Tong da quet: {scanned:,} seeds')
-          print(f'Tim duoc: {len(final)} seeds')
+          print(f'Tim duoc: {len(final)} seeds J1>=min')
           for r in final:
               print(f'  seed={r["seed"]} J1={r["j1_count"]}x')
+
+          if missing:
+              print(f'CANH BAO: {len(missing)} chunk bi thieu — se can quet lai range nay')
           EOF
 
       - name: Commit final.json
