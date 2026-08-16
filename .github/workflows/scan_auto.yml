@@ -146,11 +146,12 @@ jobs:
                   'total_target':str(total)
               }
           })
+          gh_token=os.environ['GH_TOKEN']
           req=urllib.request.Request(
               'https://api.github.com/repos/thuantn005/lotto-scan/actions/workflows/scan_auto.yml/dispatches',
               data=payload.encode(),method='POST',
               headers={
-                  'Authorization':f'Bearer {os.environ["GH_TOKEN"]}',
+                  'Authorization':'Bearer ' + gh_token,
                   'Content-Type':'application/json'
               }
           )
