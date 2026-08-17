@@ -199,14 +199,14 @@ jobs:
               'results':final
           }, open('results/final.json','w'),ensure_ascii=False,indent=1)
 
-          print(f'Chunks: {found}/{expected} (thieu: {missing})')
-          print(f'Tong da quet: {scanned:,} seeds')
-          print(f'Tim duoc: {len(final)} seeds J1>=min')
+          print('Chunks: ' + str(found) + '/' + str(expected) + ' (thieu: ' + str(missing) + ')')
+          print('Tong da quet: ' + format(scanned,',') + ' seeds')
+          print('Tim duoc: ' + str(len(final)) + ' seeds J1>=min')
           for r in final:
-              print(f'  seed={r["seed"]} J1={r["j1_count"]}x')
+              print('  seed=' + str(r['seed']) + ' J1=' + str(r['j1_count']) + 'x')
 
           if missing:
-              print(f'CANH BAO: {len(missing)} chunk bi thieu — se can quet lai range nay')
+              print('CANH BAO: ' + str(len(missing)) + ' chunk bi thieu -- se can quet lai range nay')
           EOF
 
       - name: Commit final.json
