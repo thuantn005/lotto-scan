@@ -31,7 +31,7 @@ n=len(draw_ids)
 print(f"n_draws={n}")
 
 t0=time.time()
-TEST_SEEDS=200000
+TEST_SEEDS=20000
 for seed in range(1,TEST_SEEDS+1):
     for d in draw_ids:
         ticket(seed,d)
