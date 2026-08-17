@@ -171,7 +171,7 @@ jobs:
           all_results=[]; scanned=0
           missing=[]
           for i in range(expected):
-              f = f'results/chunk_{i}.json'
+              f = 'results/chunk_' + str(i) + '.json'
               if f not in chunk_files:
                   missing.append(i)
                   continue
@@ -180,7 +180,7 @@ jobs:
                   all_results.extend(data.get('results',[]))
                   scanned+=data.get('scan_end',0)-data.get('scan_start',0)+1
               except Exception as e:
-                  print(f'Loi doc {f}: {e}')
+                  print('Loi doc ' + f + ': ' + str(e))
                   missing.append(i)
 
           seen={}
