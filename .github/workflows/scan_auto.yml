@@ -5,16 +5,16 @@ on:
     inputs:
       min_j1:
         description: 'Số lần J1 tối thiểu'
-        default: '4'
+        default: '3'
       batch_start:
         description: 'Seed bắt đầu batch này'
         default: '1'
       batch_size:
-        description: 'Seed mỗi runner'
-        default: '500000000'
+        description: 'Seed mỗi runner (đã tính từ benchmark thật: 175,296 checks/s)'
+        default: '3429704'
       total_target:
         description: 'Tổng seed cần quét (dừng khi đạt)'
-        default: '600000000000'
+        default: '10000000000'
 
 jobs:
   scan:
