@@ -67,13 +67,19 @@ jobs:
           # lỗi Python thật (crash) -> vẫn báo fail rõ ràng trên UI để biết mà sửa,
           # nhưng KHÔNG dùng continue-on-error vì sẽ ẩn lỗi thật.
           # fail-fast:false ở matrix đã đảm bảo 1 chunk lỗi không chặn 19 chunk kia.
+          # QUAN TRỌNG: bash mặc định chạy dưới 'set -e' trong GitHub Actions,
+          # nên timeout trả 124 sẽ làm script dừng NGAY LẬP TỨC, không bao giờ
+          # chạy tới dòng kiểm tra $?. Phải tắt set -e trước khi gọi timeout.
+          set +e
           timeout 21000 python scan_j1_triple.py
           code=$?
+          set -e
+
           if [ $code -eq 124 ]; then
-            echo "Timeout tự nhiên sau 21000s — bình thường, dùng kết quả tạm"
+            echo "Timeout tự nhiên sau 21000s — binh thuong, dung ket qua checkpoint tam"
             exit 0
           elif [ $code -ne 0 ]; then
-            echo "::warning::scan_j1_triple.py lỗi thật (exit $code) — xem log phía trên"
+            echo "::warning::scan_j1_triple.py loi that (exit $code) -- xem log phia tren"
             exit $code
           fi
       - name: Commit chunk ${{ matrix.chunk }} (retry an toàn khi 20 runner push cùng lúc)
