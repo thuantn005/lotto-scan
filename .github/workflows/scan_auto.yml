@@ -33,29 +33,29 @@ jobs:
         run: pip install requests
       - name: Fetch data từ NhanAZ
         run: |
-          python3 -c "
+          python3 << 'PYEOF'
           import requests,os
           os.makedirs('data',exist_ok=True)
           r=requests.get('https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv',timeout=60)
           open('data/all.csv','w').write(r.text)
-          print(f'Downloaded {len(r.text.splitlines())} ky')
-          "
+          print('Downloaded ' + str(len(r.text.splitlines())) + ' ky')
+          PYEOF
       - name: Tính range seed
         env:
           BATCH_START: ${{ github.event.inputs.batch_start }}
           BATCH_SIZE:  ${{ github.event.inputs.batch_size }}
           CHUNK:       ${{ matrix.chunk }}
         run: |
-          python3 -c "
+          python3 << 'PYEOF' >> $GITHUB_ENV
           import os
           start=int(os.environ['BATCH_START'])
           size=int(os.environ['BATCH_SIZE'])
           chunk=int(os.environ['CHUNK'])
           s=start+chunk*size
           e=s+size-1
-          print(f'SCAN_START={s}')
-          print(f'SCAN_END={e}')
-          " >> $GITHUB_ENV
+          print('SCAN_START=' + str(s))
+          print('SCAN_END=' + str(e))
+          PYEOF
       - name: Quét chunk ${{ matrix.chunk }}
         env:
           CSV_PATH: data/all.csv
@@ -225,7 +225,7 @@ jobs:
           TOTAL:       ${{ github.event.inputs.total_target }}
           MIN_J1:      ${{ github.event.inputs.min_j1 }}
         run: |
-          python3 -c "
+          python3 << 'PYEOF'
           import os,urllib.request,json
 
           batch_start=int(os.environ['BATCH_START'])
@@ -236,32 +236,31 @@ jobs:
 
           next_start=batch_start+runners*batch_size
           if next_start>total:
-              print(f'Hoan thanh! Da quet het {total:,} seeds.')
-              exit(0)
-
-          print(f'Trigger batch tiep: start={next_start:,}')
-          payload=json.dumps({
-              'ref':'main',
-              'inputs':{
-                  'min_j1':min_j1,
-                  'batch_start':str(next_start),
-                  'batch_size':str(batch_size),
-                  'total_target':str(total)
-              }
-          })
-          gh_token=os.environ['GH_TOKEN']
-          req=urllib.request.Request(
-              'https://api.github.com/repos/thuantn005/lotto-scan/actions/workflows/scan_auto.yml/dispatches',
-              data=payload.encode(),method='POST',
-              headers={
-                  'Authorization':'Bearer ' + gh_token,
-                  'Content-Type':'application/json'
-              }
-          )
-          try:
-              urllib.request.urlopen(req)
-              pct=next_start/total*100
-              print(f'Triggered! Tien do: {pct:.1f}% ({next_start:,}/{total:,})')
-          except Exception as e:
-              print(f'Trigger failed: {e}')
-          "
+              print('Hoan thanh! Da quet het ' + str(total) + ' seeds.')
+          else:
+              print('Trigger batch tiep: start=' + str(next_start))
+              payload=json.dumps({
+                  'ref':'main',
+                  'inputs':{
+                      'min_j1':min_j1,
+                      'batch_start':str(next_start),
+                      'batch_size':str(batch_size),
+                      'total_target':str(total)
+                  }
+              })
+              gh_token=os.environ['GH_TOKEN']
+              req=urllib.request.Request(
+                  'https://api.github.com/repos/thuantn005/lotto-scan/actions/workflows/scan_auto.yml/dispatches',
+                  data=payload.encode(),method='POST',
+                  headers={
+                      'Authorization':'Bearer ' + gh_token,
+                      'Content-Type':'application/json'
+                  }
+              )
+              try:
+                  urllib.request.urlopen(req)
+                  pct=next_start/total*100
+                  print('Triggered! Tien do: ' + format(pct,'.1f') + '% (' + str(next_start) + '/' + str(total) + ')')
+              except Exception as e:
+                  print('Trigger failed: ' + str(e))
+          PYEOF
