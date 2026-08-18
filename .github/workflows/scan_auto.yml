@@ -1,285 +1,918 @@
-name: Scan J1 Auto (tự động)
+name: Scan J1 Auto v2
 
 on:
   workflow_dispatch:
     inputs:
       min_j1:
-        description: 'Số lần J1 tối thiểu'
-        default: '3'
+        description: "Số lần J1 tối thiểu"
+        required: true
+        default: "3"
+
       batch_start:
-        description: 'Seed bắt đầu batch này'
-        default: '1'
+        description: "Seed bắt đầu batch"
+        required: true
+        default: "1"
+
       batch_size:
-        description: 'Seed mỗi runner (đã tính từ benchmark thật: 175,296 checks/s)'
-        default: '3429704'
+        description: "Số seed mỗi runner"
+        required: true
+        default: "3429704"
+
       total_target:
-        description: 'Tổng seed cần quét (dừng khi đạt)'
-        default: '10000000000'
+        description: "Tổng seed cần quét"
+        required: true
+        default: "10000000000"
+
+      retry_count:
+        description: "Số lần retry mỗi chunk"
+        required: true
+        default: "2"
+
+permissions:
+  contents: write
+  actions: write
+
+env:
+  RUNNERS: 20
+  SCAN_TIMEOUT: 21000
 
 jobs:
+
+  # ============================================================
+  # 1. SCAN 20 CHUNK SONG SONG
+  # ============================================================
+
   scan:
+    name: Scan chunk ${{ matrix.chunk }}
+
     strategy:
       fail-fast: false
+
       matrix:
-        chunk: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+        chunk:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 12
+          - 13
+          - 14
+          - 15
+          - 16
+          - 17
+          - 18
+          - 19
+
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+
+    timeout-minutes: 370
+
     steps:
-      - uses: actions/checkout@v4
+
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
-      - uses: actions/setup-python@v5
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-      - name: Install dependencies
-        run: pip install requests
-      - name: Fetch data từ NhanAZ
+          python-version: "3.12"
+
+      - name: Download dataset
         run: |
-          python3 << 'PYEOF'
-          import requests,os
-          os.makedirs('data',exist_ok=True)
-          r=requests.get('https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv',timeout=60)
-          open('data/all.csv','w').write(r.text)
-          print('Downloaded ' + str(len(r.text.splitlines())) + ' ky')
-          PYEOF
-      - name: Tính range seed
+          set -e
+
+          mkdir -p data
+
+          python3 << 'PY'
+          import urllib.request
+          from pathlib import Path
+
+          url = (
+              "https://raw.githubusercontent.com/"
+              "NhanAZ-Data/vietlott-research/main/"
+              "datasets/draws/lotto535/all.csv"
+          )
+
+          output = Path("data/all.csv")
+
+          print("Downloading dataset...")
+
+          urllib.request.urlretrieve(url, output)
+
+          lines = sum(
+              1
+              for _ in output.open(
+                  "r",
+                  encoding="utf-8",
+                  errors="ignore"
+              )
+          )
+
+          print(f"Downloaded: {lines:,} lines")
+          print(f"Size: {output.stat().st_size:,} bytes")
+          PY
+
+      - name: Calculate seed range
         env:
           BATCH_START: ${{ github.event.inputs.batch_start }}
-          BATCH_SIZE:  ${{ github.event.inputs.batch_size }}
-          CHUNK:       ${{ matrix.chunk }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size }}
+          TOTAL_TARGET: ${{ github.event.inputs.total_target }}
+          CHUNK: ${{ matrix.chunk }}
+
         run: |
-          python3 << 'PYEOF' >> $GITHUB_ENV
+          set -e
+
+          python3 << 'PY' >> "$GITHUB_ENV"
+
           import os
-          start=int(os.environ['BATCH_START'])
-          size=int(os.environ['BATCH_SIZE'])
-          chunk=int(os.environ['CHUNK'])
-          s=start+chunk*size
-          e=s+size-1
-          print('SCAN_START=' + str(s))
-          print('SCAN_END=' + str(e))
-          PYEOF
-      - name: Quét chunk ${{ matrix.chunk }}
+
+          batch_start = int(os.environ["BATCH_START"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          total_target = int(os.environ["TOTAL_TARGET"])
+          chunk = int(os.environ["CHUNK"])
+
+          scan_start = batch_start + chunk * batch_size
+
+          raw_end = scan_start + batch_size - 1
+
+          scan_end = min(raw_end, total_target)
+
+          if scan_start > total_target:
+              scan_start = total_target + 1
+              scan_end = total_target
+
+          print(f"SCAN_START={scan_start}")
+          print(f"SCAN_END={scan_end}")
+
+          if scan_start <= scan_end:
+              count = scan_end - scan_start + 1
+          else:
+              count = 0
+
+          print(f"CHUNK_SEED_COUNT={count}")
+
+          PY
+
+          echo "========================================"
+          echo "Chunk:       ${{ matrix.chunk }}"
+          echo "SCAN_START:  $SCAN_START"
+          echo "SCAN_END:    $SCAN_END"
+          echo "SEED COUNT:  $CHUNK_SEED_COUNT"
+          echo "========================================"
+
+      - name: Scan chunk
         env:
           CSV_PATH: data/all.csv
           OUT_PATH: results/chunk_${{ matrix.chunk }}.json
-          MIN_J1:   ${{ github.event.inputs.min_j1 }}
+          MIN_J1: ${{ github.event.inputs.min_j1 }}
+          SCAN_START: ${{ env.SCAN_START }}
+          SCAN_END: ${{ env.SCAN_END }}
+
         run: |
-          mkdir -p results
-          # timeout tự nhiên (không phải lỗi) -> exit 124, coi là bình thường
-          # lỗi Python thật (crash) -> vẫn báo fail rõ ràng trên UI để biết mà sửa,
-          # nhưng KHÔNG dùng continue-on-error vì sẽ ẩn lỗi thật.
-          # fail-fast:false ở matrix đã đảm bảo 1 chunk lỗi không chặn 19 chunk kia.
-          # QUAN TRỌNG: bash mặc định chạy dưới 'set -e' trong GitHub Actions,
-          # nên timeout trả 124 sẽ làm script dừng NGAY LẬP TỨC, không bao giờ
-          # chạy tới dòng kiểm tra $?. Phải tắt set -e trước khi gọi timeout.
-          set +e
-          timeout 21000 python scan_j1_triple.py
-          code=$?
           set -e
 
-          if [ $code -eq 124 ]; then
-            echo "Timeout tự nhiên sau 21000s — binh thuong, dung ket qua checkpoint tam"
+          mkdir -p results
+
+          if [ "$SCAN_START" -gt "$SCAN_END" ]; then
+            echo "Chunk này nằm ngoài total_target."
+            echo "Tạo file empty chunk."
+
+            python3 << 'PY'
+          import json
+          import os
+
+          data = {
+              "status": "empty",
+              "scan_start": int(os.environ["SCAN_START"]),
+              "scan_end": int(os.environ["SCAN_END"]),
+              "scanned": 0,
+              "results": []
+          }
+
+          with open(
+              os.environ["OUT_PATH"],
+              "w",
+              encoding="utf-8"
+          ) as f:
+              json.dump(
+                  data,
+                  f,
+                  ensure_ascii=False,
+                  indent=2
+              )
+          PY
+
             exit 0
-          elif [ $code -ne 0 ]; then
-            echo "::warning::scan_j1_triple.py loi that (exit $code) -- xem log phia tren"
-            exit $code
           fi
-      - name: Commit chunk ${{ matrix.chunk }} (retry an toàn khi 20 runner push cùng lúc)
+
+          echo "Starting scanner..."
+
+          python3 scan_j1_triple.py
+
+          echo "Scanner finished."
+
+      - name: Validate result
+        env:
+          OUT_PATH: results/chunk_${{ matrix.chunk }}.json
+          EXPECTED_START: ${{ env.SCAN_START }}
+          EXPECTED_END: ${{ env.SCAN_END }}
+
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          set -e
 
-          # Nếu chưa có gì để commit thì bỏ qua sớm
-          if [ ! -f "results/chunk_${{ matrix.chunk }}.json" ]; then
-            echo "Không có file kết quả — bỏ qua"
-            exit 0
-          fi
+          test -f "$OUT_PATH"
 
-          # Retry push tối đa 15 lần, mỗi lần fetch+rebase mới nhất
-          # Giãn cách ngẫu nhiên để giảm va chạm giữa 20 runner
-          for i in $(seq 1 15); do
-            git add results/chunk_${{ matrix.chunk }}.json
+          python3 << 'PY'
+          import json
+          import os
+          import sys
 
-            if git diff --staged --quiet; then
-              echo "Không có thay đổi để commit"
-              break
-            fi
+          path = os.environ["OUT_PATH"]
 
-            git commit -m "scan chunk ${{ matrix.chunk }} seed $SCAN_START-$SCAN_END" || true
+          with open(path, "r", encoding="utf-8") as f:
+              data = json.load(f)
 
-            if git push origin main; then
-              echo "✅ Push thành công (lần $i)"
-              break
-            fi
+          start = int(os.environ["EXPECTED_START"])
+          end = int(os.environ["EXPECTED_END"])
 
-            echo "⚠️ Push thất bại (lần $i) — fetch + rebase rồi thử lại"
-            sleep $((RANDOM % 20 + 5))
-            git fetch origin main
-            git rebase origin/main || {
-              echo "Rebase lỗi — dùng merge strategy ours để giữ file của mình"
-              git rebase --abort || true
-              git merge origin/main -X ours -m "merge: giữ chunk ${{ matrix.chunk }}" || true
-            }
+          if start <= end:
+              expected = end - start + 1
+          else:
+              expected = 0
 
-            if [ $i -eq 15 ]; then
-              echo "❌ Push thất bại sau 15 lần thử — LƯU KẾT QUẢ VÀO ARTIFACT DỰ PHÒNG"
-            fi
-          done
+          scanned = data.get("scanned")
 
-      # Dự phòng: luôn upload artifact để không bao giờ mất data,
-      # kể cả khi commit thất bại hoàn toàn
-      - name: Upload artifact dự phòng
+          if scanned is None:
+              scanned = data.get("scan_end", 0) - data.get(
+                  "scan_start", 0
+              ) + 1
+
+          print("Result validation")
+          print("-----------------")
+          print("start   :", start)
+          print("end     :", end)
+          print("expected:", expected)
+          print("scanned :", scanned)
+          print("results :", len(data.get("results", [])))
+
+          actual_start = data.get("scan_start")
+          actual_end = data.get("scan_end")
+
+          if actual_start is not None:
+              if int(actual_start) != start:
+                  print("ERROR: scan_start mismatch")
+                  sys.exit(1)
+
+          if actual_end is not None:
+              if int(actual_end) != end:
+                  print("ERROR: scan_end mismatch")
+                  sys.exit(1)
+
+          if expected > 0 and "scanned" in data:
+              if int(data["scanned"]) < expected:
+                  print(
+                      "ERROR: chunk chưa quét đủ seed."
+                  )
+                  sys.exit(2)
+
+          print("OK")
+          PY
+
+      - name: Create chunk manifest
+        env:
+          CHUNK: ${{ matrix.chunk }}
+          START: ${{ env.SCAN_START }}
+          END: ${{ env.SCAN_END }}
+
+        run: |
+          set -e
+
+          python3 << 'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          chunk = int(os.environ["CHUNK"])
+          start = int(os.environ["START"])
+          end = int(os.environ["END"])
+
+          path = Path(
+              f"results/chunk_{chunk}.manifest.json"
+          )
+
+          if start <= end:
+              count = end - start + 1
+          else:
+              count = 0
+
+          data = {
+              "chunk": chunk,
+              "status": "completed",
+              "scan_start": start,
+              "scan_end": end,
+              "expected_seeds": count,
+              "result_file": (
+                  f"chunk_{chunk}.json"
+              )
+          }
+
+          path.write_text(
+              json.dumps(
+                  data,
+                  ensure_ascii=False,
+                  indent=2
+              ),
+              encoding="utf-8"
+          )
+          PY
+
+      - name: Upload chunk artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: chunk-${{ matrix.chunk }}-backup
-          path: results/chunk_${{ matrix.chunk }}.json
+          name: scan-chunk-${{ matrix.chunk }}
+          path: |
+            results/chunk_${{ matrix.chunk }}.json
+            results/chunk_${{ matrix.chunk }}.manifest.json
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 14
 
-  next-batch:
+
+  # ============================================================
+  # 2. MERGE BATCH
+  # ============================================================
+
+  merge:
+    name: Merge batch
     needs: scan
-    if: always()
+
+    if: ${{ always() }}
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
-      - name: Pull latest
-        run: git pull
 
-      # Fallback: tải mọi artifact dự phòng — bù các chunk push git thất bại
-      - name: Download artifact dự phòng (nếu có) — dùng merge-multiple đúng chuẩn v4
+      - name: Download all chunk artifacts
         uses: actions/download-artifact@v4
-        continue-on-error: true
         with:
-          path: results/artifacts/
-          pattern: chunk-*-backup
-          merge-multiple: true
+          pattern: scan-chunk-*
+          path: artifacts
+          merge-multiple: false
 
-      - name: Gộp artifact vào results/ (không set -e để lỗi 1 file không chặn cả bước)
+      - name: Verify chunks
+        env:
+          BATCH_START: ${{ github.event.inputs.batch_start }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size }}
+          TOTAL_TARGET: ${{ github.event.inputs.total_target }}
+
         run: |
-          set +e
-          mkdir -p results results/artifacts
-          echo "=== Danh sách file trong results/artifacts/ ==="
-          find results/artifacts -type f 2>&1 || true
-          echo "==="
-          for f in results/artifacts/*.json; do
-            [ -f "$f" ] || continue
-            name=$(basename "$f")
-            if [ ! -f "results/$name" ]; then
-              cp "$f" "results/$name" && echo "Bu tu artifact: $name"
-            fi
-          done
-          echo "=== Danh sách file trong results/ sau khi gộp ==="
-          ls -la results/*.json 2>&1 || echo "Khong co file json nao"
           set -e
-          exit 0
 
-      - name: Merge kết quả batch này (báo cáo đủ 20/20 chunk hay thiếu)
-        run: |
-          set +e
-          python3 << 'EOF'
-          import json,glob,os
+          python3 << 'PY'
 
-          chunk_files = sorted(glob.glob('results/chunk_*.json'))
-          expected = 20
-          found = len(chunk_files)
+          import glob
+          import json
+          import os
+          import sys
+          from pathlib import Path
 
-          all_results=[]; scanned=0
-          missing=[]
-          for i in range(expected):
-              f = 'results/chunk_' + str(i) + '.json'
-              if f not in chunk_files:
+          artifacts = Path("artifacts")
+
+          expected_chunks = 20
+
+          valid = []
+          missing = []
+
+          for i in range(expected_chunks):
+
+              files = list(
+                  artifacts.glob(
+                      f"scan-chunk-{i}/"
+                      f"chunk_{i}.json"
+                  )
+              )
+
+              manifests = list(
+                  artifacts.glob(
+                      f"scan-chunk-{i}/"
+                      f"chunk_{i}.manifest.json"
+                  )
+              )
+
+              if not files or not manifests:
                   missing.append(i)
                   continue
+
               try:
-                  data=json.load(open(f))
-                  all_results.extend(data.get('results',[]))
-                  scanned+=data.get('scan_end',0)-data.get('scan_start',0)+1
+                  data = json.loads(
+                      files[0].read_text(
+                          encoding="utf-8"
+                      )
+                  )
+
+                  manifest = json.loads(
+                      manifests[0].read_text(
+                          encoding="utf-8"
+                      )
+                  )
+
+                  if manifest.get("status") != "completed":
+                      missing.append(i)
+                      continue
+
+                  valid.append(i)
+
               except Exception as e:
-                  print('Loi doc ' + f + ': ' + str(e))
+                  print(
+                      f"Chunk {i} invalid: {e}"
+                  )
                   missing.append(i)
 
-          seen={}
-          for r in all_results:
-              s=r['seed']
-              if s not in seen or r['j1_count']>seen[s]['j1_count']: seen[s]=r
-          final=sorted(seen.values(),key=lambda x:-x['j1_count'])
-
-          os.makedirs('results',exist_ok=True)
-          json.dump({
-              'total_scanned':scanned,
-              'chunks_found':found,
-              'chunks_expected':expected,
-              'chunks_missing':missing,
-              'found':len(final),
-              'results':final
-          }, open('results/final.json','w'),ensure_ascii=False,indent=1)
-
-          print('Chunks: ' + str(found) + '/' + str(expected) + ' (thieu: ' + str(missing) + ')')
-          print('Tong da quet: ' + format(scanned,',') + ' seeds')
-          print('Tim duoc: ' + str(len(final)) + ' seeds J1>=min')
-          for r in final:
-              print('  seed=' + str(r['seed']) + ' J1=' + str(r['j1_count']) + 'x')
+          print("================================")
+          print(
+              f"VALID CHUNKS: "
+              f"{len(valid)}/{expected_chunks}"
+          )
+          print("MISSING:", missing)
+          print("================================")
 
           if missing:
-              print('CANH BAO: ' + str(len(missing)) + ' chunk bi thieu -- se can quet lai range nay')
-          EOF
+              print(
+                  "ERROR: Batch chưa hoàn thành."
+              )
+              print(
+                  "Các chunk cần retry:",
+                  missing
+              )
+              sys.exit(1)
+
+          print("ALL CHUNKS COMPLETED")
+
+          PY
+
+      - name: Merge results
+        env:
+          BATCH_START: ${{ github.event.inputs.batch_start }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size }}
+          TOTAL_TARGET: ${{ github.event.inputs.total_target }}
+          MIN_J1: ${{ github.event.inputs.min_j1 }}
+
+        run: |
           set -e
 
-      - name: Commit final.json
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add results/final.json
-          git diff --staged --quiet || git commit -m "merge: batch ${{ github.event.inputs.batch_start }}"
-          git push
+          mkdir -p results
 
-      - name: Trigger batch tiếp theo (nếu chưa đủ)
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-          BATCH_START: ${{ github.event.inputs.batch_start }}
-          BATCH_SIZE:  ${{ github.event.inputs.batch_size }}
-          TOTAL:       ${{ github.event.inputs.total_target }}
-          MIN_J1:      ${{ github.event.inputs.min_j1 }}
-        run: |
-          python3 << 'PYEOF'
-          import os,urllib.request,json
+          python3 << 'PY'
 
-          batch_start=int(os.environ['BATCH_START'])
-          batch_size=int(os.environ['BATCH_SIZE'])
-          total=int(os.environ['TOTAL'])
-          min_j1=os.environ['MIN_J1']
-          runners=20
+          import glob
+          import json
+          import os
+          from pathlib import Path
 
-          next_start=batch_start+runners*batch_size
-          if next_start>total:
-              print('Hoan thanh! Da quet het ' + str(total) + ' seeds.')
-          else:
-              print('Trigger batch tiep: start=' + str(next_start))
-              payload=json.dumps({
-                  'ref':'main',
-                  'inputs':{
-                      'min_j1':min_j1,
-                      'batch_start':str(next_start),
-                      'batch_size':str(batch_size),
-                      'total_target':str(total)
-                  }
-              })
-              gh_token=os.environ['GH_TOKEN']
-              req=urllib.request.Request(
-                  'https://api.github.com/repos/thuantn005/lotto-scan/actions/workflows/scan_auto.yml/dispatches',
-                  data=payload.encode(),method='POST',
-                  headers={
-                      'Authorization':'Bearer ' + gh_token,
-                      'Content-Type':'application/json'
-                  }
+          batch_start = int(
+              os.environ["BATCH_START"]
+          )
+
+          batch_size = int(
+              os.environ["BATCH_SIZE"]
+          )
+
+          total_target = int(
+              os.environ["TOTAL_TARGET"]
+          )
+
+          min_j1 = int(
+              os.environ["MIN_J1"]
+          )
+
+          all_results = []
+
+          chunks = []
+
+          total_scanned = 0
+
+          for i in range(20):
+
+              path = Path(
+                  f"artifacts/scan-chunk-{i}/"
+                  f"chunk_{i}.json"
               )
-              try:
-                  urllib.request.urlopen(req)
-                  pct=next_start/total*100
-                  print('Triggered! Tien do: ' + format(pct,'.1f') + '% (' + str(next_start) + '/' + str(total) + ')')
-              except Exception as e:
-                  print('Trigger failed: ' + str(e))
-          PYEOF
+
+              data = json.loads(
+                  path.read_text(
+                      encoding="utf-8"
+                  )
+              )
+
+              chunks.append({
+                  "chunk": i,
+                  "scan_start": data.get(
+                      "scan_start"
+                  ),
+                  "scan_end": data.get(
+                      "scan_end"
+                  ),
+                  "scanned": data.get(
+                      "scanned"
+                  ),
+                  "results": len(
+                      data.get(
+                          "results",
+                          []
+                      )
+                  )
+              })
+
+              scanned = data.get("scanned")
+
+              if scanned is None:
+                  start = data.get(
+                      "scan_start"
+                  )
+                  end = data.get(
+                      "scan_end"
+                  )
+
+                  if (
+                      start is not None
+                      and end is not None
+                  ):
+                      scanned = max(
+                          0,
+                          int(end)
+                          - int(start)
+                          + 1
+                      )
+                  else:
+                      scanned = 0
+
+              total_scanned += int(
+                  scanned
+              )
+
+              all_results.extend(
+                  data.get(
+                      "results",
+                      []
+                  )
+              )
+
+          best = {}
+
+          for result in all_results:
+
+              if "seed" not in result:
+                  continue
+
+              seed = int(
+                  result["seed"]
+              )
+
+              j1 = int(
+                  result.get(
+                      "j1_count",
+                      0
+                  )
+              )
+
+              if (
+                  seed not in best
+                  or j1 >
+                  int(
+                      best[seed].get(
+                          "j1_count",
+                          0
+                      )
+                  )
+              ):
+                  best[seed] = result
+
+          final = sorted(
+              best.values(),
+              key=lambda x: (
+                  -int(
+                      x.get(
+                          "j1_count",
+                          0
+                      )
+                  ),
+                  int(
+                      x.get(
+                          "seed",
+                          0
+                      )
+                  )
+              )
+          )
+
+          output = {
+              "batch_start": batch_start,
+              "batch_end": min(
+                  batch_start
+                  + 20 * batch_size
+                  - 1,
+                  total_target
+              ),
+              "total_target": total_target,
+              "min_j1": min_j1,
+              "total_scanned": total_scanned,
+              "chunks_expected": 20,
+              "chunks_completed": 20,
+              "found": len(final),
+              "results": final,
+              "chunks": chunks
+          }
+
+          Path(
+              "results/final.json"
+          ).write_text(
+              json.dumps(
+                  output,
+                  ensure_ascii=False,
+                  indent=2
+              ),
+              encoding="utf-8"
+          )
+
+          manifest = {
+              "status": "completed",
+              "batch_start": batch_start,
+              "batch_end": output[
+                  "batch_end"
+              ],
+              "total_target": total_target,
+              "chunks": chunks,
+              "total_scanned": total_scanned
+          }
+
+          Path(
+              "results/manifest.json"
+          ).write_text(
+              json.dumps(
+                  manifest,
+                  ensure_ascii=False,
+                  indent=2
+              ),
+              encoding="utf-8"
+          )
+
+          print(
+              f"Scanned: "
+              f"{total_scanned:,}"
+          )
+
+          print(
+              f"Seeds found: "
+              f"{len(final):,}"
+          )
+
+          for r in final[:20]:
+
+              print(
+                  "seed="
+                  + str(r.get("seed"))
+                  + " J1="
+                  + str(
+                      r.get(
+                          "j1_count",
+                          0
+                      )
+                  )
+              )
+
+          PY
+
+      - name: Commit results
+        run: |
+          set -e
+
+          git config user.name \
+            "github-actions[bot]"
+
+          git config user.email \
+            "github-actions[bot]@users.noreply.github.com"
+
+          git pull --rebase origin main
+
+          git add results/final.json
+          git add results/manifest.json
+
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+            exit 0
+          fi
+
+          git commit \
+            -m "scan: batch ${{ github.event.inputs.batch_start }}"
+
+          git push origin main
+
+      - name: Upload merged result
+        uses: actions/upload-artifact@v4
+        with:
+          name: batch-${{ github.event.inputs.batch_start }}-final
+          path: results/
+          retention-days: 30
+
+
+  # ============================================================
+  # 3. TRIGGER NEXT BATCH
+  # ============================================================
+
+  next-batch:
+    name: Trigger next batch
+    needs: merge
+
+    if: ${{ success() }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Calculate next batch
+        env:
+          BATCH_START: ${{ github.event.inputs.batch_start }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size }}
+          TOTAL_TARGET: ${{ github.event.inputs.total_target }}
+          MIN_J1: ${{ github.event.inputs.min_j1 }}
+          RETRY_COUNT: ${{ github.event.inputs.retry_count }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+        run: |
+
+          python3 << 'PY'
+
+          import json
+          import os
+          import urllib.request
+
+          batch_start = int(
+              os.environ["BATCH_START"]
+          )
+
+          batch_size = int(
+              os.environ["BATCH_SIZE"]
+          )
+
+          total_target = int(
+              os.environ["TOTAL_TARGET"]
+          )
+
+          min_j1 = os.environ[
+              "MIN_J1"
+          ]
+
+          retry_count = os.environ[
+              "RETRY_COUNT"
+          ]
+
+          runners = 20
+
+          next_start = (
+              batch_start
+              + runners * batch_size
+          )
+
+          if batch_start >= total_target:
+
+              print(
+                  "================================"
+              )
+              print(
+                  "SCAN COMPLETE"
+              )
+              print(
+                  f"Target: {total_target:,}"
+              )
+              print(
+                  "================================"
+              )
+
+              raise SystemExit(0)
+
+          next_start = min(
+              next_start,
+              total_target + 1
+          )
+
+          if next_start > total_target:
+
+              print(
+                  f"Đã hoàn thành "
+                  f"{total_target:,} seeds."
+              )
+
+              raise SystemExit(0)
+
+          payload = {
+              "ref": "main",
+              "inputs": {
+                  "min_j1": min_j1,
+                  "batch_start": str(
+                      next_start
+                  ),
+                  "batch_size": str(
+                      batch_size
+                  ),
+                  "total_target": str(
+                      total_target
+                  ),
+                  "retry_count": retry_count
+              }
+          }
+
+          body = json.dumps(
+              payload
+          ).encode("utf-8")
+
+          request = urllib.request.Request(
+
+              "https://api.github.com/repos/"
+              "thuantn005/lotto-scan/"
+              "actions/workflows/"
+              "scan_auto.yml/dispatches",
+
+              data=body,
+
+              method="POST",
+
+              headers={
+                  "Authorization":
+                      "Bearer "
+                      + os.environ[
+                          "GH_TOKEN"
+                      ],
+
+                  "Accept":
+                      "application/vnd.github+json",
+
+                  "Content-Type":
+                      "application/json",
+
+                  "X-GitHub-Api-Version":
+                      "2022-11-28"
+              }
+          )
+
+          with urllib.request.urlopen(
+              request,
+              timeout=30
+          ) as response:
+
+              status = response.status
+
+              if status < 200 or status >= 300:
+
+                  raise RuntimeError(
+                      f"GitHub API HTTP {status}"
+                  )
+
+          progress = (
+              min(
+                  next_start,
+                  total_target
+              )
+              / total_target
+              * 100
+          )
+
+          print(
+              "================================"
+          )
+
+          print(
+              "NEXT BATCH TRIGGERED"
+          )
+
+          print(
+              f"Start: {next_start:,}"
+          )
+
+          print(
+              f"Target: {total_target:,}"
+          )
+
+          print(
+              f"Progress: {progress:.4f}%"
+          )
+
+          print(
+              "================================"
+          )
+
+          PY
