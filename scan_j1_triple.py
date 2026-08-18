@@ -2,18 +2,19 @@
 """
 scan_j1_triple.py — quét seed tìm J1 >= MIN_J1 lần.
 Ghi checkpoint định kỳ để không mất data khi bị timeout/kill giữa chừng.
+Tương thích với scan_auto v2: luôn ghi "scanned" = số seed thực tế đã quét,
+để bước Validate của workflow biết chunk có quét đủ hay bị cắt ngang.
 """
 import csv, json, os, sys, time
 from math import comb
-from collections import defaultdict
 from pathlib import Path
 
 CSV_PATH = os.environ.get("CSV_PATH", "data/all.csv")
-OUT_PATH = os.environ.get("OUT_PATH", "configs/jackpot1_triple.json")
+OUT_PATH = os.environ.get("OUT_PATH", "results/chunk.json")
 START    = int(os.environ.get("SCAN_START", "1"))
 END      = int(os.environ.get("SCAN_END",   "500000000"))
 MIN_J1   = int(os.environ.get("MIN_J1",     "3"))
-CHECKPOINT_SEC = 30  # ghi file mỗi 30s, không đợi quét xong hết
+CHECKPOINT_SEC = 30
 
 M1,M2=0x9E3779B97F4A7C15,0xD1B54A32D192ED03
 M3,M4=0xBF58476D1CE4E5B9,0x94D049BB133111EB
@@ -42,35 +43,50 @@ with open(CSV_PATH,newline="",encoding="utf-8") as f:
 
 draw_ids=sorted(res.keys())
 n=len(draw_ids)
-print(f"Loaded {n} kỳ. Quét seed {START:,} → {END:,}, MIN_J1={MIN_J1}", flush=True)
+print(f"Loaded {n} ky. Quet seed {START:,} -> {END:,}, MIN_J1={MIN_J1}", flush=True)
 
 Path(OUT_PATH).parent.mkdir(parents=True, exist_ok=True)
 
-def save_checkpoint(current_seed, found, done=False):
-    """Ghi file kết quả — luôn thành công, không phụ thuộc vòng lặp xong hay chưa."""
+# Nếu SCAN_START > SCAN_END (chunk ngoài total_target), workflow tự xử lý
+# trước khi gọi script này — nhưng phòng hờ vẫn ghi file hợp lệ.
+if START > END:
+    payload = {
+        "status": "empty",
+        "scan_start": START, "scan_end": END,
+        "scanned": 0, "completed": True, "min_j1": MIN_J1,
+        "results": [],
+    }
+    with open(OUT_PATH, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=1)
+    print("Range rong -- da ghi file empty.")
+    sys.exit(0)
+
+def save_checkpoint(scanned_count, found, done=False):
+    """
+    scanned_count: SỐ SEED THỰC TẾ ĐÃ QUÉT (không phải seed cuối cùng)
+    -- đây là field workflow v2 dùng để validate chunk có quét đủ hay bị cắt.
+    """
     tmp_path = OUT_PATH + ".tmp"
     payload = {
+        "status": "completed" if done else "partial",
         "scan_start": START,
         "scan_end": END,
-        "last_seed_checked": current_seed,
+        "scanned": scanned_count,
         "completed": done,
         "min_j1": MIN_J1,
         "found": len(found),
         "results": sorted(found, key=lambda x: -x["j1_count"]),
     }
-    # Ghi vào file tạm rồi rename — tránh file bị hỏng nếu process bị kill
-    # đúng lúc đang ghi (atomic write)
     with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=1)
     os.replace(tmp_path, OUT_PATH)
 
 found=[]
 t0=time.time(); last_log=t0; last_checkpoint=t0
-current_seed=START
+scanned_count=0
 
 try:
     for seed in range(START,END+1):
-        current_seed=seed
         j2_hits=[]
         for d in draw_ids:
             if ticket(seed,d)==res[d]:
@@ -90,27 +106,31 @@ try:
                     "jackpot2_hits": j2_hits,
                 }
                 found.append(entry)
-                print(f"✅ seed={seed} J1={len(j1_hits)}x J2={len(j2_hits)}x kỳ={j1_hits}", flush=True)
+                print(f"HIT seed={seed} J1={len(j1_hits)}x J2={len(j2_hits)}x ky={j1_hits}", flush=True)
 
+        scanned_count += 1
         now=time.time()
         if now-last_checkpoint>=CHECKPOINT_SEC:
-            save_checkpoint(current_seed, found, done=False)
+            save_checkpoint(scanned_count, found, done=False)
             last_checkpoint=now
 
         if now-last_log>=15:
-            rate=(seed-START+1)/(now-t0)
-            eta=(END-seed)/rate if rate>0 else 0
-            print(f"  {seed:,} ({rate:,.0f}/s) ETA {eta/3600:.1f}h J1found={len(found)}", flush=True)
+            rate=scanned_count/(now-t0)
+            remaining=(END-START+1)-scanned_count
+            eta=remaining/rate if rate>0 else 0
+            print(f"  scanned={scanned_count:,}/{END-START+1:,} ({rate:,.0f}/s) ETA {eta/3600:.2f}h found={len(found)}", flush=True)
             last_log=now
 
-    # Quét xong toàn bộ range
-    save_checkpoint(END, found, done=True)
+    # Quét xong toàn bộ range -- BẮT BUỘC scanned == expected để Validate pass
+    save_checkpoint(scanned_count, found, done=True)
     elapsed=time.time()-t0
-    print(f"\nXong: {END-START+1:,} seed / {elapsed:.0f}s. Tìm thấy {len(found)} seed J1>={MIN_J1}")
+    print(f"\nXong: {scanned_count:,} seed / {elapsed:.0f}s. Tim thay {len(found)} seed J1>={MIN_J1}")
 
 except KeyboardInterrupt:
-    save_checkpoint(current_seed, found, done=False)
-    print(f"\nBị ngắt tại seed {current_seed:,} — đã lưu checkpoint")
-    sys.exit(0)
+    # Bị kill giữa chừng (SIGINT) -- ghi checkpoint với completed=False,
+    # scanned < expected -- Validate của workflow sẽ tự phát hiện và fail đúng
+    save_checkpoint(scanned_count, found, done=False)
+    print(f"\nBi ngat tai scanned={scanned_count:,} -- da luu checkpoint (chua du)")
+    sys.exit(1)
 
-print(f"Saved → {OUT_PATH}")
+print(f"Saved -> {OUT_PATH}")
