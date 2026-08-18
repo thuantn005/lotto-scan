@@ -145,25 +145,32 @@ jobs:
         run: git pull
 
       # Fallback: tải mọi artifact dự phòng — bù các chunk push git thất bại
-      - name: Download artifact dự phòng (nếu có)
+      - name: Download artifact dự phòng (nếu có) — dùng merge-multiple đúng chuẩn v4
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
           path: results/artifacts/
           pattern: chunk-*-backup
+          merge-multiple: true
 
-      - name: Gộp artifact vào results/ (bù chunk bị mất do git conflict)
+      - name: Gộp artifact vào results/ (không set -e để lỗi 1 file không chặn cả bước)
         run: |
-          mkdir -p results
-          for f in results/artifacts/*/*.json; do
+          set +e
+          mkdir -p results results/artifacts
+          echo "=== Danh sách file trong results/artifacts/ ==="
+          find results/artifacts -type f 2>&1 || true
+          echo "==="
+          for f in results/artifacts/*.json; do
             [ -f "$f" ] || continue
             name=$(basename "$f")
-            # Chỉ copy nếu chưa có bản chính thức trong results/
             if [ ! -f "results/$name" ]; then
-              cp "$f" "results/$name"
-              echo "Bù từ artifact: $name"
+              cp "$f" "results/$name" && echo "Bu tu artifact: $name"
             fi
           done
+          echo "=== Danh sách file trong results/ sau khi gộp ==="
+          ls -la results/*.json 2>&1 || echo "Khong co file json nao"
+          set -e
+          exit 0
 
       - name: Merge kết quả batch này (báo cáo đủ 20/20 chunk hay thiếu)
         run: |
