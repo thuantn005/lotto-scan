@@ -1,8 +1,25 @@
 {
- "total_scanned": 68594080,
- "chunks_found": 20,
+ "total_scanned": 13718816,
+ "chunks_found": 4,
  "chunks_expected": 20,
- "chunks_missing": [],
+ "chunks_missing": [
+  0,
+  1,
+  2,
+  3,
+  6,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  17,
+  18,
+  19
+ ],
  "found": 0,
  "results": []
 }
