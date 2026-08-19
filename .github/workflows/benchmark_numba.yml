@@ -1,0 +1,37 @@
+name: Benchmark Numba Speed
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests numpy numba
+      - name: Fetch data
+        run: |
+          python3 << 'PYEOF'
+          import requests, os
+          os.makedirs('data', exist_ok=True)
+          r = requests.get('https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv', timeout=60)
+          open('data/all.csv', 'w').write(r.text)
+          print('Downloaded ' + str(len(r.text.splitlines())) + ' rows')
+          PYEOF
+      - name: Kiem chung 4 seed J1=2 da biet
+        run: |
+          for seed in 10015838883 10036936239 10168595334 10183485194; do
+            echo "=== seed=$seed ==="
+            CSV_PATH=data/all.csv OUT_PATH=/tmp/verify_$seed.json \
+            SCAN_START=$seed SCAN_END=$seed MIN_J1=2 BATCH_SEEDS=1 \
+            python3 scan_j1_numba.py
+          done
+      - name: Benchmark toc do
+        run: |
+          CSV_PATH=data/all.csv OUT_PATH=/tmp/bench.json \
+          SCAN_START=1 SCAN_END=2000000 MIN_J1=3 BATCH_SEEDS=500000 \
+          python3 scan_j1_numba.py
