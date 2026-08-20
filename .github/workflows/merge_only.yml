@@ -1,0 +1,88 @@
+name: Merge Only From Artifact
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Run ID chứa artifact cần merge"
+        required: true
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Download artifacts từ run cũ
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ github.event.inputs.source_run_id }}
+          pattern: numba-chunk-*
+          path: artifacts
+          merge-multiple: false
+          github-token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Verify và merge
+        run: |
+          set -e
+          python3 << 'PY'
+          import json, glob
+          from pathlib import Path
+
+          artifacts = Path("artifacts")
+          all_results = []
+          total_scanned = 0
+          found_count = 0
+
+          for i in range(20):
+              files = list(artifacts.glob(f"numba-chunk-{i}/chunk_{i}.json"))
+              if not files:
+                  print(f"CANH BAO: thieu chunk {i}")
+                  continue
+              data = json.loads(files[0].read_text(encoding="utf-8"))
+              total_scanned += int(data.get("scanned", 0))
+              results = data.get("results", [])
+              all_results.extend(results)
+              found_count += len(results)
+              print(f"chunk {i}: scanned={data.get('scanned',0):,} found={len(results)}")
+
+          best = {}
+          for r in all_results:
+              if "seed" not in r: continue
+              s = int(r["seed"])
+              j1 = int(r.get("j1_count", 0))
+              if s not in best or j1 > int(best[s].get("j1_count", 0)):
+                  best[s] = r
+
+          final = sorted(best.values(), key=lambda x: (-int(x.get("j1_count", 0)), int(x.get("seed", 0))))
+
+          print()
+          print(f"=== TONG KET ===")
+          print(f"Tong scanned: {total_scanned:,}")
+          print(f"Seed tim duoc J1>=3: {len(final)}")
+          for r in final[:30]:
+              print(f"  seed={r.get('seed')} J1={r.get('j1_count')} kỳ={[h['draw_id'] for h in r.get('jackpot1_hits',[])]}")
+
+          Path("results").mkdir(exist_ok=True)
+          output = {"total_scanned": total_scanned, "found": len(final), "results": final}
+          Path("results/final.json").write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+          PY
+
+      - name: Commit
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "final.json" || true
+          git pull --rebase origin main
+          git stash pop || true
+          git add results/final.json
+          git diff --cached --quiet || git commit -m "merge-only: from run ${{ github.event.inputs.source_run_id }}"
+          git push origin main || echo "Nothing to push"
