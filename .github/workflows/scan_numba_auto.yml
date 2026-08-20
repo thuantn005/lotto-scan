@@ -279,7 +279,15 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # QUAN TRONG: results/final.json duoc tao boi buoc truoc (Merge results)
+          # -- day la thay doi CHUA COMMIT trong working tree. git pull --rebase
+          # se fail voi "unstaged changes" vi no khong the rebase khi co file
+          # local chua duoc luu vao git. Phai stash truoc, pull, roi pop lai.
+          git stash push -u -m "final.json truoc khi rebase"
           git pull --rebase origin main
+          git stash pop
+
           git add results/final.json
           if git diff --cached --quiet; then
             echo "Nothing to commit"
