@@ -16,7 +16,7 @@ CSV_PATH = os.environ.get("CSV_PATH", "data/all.csv")
 OUT_PATH = os.environ.get("OUT_PATH", "results/chunk.json")
 START    = int(os.environ.get("SCAN_START", "1"))
 END      = int(os.environ.get("SCAN_END",   "500000000"))
-MIN_J1   = int(os.environ.get("MIN_J1",     "3"))
+MIN_LOG  = int(os.environ.get("MIN_LOG",    "2"))  # log moi seed dat >= muc nay
 CHECKPOINT_SEC = 30
 BATCH_SEEDS = int(os.environ.get("BATCH_SEEDS", "2000000"))
 
@@ -127,7 +127,7 @@ def main():
 
     draw_ids = sorted(res.keys())
     n = len(draw_ids)
-    print(f"Loaded {n} ky. Quet seed {START:,} -> {END:,}, MIN_J1={MIN_J1}, batch={BATCH_SEEDS:,}", flush=True)
+    print(f"Loaded {n} ky. Quet seed {START:,} -> {END:,}, MIN_LOG={MIN_LOG}, batch={BATCH_SEEDS:,}", flush=True)
 
     draw_ids_np = np.array(draw_ids, dtype=np.uint64)
     target_masks = np.array([_mask_of(res[d]) for d in draw_ids], dtype=np.int64)
@@ -137,7 +137,9 @@ def main():
 
     if START > END:
         payload = {"status": "empty", "scan_start": START, "scan_end": END,
-                   "scanned": 0, "completed": True, "min_j1": MIN_J1, "results": []}
+                   "scanned": 0, "completed": True, "min_log": MIN_LOG,
+                   "found_j1_2plus": 0, "found_j1_3plus": 0, "found_j1_4plus": 0,
+                   "results_by_level": {"2": [], "3": [], "4": []}}
         with open(OUT_PATH, "w", encoding="utf-8") as f:
             json.dump(payload, f, ensure_ascii=False, indent=1)
         print("Range rong.")
@@ -147,20 +149,26 @@ def main():
     _ = scan_batch(np.array([1], dtype=np.int64), draw_ids_np, target_masks, target_special, BINOM)
     print(f"Warm-up JIT compile: {time.time()-t_warm:.2f}s", flush=True)
 
-    def save_checkpoint(scanned_count, found, done=False):
+    def save_checkpoint(scanned_count, found_by_level, done=False):
         tmp = OUT_PATH + ".tmp"
         payload = {
             "status": "completed" if done else "partial",
             "scan_start": START, "scan_end": END,
-            "scanned": scanned_count, "completed": done, "min_j1": MIN_J1,
-            "found": len(found),
-            "results": sorted(found, key=lambda x: -x["j1_count"]),
+            "scanned": scanned_count, "completed": done, "min_log": MIN_LOG,
+            "found_j1_2plus": len(found_by_level[2]),
+            "found_j1_3plus": len(found_by_level[3]),
+            "found_j1_4plus": len(found_by_level[4]),
+            "results_by_level": {
+                "2": sorted(found_by_level[2], key=lambda x: -x["j1_count"])[:200],
+                "3": sorted(found_by_level[3], key=lambda x: -x["j1_count"])[:200],
+                "4": sorted(found_by_level[4], key=lambda x: -x["j1_count"])[:200],
+            },
         }
         with open(tmp, "w", encoding="utf-8") as f:
             json.dump(payload, f, ensure_ascii=False, indent=1)
         os.replace(tmp, OUT_PATH)
 
-    found = []
+    found_by_level = {2: [], 3: [], 4: []}
     scanned_count = 0
     t0 = time.time(); last_checkpoint = t0; last_log = t0
 
@@ -171,30 +179,34 @@ def main():
 
         counts = scan_batch(seeds_np, draw_ids_np, target_masks, target_special, BINOM)
 
-        hit_idx = np.where(counts >= MIN_J1)[0]
+        hit_idx = np.where(counts >= MIN_LOG)[0]
         for idx in hit_idx:
             s = int(seeds_np[idx]); cnt = int(counts[idx])
             hits = _details_for_seed(s, draw_ids, draw_ids_np, res, spc, dates)
             entry = {"seed": s, "j1_count": cnt, "jackpot1_hits": hits}
-            found.append(entry)
+            for level in (2, 3, 4):
+                if cnt >= level:
+                    found_by_level[level].append(entry)
             print(f"HIT seed={s} J1={cnt}x", flush=True)
 
         scanned_count = batch_end - START + 1
         now = time.time()
         if now - last_checkpoint >= CHECKPOINT_SEC:
-            save_checkpoint(scanned_count, found, done=False)
+            save_checkpoint(scanned_count, found_by_level, done=False)
             last_checkpoint = now
         if now - last_log >= 15:
             rate = scanned_count / (now - t0)
             eta = (END - batch_end) / rate if rate > 0 else 0
-            print(f"  scanned={scanned_count:,}/{END-START+1:,} ({rate:,.0f}/s) ETA {eta/3600:.2f}h found={len(found)}", flush=True)
+            print(f"  scanned={scanned_count:,}/{END-START+1:,} ({rate:,.0f}/s) ETA {eta/3600:.2f}h "
+                  f"f2={len(found_by_level[2])} f3={len(found_by_level[3])} f4={len(found_by_level[4])}", flush=True)
             last_log = now
 
         seed = batch_end + 1
 
-    save_checkpoint(scanned_count, found, done=True)
+    save_checkpoint(scanned_count, found_by_level, done=True)
     elapsed = time.time() - t0
-    print(f"\nXong: {scanned_count:,} seed / {elapsed:.0f}s ({scanned_count/elapsed:,.0f}/s). Tim thay {len(found)} seed J1>={MIN_J1}")
+    print(f"\nXong: {scanned_count:,} seed / {elapsed:.0f}s ({scanned_count/elapsed:,.0f}/s). "
+          f"J1>=2:{len(found_by_level[2])} J1>=3:{len(found_by_level[3])} J1>=4:{len(found_by_level[4])}")
 
 
 if __name__ == "__main__":
