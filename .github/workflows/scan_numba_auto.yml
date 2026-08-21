@@ -206,7 +206,6 @@ jobs:
           BATCH_START: ${{ github.event.inputs.batch_start }}
           BATCH_SIZE: ${{ github.event.inputs.batch_size }}
           TOTAL_TARGET: ${{ github.event.inputs.total_target }}
-          MIN_J1: ${{ github.event.inputs.min_j1 }}
         run: |
           set -e
           mkdir -p results
@@ -217,61 +216,65 @@ jobs:
           batch_start = int(os.environ["BATCH_START"])
           batch_size = int(os.environ["BATCH_SIZE"])
           total_target = int(os.environ["TOTAL_TARGET"])
-          min_j1 = int(os.environ["MIN_J1"])
 
-          all_results = []
+          all_by_level = {2: [], 3: [], 4: []}
           total_scanned = 0
 
           for i in range(20):
               path = Path(f"artifacts/numba-chunk-{i}/chunk_{i}.json")
               data = json.loads(path.read_text(encoding="utf-8"))
               total_scanned += int(data.get("scanned", 0))
-              all_results.extend(data.get("results", []))
+              rbl = data.get("results_by_level", {})
+              for lvl in (2, 3, 4):
+                  all_by_level[lvl].extend(rbl.get(str(lvl), []))
 
-          best = {}
-          for r in all_results:
-              if "seed" not in r: continue
-              s = int(r["seed"])
-              j1 = int(r.get("j1_count", 0))
-              if s not in best or j1 > int(best[s].get("j1_count", 0)):
-                  best[s] = r
+          def dedup(items):
+              best = {}
+              for r in items:
+                  if "seed" not in r: continue
+                  s = int(r["seed"])
+                  j1 = int(r.get("j1_count", 0))
+                  if s not in best or j1 > int(best[s].get("j1_count", 0)):
+                      best[s] = r
+              return sorted(best.values(), key=lambda x: (-int(x.get("j1_count", 0)), int(x.get("seed", 0))))
 
-          final = sorted(best.values(), key=lambda x: (-int(x.get("j1_count", 0)), int(x.get("seed", 0))))
+          batch_by_level = {lvl: dedup(all_by_level[lvl]) for lvl in (2, 3, 4)}
 
-          # Đọc final.json cũ nếu có, cộng dồn kết quả qua các batch
-          old_results = []
+          # Cộng dồn với final.json cũ (qua các batch)
+          old_by_level = {2: [], 3: [], 4: []}
           old_scanned = 0
           try:
               old = json.loads(Path("results/final.json").read_text(encoding="utf-8"))
-              old_results = old.get("results", [])
               old_scanned = old.get("total_scanned", 0)
+              old_rbl = old.get("results_by_level", {})
+              for lvl in (2, 3, 4):
+                  old_by_level[lvl] = old_rbl.get(str(lvl), [])
           except Exception:
               pass
 
-          merged = {}
-          for r in old_results + final:
-              s = int(r["seed"])
-              j1 = int(r.get("j1_count", 0))
-              if s not in merged or j1 > int(merged[s].get("j1_count", 0)):
-                  merged[s] = r
-          final_all = sorted(merged.values(), key=lambda x: (-int(x.get("j1_count", 0)), int(x.get("seed", 0))))
+          final_by_level = {
+              lvl: dedup(old_by_level[lvl] + batch_by_level[lvl])
+              for lvl in (2, 3, 4)
+          }
 
           output = {
               "batch_start": batch_start,
               "batch_end": min(batch_start + 20*batch_size - 1, total_target),
               "total_target": total_target,
-              "min_j1": min_j1,
               "total_scanned": old_scanned + total_scanned,
-              "found": len(final_all),
-              "results": final_all,
+              "found_j1_2plus": len(final_by_level[2]),
+              "found_j1_3plus": len(final_by_level[3]),
+              "found_j1_4plus": len(final_by_level[4]),
+              "results_by_level": {str(k): v[:500] for k, v in final_by_level.items()},
           }
           Path("results/final.json").write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
 
           print(f"Batch scanned: {total_scanned:,}")
           print(f"Total scanned: {output['total_scanned']:,}")
-          print(f"Found: {len(final_all)}")
-          for r in final_all[:20]:
-              print(f"  seed={r.get('seed')} J1={r.get('j1_count')}")
+          print(f"J1>=2: {len(final_by_level[2])}  J1>=3: {len(final_by_level[3])}  J1>=4: {len(final_by_level[4])}")
+          for lvl in (2, 3, 4):
+              for r in final_by_level[lvl][:10]:
+                  print(f"  [J1>={lvl}] seed={r.get('seed')} actual_J1={r.get('j1_count')}")
           PY
 
       - name: Commit results
