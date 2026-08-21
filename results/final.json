@@ -1,9 +1,9 @@
 {
-  "batch_start": 14970160000,
-  "batch_end": 19940319999,
+  "batch_start": 19940320000,
+  "batch_end": 24910479999,
   "total_target": 1000000000000,
   "min_j1": 3,
-  "total_scanned": 19940320000,
+  "total_scanned": 24910480000,
   "found": 0,
   "results": []
 }
