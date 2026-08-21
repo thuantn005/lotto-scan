@@ -92,7 +92,7 @@ jobs:
         env:
           CSV_PATH: data/all.csv
           OUT_PATH: results/chunk_${{ matrix.chunk }}.json
-          MIN_J1: ${{ github.event.inputs.min_j1 }}
+          MIN_LOG: "2"
           SCAN_START: ${{ env.SCAN_START }}
           SCAN_END: ${{ env.SCAN_END }}
           BATCH_SEEDS: "1000000"
