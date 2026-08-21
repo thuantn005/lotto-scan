@@ -154,6 +154,12 @@ jobs:
           path: |
             results/chunk_${{ matrix.chunk }}.json
             results/chunk_${{ matrix.chunk }}.manifest.json
+            results/chunk_${{ matrix.chunk }}_j1_2plus.json
+            results/chunk_${{ matrix.chunk }}_j1_3plus.json
+            results/chunk_${{ matrix.chunk }}_j1_4plus.json
+            results/chunk_${{ matrix.chunk }}_top_main5.json
+            results/chunk_${{ matrix.chunk }}_top_main4.json
+            results/chunk_${{ matrix.chunk }}_top_special.json
           if-no-files-found: ignore
           retention-days: 14
 
@@ -201,7 +207,7 @@ jobs:
           print("ALL CHUNKS OK")
           PY
 
-      - name: Merge results
+      - name: Merge results (tach rieng 6 loai file)
         env:
           BATCH_START: ${{ github.event.inputs.batch_start }}
           BATCH_SIZE: ${{ github.event.inputs.batch_size }}
@@ -217,64 +223,72 @@ jobs:
           batch_size = int(os.environ["BATCH_SIZE"])
           total_target = int(os.environ["TOTAL_TARGET"])
 
-          all_by_level = {2: [], 3: [], 4: []}
           total_scanned = 0
-
           for i in range(20):
-              path = Path(f"artifacts/numba-chunk-{i}/chunk_{i}.json")
-              data = json.loads(path.read_text(encoding="utf-8"))
-              total_scanned += int(data.get("scanned", 0))
-              rbl = data.get("results_by_level", {})
-              for lvl in (2, 3, 4):
-                  all_by_level[lvl].extend(rbl.get(str(lvl), []))
+              p = Path(f"artifacts/numba-chunk-{i}/chunk_{i}.json")
+              if p.exists():
+                  total_scanned += int(json.loads(p.read_text(encoding="utf-8")).get("scanned", 0))
 
-          def dedup(items):
+          def dedup_j1(items):
               best = {}
               for r in items:
                   if "seed" not in r: continue
-                  s = int(r["seed"])
-                  j1 = int(r.get("j1_count", 0))
+                  s = int(r["seed"]); j1 = int(r.get("j1_count", 0))
                   if s not in best or j1 > int(best[s].get("j1_count", 0)):
                       best[s] = r
               return sorted(best.values(), key=lambda x: (-int(x.get("j1_count", 0)), int(x.get("seed", 0))))
 
-          batch_by_level = {lvl: dedup(all_by_level[lvl]) for lvl in (2, 3, 4)}
+          def dedup_top(items):
+              best = {}
+              for r in items:
+                  if "seed" not in r: continue
+                  s = int(r["seed"]); c = int(r.get("count", 0))
+                  if s not in best or c > int(best[s].get("count", 0)):
+                      best[s] = r
+              return sorted(best.values(), key=lambda x: (-int(x.get("count", 0)), int(x.get("seed", 0))))[:500]
 
-          # Cộng dồn với final.json cũ (qua các batch)
-          old_by_level = {2: [], 3: [], 4: []}
-          old_scanned = 0
-          try:
-              old = json.loads(Path("results/final.json").read_text(encoding="utf-8"))
-              old_scanned = old.get("total_scanned", 0)
-              old_rbl = old.get("results_by_level", {})
-              for lvl in (2, 3, 4):
-                  old_by_level[lvl] = old_rbl.get(str(lvl), [])
-          except Exception:
-              pass
+          def merge_one(filename_suffix, dedup_fn, batch_end):
+              # Doc tat ca chunk cho loai file nay
+              collected = []
+              for i in range(20):
+                  p = Path(f"artifacts/numba-chunk-{i}/chunk_{i}{filename_suffix}.json")
+                  if p.exists():
+                      data = json.loads(p.read_text(encoding="utf-8"))
+                      collected.extend(data.get("results", []))
 
-          final_by_level = {
-              lvl: dedup(old_by_level[lvl] + batch_by_level[lvl])
-              for lvl in (2, 3, 4)
-          }
+              # Doc file final cu, cong don
+              out_path = Path(f"results/final{filename_suffix}.json")
+              old_results = []
+              if out_path.exists():
+                  try:
+                      old_results = json.loads(out_path.read_text(encoding="utf-8")).get("results", [])
+                  except Exception:
+                      pass
 
-          output = {
-              "batch_start": batch_start,
-              "batch_end": min(batch_start + 20*batch_size - 1, total_target),
-              "total_target": total_target,
-              "total_scanned": old_scanned + total_scanned,
-              "found_j1_2plus": len(final_by_level[2]),
-              "found_j1_3plus": len(final_by_level[3]),
-              "found_j1_4plus": len(final_by_level[4]),
-              "results_by_level": {str(k): v[:500] for k, v in final_by_level.items()},
-          }
-          Path("results/final.json").write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+              final = dedup_fn(old_results + collected)
+              output = {
+                  "batch_start": batch_start,
+                  "batch_end": batch_end,
+                  "total_target": total_target,
+                  "total_scanned": total_scanned,
+                  "found": len(final),
+                  "results": final,
+              }
+              out_path.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+              print(f"{filename_suffix}: found={len(final)}")
+              for r in final[:5]:
+                  print(f"  {r}")
 
-          print(f"Batch scanned: {total_scanned:,}")
-          print(f"Total scanned: {output['total_scanned']:,}")
-          print(f"J1>=2: {len(final_by_level[2])}  J1>=3: {len(final_by_level[3])}  J1>=4: {len(final_by_level[4])}")
-          for lvl in (2, 3, 4):
-              for r in final_by_level[lvl][:10]:
-                  print(f"  [J1>={lvl}] seed={r.get('seed')} actual_J1={r.get('j1_count')}")
+          batch_end = min(batch_start + 20*batch_size - 1, total_target)
+
+          merge_one("_j1_2plus", dedup_j1, batch_end)
+          merge_one("_j1_3plus", dedup_j1, batch_end)
+          merge_one("_j1_4plus", dedup_j1, batch_end)
+          merge_one("_top_main5", dedup_top, batch_end)
+          merge_one("_top_main4", dedup_top, batch_end)
+          merge_one("_top_special", dedup_top, batch_end)
+
+          print(f"Total scanned: {total_scanned:,}")
           PY
 
       - name: Commit results
@@ -291,7 +305,7 @@ jobs:
           git pull --rebase origin main
           git stash pop
 
-          git add results/final.json
+          git add results/final_j1_2plus.json results/final_j1_3plus.json results/final_j1_4plus.json results/final_top_main5.json results/final_top_main4.json results/final_top_special.json
           if git diff --cached --quiet; then
             echo "Nothing to commit"
             exit 0
