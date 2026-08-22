@@ -17,7 +17,7 @@ jobs:
           wc -l data/all.csv
 
       - name: Compile C++
-        run: g++ -O3 -o scan_j1_cpp scan_j1.cpp
+        run: g++ -O3 -march=x86-64-v3 -funroll-loops -o scan_j1_cpp scan_j1.cpp
 
       - name: Kiem chung 4 seed J1=2 da biet
         run: |
