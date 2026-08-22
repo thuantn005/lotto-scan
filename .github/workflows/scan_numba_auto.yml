@@ -319,34 +319,50 @@ jobs:
     if: ${{ success() }}
     runs-on: ubuntu-latest
     steps:
-      - name: Calculate next batch and trigger
+      - name: Checkout (doc ket qua J1>=4 hien tai)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Kiem tra da tim thay J1>=4 chua, neu chua thi chay tiep vo han
         env:
           BATCH_START: ${{ github.event.inputs.batch_start }}
           BATCH_SIZE: ${{ github.event.inputs.batch_size }}
-          TOTAL_TARGET: ${{ github.event.inputs.total_target }}
           MIN_J1: ${{ github.event.inputs.min_j1 }}
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           python3 << 'PY'
           import json, os, urllib.request
+          from pathlib import Path
 
           batch_start = int(os.environ["BATCH_START"])
           batch_size = int(os.environ["BATCH_SIZE"])
-          total_target = int(os.environ["TOTAL_TARGET"])
           min_j1 = os.environ["MIN_J1"]
           runners = 20
 
-          next_start = batch_start + runners * batch_size
+          # Dieu kien dung DUY NHAT: da tim duoc it nhat 1 seed J1>=4
+          found_4plus = 0
+          try:
+              data = json.loads(Path("results/final_j1_4plus.json").read_text(encoding="utf-8"))
+              found_4plus = data.get("found", 0)
+          except Exception as e:
+              print("Khong doc duoc final_j1_4plus.json:", e)
 
-          if batch_start >= total_target or next_start > total_target:
-              print("SCAN COMPLETE or done for this target")
+          if found_4plus > 0:
+              print("================================")
+              print("DA TIM THAY SEED J1>=4 -- DUNG QUET!")
+              print(f"So seed J1>=4 tim duoc: {found_4plus}")
+              print("================================")
               raise SystemExit(0)
+
+          # Chua tim thay -- chay tiep vo han, khong gioi han total_target
+          next_start = batch_start + runners * batch_size
 
           payload = {"ref": "main", "inputs": {
               "min_j1": min_j1,
               "batch_start": str(next_start),
               "batch_size": str(batch_size),
-              "total_target": str(total_target),
+              "total_target": "999999999999999",
           }}
           req = urllib.request.Request(
               "https://api.github.com/repos/thuantn005/lotto-scan/actions/workflows/scan_numba_auto.yml/dispatches",
@@ -359,5 +375,5 @@ jobs:
               },
           )
           with urllib.request.urlopen(req, timeout=30) as resp:
-              print("Triggered next batch:", resp.status, "start=", next_start)
+              print("Chua tim thay J1>=4 -- Trigger batch tiep:", resp.status, "start=", next_start)
           PY
