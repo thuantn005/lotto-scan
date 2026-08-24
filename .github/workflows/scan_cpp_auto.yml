@@ -1,6 +1,9 @@
 name: Scan J1 CPP Auto
 
 on:
+  # Tu dong resume vao Chu Nhat 00:05 UTC (~07:05 gio VN) sau khi nghi Thu 7
+  schedule:
+    - cron: "5 0 * * 0"
   workflow_dispatch:
     inputs:
       min_j1:
