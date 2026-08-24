@@ -25,7 +25,63 @@ permissions:
 
 jobs:
 
+  # Job rieng, CHI chay khi trigger boi cron schedule (resume sau ngay nghi)
+  resume-from-schedule:
+    name: Resume scan sau ngay nghi (chi chay khi la schedule event)
+    if: ${{ github.event_name == 'schedule' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Doc batch_end cuoi cung va trigger batch tiep
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          python3 << 'PY'
+          import json, os, urllib.request
+          from pathlib import Path
+
+          batch_end = 0
+          try:
+              data = json.loads(Path("results/final_j1_2plus.json").read_text(encoding="utf-8"))
+              batch_end = data.get("batch_end", 0)
+          except Exception as e:
+              print("Khong doc duoc final_j1_2plus.json:", e)
+              raise SystemExit(0)
+
+          if batch_end <= 0:
+              print("Chua co batch_end hop le -- bo qua resume")
+              raise SystemExit(0)
+
+          next_start = batch_end + 1
+          # Batch size mac dinh -- giu dong bo voi lan chay truoc
+          batch_size = "1557775800"
+          min_j1 = "2"
+
+          payload = {"ref": "main", "inputs": {
+              "min_j1": min_j1,
+              "batch_start": str(next_start),
+              "batch_size": batch_size,
+          }}
+          req = urllib.request.Request(
+              "https://api.github.com/repos/thuantn005/lotto-scan/actions/workflows/scan_cpp_auto.yml/dispatches",
+              data=json.dumps(payload).encode("utf-8"),
+              method="POST",
+              headers={
+                  "Authorization": "Bearer " + os.environ["GH_TOKEN"],
+                  "Accept": "application/vnd.github+json",
+                  "Content-Type": "application/json",
+              },
+          )
+          with urllib.request.urlopen(req, timeout=30) as resp:
+              print("Resume sau ngay nghi -- Trigger batch:", resp.status, "start=", next_start)
+          PY
+
   scan:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     name: Scan chunk ${{ matrix.chunk }}
     strategy:
       fail-fast: false
