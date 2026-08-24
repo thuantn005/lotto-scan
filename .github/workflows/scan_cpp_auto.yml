@@ -317,6 +317,17 @@ jobs:
               print("================================")
               raise SystemExit(0)
 
+          # Nghi Thu 7 hang tuan (gio VN, UTC+7) de giam rui ro vi pham
+          # dieu khoan GitHub Actions ve su dung tai nguyen lien tuc.
+          import datetime
+          now_vn = datetime.datetime.utcnow() + datetime.timedelta(hours=7)
+          if now_vn.weekday() == 5:  # 5 = Thu 7 (0=Thu 2 ... 6=Chu Nhat)
+              print("================================")
+              print(f"Hom nay Thu 7 ({now_vn.date()}) -- NGHI theo lich, khong trigger batch moi")
+              print("Se tu dong chay lai vao ngay mai (Chu Nhat)")
+              print("================================")
+              raise SystemExit(0)
+
           next_start = batch_start + runners * batch_size
 
           payload = {"ref": "main", "inputs": {
