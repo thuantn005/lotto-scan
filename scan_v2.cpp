@@ -18,6 +18,9 @@
 #include <algorithm>
 #include <filesystem>
 #include <set>
+#include <thread>
+#include <mutex>
+#include <atomic>
 
 namespace fs = std::filesystem;
 using u64 = uint64_t;
@@ -158,36 +161,86 @@ int main() {
         u64 seed_start = getenv_u64("SEED_START", 1);
         u64 seed_count = getenv_u64("SEED_COUNT", 100000000ULL); // so seed quet lan nay
 
+        unsigned int num_threads = std::thread::hardware_concurrency();
+        if (num_threads == 0) num_threads = 4;
+        {
+            std::string nt = getenv_str("NUM_THREADS", "");
+            if (!nt.empty()) num_threads = (unsigned int)std::stoul(nt);
+        }
+        if (num_threads < 1) num_threads = 1;
+
         fs::create_directories(l1_dir);
 
         auto t0 = std::chrono::steady_clock::now();
-        std::vector<u64> j1_1_seeds;  // seed verify dung J1=1
-        u64 checked = 0;
-        auto last_log = t0;
 
-        for (u64 seed = seed_start; seed < seed_start + seed_count; seed++) {
-            if (check_j1(seed, latest)) {
-                // Trung ky moi nhat -- full-scan verify toan bo lich su
-                int total_j1 = full_scan_count(seed, draws);
-                if (total_j1 == 1) {
-                    j1_1_seeds.push_back(seed);
-                    fprintf(stderr, "J1=1 XAC NHAN: seed=%llu\n", (unsigned long long)seed);
-                } else {
-                    fprintf(stderr, "seed=%llu trung ky moi nhung J1 thuc te=%d (>=2, KHONG luu)\n",
-                            (unsigned long long)seed, total_j1);
+        // Moi thread co vector rieng, khong can lock khi push (chi merge o cuoi).
+        std::vector<std::vector<u64>> thread_results(num_threads);
+        std::atomic<u64> checked_total{0};
+        std::mutex log_mutex;
+
+        u64 chunk = seed_count / num_threads;
+        u64 remainder = seed_count % num_threads;
+
+        auto worker = [&](unsigned int tid, u64 range_start, u64 range_count) {
+            u64 local_checked = 0;
+            std::vector<u64>& local_found = thread_results[tid];
+            for (u64 seed = range_start; seed < range_start + range_count; seed++) {
+                if (check_j1(seed, latest)) {
+                    int total_j1 = full_scan_count(seed, draws);
+                    if (total_j1 == 1) {
+                        local_found.push_back(seed);
+                        std::lock_guard<std::mutex> lk(log_mutex);
+                        fprintf(stderr, "[t%u] J1=1 XAC NHAN: seed=%llu\n", tid, (unsigned long long)seed);
+                    } else {
+                        std::lock_guard<std::mutex> lk(log_mutex);
+                        fprintf(stderr, "[t%u] seed=%llu trung ky moi nhung J1 thuc te=%d (>=2, KHONG luu)\n",
+                                tid, (unsigned long long)seed, total_j1);
+                    }
+                }
+                local_checked++;
+                if ((local_checked & 0xFFFFF) == 0) { // cap nhat moi ~1M seed de khong tranh chap qua nhieu
+                    checked_total.fetch_add(0x100000, std::memory_order_relaxed);
                 }
             }
-            checked++;
-            auto now = std::chrono::steady_clock::now();
-            if (std::chrono::duration<double>(now - last_log).count() >= 15.0) {
-                double elapsed = std::chrono::duration<double>(now - t0).count();
-                fprintf(stderr, "  checked=%llu/%llu (%.0f/s) found_j1_1=%zu\n",
-                        (unsigned long long)checked, (unsigned long long)seed_count,
-                        checked/elapsed, j1_1_seeds.size());
-                last_log = now;
-            }
+            checked_total.fetch_add(local_checked & 0xFFFFF, std::memory_order_relaxed);
+        };
+
+        std::vector<std::thread> threads;
+        u64 offset = 0;
+        for (unsigned int t = 0; t < num_threads; t++) {
+            u64 this_count = chunk + (t < remainder ? 1 : 0);
+            threads.emplace_back(worker, t, seed_start + offset, this_count);
+            offset += this_count;
         }
 
+        // Thread giam sat tien do, in log moi 15s tu main thread.
+        std::atomic<bool> done{false};
+        std::thread monitor([&]() {
+            auto last_log = t0;
+            while (!done.load()) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                auto now = std::chrono::steady_clock::now();
+                if (std::chrono::duration<double>(now - last_log).count() >= 15.0) {
+                    double elapsed = std::chrono::duration<double>(now - t0).count();
+                    u64 c = checked_total.load(std::memory_order_relaxed);
+                    fprintf(stderr, "  checked~=%llu/%llu (%.0f/s, %u threads)\n",
+                            (unsigned long long)c, (unsigned long long)seed_count,
+                            elapsed > 0 ? c/elapsed : 0.0, num_threads);
+                    last_log = now;
+                }
+            }
+        });
+
+        for (auto& th : threads) th.join();
+        done.store(true);
+        monitor.join();
+
+        // Merge ket qua tu tat ca thread, sap xep lai theo seed cho de doc.
+        std::vector<u64> j1_1_seeds;
+        for (auto& v : thread_results) j1_1_seeds.insert(j1_1_seeds.end(), v.begin(), v.end());
+        std::sort(j1_1_seeds.begin(), j1_1_seeds.end());
+
+        u64 checked = seed_count;
         u64 seed_end = seed_start + seed_count - 1;
 
         // Ghi batch moi vao l1/
@@ -213,8 +266,8 @@ int main() {
 
         auto t1 = std::chrono::steady_clock::now();
         double elapsed = std::chrono::duration<double>(t1-t0).count();
-        fprintf(stderr, "\nXong scan_new: %llu seed / %.0fs. J1=1 tim duoc: %zu\n",
-                (unsigned long long)checked, elapsed, j1_1_seeds.size());
+        fprintf(stderr, "\nXong scan_new: %llu seed / %.0fs (%.0f/s, %u threads). J1=1 tim duoc: %zu\n",
+                (unsigned long long)checked, elapsed, elapsed>0?checked/elapsed:0.0, num_threads, j1_1_seeds.size());
         printf("BATCH_FILE=%s\n", batch_file.c_str());
         printf("FOUND_COUNT=%zu\n", j1_1_seeds.size());
 
