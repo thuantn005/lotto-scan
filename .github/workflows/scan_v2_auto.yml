@@ -1,0 +1,81 @@
+name: Scan V2 (2 lan/ngay theo lich Vietlott)
+
+on:
+  schedule:
+    # 3h sau ky quay 13:00 VN -> 16:00 VN = 09:00 UTC
+    - cron: "0 9 * * *"
+    # 3h sau ky quay 21:00 VN -> 00:00 VN hom sau = 17:00 UTC cung ngay
+    - cron: "0 17 * * *"
+  workflow_dispatch:
+    inputs:
+      seed_count:
+        description: "So seed quet lan nay"
+        required: true
+        default: "50000000"
+
+permissions:
+  contents: write
+
+jobs:
+  scan_and_check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Download dataset moi nhat
+        run: |
+          set -e
+          mkdir -p data
+          curl -sL "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
+          wc -l data/all.csv
+
+      - name: Compile scan_v2
+        run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -o scan_v2 scan_v2.cpp
+
+      - name: Doc seed_next tu state (neu co)
+        run: |
+          if [ -f l1_state.json ]; then
+            SEED_NEXT=$(python3 -c "import json; print(json.load(open('l1_state.json'))['seed_next'])")
+          else
+            SEED_NEXT=1
+          fi
+          echo "SEED_NEXT=$SEED_NEXT" >> "$GITHUB_ENV"
+          echo "Seed bat dau lan nay: $SEED_NEXT"
+
+      - name: Quet seed moi (scan_new) - check ky moi nhat + full-scan verify
+        env:
+          CSV_PATH: data/all.csv
+          MODE: scan_new
+          L1_DIR: l1
+          STATE_FILE: l1_state.json
+          SEED_START: ${{ env.SEED_NEXT }}
+          SEED_COUNT: ${{ github.event.inputs.seed_count || '50000000' }}
+        run: ./scan_v2
+
+      - name: Check lai l1 (thang hang seed J1>=2 len l2, gioi han 20 batch)
+        env:
+          CSV_PATH: data/all.csv
+          MODE: check_l1
+          L1_DIR: l1
+          L2_DIR: l2
+        run: ./scan_v2
+
+      - name: Commit ket qua
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "ket qua truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          git add l1/ l2/ l1_state.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "scan v2: cap nhat sau ky quay $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git push origin main
