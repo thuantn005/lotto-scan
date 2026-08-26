@@ -9,9 +9,9 @@ on:
   workflow_dispatch:
     inputs:
       seed_count:
-        description: "So seed quet lan nay"
+        description: "So seed quet lan nay (vd: 31155516000 cho 1 batch ~31 ty)"
         required: true
-        default: "50000000"
+        default: "31155516000"
 
 permissions:
   contents: write
@@ -19,7 +19,7 @@ permissions:
 jobs:
   scan_and_check:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 180
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,8 +33,11 @@ jobs:
           curl -sL "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
           wc -l data/all.csv
 
-      - name: Compile scan_v2
-        run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -o scan_v2 scan_v2.cpp
+      - name: Compile scan_v2 (co pthread cho da luong)
+        run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_v2 scan_v2.cpp
+
+      - name: Xem so core cua runner
+        run: nproc
 
       - name: Doc seed_next tu state (neu co)
         run: |
