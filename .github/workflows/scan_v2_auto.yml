@@ -16,6 +16,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: scan-v2-single-runner
+  cancel-in-progress: false
+
 jobs:
   scan_and_check:
     runs-on: ubuntu-latest
@@ -37,7 +41,7 @@ jobs:
         id: check_ky
         run: |
           set -e
-          LATEST_KY=$(tail -n 1 data/all.csv | cut -d',' -f1)
+          LATEST_KY=$(tail -n 1 data/all.csv | cut -d',' -f2)
           echo "Ky moi nhat trong dataset: $LATEST_KY"
 
           if [ -f last_ky.txt ]; then
