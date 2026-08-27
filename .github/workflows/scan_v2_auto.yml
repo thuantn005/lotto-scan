@@ -33,13 +33,39 @@ jobs:
           curl -sL "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
           wc -l data/all.csv
 
+      - name: Kiem tra ky moi nhat, bo qua neu da quet roi
+        id: check_ky
+        run: |
+          set -e
+          LATEST_KY=$(tail -n 1 data/all.csv | cut -d',' -f1)
+          echo "Ky moi nhat trong dataset: $LATEST_KY"
+
+          if [ -f last_ky.txt ]; then
+            LAST_SCANNED=$(cat last_ky.txt)
+          else
+            LAST_SCANNED=""
+          fi
+          echo "Ky da quet lan truoc: $LAST_SCANNED"
+
+          if [ "$LATEST_KY" = "$LAST_SCANNED" ]; then
+            echo "Ky $LATEST_KY da quet roi, bo qua lan nay."
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Ky $LATEST_KY la ky moi, se chay scan."
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "LATEST_KY=$LATEST_KY" >> "$GITHUB_ENV"
+
       - name: Compile scan_v2 (co pthread cho da luong)
+        if: steps.check_ky.outputs.should_run == 'true'
         run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_v2 scan_v2.cpp
 
       - name: Xem so core cua runner
+        if: steps.check_ky.outputs.should_run == 'true'
         run: nproc
 
       - name: Doc seed_next tu state (neu co)
+        if: steps.check_ky.outputs.should_run == 'true'
         run: |
           if [ -f l1_state.json ]; then
             SEED_NEXT=$(python3 -c "import json; print(json.load(open('l1_state.json'))['seed_next'])")
@@ -50,6 +76,7 @@ jobs:
           echo "Seed bat dau lan nay: $SEED_NEXT"
 
       - name: Quet seed moi (scan_new) - check ky moi nhat + full-scan verify
+        if: steps.check_ky.outputs.should_run == 'true'
         env:
           CSV_PATH: data/all.csv
           MODE: scan_new
@@ -60,6 +87,7 @@ jobs:
         run: ./scan_v2
 
       - name: Check lai l1 (thang hang seed J1>=2 len l2, gioi han 20 batch)
+        if: steps.check_ky.outputs.should_run == 'true'
         env:
           CSV_PATH: data/all.csv
           MODE: check_l1
@@ -68,6 +96,7 @@ jobs:
         run: ./scan_v2
 
       - name: Commit ket qua
+        if: steps.check_ky.outputs.should_run == 'true'
         run: |
           set -e
           git config user.name "github-actions[bot]"
@@ -75,12 +104,14 @@ jobs:
           git stash push -u -m "ket qua truoc rebase" || true
           git pull --rebase origin main
           git stash pop || true
+          echo "$LATEST_KY" > last_ky.txt
           # QUAN TRONG: add tung duong dan RIENG, vi neu 1 duong dan khong ton tai
           # (vi du l2/ chua co seed nao duoc thang hang) thi ca lenh "git add a b c"
           # se that bai voi exit code != 0 va KHONG add duoc gi ca, du 2>/dev/null||true
           [ -d l1 ] && git add l1/ || true
           [ -d l2 ] && git add l2/ || true
           [ -f l1_state.json ] && git add l1_state.json || true
+          [ -f last_ky.txt ] && git add last_ky.txt || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
