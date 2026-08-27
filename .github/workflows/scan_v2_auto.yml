@@ -75,7 +75,12 @@ jobs:
           git stash push -u -m "ket qua truoc rebase" || true
           git pull --rebase origin main
           git stash pop || true
-          git add l1/ l2/ l1_state.json 2>/dev/null || true
+          # QUAN TRONG: add tung duong dan RIENG, vi neu 1 duong dan khong ton tai
+          # (vi du l2/ chua co seed nao duoc thang hang) thi ca lenh "git add a b c"
+          # se that bai voi exit code != 0 va KHONG add duoc gi ca, du 2>/dev/null||true
+          [ -d l1 ] && git add l1/ || true
+          [ -d l2 ] && git add l2/ || true
+          [ -f l1_state.json ] && git add l1_state.json || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
