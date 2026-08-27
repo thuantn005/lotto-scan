@@ -122,6 +122,7 @@ jobs:
           [ -d l2 ] && git add l2/ || true
           [ -f l1_state.json ] && git add l1_state.json || true
           [ -f last_ky.txt ] && git add last_ky.txt || true
+          [ -f data/all.csv ] && git add data/all.csv || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
