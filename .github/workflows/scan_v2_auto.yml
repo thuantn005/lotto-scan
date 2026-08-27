@@ -37,6 +37,12 @@ jobs:
           curl -sL "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
           wc -l data/all.csv
 
+      - name: Fallback cao xosominhngoc.net.vn neu dataset cham cap nhat
+        run: |
+          set -e
+          python3 scrape_xosominhngoc_fallback.py --csv data/all.csv --lookback-days 2
+          wc -l data/all.csv
+
       - name: Kiem tra ky moi nhat, bo qua neu da quet roi
         id: check_ky
         run: |
