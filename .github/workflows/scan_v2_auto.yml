@@ -6,12 +6,11 @@ on:
     - cron: "0 9 * * *"
     # 3h sau ky quay 21:00 VN -> 00:00 VN hom sau = 17:00 UTC cung ngay
     - cron: "0 17 * * *"
-  workflow_dispatch:
-    inputs:
-      seed_count:
-        description: "So seed quet lan nay (vd: 31155516000 cho 1 batch ~31 ty)"
-        required: true
-        default: "31155516000"
+  workflow_dispatch: {}
+
+env:
+  FIXED_SEED_START: "682305800400"
+  FIXED_SEED_COUNT: "1557775799"
 
 permissions:
   contents: write
@@ -74,17 +73,6 @@ jobs:
         if: steps.check_ky.outputs.should_run == 'true'
         run: nproc
 
-      - name: Doc seed_next tu state (neu co)
-        if: steps.check_ky.outputs.should_run == 'true'
-        run: |
-          if [ -f l1_state.json ]; then
-            SEED_NEXT=$(python3 -c "import json; print(json.load(open('l1_state.json'))['seed_next'])")
-          else
-            SEED_NEXT=1
-          fi
-          echo "SEED_NEXT=$SEED_NEXT" >> "$GITHUB_ENV"
-          echo "Seed bat dau lan nay: $SEED_NEXT"
-
       - name: Quet seed moi (scan_new) - check ky moi nhat + full-scan verify
         if: steps.check_ky.outputs.should_run == 'true'
         env:
@@ -92,8 +80,8 @@ jobs:
           MODE: scan_new
           L1_DIR: l1
           STATE_FILE: l1_state.json
-          SEED_START: ${{ env.SEED_NEXT }}
-          SEED_COUNT: ${{ github.event.inputs.seed_count || '50000000' }}
+          SEED_START: ${{ env.FIXED_SEED_START }}
+          SEED_COUNT: ${{ env.FIXED_SEED_COUNT }}
         run: ./scan_v2
 
       - name: Check lai l1 (thang hang seed J1>=2 len l2, gioi han 20 batch)
