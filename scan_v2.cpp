@@ -338,7 +338,8 @@ int main() {
             }
         }
 
-        // Gioi han l1/ toi da 20 batch (xoa batch cu nhat neu vuot)
+        // Gioi han so batch trong l1/ (0 = khong gioi han)
+        int max_l1_batches = (int)getenv_u64("MAX_L1_BATCHES", 0);
         batch_files.clear();
         if (fs::exists(l1_dir)) {
             for (auto& entry : fs::directory_iterator(l1_dir)) {
@@ -347,11 +348,13 @@ int main() {
         }
         std::sort(batch_files.begin(), batch_files.end());
         int removed_old = 0;
-        while ((int)batch_files.size() > 20) {
-            fs::remove(batch_files.front());
-            fprintf(stderr, "Xoa batch cu (vuot 20): %s\n", batch_files.front().c_str());
-            batch_files.erase(batch_files.begin());
-            removed_old++;
+        if (max_l1_batches > 0) {
+            while ((int)batch_files.size() > max_l1_batches) {
+                fs::remove(batch_files.front());
+                fprintf(stderr, "Xoa batch cu (vuot %d): %s\n", max_l1_batches, batch_files.front().c_str());
+                batch_files.erase(batch_files.begin());
+                removed_old++;
+            }
         }
 
         fprintf(stderr, "\nXong check_l1: %d batch xoa (thang hang), %d seed promoted, %d batch xoa (qua cu)\n",
