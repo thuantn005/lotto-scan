@@ -290,6 +290,23 @@ int main() {
             std::stringstream buf; buf << f.rdbuf();
             std::string content = buf.str();
 
+            // Parse tho cac field khac de giu nguyen khi ghi lai file
+            auto extract_str = [&](const std::string& key) -> std::string {
+                size_t p = content.find("\"" + key + "\":");
+                if (p == std::string::npos) return "";
+                p += key.size() + 3;
+                if (content[p] == '"') {
+                    size_t q = content.find('"', p+1);
+                    return content.substr(p+1, q-p-1);
+                }
+                size_t q = content.find_first_of(",}", p);
+                return content.substr(p, q-p);
+            };
+            std::string draw_id_s   = extract_str("draw_id");
+            std::string draw_date_s = extract_str("draw_date");
+            std::string seed_start_s= extract_str("seed_start");
+            std::string seed_end_s  = extract_str("seed_end");
+
             // Parse tho: tim "seeds":[...]
             size_t p = content.find("\"seeds\":[");
             if (p == std::string::npos) continue;
@@ -305,6 +322,7 @@ int main() {
             bool any_promoted = false;
             std::vector<u64> promoted_seeds;
             std::vector<int> promoted_counts;
+            std::vector<u64> remaining_seeds;
 
             for (u64 seed : seeds) {
                 int cnt = full_scan_count(seed, draws);
@@ -314,27 +332,64 @@ int main() {
                     promoted_counts.push_back(cnt);
                     fprintf(stderr, "PROMOTE: seed=%llu J1=%d (tu batch %s)\n",
                             (unsigned long long)seed, cnt, bf.c_str());
+                } else {
+                    remaining_seeds.push_back(seed);
                 }
             }
 
             if (any_promoted) {
-                // Ghi cac seed promoted vao l2/
+                // Gop vao l2/ (giu lai cac seed da promote tu lan chay truoc, khong ghi de mat)
                 std::string l2_file = l2_dir + "/promoted_" + fs::path(bf).stem().string() + ".json";
+                std::vector<u64> existing_seeds;
+                std::vector<int> existing_counts;
+                if (fs::exists(l2_file)) {
+                    std::ifstream f2in(l2_file);
+                    std::stringstream buf2; buf2 << f2in.rdbuf();
+                    std::string c2 = buf2.str();
+                    size_t pos = 0;
+                    while ((pos = c2.find("\"seed\":", pos)) != std::string::npos) {
+                        pos += 7;
+                        size_t comma = c2.find(',', pos);
+                        u64 sv = std::stoull(c2.substr(pos, comma-pos));
+                        size_t jp = c2.find("\"j1_count\":", comma);
+                        jp += 11;
+                        size_t endp = c2.find_first_of("}", jp);
+                        int jv = std::stoi(c2.substr(jp, endp-jp));
+                        existing_seeds.push_back(sv);
+                        existing_counts.push_back(jv);
+                        pos = endp;
+                    }
+                }
+                for (size_t i = 0; i < promoted_seeds.size(); i++) {
+                    existing_seeds.push_back(promoted_seeds[i]);
+                    existing_counts.push_back(promoted_counts[i]);
+                }
+
                 FILE* f2 = fopen(l2_file.c_str(), "w");
                 fprintf(f2, "{\"source_batch\":\"%s\",\"promoted\":[", bf.c_str());
-                for (size_t i = 0; i < promoted_seeds.size(); i++) {
+                for (size_t i = 0; i < existing_seeds.size(); i++) {
                     if (i) fprintf(f2, ",");
                     fprintf(f2, "{\"seed\":%llu,\"j1_count\":%d}",
-                            (unsigned long long)promoted_seeds[i], promoted_counts[i]);
+                            (unsigned long long)existing_seeds[i], existing_counts[i]);
                 }
                 fprintf(f2, "]}");
                 fclose(f2);
 
-                // Xoa CA BATCH khoi l1/
-                fs::remove(bf);
-                total_removed_batches++;
+                // Ghi lai batch trong l1/ CHI VOI cac seed CHUA thang hang
+                FILE* f1 = fopen(bf.c_str(), "w");
+                fprintf(f1, "{\"draw_id\":%s,\"draw_date\":\"%s\",\"seed_start\":%s,\"seed_end\":%s,\"found\":%zu,\"seeds\":[",
+                        draw_id_s.c_str(), draw_date_s.c_str(), seed_start_s.c_str(), seed_end_s.c_str(),
+                        remaining_seeds.size());
+                for (size_t i = 0; i < remaining_seeds.size(); i++) {
+                    if (i) fprintf(f1, ",");
+                    fprintf(f1, "%llu", (unsigned long long)remaining_seeds[i]);
+                }
+                fprintf(f1, "]}");
+                fclose(f1);
+
                 total_promoted += promoted_seeds.size();
-                fprintf(stderr, "Da xoa batch %s (co %zu seed thang hang)\n", bf.c_str(), promoted_seeds.size());
+                fprintf(stderr, "Da xoa %zu seed thang hang khoi batch %s (con lai %zu seed), ghi vao l2/\n",
+                        promoted_seeds.size(), bf.c_str(), remaining_seeds.size());
             }
         }
 
