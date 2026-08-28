@@ -1,23 +1,29 @@
 // scan_per_draw.cpp — Quet 1 dai seed CO DINH cho TAT CA cac ky trong CSV,
-// moi ky ghi ra 1 file rieng dang batch_ky{draw_id}_seed{seed_start}.json
-// (giong dung dinh dang batch_ky850_seed93466548001.json ma nguoi dung da co).
+// GHI RA 1 FILE DUY NHAT (khong con tao 850 file rieng le nua).
 //
 // Thuat toan giu nguyen 100% tu scan_v2.cpp (da kiem chung khop voi du lieu mau):
 //   ticket(seed, draw_id) = unrank_colex( splitmix64_mix(seed*M1 + draw_id*M2) mod C(35,5) )
 //   special = splitmix64_mix(mixed) mod 12 + 1
 //
+// Neu file dau ra (OUT_FILE) da ton tai, chuong trinh se DOC lai cac ky da co,
+// CHI QUET cac ky moi (chua co trong file), roi GOP ket qua vao cung 1 file
+// (khong can flag rieng, luon tu dong "skip cac ky da xong").
+//
 // ENV:
 //   CSV_PATH     - duong dan file CSV cac ky quay (mac dinh data/all.csv)
-//   OUT_DIR      - thu muc ghi file ket qua (mac dinh per_draw_scan)
+//   OUT_DIR      - thu muc chua file ket qua (mac dinh l1_merged)
+//   OUT_NAME     - ten file ket qua (mac dinh: merged_seed{SEED_START}.json)
 //   SEED_START   - diem bat dau dai seed (mac dinh 682305800400)
 //   SEED_COUNT   - so seed can quet (mac dinh 1557775799)
 //   NUM_THREADS  - so luong thread (mac dinh = so core)
+//   FORCE_RESCAN - "1" = bo qua file cu, quet lai TAT CA tu dau (mac dinh "0")
 
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <vector>
 #include <string>
+#include <unordered_set>
 #include <fstream>
 #include <sstream>
 #include <chrono>
@@ -66,6 +72,7 @@ inline u64 mix64(u64 x) {
 }
 
 struct Draw { u64 draw_id; std::string date; int64_t mask; int special; };
+struct DrawResult { u64 draw_id; std::string date; std::vector<u64> seeds; };
 
 std::string json_escape(const std::string& s) {
     std::string out;
@@ -125,6 +132,76 @@ inline bool check_j1(u64 seed, const Draw& draw) {
     return (mask == draw.mask) && (sp == draw.special);
 }
 
+// Doc file merged cu (neu co), tra ve danh sach DrawResult da co san
+std::vector<DrawResult> load_existing_merged(const std::string& path, u64& out_seed_start, u64& out_seed_end) {
+    std::vector<DrawResult> existing;
+    std::ifstream f(path);
+    if (!f) return existing;
+    std::stringstream buf; buf << f.rdbuf();
+    std::string content = buf.str();
+    if (content.empty()) return existing;
+
+    auto extract_u64_field = [&](const std::string& key) -> u64 {
+        size_t p = content.find("\"" + key + "\":");
+        if (p == std::string::npos) return 0;
+        p += key.size() + 3;
+        size_t q = content.find_first_of(",}", p);
+        try { return std::stoull(content.substr(p, q-p)); } catch (...) { return 0; }
+    };
+    out_seed_start = extract_u64_field("seed_start");
+    out_seed_end = extract_u64_field("seed_end");
+
+    // Tim mang "draws":[ ... ] va parse tho tung object {draw_id,draw_date,found,seeds:[...]}
+    size_t draws_pos = content.find("\"draws\":[");
+    if (draws_pos == std::string::npos) return existing;
+    size_t pos = draws_pos + 9;
+
+    while (true) {
+        size_t obj_start = content.find('{', pos);
+        if (obj_start == std::string::npos) break;
+        // Tim vi tri ket thuc object nay: tim "]}" gan nhat sau "seeds":[
+        size_t seeds_key = content.find("\"seeds\":[", obj_start);
+        if (seeds_key == std::string::npos) break;
+        size_t seeds_arr_start = seeds_key + 9;
+        size_t seeds_arr_end = content.find(']', seeds_arr_start);
+        size_t obj_end = content.find('}', seeds_arr_end);
+        if (obj_end == std::string::npos) break;
+
+        std::string obj = content.substr(obj_start, obj_end - obj_start + 1);
+
+        auto extract_field_str = [&](const std::string& key) -> std::string {
+            size_t p = obj.find("\"" + key + "\":");
+            if (p == std::string::npos) return "";
+            p += key.size() + 3;
+            if (obj[p] == '"') {
+                size_t q = obj.find('"', p+1);
+                return obj.substr(p+1, q-p-1);
+            }
+            size_t q = obj.find_first_of(",}", p);
+            return obj.substr(p, q-p);
+        };
+
+        DrawResult dr;
+        try { dr.draw_id = std::stoull(extract_field_str("draw_id")); } catch (...) { pos = obj_end+1; continue; }
+        dr.date = extract_field_str("draw_date");
+
+        std::string inner = content.substr(seeds_arr_start, seeds_arr_end - seeds_arr_start);
+        if (!inner.empty()) {
+            std::stringstream ss(inner); std::string tok;
+            while (std::getline(ss, tok, ',')) {
+                try { dr.seeds.push_back(std::stoull(tok)); } catch (...) {}
+            }
+        }
+        existing.push_back(std::move(dr));
+        pos = obj_end + 1;
+
+        // Kiem tra da het mang draws chua (gap "]" dong mang truoc "}" dong object ngoai)
+        size_t next_brace = content.find_first_not_of(" \t\n,", pos);
+        if (next_brace != std::string::npos && content[next_brace] == ']') break;
+    }
+    return existing;
+}
+
 int main() {
     build_binom(); build_lut();
 
@@ -136,16 +213,52 @@ int main() {
     };
 
     std::string csv_path = getenv_str("CSV_PATH", "data/all.csv");
-    std::string out_dir  = getenv_str("OUT_DIR", "l1");
+    std::string out_dir  = getenv_str("OUT_DIR", "l1_merged");
     u64 seed_start = getenv_u64("SEED_START", 682305800400ULL);
     u64 seed_count = getenv_u64("SEED_COUNT", 1557775799ULL);
     u64 seed_end = seed_start + seed_count - 1;
+    bool force_rescan = getenv_str("FORCE_RESCAN", "0") == "1";
 
-    std::vector<Draw> draws = load_csv(csv_path);
+    std::string out_name = getenv_str("OUT_NAME", "");
+    if (out_name.empty()) out_name = "merged_seed" + std::to_string(seed_start) + ".json";
+    std::string out_path = out_dir + "/" + out_name;
+
+    std::vector<Draw> draws_all = load_csv(csv_path);
+    int n_all = (int)draws_all.size();
+    fprintf(stderr, "Loaded %d ky tu CSV. Dai seed: %llu -> %llu (%llu seed)\n",
+            n_all, (unsigned long long)seed_start, (unsigned long long)seed_end, (unsigned long long)seed_count);
+    if (n_all == 0) { fprintf(stderr, "Khong co du lieu\n"); return 1; }
+
+    // Doc file merged cu (neu co va khong force_rescan)
+    std::vector<DrawResult> existing_results;
+    if (!force_rescan) {
+        u64 old_start=0, old_end=0;
+        existing_results = load_existing_merged(out_path, old_start, old_end);
+        if (!existing_results.empty()) {
+            fprintf(stderr, "Doc duoc file cu %s: %zu ky da co san\n", out_path.c_str(), existing_results.size());
+        }
+    }
+
+    std::unordered_set<u64> existing_draw_ids;
+    for (auto& dr : existing_results) existing_draw_ids.insert(dr.draw_id);
+
+    std::vector<Draw> draws; // chi cac ky MOI can quet
+    for (auto& d : draws_all) {
+        if (existing_draw_ids.find(d.draw_id) == existing_draw_ids.end()) draws.push_back(d);
+    }
+
     int n = (int)draws.size();
-    fprintf(stderr, "Loaded %d ky. Dai seed: %llu -> %llu (%llu seed)\n",
-            n, (unsigned long long)seed_start, (unsigned long long)seed_end, (unsigned long long)seed_count);
-    if (n == 0) { fprintf(stderr, "Khong co du lieu\n"); return 1; }
+    fprintf(stderr, "%d/%d ky da co san, con %d ky moi can quet\n",
+            n_all - n, n_all, n);
+
+    if (n == 0) {
+        fprintf(stderr, "Khong co ky moi can quet. Da xong (file van giu nguyen).\n");
+        printf("TOTAL_FILES=1\n");
+        printf("NEW_DRAWS=0\n");
+        printf("TOTAL_FOUND=0\n");
+        return 0;
+    }
+
     unsigned int num_threads = std::thread::hardware_concurrency();
     if (num_threads == 0) num_threads = 4;
     {
@@ -158,7 +271,6 @@ int main() {
 
     auto t0 = std::chrono::steady_clock::now();
 
-    // Moi thread giu ma tran ket qua rieng: results[tid][draw_idx] = vector cac seed trung
     std::vector<std::vector<std::vector<u64>>> thread_results(
         num_threads, std::vector<std::vector<u64>>(n));
 
@@ -213,10 +325,10 @@ int main() {
     done.store(true);
     monitor.join();
 
-    fprintf(stderr, "Quet xong, dang gop ket qua va ghi %d file...\n", n);
+    fprintf(stderr, "Quet xong %d ky moi, dang gop vao file...\n", n);
 
-    // Gop ket qua tu tat ca thread cho tung ky, ghi ra file rieng
-    u64 total_found = 0;
+    u64 total_found_new = 0;
+    std::vector<DrawResult> new_results;
     for (int di = 0; di < n; di++) {
         std::vector<u64> seeds_for_draw;
         for (unsigned int t = 0; t < num_threads; t++) {
@@ -224,29 +336,51 @@ int main() {
             seeds_for_draw.insert(seeds_for_draw.end(), v.begin(), v.end());
         }
         std::sort(seeds_for_draw.begin(), seeds_for_draw.end());
-        total_found += seeds_for_draw.size();
+        total_found_new += seeds_for_draw.size();
 
-        const Draw& d = draws[di];
-        std::string batch_file = out_dir + "/batch_ky" + std::to_string(d.draw_id) +
-                                  "_seed" + std::to_string(seed_start) + ".json";
-        FILE* f = fopen(batch_file.c_str(), "w");
-        fprintf(f, "{\"draw_id\":%llu,\"draw_date\":\"%s\",\"seed_start\":%llu,\"seed_end\":%llu,\"found\":%zu,\"seeds\":[",
-                (unsigned long long)d.draw_id, json_escape(d.date).c_str(),
-                (unsigned long long)seed_start, (unsigned long long)seed_end, seeds_for_draw.size());
-        for (size_t i = 0; i < seeds_for_draw.size(); i++) {
-            if (i) fprintf(f, ",");
-            fprintf(f, "%llu", (unsigned long long)seeds_for_draw[i]);
+        DrawResult dr;
+        dr.draw_id = draws[di].draw_id;
+        dr.date = draws[di].date;
+        dr.seeds = std::move(seeds_for_draw);
+        new_results.push_back(std::move(dr));
+    }
+
+    // Gop existing + new, sap xep theo draw_id
+    std::vector<DrawResult> all_results = existing_results;
+    for (auto& dr : new_results) all_results.push_back(std::move(dr));
+    std::sort(all_results.begin(), all_results.end(),
+              [](const DrawResult&a, const DrawResult&b){ return a.draw_id < b.draw_id; });
+
+    u64 total_found_all = 0;
+    for (auto& dr : all_results) total_found_all += dr.seeds.size();
+
+    // Ghi ra 1 file DUY NHAT
+    FILE* f = fopen(out_path.c_str(), "w");
+    fprintf(f, "{\"seed_start\":%llu,\"seed_end\":%llu,\"total_draws\":%zu,\"total_found\":%llu,\"draws\":[",
+            (unsigned long long)seed_start, (unsigned long long)seed_end,
+            all_results.size(), (unsigned long long)total_found_all);
+    for (size_t i = 0; i < all_results.size(); i++) {
+        if (i) fprintf(f, ",");
+        auto& dr = all_results[i];
+        fprintf(f, "{\"draw_id\":%llu,\"draw_date\":\"%s\",\"found\":%zu,\"seeds\":[",
+                (unsigned long long)dr.draw_id, json_escape(dr.date).c_str(), dr.seeds.size());
+        for (size_t j = 0; j < dr.seeds.size(); j++) {
+            if (j) fprintf(f, ",");
+            fprintf(f, "%llu", (unsigned long long)dr.seeds[j]);
         }
         fprintf(f, "]}");
-        fclose(f);
     }
+    fprintf(f, "]}");
+    fclose(f);
 
     auto t1 = std::chrono::steady_clock::now();
     double elapsed = std::chrono::duration<double>(t1-t0).count();
-    fprintf(stderr, "\nXong: %d file ghi vao %s/, tong %llu luot trung J1, %.0fs (%u threads)\n",
-            n, out_dir.c_str(), (unsigned long long)total_found, elapsed, num_threads);
-    printf("TOTAL_FILES=%d\n", n);
-    printf("TOTAL_FOUND=%llu\n", (unsigned long long)total_found);
+    fprintf(stderr, "\nXong: ghi vao %s (%zu ky tong cong, %d ky moi quet lan nay, tong %llu luot trung J1), %.0fs (%u threads)\n",
+            out_path.c_str(), all_results.size(), n, (unsigned long long)total_found_all, elapsed, num_threads);
+    printf("TOTAL_FILES=1\n");
+    printf("NEW_DRAWS=%d\n", n);
+    printf("TOTAL_FOUND=%llu\n", (unsigned long long)total_found_all);
+    printf("OUT_PATH=%s\n", out_path.c_str());
 
     return 0;
 }
