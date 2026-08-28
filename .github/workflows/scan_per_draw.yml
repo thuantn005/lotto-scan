@@ -41,6 +41,12 @@ jobs:
           SEED_COUNT: ${{ env.FIXED_SEED_COUNT }}
         run: ./scan_per_draw
 
+      - name: Gop tat ca file per-draw trong l1/ thanh 1 file duy nhat (l1_merged/)
+        env:
+          L1_DIR: l1
+          OUT_DIR: l1_merged
+        run: python3 merge_l1_per_draw.py
+
       - name: Commit ket qua
         run: |
           set -e
@@ -50,6 +56,7 @@ jobs:
           git pull --rebase origin main
           git stash pop || true
           [ -d l1 ] && git add l1/ || true
+          [ -d l1_merged ] && git add l1_merged/ || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
