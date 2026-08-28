@@ -1,4 +1,4 @@
-name: Scan V2 (2 lan/ngay theo lich Vietlott)
+name: Scan V2 (2 lan/ngay theo lich Vietlott) - dai seed co dinh, 1 file duy nhat
 
 on:
   schedule:
@@ -65,33 +65,29 @@ jobs:
           fi
           echo "LATEST_KY=$LATEST_KY" >> "$GITHUB_ENV"
 
-      - name: Compile scan_v2 (co pthread cho da luong)
+      - name: Compile scan_per_draw (co pthread cho da luong)
         if: steps.check_ky.outputs.should_run == 'true'
-        run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_v2 scan_v2.cpp
+        run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
 
       - name: Xem so core cua runner
         if: steps.check_ky.outputs.should_run == 'true'
         run: nproc
 
-      - name: Quet seed moi (scan_new) - check ky moi nhat + full-scan verify
+      - name: Quet dai seed co dinh, CHI KY MOI, ghi vao 1 file duy nhat (l1_merged/)
         if: steps.check_ky.outputs.should_run == 'true'
         env:
           CSV_PATH: data/all.csv
-          MODE: scan_new
-          L1_DIR: l1
-          STATE_FILE: l1_state.json
+          OUT_DIR: l1_merged
           SEED_START: ${{ env.FIXED_SEED_START }}
           SEED_COUNT: ${{ env.FIXED_SEED_COUNT }}
-        run: ./scan_v2
+        run: ./scan_per_draw
 
-      - name: Check lai l1 (thang hang seed J1>=2 len l2, gioi han 20 batch)
+      - name: Thang hang seed J1>=2 tu l1_merged sang l2_merged (van 1 file duy nhat)
         if: steps.check_ky.outputs.should_run == 'true'
         env:
-          CSV_PATH: data/all.csv
-          MODE: check_l1
-          L1_DIR: l1
-          L2_DIR: l2
-        run: ./scan_v2
+          L1_MERGED_FILE: l1_merged/merged_seed${{ env.FIXED_SEED_START }}.json
+          L2_MERGED_DIR: l2_merged
+        run: python3 check_l1_merged.py
 
       - name: Commit ket qua
         if: steps.check_ky.outputs.should_run == 'true'
@@ -104,16 +100,14 @@ jobs:
           git stash pop || true
           echo "$LATEST_KY" > last_ky.txt
           # QUAN TRONG: add tung duong dan RIENG, vi neu 1 duong dan khong ton tai
-          # (vi du l2/ chua co seed nao duoc thang hang) thi ca lenh "git add a b c"
-          # se that bai voi exit code != 0 va KHONG add duoc gi ca, du 2>/dev/null||true
-          [ -d l1 ] && git add l1/ || true
-          [ -d l2 ] && git add l2/ || true
-          [ -f l1_state.json ] && git add l1_state.json || true
+          # thi ca lenh "git add a b c" se that bai va KHONG add duoc gi ca
+          [ -d l1_merged ] && git add l1_merged/ || true
+          [ -d l2_merged ] && git add l2_merged/ || true
           [ -f last_ky.txt ] && git add last_ky.txt || true
           [ -f data/all.csv ] && git add data/all.csv || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
           fi
-          git commit -m "scan v2: cap nhat sau ky quay $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git commit -m "scan v2 (1 file duy nhat): cap nhat sau ky quay $(date -u +%Y-%m-%d\ %H:%M) UTC"
           git push origin main
