@@ -295,8 +295,10 @@ def fetch_day_with_fallback(d, fetched_at: str):
         tag = "" if src["verified"] else " [chua kiem chung]"
         try:
             raw = fetch(url)
-        except (urllib.error.URLError, urllib.error.HTTPError) as e:
-            print(f"  [{src['name']}{tag}] loi fetch {url}: {e}", file=sys.stderr)
+        except Exception as e:  # bat rong: timeout, connection reset, SSL loi, v.v.
+            # deu chi la 1 nguon bi treo/loi tam thoi -> bo qua, thu nguon tiep theo,
+            # khong duoc de loi 1 nguon lam sap ca workflow
+            print(f"  [{src['name']}{tag}] loi fetch {url}: {type(e).__name__}: {e}", file=sys.stderr)
             continue
 
         try:
