@@ -1,0 +1,307 @@
+[
+  {
+    "product": "lotto535",
+    "draw_id": "00853",
+    "draw_date": "2026-08-29",
+    "draw_time": "13:00",
+    "numbers": [
+      2,
+      26,
+      27,
+      32,
+      34
+    ],
+    "special_number": 8,
+    "jackpot_value": 7092045000,
+    "prizes": [
+      {
+        "tier": "Giải Độc Đắc",
+        "match": "5 số & ĐB",
+        "count": 0,
+        "value": 7092045000
+      },
+      {
+        "tier": "Giải Nhất",
+        "match": "5 số",
+        "count": 1,
+        "value": 10000000
+      },
+      {
+        "tier": "Giải Nhì",
+        "match": "4 số & ĐB",
+        "count": 11,
+        "value": 5000000
+      },
+      {
+        "tier": "Giải Ba",
+        "match": "4 số",
+        "count": 59,
+        "value": 500000
+      },
+      {
+        "tier": "Giải Tư",
+        "match": "3 số & ĐB",
+        "count": 292,
+        "value": 100000
+      },
+      {
+        "tier": "Giải Năm",
+        "match": "3 số",
+        "count": 1917,
+        "value": 30000
+      },
+      {
+        "tier": "Giải Khuyến Khích",
+        "match": "ĐB",
+        "count": 18,
+        "value": 2021
+      }
+    ],
+    "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-29-08-2026",
+    "fetched_at": "2026-08-31T06:09:25+00:00"
+  },
+  {
+    "product": "lotto535",
+    "draw_id": "00854",
+    "draw_date": "2026-08-29",
+    "draw_time": "21:00",
+    "numbers": [
+      6,
+      7,
+      12,
+      18,
+      20
+    ],
+    "special_number": 9,
+    "jackpot_value": 7263527500,
+    "prizes": [
+      {
+        "tier": "Giải Độc Đắc",
+        "match": "5 số & ĐB",
+        "count": 0,
+        "value": 7263527500
+      },
+      {
+        "tier": "Giải Nhất",
+        "match": "5 số",
+        "count": 1,
+        "value": 10000000
+      },
+      {
+        "tier": "Giải Nhì",
+        "match": "4 số & ĐB",
+        "count": 5,
+        "value": 5000000
+      },
+      {
+        "tier": "Giải Ba",
+        "match": "4 số",
+        "count": 114,
+        "value": 500000
+      },
+      {
+        "tier": "Giải Tư",
+        "match": "3 số & ĐB",
+        "count": 269,
+        "value": 100000
+      },
+      {
+        "tier": "Giải Năm",
+        "match": "3 số",
+        "count": 3070,
+        "value": 30000
+      },
+      {
+        "tier": "Giải Khuyến Khích",
+        "match": "ĐB",
+        "count": 5,
+        "value": 35
+      }
+    ],
+    "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-29-08-2026",
+    "fetched_at": "2026-08-31T06:09:25+00:00"
+  },
+  {
+    "product": "lotto535",
+    "draw_id": "00855",
+    "draw_date": "2026-08-30",
+    "draw_time": "13:00",
+    "numbers": [
+      2,
+      4,
+      12,
+      21,
+      28
+    ],
+    "special_number": 7,
+    "jackpot_value": 7398537500,
+    "prizes": [
+      {
+        "tier": "Giải Độc Đắc",
+        "match": "5 số & ĐB",
+        "count": 0,
+        "value": 7398537500
+      },
+      {
+        "tier": "Giải Nhất",
+        "match": "5 số",
+        "count": 0,
+        "value": 10000000
+      },
+      {
+        "tier": "Giải Nhì",
+        "match": "4 số & ĐB",
+        "count": 3,
+        "value": 5000000
+      },
+      {
+        "tier": "Giải Ba",
+        "match": "4 số",
+        "count": 65,
+        "value": 500000
+      },
+      {
+        "tier": "Giải Tư",
+        "match": "3 số & ĐB",
+        "count": 202,
+        "value": 100000
+      },
+      {
+        "tier": "Giải Năm",
+        "match": "3 số",
+        "count": 2051,
+        "value": 30000
+      },
+      {
+        "tier": "Giải Khuyến Khích",
+        "match": "ĐB",
+        "count": 18,
+        "value": 2021
+      }
+    ],
+    "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-30-08-2026",
+    "fetched_at": "2026-08-31T06:09:25+00:00"
+  },
+  {
+    "product": "lotto535",
+    "draw_id": "00856",
+    "draw_date": "2026-08-30",
+    "draw_time": "21:00",
+    "numbers": [
+      13,
+      15,
+      17,
+      26,
+      30
+    ],
+    "special_number": 10,
+    "jackpot_value": 7563375000,
+    "prizes": [
+      {
+        "tier": "Giải Độc Đắc",
+        "match": "5 số & ĐB",
+        "count": 0,
+        "value": 7563375000
+      },
+      {
+        "tier": "Giải Nhất",
+        "match": "5 số",
+        "count": 1,
+        "value": 10000000
+      },
+      {
+        "tier": "Giải Nhì",
+        "match": "4 số & ĐB",
+        "count": 9,
+        "value": 5000000
+      },
+      {
+        "tier": "Giải Ba",
+        "match": "4 số",
+        "count": 120,
+        "value": 500000
+      },
+      {
+        "tier": "Giải Tư",
+        "match": "3 số & ĐB",
+        "count": 272,
+        "value": 100000
+      },
+      {
+        "tier": "Giải Năm",
+        "match": "3 số",
+        "count": 3052,
+        "value": 30000
+      },
+      {
+        "tier": "Giải Khuyến Khích",
+        "match": "ĐB",
+        "count": 5,
+        "value": 35
+      }
+    ],
+    "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-30-08-2026",
+    "fetched_at": "2026-08-31T06:09:25+00:00"
+  },
+  {
+    "product": "lotto535",
+    "draw_id": "00857",
+    "draw_date": "2026-08-31",
+    "draw_time": "13:00",
+    "numbers": [
+      4,
+      11,
+      13,
+      18,
+      27
+    ],
+    "special_number": 1,
+    "jackpot_value": 7724512500,
+    "prizes": [
+      {
+        "tier": "Giải Độc Đắc",
+        "match": "5 số & ĐB",
+        "count": 0,
+        "value": 7724512500
+      },
+      {
+        "tier": "Giải Nhất",
+        "match": "5 số",
+        "count": 2,
+        "value": 10000000
+      },
+      {
+        "tier": "Giải Nhì",
+        "match": "4 số & ĐB",
+        "count": 6,
+        "value": 5000000
+      },
+      {
+        "tier": "Giải Ba",
+        "match": "4 số",
+        "count": 112,
+        "value": 500000
+      },
+      {
+        "tier": "Giải Tư",
+        "match": "3 số & ĐB",
+        "count": 202,
+        "value": 100000
+      },
+      {
+        "tier": "Giải Năm",
+        "match": "3 số",
+        "count": 2485,
+        "value": 30000
+      },
+      {
+        "tier": "Giải Khuyến Khích",
+        "match": "ĐB",
+        "count": 18,
+        "value": 2021
+      }
+    ],
+    "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-31-08-2026",
+    "fetched_at": "2026-08-31T06:09:25+00:00"
+  }
+]
