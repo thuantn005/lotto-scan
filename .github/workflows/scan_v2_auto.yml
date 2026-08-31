@@ -7,6 +7,9 @@ on:
     # 3h sau ky quay 21:00 VN -> 00:00 VN hom sau = 17:00 UTC cung ngay
     - cron: "0 17 * * *"
   workflow_dispatch: {}
+  push:
+    tags:
+      - 'run-*'   # day tag "run-YYYYMMDD-HHMM" de kich hoat cao ngay lap tuc
 
 env:
   FIXED_SEED_START: "682305800400"
@@ -41,6 +44,11 @@ jobs:
           set -e
           python3 scrape_xosominhngoc_fallback.py --csv data/all.csv --lookback-days 2
           wc -l data/all.csv
+
+      - name: Cao ket qua day du (jackpot + bang 7 giai) ra JSON
+        run: |
+          set -e
+          python3 scrape_full_result_json.py --json data/full_results.json --lookback-days 2
 
       - name: Kiem tra ky moi nhat, bo qua neu da quet roi
         id: check_ky
@@ -105,6 +113,7 @@ jobs:
           [ -d l2_merged ] && git add l2_merged/ || true
           [ -f last_ky.txt ] && git add last_ky.txt || true
           [ -f data/all.csv ] && git add data/all.csv || true
+          [ -f data/full_results.json ] && git add data/full_results.json || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
