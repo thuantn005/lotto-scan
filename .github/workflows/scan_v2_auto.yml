@@ -50,6 +50,29 @@ jobs:
           set -e
           python3 scrape_full_result_json.py --json data/full_results.json --lookback-days 2
 
+      # QUAN TRONG: commit rieng file nay NGAY TAI DAY, KHONG phu thuoc
+      # should_run cua buoc check_ky ben duoi - vi should_run dua theo
+      # dataset cua ben thu 3 (NhanAZ-Data), thuong cap nhat CHAM HON 2
+      # nguon mirror dung de cao file nay. Neu gop chung vao buoc "Commit
+      # ket qua" (co dieu kien should_run == true) thi phan lon cac lan
+      # chay se cao xong nhung KHONG BAO GIO duoc push len GitHub - file
+      # chi ton tai tren may chay job roi bi xoa khi job ket thuc.
+      - name: Commit data/full_results.json (luon chay, khong cho should_run)
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "truoc khi commit full_results.json" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -f data/full_results.json ] && git add data/full_results.json || true
+          if git diff --cached --quiet; then
+            echo "full_results.json khong doi, khong co gi de commit"
+          else
+            git commit -m "cap nhat full_results.json (jackpot) $(date -u +%Y-%m-%d\ %H:%M) UTC"
+            git push origin main
+          fi
+
       - name: Kiem tra ky moi nhat, bo qua neu da quet roi
         id: check_ky
         run: |
