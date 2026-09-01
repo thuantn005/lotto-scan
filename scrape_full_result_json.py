@@ -47,7 +47,7 @@ import re
 import sys
 import urllib.request
 import urllib.error
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 VN_TZ = timezone(timedelta(hours=7))
 
@@ -305,6 +305,7 @@ def fetch_day_with_fallback(d, fetched_at: str):
     """Thu tung nguon trong SOURCES cho ngay d (dung parser rieng cua tung
     nguon), tra ve ket qua cua nguon dau tien cao duoc du lieu."""
     dd, mm, yyyy = d.strftime("%d"), d.strftime("%m"), d.strftime("%Y")
+    wanted_date = d.strftime("%Y-%m-%d")
     for src in SOURCES:
         url = src["url_template"].format(dd=dd, mm=mm, yyyy=yyyy)
         tag = "" if src["verified"] else " [chua kiem chung]"
@@ -322,14 +323,108 @@ def fetch_day_with_fallback(d, fetched_at: str):
             print(f"  [{src['name']}{tag}] loi parse {url}: {e}", file=sys.stderr)
             continue
 
-        if results:
-            print(f"  [{src['name']}{tag}] OK: tim thay {len(results)} ky cho ngay {yyyy}-{mm}-{dd}")
-            return results
+        # QUAN TRONG: doi chieu lai ngay/gio quay cua tung ky tra ve co
+        # DUNG voi ngay minh yeu cau khong. Trang co the redirect/tra ve
+        # trang tong hop (vd ngay yeu cau chua co ket qua) ma parser van
+        # boc tach duoc so lieu "hop le" NHUNG la cua NGAY KHAC - neu
+        # khong doi chieu se ghi nham du lieu vao dung ngay yeu cau.
+        checked = []
+        for r in results:
+            if r.get("draw_date") != wanted_date:
+                print(f"  [{src['name']}{tag}] ! ky {r.get('draw_id')} co draw_date="
+                      f"{r.get('draw_date')} KHONG khop ngay yeu cau {wanted_date} - bo qua",
+                      file=sys.stderr)
+                continue
+            if r.get("draw_time") not in ("13:00", "21:00"):
+                print(f"  [{src['name']}{tag}] ! ky {r.get('draw_id')} co draw_time="
+                      f"{r.get('draw_time')} khong phai 13:00/21:00 - bo qua", file=sys.stderr)
+                continue
+            checked.append(r)
+
+        if checked:
+            print(f"  [{src['name']}{tag}] OK: tim thay {len(checked)} ky cho ngay {yyyy}-{mm}-{dd}")
+            return checked
 
         print(f"  [{src['name']}{tag}] khong khop du lieu cho ngay {yyyy}-{mm}-{dd}, thu nguon tiep theo")
 
     print(f"  [!] khong nguon nao cao duoc du lieu cho ngay {yyyy}-{mm}-{dd}", file=sys.stderr)
     return []
+
+
+# ===========================================================================
+# Kiem tra hop ly (sanity check) TRUOC KHI cho 1 ky vao file - phong truong
+# hop parser cao nham so lieu (nhu bug Giai Khuyen Khich tung gap: gia tri
+# lay nham tu footer trang thay vi tu bang that). Ky nao KHONG qua duoc se
+# bi LOAI BO hoan toan (khong ghi vao JSON, khong gui FCM) - tha cho lan
+# chay sau cao lai con hon dua so sai len app.
+# ===========================================================================
+
+EXPECTED_TIER_ORDER = [t[0] for t in XOSO_TIER_MATCH_MAP]  # 7 ten hang giai dung thu tu
+# Gia tri Giai Khuyen Khich CO DINH theo luat choi Lotto 5/35, KHONG BAO
+# GIO thay doi - ke ca vao ky "chia giai Doc Dac" (luat quy dinh ro: phan
+# chia chi ap dung cho cac hang khac, TRU giai khuyen khich). Day la bat
+# bien co the kiem tra CHAT, khong can du doan/uoc luong gi ca.
+KHUYEN_KHICH_FIXED_VALUE = 10_000
+
+
+def validate_record(r: dict) -> str | None:
+    """Tra ve None neu hop le, hoac 1 chuoi mo ta ly do neu KHONG hop le."""
+    try:
+        numbers = r["numbers"]
+        special = r["special_number"]
+        jackpot = r["jackpot_value"]
+        prizes = r["prizes"]
+        draw_date = r["draw_date"]
+        draw_time = r["draw_time"]
+    except KeyError as e:
+        return f"thieu field {e}"
+
+    if draw_time not in ("13:00", "21:00"):
+        return f"draw_time khong phai gio quay hop le: {draw_time}"
+    try:
+        dd = datetime.strptime(draw_date, "%Y-%m-%d").date()
+    except ValueError:
+        return f"draw_date sai dinh dang: {draw_date}"
+    today_vn = datetime.now(VN_TZ).date()
+    if dd > today_vn:
+        return f"draw_date o TUONG LAI so voi hom nay ({today_vn}): {draw_date}"
+    if dd < date(2025, 7, 1):
+        # Lotto 5/35 ra mat dau thang 7/2025 - ky nao ghi ngay truoc moc
+        # nay chac chan la parse/doi chieu nham.
+        return f"draw_date qua xa qua khu (truoc khi Lotto 5/35 ra mat): {draw_date}"
+
+    draw_id = r.get("draw_id", "")
+    if not draw_id.isdigit() or not (4 <= len(draw_id) <= 6):
+        return f"draw_id sai dinh dang: {draw_id!r}"
+
+    if len(numbers) != 5 or len(set(numbers)) != 5:
+        return f"so chinh khong hop le: {numbers}"
+    if any(n < 1 or n > 35 for n in numbers):
+        return f"so chinh ngoai khoang 1-35: {numbers}"
+    if special is None or special < 1 or special > 12:
+        return f"so dac biet ngoai khoang 1-12: {special}"
+    if jackpot is None or jackpot < 1_000_000_000:
+        # Doc Dac Lotto 5/35 khoi diem tu ~6 ty, chua bao gio thay duoi
+        # nguong nay - duoi 1 ty gan nhu chac chan la parse nham.
+        return f"gia tri Doc Dac vo ly: {jackpot}"
+
+    if len(prizes) != 7:
+        return f"thieu/thua hang giai: co {len(prizes)}/7"
+    tier_names = [p.get("tier") for p in prizes]
+    if tier_names != EXPECTED_TIER_ORDER:
+        return f"sai ten/thu tu hang giai: {tier_names}"
+
+    for p in prizes:
+        if p.get("count") is None or p["count"] < 0 or p["count"] > 200_000:
+            return f"SL hang '{p.get('tier')}' vo ly: {p.get('count')}"
+        if p.get("value") is None or p["value"] < 0:
+            return f"gia tri hang '{p.get('tier')}' vo ly: {p.get('value')}"
+
+    kk = prizes[-1]
+    if kk["value"] != KHUYEN_KHICH_FIXED_VALUE:
+        return f"Giai Khuyen Khich phai luon = {KHUYEN_KHICH_FIXED_VALUE}, cao duoc {kk['value']}"
+
+    return None
 
 
 def load_json(path: str):
@@ -403,6 +498,10 @@ def main():
         day_results = fetch_day_with_fallback(d, fetched_at)
         for r in day_results:
             if r["draw_id"] in existing_ids or r["draw_id"] in seen_ids_this_run:
+                continue
+            reason = validate_record(r)
+            if reason is not None:
+                print(f"    ! BO QUA ky {r.get('draw_id')} - du lieu bat thuong: {reason}")
                 continue
             new_rows.append(r)
             seen_ids_this_run.add(r["draw_id"])
