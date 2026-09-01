@@ -325,8 +325,13 @@ def load_json(path: str):
         return []
 
 
-def save_json(path: str, rows):
+def save_json(path: str, rows, keep_last: int = 0):
     rows_sorted = sorted(rows, key=lambda r: int(r["draw_id"]))
+    # Neu keep_last > 0: chi giu lai N ky GAN NHAT (draw_id lon nhat).
+    # Tranh file phinh to vo han theo thoi gian - app chi can vai ky gan
+    # day de xac dinh ky chia giai hien tai, khong can toan bo lich su.
+    if keep_last > 0 and len(rows_sorted) > keep_last:
+        rows_sorted = rows_sorted[-keep_last:]
     with open(path, "w", encoding="utf-8") as f:
         json.dump(rows_sorted, f, ensure_ascii=False, indent=2)
 
@@ -346,6 +351,12 @@ def main():
         type=int,
         default=2,
         help="Quet them tu N ngay truoc ky cuoi cung trong JSON (phong khi thieu sot)",
+    )
+    ap.add_argument(
+        "--keep-last",
+        type=int,
+        default=1,
+        help="Chi giu lai N ky gan nhat trong file JSON (0 = giu toan bo, khong gioi han)",
     )
     args = ap.parse_args()
 
@@ -390,8 +401,10 @@ def main():
         print("Khong co ky moi nao can bo sung.")
         return
 
-    save_json(args.json, rows + new_rows)
-    print(f"Da them {len(new_rows)} ky moi vao {args.json}.")
+    merged = rows + new_rows
+    save_json(args.json, merged, keep_last=args.keep_last)
+    kept = min(len(merged), args.keep_last) if args.keep_last > 0 else len(merged)
+    print(f"Da them {len(new_rows)} ky moi vao {args.json} (giu lai {kept}/{len(merged)} ky gan nhat).")
 
 
 if __name__ == "__main__":
