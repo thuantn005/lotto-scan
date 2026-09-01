@@ -125,7 +125,15 @@ def _parse_xoso_prize_table(block: str):
     prizes = []
     for i in range(1, len(parts) - 1, 2):
         tier = parts[i]
-        segment = parts[i + 1]
+        # CHI xet 300 ky tu dau cua doan sau ten hang giai. 6 hang dau da
+        # tu bi chan boi ten hang KE TIEP (khong can gioi han them), nhung
+        # "Giai Khuyen Khich" la hang CUOI CUNG - khong co hang nao chan
+        # phia sau, nen doan text se chay tuot toi HET TRANG (menu, thong
+        # ke, dong "Copyright..." o footer) neu khong gioi han o day. Bang
+        # gia (SL + Gia tri) luon nam gon trong vai chuc ky tu ngay sau ten
+        # hang, nen 300 ky tu la du an toan cho ca 7 hang, khong anh huong
+        # gi toi 6 hang da duoc chan dung.
+        segment = parts[i + 1][:300]
         nums = re.findall(r"\d[\d\.]*", segment)
         if len(nums) < 2:
             continue
@@ -155,6 +163,13 @@ def parse_xosominhngoc(raw_html: str, page_url: str, fetched_at: str):
 
         block_start = hm.end()
         block_end = headers[idx + 1].start() if idx + 1 < len(headers) else len(text)
+        # Neu day la header CUOI CUNG tren trang (vd trang tung ngay
+        # rieng le chi co dung 1 ky) thi block_end = het trang - qua rong,
+        # cuon theo ca menu/footer/thong ke phia sau. Bang gia day du
+        # (so quay + gia tri Doc Dac + 7 hang giai) khong bao gio dai qua
+        # ~2000 ky tu, nen gioi han cung o day cho chac, khong chi dua
+        # vao gioi han rieng trong _parse_xoso_prize_table().
+        block_end = min(block_end, block_start + 2000)
         block = text[block_start:block_end]
 
         nm = XOSO_NUMBERS_RE.search(block)
