@@ -58,6 +58,7 @@ jobs:
       # chay se cao xong nhung KHONG BAO GIO duoc push len GitHub - file
       # chi ton tai tren may chay job roi bi xoa khi job ket thuc.
       - name: Commit data/full_results.json (luon chay, khong cho should_run)
+        id: commit_full_results
         run: |
           set -e
           git config user.name "github-actions[bot]"
@@ -68,10 +69,23 @@ jobs:
           [ -f data/full_results.json ] && git add data/full_results.json || true
           if git diff --cached --quiet; then
             echo "full_results.json khong doi, khong co gi de commit"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "cap nhat full_results.json (jackpot) $(date -u +%Y-%m-%d\ %H:%M) UTC"
             git push origin main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
+
+      # Chi danh thuc app khi full_results.json THUC SU vua doi (ky moi /
+      # jackpot doi) - tranh goi FCM vo ich khi khong co gi moi.
+      - name: Danh thuc app qua FCM (data message, app tu quyet dinh co bao hay khong)
+        if: steps.commit_full_results.outputs.changed == 'true'
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.FCM_SERVICE_ACCOUNT_JSON }}
+        run: |
+          set -e
+          pip install --quiet google-auth requests
+          python3 send_fcm_push.py --topic chiagiai_updates
 
       - name: Kiem tra ky moi nhat, bo qua neu da quet roi
         id: check_ky
