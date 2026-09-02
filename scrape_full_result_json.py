@@ -117,6 +117,15 @@ XOSO_TIER_MATCH_MAP = [
 ]
 
 
+# Gia tri CO DINH theo luat choi Lotto 5/35 (khong bao gio doi, ke ca ky
+# chia giai Doc Dac - luat quy dinh ro phan chia CHI ap dung cho cac hang
+# khac, TRU giai khuyen khich). Voi hang nao nam trong day, KHONG can/KHONG
+# NEN co gang cao gia tri tu trang (day chinh la hang gay bug truoc do: no
+# la hang CUOI CUNG trong bang, khong co hang nao chan doan text phia sau,
+# nen moi cach doan-khoang-ky-tu deu co rui ro bat nham so lieu khac).
+XOSO_FIXED_TIER_VALUES = {"Giải Khuyến Khích": 10_000}
+
+
 def _parse_xoso_prize_table(block: str):
     names = [t[0] for t in XOSO_TIER_MATCH_MAP]
     match_map = dict(XOSO_TIER_MATCH_MAP)
@@ -125,25 +134,36 @@ def _parse_xoso_prize_table(block: str):
     prizes = []
     for i in range(1, len(parts) - 1, 2):
         tier = parts[i]
-        # CHI xet 300 ky tu dau cua doan sau ten hang giai. 6 hang dau da
-        # tu bi chan boi ten hang KE TIEP (khong can gioi han them), nhung
-        # "Giai Khuyen Khich" la hang CUOI CUNG - khong co hang nao chan
-        # phia sau, nen doan text se chay tuot toi HET TRANG (menu, thong
-        # ke, dong "Copyright..." o footer) neu khong gioi han o day. Bang
-        # gia (SL + Gia tri) luon nam gon trong vai chuc ky tu ngay sau ten
-        # hang, nen 300 ky tu la du an toan cho ca 7 hang, khong anh huong
-        # gi toi 6 hang da duoc chan dung.
-        segment = parts[i + 1][:300]
-        nums = re.findall(r"\d[\d\.]*", segment)
-        if len(nums) < 2:
-            continue
-        count_str, value_str = nums[-2], nums[-1]
+        segment = parts[i + 1]
+        match_text = match_map.get(tier, "")
+
+        if tier in XOSO_FIXED_TIER_VALUES:
+            # Hang CUOI CUNG trong bang - khong co hang ke tiep de chan
+            # doan text lai, nen KHONG dung "2 so cuoi trong doan" (co the
+            # chay xuyen qua het bang, bat nham so o cho khac). Thay vao
+            # do: neo vao DUNG VI TRI chu dieu kien trung giai (vd "ĐB")
+            # trong doan, chi lay SO DAU TIEN ngay sau do lam SL. Gia tri
+            # LAY THANG tu hang so co dinh, khong doan/cao gi ca.
+            idx = segment.find(match_text) if match_text else -1
+            after = segment[idx + len(match_text):] if idx >= 0 else segment
+            nums = re.findall(r"\d[\d\.]*", after[:100])
+            if not nums:
+                continue
+            count_str = nums[0]
+            value = XOSO_FIXED_TIER_VALUES[tier]
+        else:
+            nums = re.findall(r"\d[\d\.]*", segment)
+            if len(nums) < 2:
+                continue
+            count_str, value_str = nums[-2], nums[-1]
+            value = parse_money(value_str)
+
         prizes.append(
             {
                 "tier": tier,
-                "match": match_map.get(tier, ""),
+                "match": match_text,
                 "count": int(count_str.replace(".", "")),
-                "value": parse_money(value_str),
+                "value": value,
             }
         )
     return prizes
