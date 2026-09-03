@@ -58,6 +58,13 @@
       }
     ],
     "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-02-09-2026",
-    "fetched_at": "2026-09-02T14:31:23+00:00"
+    "fetched_at": "2026-09-02T14:31:23+00:00",
+    "share_state": {
+      "pending": false,
+      "share_date": null,
+      "peak_jackpot": 8749450000,
+      "trigger_draw_id": null,
+      "last_event": null
+    }
   }
 ]
