@@ -1,12 +1,47 @@
 name: Scan V2 (2 lan/ngay theo lich Vietlott) - dai seed co dinh, 1 file duy nhat
 
+# Workflow nay co 2 CHE DO, chon bang input "mode" khi chay thu cong
+# (workflow_dispatch). Lich tu dong (schedule) va tag "run-*" LUON LUON chay
+# che do "auto" nhu cu, khong bi anh huong:
+#
+#   - mode=auto (mac dinh): hanh vi cu, khong doi - 1 runner, dai seed CO
+#     DINH (FIXED_SEED_START/COUNT), chi quet KY MOI NHAT neu chua quet.
+#   - mode=once_31ty: chay THEM (khong thay the mode=auto o tren, ca 2 cung
+#     chay trong 1 lan dispatch) de quet 1 dai seed LON hon nhieu (mac dinh
+#     ~31 ty, input seed_start/batch_size), chia 20 runner song song, nhung
+#     CHI kiem tra N ky GAN NHAT (input last_n_draws) thay vi toan bo CSV.
+#     Ket qua ghi vao l1_merged/merged_seed{X}.json + l2_merged/promoted_seed{X}.json
+#     (X = seed_start cua lan nay, moi lan chon seed_start khac nhau se ra 1
+#     "model" quet rieng, khong dung file, khong dung file voi FIXED_SEED_START).
+
 on:
   schedule:
     # 3h sau ky quay 13:00 VN -> 16:00 VN = 09:00 UTC
     - cron: "0 9 * * *"
     # 3h sau ky quay 21:00 VN -> 00:00 VN hom sau = 17:00 UTC cung ngay
     - cron: "0 17 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "auto = hanh vi cu (mac dinh) | once_31ty = CHAY THEM 1 lan dai seed lon"
+        required: true
+        default: "auto"
+        type: choice
+        options:
+          - auto
+          - once_31ty
+      seed_start:
+        description: "[once_31ty] Seed bat dau"
+        required: false
+        default: "708477750639"
+      batch_size:
+        description: "[once_31ty] So seed moi runner (20 runner -> tong ~31 ty)"
+        required: false
+        default: "1557775800"
+      last_n_draws:
+        description: "[once_31ty] So ky gan nhat can quet"
+        required: false
+        default: "10"
   push:
     tags:
       - 'run-*'   # day tag "run-YYYYMMDD-HHMM" de kich hoat cao ngay lap tuc
@@ -24,6 +59,10 @@ concurrency:
 
 jobs:
   scan_and_check:
+    # LUON LUON chay - khong phu thuoc mode. Ke ca khi chon mode=once_31ty
+    # de chay them lan quet lon, job nay van quet binh thuong nhu cu (ky
+    # moi nhat, dai seed CO DINH FIXED_SEED_START). mode=once_31ty la THEM
+    # VAO, khong thay the model quet nay.
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -188,4 +227,173 @@ jobs:
             exit 0
           fi
           git commit -m "scan v2 (1 file duy nhat): cap nhat sau ky quay $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git push origin main
+
+  scan_once_chunk:
+    # Che do moi: CHI chay khi workflow_dispatch voi mode=once_31ty.
+    # 20 runner song song, moi runner 1 phan cua dai seed 31 ty, CHI kiem tra
+    # last_n_draws ky gan nhat (khong dung dai seed CO DINH cua che do auto).
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'once_31ty' }}
+    name: Scan once chunk ${{ matrix.chunk }}
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    runs-on: ubuntu-latest
+    timeout-minutes: 370
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Download dataset moi nhat
+        run: |
+          set -e
+          mkdir -p data
+          curl -sL "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
+          wc -l data/all.csv
+
+      - name: Compile scan_per_draw (co pthread cho da luong)
+        run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
+
+      - name: Tinh dai seed cho chunk nay
+        env:
+          SEED_START: ${{ github.event.inputs.seed_start }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size }}
+          CHUNK: ${{ matrix.chunk }}
+        run: |
+          set -e
+          python3 << 'PY' >> "$GITHUB_ENV"
+          import os
+          seed_start = int(os.environ["SEED_START"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          chunk = int(os.environ["CHUNK"])
+          chunk_start = seed_start + chunk * batch_size
+          print(f"CHUNK_SEED_START={chunk_start}")
+          PY
+
+      - name: Quet chunk (chi N ky gan nhat)
+        env:
+          CSV_PATH: data/all.csv
+          OUT_DIR: chunk_out
+          OUT_NAME: chunk_${{ matrix.chunk }}.json
+          SEED_START: ${{ env.CHUNK_SEED_START }}
+          SEED_COUNT: ${{ github.event.inputs.batch_size }}
+          LAST_N_DRAWS: ${{ github.event.inputs.last_n_draws }}
+          FORCE_RESCAN: "1"
+        run: ./scan_per_draw
+
+      - name: Upload chunk artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v2once-chunk-${{ matrix.chunk }}
+          path: chunk_out/chunk_${{ matrix.chunk }}.json
+          if-no-files-found: error
+          retention-days: 14
+
+  merge_once:
+    # Gop 20 chunk cua che do once_31ty thanh 1 file, roi thang hang nhu cu.
+    needs: scan_once_chunk
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.mode == 'once_31ty' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Download tat ca chunk artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: v2once-chunk-*
+          path: artifacts
+          merge-multiple: false
+
+      - name: Kiem tra du 20 chunk
+        run: |
+          set -e
+          python3 << 'PY'
+          import sys
+          from pathlib import Path
+          missing = [i for i in range(20)
+                     if not Path(f"artifacts/v2once-chunk-{i}/chunk_{i}.json").exists()]
+          print("MISSING:", missing)
+          if missing:
+              sys.exit(1)
+          print("ALL 20 CHUNKS OK")
+          PY
+
+      - name: Gop 20 chunk thanh l1_merged/merged_seed{X}.json (dung format cu)
+        env:
+          SEED_START: ${{ github.event.inputs.seed_start }}
+          BATCH_SIZE: ${{ github.event.inputs.batch_size }}
+        run: |
+          set -e
+          mkdir -p l1_merged
+          python3 << 'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          seed_start = int(os.environ["SEED_START"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          seed_end = seed_start + 20 * batch_size - 1
+
+          draws_by_id = {}
+          for i in range(20):
+              p = Path(f"artifacts/v2once-chunk-{i}/chunk_{i}.json")
+              data = json.loads(p.read_text(encoding="utf-8"))
+              for d in data.get("draws", []):
+                  did = d["draw_id"]
+                  entry = draws_by_id.setdefault(did, {"draw_id": did, "draw_date": d["draw_date"], "seeds": []})
+                  entry["seeds"].extend(d.get("seeds", []))
+
+          draws = []
+          total_found = 0
+          for did in sorted(draws_by_id.keys()):
+              entry = draws_by_id[did]
+              entry["seeds"].sort()
+              entry["found"] = len(entry["seeds"])
+              total_found += entry["found"]
+              draws.append(entry)
+
+          out = {
+              "seed_start": seed_start,
+              "seed_end": seed_end,
+              "total_draws": len(draws),
+              "total_found": total_found,
+              "draws": draws,
+          }
+          # Dung dung ten file ma scan_per_draw.cpp / check_l1_merged.py mac
+          # dinh dung (merged_seed{seed_start}.json) - nam CHUNG thu muc
+          # l1_merged/ voi file dang chay lien tuc (FIXED_SEED_START khac
+          # seed_start nen khong dung file, khong bi ghi de).
+          out_path = Path(f"l1_merged/merged_seed{seed_start}.json")
+          out_path.write_text(json.dumps(out, separators=(",", ":")), encoding="utf-8")
+          print(f"Da gop {len(draws)} ky, tong {total_found} luot trung J1, ghi vao {out_path}")
+          PY
+
+      - name: Thang hang (promote) seed trung >=2 ky sang l2_merged/promoted_seed{X}.json
+        env:
+          L1_MERGED_FILE: l1_merged/merged_seed${{ github.event.inputs.seed_start }}.json
+          L2_MERGED_DIR: l2_merged
+        run: python3 check_l1_merged.py
+
+      - name: Commit ket qua
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "scan once truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d l1_merged ] && git add l1_merged/ || true
+          [ -d l2_merged ] && git add l2_merged/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "scan v2 once_31ty: seed ${{ github.event.inputs.seed_start }} (+20x${{ github.event.inputs.batch_size }}), ${{ github.event.inputs.last_n_draws }} ky gan nhat"
           git push origin main
