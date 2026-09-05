@@ -44,7 +44,7 @@ jobs:
         id: check_ky
         run: |
           set -e
-          LATEST_KY=$(tail -n 1 data/all.csv | cut -d',' -f1)
+          LATEST_KY=$(tail -n 1 data/all.csv | cut -d',' -f2)
           echo "Ky moi nhat trong dataset: $LATEST_KY"
 
           if [ -f last_ky.txt ]; then
