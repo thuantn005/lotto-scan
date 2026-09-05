@@ -1,0 +1,191 @@
+name: Scan V2 (2 lan/ngay theo lich Vietlott) - dai seed co dinh, 1 file duy nhat
+
+on:
+  schedule:
+    # 3h sau ky quay 13:00 VN -> 16:00 VN = 09:00 UTC
+    - cron: "0 9 * * *"
+    # 3h sau ky quay 21:00 VN -> 00:00 VN hom sau = 17:00 UTC cung ngay
+    - cron: "0 17 * * *"
+  workflow_dispatch: {}
+  push:
+    tags:
+      - 'run-*'   # day tag "run-YYYYMMDD-HHMM" de kich hoat cao ngay lap tuc
+
+env:
+  FIXED_SEED_START: "682305800400"
+  FIXED_SEED_COUNT: "1557775799"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scan-v2-single-runner
+  cancel-in-progress: false
+
+jobs:
+  scan_and_check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Download dataset moi nhat
+        run: |
+          set -e
+          mkdir -p data
+          curl -sL "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
+          wc -l data/all.csv
+
+      - name: Fallback cao xosominhngoc.net.vn neu dataset cham cap nhat
+        run: |
+          set -e
+          python3 scrape_xosominhngoc_fallback.py --csv data/all.csv --lookback-days 2
+          wc -l data/all.csv
+
+      - name: Cao ket qua day du (jackpot + bang 7 giai) ra JSON
+        run: |
+          set -e
+          python3 scrape_full_result_json.py --json data/full_results.json --lookback-days 2
+
+      # Tinh trang thai "ky CHIA GIAI" O DAY (server), KHONG de app tu tinh
+      # tren may (xem giai thich chi tiet trong share_draw_machine.py) -
+      # ghi thang vao ban ghi moi nhat cua full_results.json (truong
+      # "share_state"), app doc 1 lan la co du ca jackpot lan trang thai
+      # chia giai. LUON CHAY (khong cho should_run/changed) vi su kien
+      # "nhac toi nay" chi phu thuoc NGAY HOM NAY, khong phu thuoc jackpot
+      # co doi hay khong.
+      - name: Tinh trang thai ky chia giai (server-side, khong de app tu tinh)
+        id: share_state
+        run: |
+          set -e
+          python3 update_share_draw_state.py \
+            --results data/full_results.json \
+            --state share_draw_state.json \
+            --csv data/all.csv \
+            | tee /tmp/share_state_out.txt
+          grep -q "NEW_EVENT=true" /tmp/share_state_out.txt \
+            && echo "new_event=true" >> "$GITHUB_OUTPUT" \
+            || echo "new_event=false" >> "$GITHUB_OUTPUT"
+
+      # QUAN TRONG: commit rieng file nay NGAY TAI DAY, KHONG phu thuoc
+      # should_run cua buoc check_ky ben duoi - vi should_run dua theo
+      # dataset cua ben thu 3 (NhanAZ-Data), thuong cap nhat CHAM HON 2
+      # nguon mirror dung de cao file nay. Neu gop chung vao buoc "Commit
+      # ket qua" (co dieu kien should_run == true) thi phan lon cac lan
+      # chay se cao xong nhung KHONG BAO GIO duoc push len GitHub - file
+      # chi ton tai tren may chay job roi bi xoa khi job ket thuc.
+      - name: Commit data/full_results.json + share_draw_state.json (luon chay, khong cho should_run)
+        id: commit_full_results
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "truoc khi commit full_results.json" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -f data/full_results.json ] && git add data/full_results.json || true
+          [ -f share_draw_state.json ] && git add share_draw_state.json || true
+          if git diff --cached --quiet; then
+            echo "full_results.json khong doi, khong co gi de commit"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "cap nhat full_results.json (jackpot) $(date -u +%Y-%m-%d\ %H:%M) UTC"
+            git push origin main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Danh thuc app khi (a) full_results.json THUC SU vua doi (ky moi /
+      # jackpot doi), HOAC (b) may trang thai ky chia giai vua sinh 1 su
+      # kien MOI (VD "nhac toi nay" - khong lam thay doi jackpot nhung van
+      # can bao nguoi dung). Bo qua khi ca 2 dieu kien deu khong dung,
+      # tranh goi FCM vo ich.
+      - name: Danh thuc app qua FCM (data message, app tu quyet dinh co bao hay khong)
+        if: steps.commit_full_results.outputs.changed == 'true' || steps.share_state.outputs.new_event == 'true'
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.FCM_SERVICE_ACCOUNT_JSON }}
+        run: |
+          set -e
+          pip install --quiet google-auth requests
+          python3 send_fcm_push.py --topic chiagiai_updates
+
+      - name: Kiem tra ky moi nhat, bo qua neu da quet roi
+        id: check_ky
+        run: |
+          set -e
+          LATEST_KY=$(tail -n 1 data/all.csv | cut -d',' -f2)
+          echo "Ky moi nhat trong dataset: $LATEST_KY"
+
+          if [ -f last_ky.txt ]; then
+            LAST_SCANNED=$(cat last_ky.txt)
+          else
+            LAST_SCANNED=""
+          fi
+          echo "Ky da quet lan truoc: $LAST_SCANNED"
+
+          if [ "$LATEST_KY" = "$LAST_SCANNED" ]; then
+            echo "Ky $LATEST_KY da quet roi, bo qua lan nay."
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Ky $LATEST_KY la ky moi, se chay scan."
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "LATEST_KY=$LATEST_KY" >> "$GITHUB_ENV"
+
+      - name: Compile scan_per_draw (co pthread cho da luong)
+        if: steps.check_ky.outputs.should_run == 'true'
+        run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
+
+      - name: Xem so core cua runner
+        if: steps.check_ky.outputs.should_run == 'true'
+        run: nproc
+
+      - name: Quet dai seed co dinh, CHI KY MOI, ghi vao 1 file duy nhat (l1_merged/)
+        if: steps.check_ky.outputs.should_run == 'true'
+        env:
+          CSV_PATH: data/all.csv
+          OUT_DIR: l1_merged
+          SEED_START: ${{ env.FIXED_SEED_START }}
+          SEED_COUNT: ${{ env.FIXED_SEED_COUNT }}
+        run: ./scan_per_draw
+
+      - name: Thang hang seed J1>=2 tu l1_merged sang l2_merged (van 1 file duy nhat)
+        if: steps.check_ky.outputs.should_run == 'true'
+        env:
+          L1_MERGED_FILE: l1_merged/merged_seed${{ env.FIXED_SEED_START }}.json
+          L2_MERGED_DIR: l2_merged
+        run: python3 check_l1_merged.py
+
+      # File nay app doc THANG qua CDN, khong phan trang - phai chan dung
+      # khong cho phinh to vo han (moi ky quay them ~5-6KB). Tia bot cac ky
+      # QUA CU (khong con nam trong cua so 500+200 ky ma app can) neu vuot
+      # gioi han, giu file <= 5MB.
+      - name: Gioi han kich thuoc l1_merged (toi da 5MB, tia ky qua cu)
+        if: steps.check_ky.outputs.should_run == 'true'
+        run: python3 prune_merged_seed.py --file l1_merged/merged_seed${{ env.FIXED_SEED_START }}.json
+
+      - name: Commit ket qua
+        if: steps.check_ky.outputs.should_run == 'true'
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "ket qua truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          echo "$LATEST_KY" > last_ky.txt
+          # QUAN TRONG: add tung duong dan RIENG, vi neu 1 duong dan khong ton tai
+          # thi ca lenh "git add a b c" se that bai va KHONG add duoc gi ca
+          [ -d l1_merged ] && git add l1_merged/ || true
+          [ -d l2_merged ] && git add l2_merged/ || true
+          [ -f last_ky.txt ] && git add last_ky.txt || true
+          [ -f data/all.csv ] && git add data/all.csv || true
+          [ -f data/full_results.json ] && git add data/full_results.json || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "scan v2 (1 file duy nhat): cap nhat sau ky quay $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git push origin main

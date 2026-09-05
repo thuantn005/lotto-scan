@@ -1,0 +1,88 @@
+name: Tu dong giai nen file .zip up len (khong can may tinh/git)
+
+# Cach dung: vao repo tren GitHub -> "Add file" -> "Upload files" -> keo tha
+# file .zip vao -> "Commit changes" thang vao nhanh main. Push nay se tu
+# kich hoat workflow ben duoi: tim file .zip o THU MUC GOC repo, giai nen
+# de LEN CHINH repo (ghi de file trung ten), roi XOA file .zip di va commit
+# lai - khong can dung Codespaces/terminal gi ca.
+#
+# LUU Y: file .zip phai duoc nen sao cho cac file/thu muc nam THANG o goc
+# ben trong zip (khong boc trong 1 thu muc con), vi du zip chua san
+# "lib/...", ".github/workflows/...", "README.md" ngay tai goc zip - dung
+# dinh dang cac file .zip da tao san (chiagiai_watcher_github_data.zip,
+# lotto-scan-main.zip).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.zip'
+  workflow_dispatch:
+    inputs:
+      zip_file:
+        description: "Ten file .zip o thu muc goc can giai nen (de trong = tu tim file .zip dau tien)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-unzip
+  cancel-in-progress: false
+
+jobs:
+  unzip_and_commit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Tim file .zip o thu muc goc
+        id: find_zip
+        run: |
+          set -e
+          INPUT_NAME="${{ github.event.inputs.zip_file }}"
+          if [ -n "$INPUT_NAME" ]; then
+            if [ ! -f "$INPUT_NAME" ]; then
+              echo "Khong tim thay file '$INPUT_NAME' o thu muc goc." >&2
+              exit 1
+            fi
+            ZIP_FILE="$INPUT_NAME"
+          else
+            ZIP_FILE=$(ls -1 *.zip 2>/dev/null | head -n 1 || true)
+          fi
+
+          if [ -z "$ZIP_FILE" ]; then
+            echo "Khong co file .zip nao o thu muc goc - khong co gi de lam, bo qua."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Se giai nen: $ZIP_FILE"
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "zip_name=$ZIP_FILE" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Giai nen de len repo, xoa file .zip
+        if: steps.find_zip.outputs.found == 'true'
+        run: |
+          set -e
+          ZIP_FILE="${{ steps.find_zip.outputs.zip_name }}"
+          unzip -o "$ZIP_FILE" -d .
+          rm -f "$ZIP_FILE"
+
+      - name: Commit + push
+        if: steps.find_zip.outputs.found == 'true'
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Giai nen xong nhung khong co gi thay doi so voi repo hien tai."
+            exit 0
+          fi
+          git commit -m "Tu dong giai nen ${{ steps.find_zip.outputs.zip_name }} va cap nhat repo"
+          git push origin main
