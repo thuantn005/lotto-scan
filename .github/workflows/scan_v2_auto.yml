@@ -14,7 +14,8 @@ on:
         default: "31155516000"
 
 env:
-  FIXED_SEED_START_LAST10: "9999999999999999"
+  FIXED_SEED_START_LAST10: "35742585136"
+  FIXED_SEED_COUNT_LAST10: "31155516000"
 
 permissions:
   contents: write
@@ -71,28 +72,6 @@ jobs:
         if: steps.check_ky.outputs.should_run == 'true'
         run: nproc
 
-      - name: Doc seed_next tu state (neu co)
-        if: steps.check_ky.outputs.should_run == 'true'
-        run: |
-          if [ -f l1_state.json ]; then
-            SEED_NEXT=$(python3 -c "import json; print(json.load(open('l1_state.json'))['seed_next'])")
-          else
-            SEED_NEXT=1
-          fi
-          echo "SEED_NEXT=$SEED_NEXT" >> "$GITHUB_ENV"
-          echo "Seed bat dau lan nay: $SEED_NEXT"
-
-      - name: Quet seed moi (scan_new) - check ky moi nhat + full-scan verify
-        if: steps.check_ky.outputs.should_run == 'true'
-        env:
-          CSV_PATH: data/all.csv
-          MODE: scan_new
-          L1_DIR: l1
-          STATE_FILE: l1_state.json
-          SEED_START: ${{ env.SEED_NEXT }}
-          SEED_COUNT: ${{ github.event.inputs.seed_count || '50000000' }}
-        run: ./scan_v2
-
       - name: Check lai l1 (thang hang seed J1>=2 len l2, gioi han 20 batch)
         if: steps.check_ky.outputs.should_run == 'true'
         env:
@@ -103,24 +82,23 @@ jobs:
         run: ./scan_v2
 
       # ===== BUOC MOI: quet 10 KY GAN NHAT, J1 KIEM TRA 1 LAN CHO CA 10 KY =====
-      # Chay CUNG lich voi scan chinh o tren (2 lan/ngay), tiep noi seed rieng
-      # (l1_state_last10.json) doc lap voi pipeline full-history phia tren.
-      # Ky nao roi khoi cua so 10 ky gan nhat se TU DONG bi loai khoi file
-      # (chi luu dung 10 ky, khong phinh to theo thoi gian).
+      # Dai seed CO DINH (khong resume, khong phinh to): moi lan chay deu quet
+      # LAI dung 31.155.516.000 seed tu FIXED_SEED_START_LAST10, chi 10 KY
+      # dang xet la thay doi theo ngay (ky nao roi khoi cua so 10 ky gan nhat
+      # se TU DONG bi loai khoi file — chi luu dung 10 ky).
       - name: Compile scan_last_n (quet 10 ky gan nhat)
         if: steps.check_ky.outputs.should_run == 'true'
         run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_last_n scan_last_n.cpp
 
-      - name: Quet doan seed moi cho 10 ky gan nhat (1 luot/seed, tu resume)
+      - name: Quet lai dai seed CO DINH cho 10 ky gan nhat (khong resume, khong phinh to)
         if: steps.check_ky.outputs.should_run == 'true'
         env:
           CSV_PATH: data/all.csv
           OUT_DIR: l1_merged_last10
           OUT_NAME: merged_seed${{ env.FIXED_SEED_START_LAST10 }}.json
           SEED_START: ${{ env.FIXED_SEED_START_LAST10 }}
-          SEED_COUNT: ${{ github.event.inputs.seed_count || '50000000' }}
+          SEED_COUNT: ${{ env.FIXED_SEED_COUNT_LAST10 }}
           LAST_N_DRAWS: "10"
-          STATE_FILE: l1_state_last10.json
         run: ./scan_last_n
 
       - name: So sanh ket qua giua 10 ky + thang hang len l2_merged_last10
@@ -150,7 +128,6 @@ jobs:
           [ -f last_ky.txt ] && git add last_ky.txt || true
           [ -d l1_merged_last10 ] && git add l1_merged_last10/ || true
           [ -d l2_merged_last10 ] && git add l2_merged_last10/ || true
-          [ -f l1_state_last10.json ] && git add l1_state_last10.json || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
