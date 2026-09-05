@@ -17,6 +17,8 @@
 //   SEED_COUNT   - so seed can quet (mac dinh 1557775799)
 //   NUM_THREADS  - so luong thread (mac dinh = so core)
 //   FORCE_RESCAN - "1" = bo qua file cu, quet lai TAT CA tu dau (mac dinh "0")
+//   LAST_N_DRAWS - > 0: chi quet N ky MOI NHAT theo draw_id, bo qua cac ky con lai
+//                  (mac dinh 0 = quet toan bo CSV nhu truoc)
 
 #include <cstdint>
 #include <cstdio>
@@ -218,14 +220,25 @@ int main() {
     u64 seed_count = getenv_u64("SEED_COUNT", 1557775799ULL);
     u64 seed_end = seed_start + seed_count - 1;
     bool force_rescan = getenv_str("FORCE_RESCAN", "0") == "1";
+    // LAST_N_DRAWS > 0: chi quet N ky MOI NHAT (theo draw_id) thay vi toan bo CSV.
+    // Dung cho cac lan quet "1 lan" pham vi hep (vd 10/20 ky gan nhat) tren dai seed lon.
+    u64 last_n_draws = getenv_u64("LAST_N_DRAWS", 0ULL);
 
     std::string out_name = getenv_str("OUT_NAME", "");
     if (out_name.empty()) out_name = "merged_seed" + std::to_string(seed_start) + ".json";
     std::string out_path = out_dir + "/" + out_name;
 
     std::vector<Draw> draws_all = load_csv(csv_path);
+    if (last_n_draws > 0 && draws_all.size() > last_n_draws) {
+        // draws_all da duoc sap xep tang dan theo draw_id (xem load_csv) -> lay N phan tu cuoi
+        draws_all.erase(draws_all.begin(), draws_all.end() - (long)last_n_draws);
+        fprintf(stderr, "LAST_N_DRAWS=%llu -> chi giu %zu ky gan nhat (draw_id %llu..%llu)\n",
+                (unsigned long long)last_n_draws, draws_all.size(),
+                (unsigned long long)draws_all.front().draw_id,
+                (unsigned long long)draws_all.back().draw_id);
+    }
     int n_all = (int)draws_all.size();
-    fprintf(stderr, "Loaded %d ky tu CSV. Dai seed: %llu -> %llu (%llu seed)\n",
+    fprintf(stderr, "Loaded %d ky can quet. Dai seed: %llu -> %llu (%llu seed)\n",
             n_all, (unsigned long long)seed_start, (unsigned long long)seed_end, (unsigned long long)seed_count);
     if (n_all == 0) { fprintf(stderr, "Khong co du lieu\n"); return 1; }
 
