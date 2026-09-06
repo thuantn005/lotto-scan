@@ -27,6 +27,12 @@ tan suat lich su) CAO NHAT.
   seed duoc chon (diem ML cao nhat): 1142606682908 (diem=3.0583)
   DU DOAN ky 00871: 01-03-10-14-33 + DAC BIET 5
 
+--- Model (l1_merged file: l1_merged/merged_seed1156255330639.json) ---
+  seed_start cua model: 1156255330639
+  so seed trong L1 cua model nay: 79834
+  seed duoc chon (diem ML cao nhat): 1177528824007 (diem=3.0583)
+  DU DOAN ky 00871: 01-03-10-14-33 + DAC BIET 5
+
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
   so seed trong L1 cua model nay: 347867
