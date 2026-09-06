@@ -55,6 +55,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--topic", default="chiagiai_updates")
     ap.add_argument("--json", default="data/full_results.json", help="File chua ky moi nhat de dinh kem")
+    ap.add_argument("--event-type", default=None,
+                     help="Neu co: gui data['type']=EVENT_TYPE thay vi 'wake_check' mac dinh")
+    ap.add_argument("--event-json", default=None,
+                     help="Neu co: dinh kem NGUYEN VAN noi dung file JSON nay vao data['event_payload'] "
+                          "(dung cho cac su kien khac ngoai wake_check, vi du du doan trung J1)")
     args = ap.parse_args()
 
     raw = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON")
@@ -71,16 +76,32 @@ def main():
     project_id = sa_info["project_id"]
     token = get_access_token(sa_info)
 
-    data = {"type": "wake_check"}
-    latest = load_latest_draw(args.json)
-    if latest is not None:
-        # separators gon nhat co the de tiet kiem byte trong gioi han FCM.
-        packed = json.dumps(latest, ensure_ascii=False, separators=(",", ":"))
-        if len(packed.encode("utf-8")) <= MAX_PAYLOAD_BYTES:
-            data["latest_draw"] = packed
-        else:
-            print(f"CANH BAO: ky {latest.get('draw_id')} vuot {MAX_PAYLOAD_BYTES} byte -- "
-                  f"chi gui tin danh thuc suong, app se tu doc lai GitHub", file=sys.stderr)
+    if args.event_type and args.event_json:
+        # Che do SU KIEN CHUNG (vd: du doan trung J1) - KHONG dung luong
+        # "latest_draw" cua che do wake_check mac dinh, tranh lan lon 2 luong.
+        data = {"type": args.event_type}
+        try:
+            with open(args.event_json, "r", encoding="utf-8") as f:
+                event_data = json.load(f)
+            packed = json.dumps(event_data, ensure_ascii=False, separators=(",", ":"))
+            if len(packed.encode("utf-8")) <= MAX_PAYLOAD_BYTES:
+                data["event_payload"] = packed
+            else:
+                print(f"CANH BAO: {args.event_json} vuot {MAX_PAYLOAD_BYTES} byte -- "
+                      f"chi gui tin danh thuc suong (khong kem payload)", file=sys.stderr)
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"CANH BAO: khong doc duoc {args.event_json}: {e} -- se gui tin danh thuc suong", file=sys.stderr)
+    else:
+        data = {"type": "wake_check"}
+        latest = load_latest_draw(args.json)
+        if latest is not None:
+            # separators gon nhat co the de tiet kiem byte trong gioi han FCM.
+            packed = json.dumps(latest, ensure_ascii=False, separators=(",", ":"))
+            if len(packed.encode("utf-8")) <= MAX_PAYLOAD_BYTES:
+                data["latest_draw"] = packed
+            else:
+                print(f"CANH BAO: ky {latest.get('draw_id')} vuot {MAX_PAYLOAD_BYTES} byte -- "
+                      f"chi gui tin danh thuc suong, app se tu doc lai GitHub", file=sys.stderr)
 
     url = f"https://fcm.googleapis.com/v1/projects/{project_id}/messages:send"
     payload = {

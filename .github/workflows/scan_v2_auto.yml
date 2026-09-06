@@ -60,6 +60,7 @@ jobs:
     timeout-minutes: 180
     outputs:
       should_run: ${{ steps.check_ky.outputs.should_run }}
+      latest_ky: ${{ steps.check_ky.outputs.latest_ky }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -167,6 +168,7 @@ jobs:
             echo "should_run=true" >> "$GITHUB_OUTPUT"
           fi
           echo "LATEST_KY=$LATEST_KY" >> "$GITHUB_ENV"
+          echo "latest_ky=$LATEST_KY" >> "$GITHUB_OUTPUT"
 
       - name: Compile scan_per_draw (co pthread cho da luong)
         if: steps.check_ky.outputs.should_run == 'true'
@@ -991,7 +993,7 @@ jobs:
           CSV_PATH: data/all.csv
           L1_GLOB: "l1_merged/merged_seed*.json"
           OUT_PATH: "predict/next_draw_predict.txt"
-          TOP_N: "50"
+          HISTORY_DIR: "predict/history"
         run: python3 predict_next_draw.py
 
       - name: Commit ket qua du doan
@@ -1009,3 +1011,65 @@ jobs:
           fi
           git commit -m "du doan ky ke tiep (tu seed L1) $(date -u +%Y-%m-%d\ %H:%M) UTC"
           git push origin main
+
+  check_prediction:
+    # Sau khi ky moi duoc XAC NHAN (should_run=true), doi chieu voi du doan
+    # DA LUU TU LAN CHAY TRUOC (predict/history/{ky}.txt - luc do ky nay
+    # chua co ket qua) voi ket qua THAT vua ve. Model nao doan DUNG (trung
+    # ca 5 so + dac biet) thi luu vao thu muc j1_535/. Chay doc lap, khong
+    # can cho cac job scan/predict khac (chi can data/all.csv + lich su cu).
+    needs: scan_and_check
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Download dataset moi nhat
+        run: |
+          set -e
+          mkdir -p data
+          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
+          wc -l data/all.csv
+
+      - name: Doi chieu du doan cu voi ket qua that cua ky vua xac nhan
+        id: check_prediction
+        env:
+          CSV_PATH: data/all.csv
+          DRAW_ID: ${{ needs.scan_and_check.outputs.latest_ky }}
+          HISTORY_DIR: "predict/history"
+          OUT_DIR: "j1_535"
+        run: |
+          set -e
+          python3 check_prediction_result.py | tee /tmp/check_prediction_out.txt
+          MATCHED=$(grep -o 'MATCHED_COUNT=[0-9]*' /tmp/check_prediction_out.txt | tail -1 | cut -d'=' -f2)
+          echo "matched_count=${MATCHED:-0}" >> "$GITHUB_OUTPUT"
+
+      - name: Commit ket qua doan dung (neu co)
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "check_prediction truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d j1_535 ] && git add j1_535/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co du doan dung nao moi, khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan dung ky ${{ needs.scan_and_check.outputs.latest_ky }} - luu vao j1_535/ $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git push origin main
+
+      - name: Bao FCM khi co model doan DUNG (j1_535 co file moi)
+        if: steps.check_prediction.outputs.matched_count != '0'
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.FCM_SERVICE_ACCOUNT_JSON }}
+        run: |
+          set -e
+          pip install --quiet google-auth requests
+          python3 send_fcm_push.py --topic chiagiai_updates \
+            --event-type j1_prediction_hit \
+            --event-json "j1_535/${{ needs.scan_and_check.outputs.latest_ky }}.json"

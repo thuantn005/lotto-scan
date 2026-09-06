@@ -143,6 +143,7 @@ def main():
     csv_path = os.environ.get("CSV_PATH", "data/all.csv")
     l1_glob = os.environ.get("L1_GLOB", "l1_merged/merged_seed*.json")
     out_path = os.environ.get("OUT_PATH", "predict/next_draw_predict.txt")
+    history_dir = os.environ.get("HISTORY_DIR", "predict/history")
 
     next_draw_id = get_next_draw_id(csv_path)
     files = sorted(glob.glob(l1_glob))
@@ -178,7 +179,21 @@ def main():
             f.write(f"  seed nay da tung trung: {info['weight']} lan (lan gan nhat: ky {info['last_hit_draw']:05d})\n")
             f.write(f"  DU DOAN ky {next_draw_id:05d}: {nums_str} + DAC BIET {info['special']}\n\n")
 
+    # Luu them 1 file .txt LICH SU theo tung ky (de sau nay, khi ky nay THUC
+    # SU duoc xac nhan, check_prediction_result.py co the doc lai va so
+    # khop voi ket qua that - phuc vu viec luu vao j1_535/ khi doan dung).
+    os.makedirs(history_dir, exist_ok=True)
+    history_path = os.path.join(history_dir, f"{next_draw_id:05d}.txt")
+    with open(history_path, "w", encoding="utf-8") as f:
+        for info in predictions:
+            nums_str = ",".join(str(n) for n in info["numbers"])
+            f.write(
+                f"{info['seed_start']}|{info['seed']}|{info['weight']}|"
+                f"{nums_str}|{info['special']}|{info['file']}\n"
+            )
+
     print(f"Da ghi {len(predictions)} du doan (1 model = 1 seed) vao {out_path}")
+    print(f"Da luu lich su du doan vao {history_path} (de doi chieu sau nay)")
     print(f"NEXT_DRAW_ID={next_draw_id}")
     print(f"TOTAL_MODELS={len(predictions)}")
 
