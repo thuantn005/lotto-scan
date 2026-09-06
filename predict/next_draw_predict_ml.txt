@@ -1,0 +1,47 @@
+DU DOAN KY 00871 - PHIEN BAN ML (doc lap voi predict_next_draw.py)
+Tieu chi chon seed: trong tat ca seed dang co trong L1 cua tung model,
+chon seed co ve (5 so + dac biet) dat TONG DIEM ML (Logistic Regression
+tan suat lich su) CAO NHAT.
+
+--- Model (l1_merged file: l1_merged/merged_seed1062788782639.json) ---
+  seed_start cua model: 1062788782639
+  so seed trong L1 cua model nay: 79888
+  seed duoc chon (diem ML cao nhat): 1092094725732 (diem=3.0561)
+  DU DOAN ky 00871: 03-10-14-33-34 + DAC BIET 4
+
+--- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
+  seed_start cua model: 108477750639
+  so seed trong L1 cua model nay: 160430
+  seed duoc chon (diem ML cao nhat): 132703767863 (diem=3.0560)
+  DU DOAN ky 00871: 01-03-14-33-34 + DAC BIET 2
+
+--- Model (l1_merged file: l1_merged/merged_seed1093944298639.json) ---
+  seed_start cua model: 1093944298639
+  so seed trong L1 cua model nay: 79936
+  seed duoc chon (diem ML cao nhat): 1123500754565 (diem=3.0539)
+  DU DOAN ky 00871: 08-10-14-19-33 + DAC BIET 11
+
+--- Model (l1_merged file: l1_merged/merged_seed1125099814639.json) ---
+  seed_start cua model: 1125099814639
+  so seed trong L1 cua model nay: 80244
+  seed duoc chon (diem ML cao nhat): 1142606682908 (diem=3.0583)
+  DU DOAN ky 00871: 01-03-10-14-33 + DAC BIET 5
+
+--- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
+  seed_start cua model: 682305800400
+  so seed trong L1 cua model nay: 347867
+  seed duoc chon (diem ML cao nhat): 682962905428 (diem=3.0594)
+  DU DOAN ky 00871: 01-08-10-14-33 + DAC BIET 5
+
+--- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
+  seed_start cua model: 708477750639
+  so seed trong L1 cua model nay: 79821
+  seed duoc chon (diem ML cao nhat): 736108027978 (diem=3.0556)
+  DU DOAN ky 00871: 10-14-19-33-34 + DAC BIET 5
+
+--- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
+  seed_start cua model: 900477750639
+  so seed trong L1 cua model nay: 120211
+  seed duoc chon (diem ML cao nhat): 919761585649 (diem=3.0588)
+  DU DOAN ky 00871: 03-08-10-14-33 + DAC BIET 2
+
