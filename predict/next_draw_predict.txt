@@ -1,0 +1,46 @@
+DU DOAN KY 00870 - MOI MODEL 1 SEED (khong gop phieu bau, khong dung L2)
+Seed manh nhat cua tung model = seed co so lan trung (trong L1 cua model do) cao nhat.
+Neu seed nay du doan dung ky 00870, no se THANG HANG (thanh L2) ngay ky nay.
+
+--- Model (l1_merged file: l1_merged/merged_seed1000477750639.json) ---
+  seed_start cua model: 1000477750639
+  so seed con lai trong L1 cua model nay: 80072
+  seed duoc chon (manh nhat): 1000478686074
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00861)
+  DU DOAN ky 00870: 10-17-20-26-30 + DAC BIET 9
+
+--- Model (l1_merged file: l1_merged/merged_seed1031633266639.json) ---
+  seed_start cua model: 1031633266639
+  so seed con lai trong L1 cua model nay: 79965
+  seed duoc chon (manh nhat): 1031633296903
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00868)
+  DU DOAN ky 00870: 06-11-14-22-33 + DAC BIET 4
+
+--- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
+  seed_start cua model: 108477750639
+  so seed con lai trong L1 cua model nay: 160223
+  seed duoc chon (manh nhat): 108477820729
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00863)
+  DU DOAN ky 00870: 03-14-20-22-24 + DAC BIET 3
+
+--- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
+  seed_start cua model: 682305800400
+  so seed con lai trong L1 cua model nay: 347461
+  seed duoc chon (manh nhat): 682305806894
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00136)
+  DU DOAN ky 00870: 03-11-14-29-33 + DAC BIET 11
+
+--- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
+  seed_start cua model: 708477750639
+  so seed con lai trong L1 cua model nay: 79712
+  seed duoc chon (manh nhat): 708477914485
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00859)
+  DU DOAN ky 00870: 03-05-13-32-34 + DAC BIET 7
+
+--- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
+  seed_start cua model: 900477750639
+  so seed con lai trong L1 cua model nay: 120237
+  seed duoc chon (manh nhat): 900478188142
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00865)
+  DU DOAN ky 00870: 03-06-09-14-27 + DAC BIET 3
+
