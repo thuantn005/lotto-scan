@@ -11,7 +11,7 @@ Neu seed nay du doan dung ky 00871, no se THANG HANG (thanh L2) ngay ky nay.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  so seed con lai trong L1 cua model nay: 160310
+  so seed con lai trong L1 cua model nay: 160430
   seed duoc chon (manh nhat): 108477820729
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00863)
   DU DOAN ky 00871: 11-13-17-23-34 + DAC BIET 5
@@ -23,23 +23,30 @@ Neu seed nay du doan dung ky 00871, no se THANG HANG (thanh L2) ngay ky nay.
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00868)
   DU DOAN ky 00871: 05-08-09-21-26 + DAC BIET 6
 
+--- Model (l1_merged file: l1_merged/merged_seed1125099814639.json) ---
+  seed_start cua model: 1125099814639
+  so seed con lai trong L1 cua model nay: 80244
+  seed duoc chon (manh nhat): 1125099975752
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00862)
+  DU DOAN ky 00871: 01-20-22-31-34 + DAC BIET 9
+
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  so seed con lai trong L1 cua model nay: 347461
+  so seed con lai trong L1 cua model nay: 347867
   seed duoc chon (manh nhat): 682305806894
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00136)
   DU DOAN ky 00871: 03-07-15-26-29 + DAC BIET 4
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
-  so seed con lai trong L1 cua model nay: 79754
+  so seed con lai trong L1 cua model nay: 79821
   seed duoc chon (manh nhat): 708477963055
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00865)
   DU DOAN ky 00871: 04-10-11-22-27 + DAC BIET 3
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  so seed con lai trong L1 cua model nay: 120341
+  so seed con lai trong L1 cua model nay: 120211
   seed duoc chon (manh nhat): 900478188142
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00865)
   DU DOAN ky 00871: 06-14-19-20-28 + DAC BIET 5
