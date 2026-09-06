@@ -865,12 +865,30 @@ jobs:
           from pathlib import Path
 
           state_path = Path(os.environ["STATE_FILE"])
+          last_file_seed_start = ""
           if state_path.exists():
-              current_start = int(json.loads(state_path.read_text(encoding="utf-8"))["seed_next"])
+              state = json.loads(state_path.read_text(encoding="utf-8"))
+              current_start = int(state["seed_next"])
+              last_file_seed_start = str(state.get("last_file_seed_start", ""))
           else:
               current_start = int(os.environ["INITIAL_SEED_START"])
           print(f"CURRENT_SEED_START={current_start}")
+          print(f"LAST_FILE_SEED_START={last_file_seed_start}")
           PY
+
+      - name: Xoa file L1/L2 cua LAN CHAY TRUOC (chi model 5 nay moi ra file moi moi lan, tranh tich tu vo han)
+        env:
+          LAST_FILE_SEED_START: ${{ env.LAST_FILE_SEED_START }}
+        run: |
+          set -e
+          if [ -n "$LAST_FILE_SEED_START" ]; then
+            OLD_L1="l1_merged/merged_seed${LAST_FILE_SEED_START}.json"
+            OLD_L2="l2_merged/promoted_seed${LAST_FILE_SEED_START}.json"
+            [ -f "$OLD_L1" ] && rm -v "$OLD_L1" || echo "Khong thay $OLD_L1, bo qua"
+            [ -f "$OLD_L2" ] && rm -v "$OLD_L2" || echo "Khong thay $OLD_L2, bo qua"
+          else
+            echo "Chua co file cua lan truoc (lan dau chay model 5), khong can xoa gi"
+          fi
 
       - name: Gop 20 chunk thanh l1_merged/merged_seed{X}.json (X = seed cua LAN NAY)
         env:
@@ -942,11 +960,17 @@ jobs:
           batch_size = int(os.environ["BATCH_SIZE"])
           seed_next = current_start + 20 * batch_size
 
+          # last_file_seed_start = seed cua file VUA TAO lan nay - de LAN SAU
+          # biet ma xoa (file cua lan nay se thanh "cu" o lan chay ke tiep).
           Path(os.environ["STATE_FILE"]).write_text(
-              json.dumps({"seed_next": seed_next}, separators=(",", ":")),
+              json.dumps({
+                  "seed_next": seed_next,
+                  "last_file_seed_start": current_start,
+              }, separators=(",", ":")),
               encoding="utf-8",
           )
-          print(f"Da ghi seed_next={seed_next} vao {os.environ['STATE_FILE']} (lan sau se quet tu day)")
+          print(f"Da ghi seed_next={seed_next}, last_file_seed_start={current_start} "
+                f"vao {os.environ['STATE_FILE']} (lan sau se quet tu day va xoa file nay)")
           PY
 
       - name: Commit ket qua
@@ -1149,7 +1173,7 @@ jobs:
           L1_GLOB: "l1_merged/merged_seed*.json"
           OUT_PATH: "predict/next_draw_predict_ai.txt"
           CANDIDATES_PER_MODEL: "15"
-          GEMINI_MODEL: "gemini-3.8-flash"
+          GEMINI_MODEL: "gemini-2.5-flash"
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set -e
