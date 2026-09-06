@@ -31,6 +31,7 @@ import json
 import os
 import re
 import sys
+import time
 from pathlib import Path
 
 import requests
@@ -201,25 +202,40 @@ def build_prompt(next_draw_id, recent_draws, models):
     return "\n".join(lines)
 
 
-def call_groq(prompt, api_key, model):
-    resp = requests.post(
-        "https://api.groq.com/openai/v1/chat/completions",
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "content-type": "application/json",
-        },
-        json={
-            "model": model,
-            "messages": [{"role": "user", "content": prompt}],
-        },
-        timeout=60,
-    )
-    resp.raise_for_status()
-    data = resp.json()
-    choices = data.get("choices", [])
-    if not choices:
-        raise RuntimeError(f"Groq khong tra ve choice nao: {data}")
-    return choices[0].get("message", {}).get("content", "")
+def call_groq(prompt, api_key, model, max_retries=3):
+    last_error = None
+    for attempt in range(1, max_retries + 1):
+        try:
+            resp = requests.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {api_key}",
+                    "content-type": "application/json",
+                },
+                json={
+                    "model": model,
+                    "messages": [{"role": "user", "content": prompt}],
+                },
+                timeout=60,
+            )
+            if resp.status_code in (429, 500, 502, 503, 504):
+                last_error = requests.exceptions.HTTPError(
+                    f"{resp.status_code} tam thoi (lan {attempt}/{max_retries})", response=resp)
+                print(f"[AI2/Groq] Loi {resp.status_code}, thu lai... "
+                      f"(lan {attempt}/{max_retries})", file=sys.stderr)
+                time.sleep(5 * attempt)
+                continue
+            resp.raise_for_status()
+            data = resp.json()
+            choices = data.get("choices", [])
+            if not choices:
+                raise RuntimeError(f"Groq khong tra ve choice nao: {data}")
+            return choices[0].get("message", {}).get("content", "")
+        except requests.exceptions.RequestException as e:
+            last_error = e
+            print(f"[AI2/Groq] Loi goi Groq (lan {attempt}/{max_retries}): {e}", file=sys.stderr)
+            time.sleep(5 * attempt)
+    raise last_error
 
 
 def main():

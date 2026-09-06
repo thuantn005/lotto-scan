@@ -20,6 +20,7 @@ import argparse
 import json
 import os
 import sys
+import time
 
 import requests
 from google.auth.transport.requests import Request
@@ -33,10 +34,18 @@ SCOPES = ["https://www.googleapis.com/auth/firebase.messaging"]
 MAX_PAYLOAD_BYTES = 3500
 
 
-def get_access_token(sa_info: dict) -> str:
+def get_access_token(sa_info: dict, max_retries: int = 3) -> str:
     creds = service_account.Credentials.from_service_account_info(sa_info, scopes=SCOPES)
-    creds.refresh(Request())
-    return creds.token
+    last_error = None
+    for attempt in range(1, max_retries + 1):
+        try:
+            creds.refresh(Request())
+            return creds.token
+        except Exception as e:
+            last_error = e
+            print(f"Loi lay access token Google (lan {attempt}/{max_retries}): {e}", file=sys.stderr)
+            time.sleep(5 * attempt)
+    raise last_error
 
 
 def load_latest_draw(json_path: str):
@@ -113,17 +122,26 @@ def main():
             "android": {"priority": "high"},
         }
     }
-    resp = requests.post(
-        url,
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json; UTF-8",
-        },
-        json=payload,
-        timeout=20,
-    )
-    print(f"FCM response: {resp.status_code} {resp.text}")
-    resp.raise_for_status()
+    last_error = None
+    for attempt in range(1, 4):
+        resp = requests.post(
+            url,
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json; UTF-8",
+            },
+            json=payload,
+            timeout=20,
+        )
+        print(f"FCM response (lan {attempt}/3): {resp.status_code} {resp.text}")
+        if resp.status_code in (429, 500, 502, 503, 504):
+            last_error = resp
+            time.sleep(5 * attempt)
+            continue
+        resp.raise_for_status()
+        break
+    else:
+        last_error.raise_for_status()
 
 
 if __name__ == "__main__":
