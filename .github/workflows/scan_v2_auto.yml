@@ -70,7 +70,7 @@ jobs:
         run: |
           set -e
           mkdir -p data
-          curl -sL "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
+          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
           wc -l data/all.csv
 
       - name: Fallback cao xosominhngoc.net.vn neu dataset cham cap nhat
@@ -247,7 +247,7 @@ jobs:
         run: |
           set -e
           mkdir -p data
-          curl -sL "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
+          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
           wc -l data/all.csv
 
       - name: Compile scan_per_draw (co pthread cho da luong)
@@ -419,7 +419,7 @@ jobs:
         run: |
           set -e
           mkdir -p data
-          curl -sL "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
+          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
           wc -l data/all.csv
 
       - name: Compile scan_per_draw (co pthread cho da luong)
@@ -591,7 +591,7 @@ jobs:
         run: |
           set -e
           mkdir -p data
-          curl -sL "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
+          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
           wc -l data/all.csv
 
       - name: Compile scan_per_draw (co pthread cho da luong)
@@ -763,7 +763,7 @@ jobs:
         run: |
           set -e
           mkdir -p data
-          curl -sL "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
+          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
           wc -l data/all.csv
 
       - name: Compile scan_per_draw (co pthread cho da luong)
@@ -963,4 +963,49 @@ jobs:
             exit 0
           fi
           git commit -m "scan v2 model phu 5 (seed noi tiep): seed ${{ env.CURRENT_SEED_START }} (+20x${{ env.ONCE_BATCH_SIZE }}), ${{ env.ONCE4_LAST_N_DRAWS }} ky gan nhat, ky moi $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git push origin main
+
+  predict_next:
+    # Du doan ky KE TIEP dua tren TAT CA seed dang co trong L1 (l1_merged/
+    # cua ca 5 model - CHECKOUT o day se lay dung ban moi nhat vi job nay
+    # needs toan bo cac job merge da push xong). KHONG dung L2 lam input -
+    # L2 (l2_merged/) chi la KET QUA thang hang, khong phai nguon du doan.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Download dataset moi nhat (de biet ky ke tiep la ky nao)
+        run: |
+          set -e
+          mkdir -p data
+          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
+          wc -l data/all.csv
+
+      - name: Du doan ky ke tiep (chi dung seed L1, khong dung L2)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          OUT_PATH: "predict/next_draw_predict.txt"
+          TOP_N: "50"
+        run: python3 predict_next_draw.py
+
+      - name: Commit ket qua du doan
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep (tu seed L1) $(date -u +%Y-%m-%d\ %H:%M) UTC"
           git push origin main
