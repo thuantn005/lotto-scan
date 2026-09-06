@@ -1,0 +1,52 @@
+DU DOAN KY 00871 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)
+Model AI su dung: gemini-3.8-flash
+Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
+
+--- Model (l1_merged file: l1_merged/merged_seed1062788782639.json) ---
+  seed_start cua model: 1062788782639
+  seed AI chon: 1062788800204
+  ly do AI dua ra: Tap hop gom 11, 16, 23, 26 co do tuong thich cao voi cac con so xuat hien lien tiep trong 5 ky gan nhat (866-870).
+  DU DOAN ky 00871: 11-16-23-26-34 + DAC BIET 8
+
+--- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
+  seed_start cua model: 108477750639
+  seed AI chon: 108478798593
+  ly do AI dua ra: Bao gom cac so rat nong 11, 13, 20 vua ra o ky 870 va so 16 o ky 869, phan anh xu huong lap nhip ngan.
+  DU DOAN ky 00871: 04-11-13-16-20 + DAC BIET 4
+
+--- Model (l1_merged file: l1_merged/merged_seed1093944298639.json) ---
+  seed_start cua model: 1093944298639
+  seed AI chon: 1093946512709
+  ly do AI dua ra: Chua cap 13 va 20 von co mat o ky 870 kem theo so 25 tung xuat hien ky 866, phan bo deu ve bien do.
+  DU DOAN ky 00871: 04-07-13-20-25 + DAC BIET 12
+
+--- Model (l1_merged file: l1_merged/merged_seed1125099814639.json) ---
+  seed_start cua model: 1125099814639
+  seed AI chon: 1125101455399
+  ly do AI dua ra: Giu lai 3 so 11, 20, 24 tu ky 870 va 12 tu ky 869, phu hop de kiem tra gia thuyet ve tinh bao hoa cum so trung tam.
+  DU DOAN ky 00871: 02-11-12-20-24 + DAC BIET 2
+
+--- Model (l1_merged file: l1_merged/merged_seed1156255330639.json) ---
+  seed_start cua model: 1156255330639
+  seed AI chon: 1156255698483
+  ly do AI dua ra: So 12, 16, 23 giu duoc mat do xuat hien deu dan qua cac ky 867-870, tao su can bang giua nhom nho va nhom lon.
+  DU DOAN ky 00871: 09-12-16-23-28 + DAC BIET 4
+
+--- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
+  seed_start cua model: 682305800400
+  seed AI chon: 682305858049
+  ly do AI dua ra: Ket hop giua so 23 (vua ve ky 870) va 16 (ky 869) cung dac biet 8 tung xuat hien gan day o ky 869.
+  DU DOAN ky 00871: 01-02-16-23-28 + DAC BIET 8
+
+--- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
+  seed_start cua model: 708477750639
+  seed AI chon: 708482669931
+  ly do AI dua ra: Tap trung vao truc so chu luc 18, 20, 22 da xuat hien day dac tu ky 867 den 870.
+  DU DOAN ky 00871: 18-20-22-28-34 + DAC BIET 5
+
+--- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
+  seed_start cua model: 900477750639
+  seed AI chon: 900481618110
+  ly do AI dua ra: Chua cap so manh 13, 23 cua ky 870 va so 16 cua ky 869, rat phu hop cho mo hinh doi xung theo chu ky ngan.
+  DU DOAN ky 00871: 13-16-19-23-34 + DAC BIET 5
+
