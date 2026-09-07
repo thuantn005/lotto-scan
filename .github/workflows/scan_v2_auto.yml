@@ -245,12 +245,10 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Download dataset moi nhat
-        run: |
-          set -e
-          mkdir -p data
-          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
-          wc -l data/all.csv
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
 
       - name: Compile scan_per_draw (co pthread cho da luong)
         run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
@@ -417,12 +415,10 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Download dataset moi nhat
-        run: |
-          set -e
-          mkdir -p data
-          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
-          wc -l data/all.csv
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
 
       - name: Compile scan_per_draw (co pthread cho da luong)
         run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
@@ -589,12 +585,10 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Download dataset moi nhat
-        run: |
-          set -e
-          mkdir -p data
-          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
-          wc -l data/all.csv
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
 
       - name: Compile scan_per_draw (co pthread cho da luong)
         run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
@@ -761,12 +755,10 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Download dataset moi nhat
-        run: |
-          set -e
-          mkdir -p data
-          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
-          wc -l data/all.csv
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
 
       - name: Compile scan_per_draw (co pthread cho da luong)
         run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
@@ -1005,12 +997,10 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Download dataset moi nhat (de biet ky ke tiep la ky nao)
-        run: |
-          set -e
-          mkdir -p data
-          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
-          wc -l data/all.csv
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
 
       - name: Du doan ky ke tiep (chi dung seed L1, khong dung L2)
         env:
@@ -1051,12 +1041,10 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Download dataset moi nhat
-        run: |
-          set -e
-          mkdir -p data
-          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
-          wc -l data/all.csv
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
 
       - name: Doi chieu du doan cu voi ket qua that cua ky vua xac nhan
         id: check_prediction
@@ -1111,12 +1099,10 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Download dataset moi nhat
-        run: |
-          set -e
-          mkdir -p data
-          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
-          wc -l data/all.csv
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
 
       - name: Cai thu vien ML
         run: pip install --quiet scikit-learn numpy
@@ -1160,12 +1146,10 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Download dataset moi nhat
-        run: |
-          set -e
-          mkdir -p data
-          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
-          wc -l data/all.csv
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
 
       - name: Du doan ky ke tiep - phien ban AI (Gemini, mien phi)
         env:
@@ -1173,7 +1157,7 @@ jobs:
           L1_GLOB: "l1_merged/merged_seed*.json"
           OUT_PATH: "predict/next_draw_predict_ai.txt"
           CANDIDATES_PER_MODEL: "15"
-          GEMINI_MODEL: "gemini-2.5-flash"
+          GEMINI_MODEL: "gemini-3-flash-preview"
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set -e
@@ -1212,12 +1196,10 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Download dataset moi nhat
-        run: |
-          set -e
-          mkdir -p data
-          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
-          wc -l data/all.csv
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
 
       - name: Du doan ky ke tiep - phien ban AI2 (Groq, mien phi vinh vien)
         env:
