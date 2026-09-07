@@ -1,4 +1,4 @@
-DU DOAN KY 00871 - PHIEN BAN ML (doc lap voi predict_next_draw.py)
+DU DOAN KY 00872 - PHIEN BAN ML (doc lap voi predict_next_draw.py)
 Tieu chi chon seed: trong tat ca seed dang co trong L1 cua tung model,
 chon seed co ve (5 so + dac biet) dat TONG DIEM ML (Logistic Regression
 tan suat lich su) CAO NHAT.
@@ -6,54 +6,60 @@ tan suat lich su) CAO NHAT.
 --- Model (l1_merged file: l1_merged/merged_seed1062788782639.json) ---
   seed_start cua model: 1062788782639
   so seed trong L1 cua model nay: 79888
-  seed duoc chon (diem ML cao nhat): 1092094725732 (diem=3.0561)
-  DU DOAN ky 00871: 03-10-14-33-34 + DAC BIET 4
+  seed duoc chon (diem ML cao nhat): 1067253246313 (diem=3.0523)
+  DU DOAN ky 00872: 08-14-28-33-34 + DAC BIET 3
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
   so seed trong L1 cua model nay: 160430
-  seed duoc chon (diem ML cao nhat): 132703767863 (diem=3.0560)
-  DU DOAN ky 00871: 01-03-14-33-34 + DAC BIET 2
+  seed duoc chon (diem ML cao nhat): 112523902365 (diem=3.0594)
+  DU DOAN ky 00872: 08-14-28-33-34 + DAC BIET 5
 
 --- Model (l1_merged file: l1_merged/merged_seed1093944298639.json) ---
   seed_start cua model: 1093944298639
   so seed trong L1 cua model nay: 79936
-  seed duoc chon (diem ML cao nhat): 1123500754565 (diem=3.0539)
-  DU DOAN ky 00871: 08-10-14-19-33 + DAC BIET 11
+  seed duoc chon (diem ML cao nhat): 1117750113774 (diem=3.0516)
+  DU DOAN ky 00872: 08-14-22-33-34 + DAC BIET 4
 
 --- Model (l1_merged file: l1_merged/merged_seed1125099814639.json) ---
   seed_start cua model: 1125099814639
   so seed trong L1 cua model nay: 80244
-  seed duoc chon (diem ML cao nhat): 1142606682908 (diem=3.0583)
-  DU DOAN ky 00871: 01-03-10-14-33 + DAC BIET 5
+  seed duoc chon (diem ML cao nhat): 1125852389509 (diem=3.0520)
+  DU DOAN ky 00872: 01-14-19-33-34 + DAC BIET 2
 
 --- Model (l1_merged file: l1_merged/merged_seed1156255330639.json) ---
   seed_start cua model: 1156255330639
   so seed trong L1 cua model nay: 79834
-  seed duoc chon (diem ML cao nhat): 1177528824007 (diem=3.0583)
-  DU DOAN ky 00871: 01-03-10-14-33 + DAC BIET 5
+  seed duoc chon (diem ML cao nhat): 1173986685217 (diem=3.0537)
+  DU DOAN ky 00872: 10-14-28-33-34 + DAC BIET 2
 
 --- Model (l1_merged file: l1_merged/merged_seed1187410846639.json) ---
   seed_start cua model: 1187410846639
   so seed trong L1 cua model nay: 80004
-  seed duoc chon (diem ML cao nhat): 1211137310453 (diem=3.0590)
-  DU DOAN ky 00871: 03-10-14-33-34 + DAC BIET 2
+  seed duoc chon (diem ML cao nhat): 1201876754843 (diem=3.0536)
+  DU DOAN ky 00872: 01-08-14-28-33 + DAC BIET 2
+
+--- Model (l1_merged file: l1_merged/merged_seed1218566362639.json) ---
+  seed_start cua model: 1218566362639
+  so seed trong L1 cua model nay: 80138
+  seed duoc chon (diem ML cao nhat): 1224203864227 (diem=3.0553)
+  DU DOAN ky 00872: 08-14-19-33-34 + DAC BIET 5
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  so seed trong L1 cua model nay: 347867
-  seed duoc chon (diem ML cao nhat): 682962905428 (diem=3.0594)
-  DU DOAN ky 00871: 01-08-10-14-33 + DAC BIET 5
+  so seed trong L1 cua model nay: 348245
+  seed duoc chon (diem ML cao nhat): 682505529199 (diem=3.0553)
+  DU DOAN ky 00872: 08-14-19-33-34 + DAC BIET 5
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
   so seed trong L1 cua model nay: 79821
-  seed duoc chon (diem ML cao nhat): 736108027978 (diem=3.0556)
-  DU DOAN ky 00871: 10-14-19-33-34 + DAC BIET 5
+  seed duoc chon (diem ML cao nhat): 734958620007 (diem=3.0514)
+  DU DOAN ky 00872: 14-22-28-33-34 + DAC BIET 4
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
   so seed trong L1 cua model nay: 120211
-  seed duoc chon (diem ML cao nhat): 919761585649 (diem=3.0588)
-  DU DOAN ky 00871: 03-08-10-14-33 + DAC BIET 2
+  seed duoc chon (diem ML cao nhat): 925516399783 (diem=3.0551)
+  DU DOAN ky 00872: 08-14-28-33-34 + DAC BIET 4
 
