@@ -1,4 +1,4 @@
-DU DOAN KY 00872 - PHIEN BAN ML (doc lap voi predict_next_draw.py)
+DU DOAN KY 00873 - PHIEN BAN ML (doc lap voi predict_next_draw.py)
 Tieu chi chon seed: trong tat ca seed dang co trong L1 cua tung model,
 chon seed co ve (5 so + dac biet) dat TONG DIEM ML (Logistic Regression
 tan suat lich su) CAO NHAT.
@@ -6,30 +6,30 @@ tan suat lich su) CAO NHAT.
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
   so seed trong L1 cua model nay: 160303
-  seed duoc chon (diem ML cao nhat): 112523902365 (diem=3.0594)
-  DU DOAN ky 00872: 08-14-28-33-34 + DAC BIET 5
+  seed duoc chon (diem ML cao nhat): 114132267566 (diem=3.0531)
+  DU DOAN ky 00873: 08-14-22-28-33 + DAC BIET 5
 
---- Model (l1_merged file: l1_merged/merged_seed1249721878639.json) ---
-  seed_start cua model: 1249721878639
-  so seed trong L1 cua model nay: 79937
-  seed duoc chon (diem ML cao nhat): 1268044770605 (diem=3.0537)
-  DU DOAN ky 00872: 10-14-28-33-34 + DAC BIET 2
+--- Model (l1_merged file: l1_merged/merged_seed1280877394639.json) ---
+  seed_start cua model: 1280877394639
+  so seed trong L1 cua model nay: 80228
+  seed duoc chon (diem ML cao nhat): 1284173960805 (diem=3.0526)
+  DU DOAN ky 00873: 01-14-19-33-34 + DAC BIET 5
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  so seed trong L1 cua model nay: 348245
-  seed duoc chon (diem ML cao nhat): 682505529199 (diem=3.0553)
-  DU DOAN ky 00872: 08-14-19-33-34 + DAC BIET 5
+  so seed trong L1 cua model nay: 348613
+  seed duoc chon (diem ML cao nhat): 682342176277 (diem=3.0547)
+  DU DOAN ky 00873: 08-10-14-33-34 + DAC BIET 5
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
   so seed trong L1 cua model nay: 79933
-  seed duoc chon (diem ML cao nhat): 734958620007 (diem=3.0514)
-  DU DOAN ky 00872: 14-22-28-33-34 + DAC BIET 4
+  seed duoc chon (diem ML cao nhat): 729192554242 (diem=3.0516)
+  DU DOAN ky 00873: 08-14-28-30-34 + DAC BIET 5
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
   so seed trong L1 cua model nay: 120175
-  seed duoc chon (diem ML cao nhat): 925516399783 (diem=3.0551)
-  DU DOAN ky 00872: 08-14-28-33-34 + DAC BIET 4
+  seed duoc chon (diem ML cao nhat): 926625090712 (diem=3.0536)
+  DU DOAN ky 00873: 01-08-14-33-34 + DAC BIET 6
 
