@@ -1,67 +1,74 @@
-DU DOAN KY 00871 - MOI MODEL 1 SEED (khong gop phieu bau, khong dung L2)
+DU DOAN KY 00872 - MOI MODEL 1 SEED (khong gop phieu bau, khong dung L2)
 Seed manh nhat cua tung model = seed co so lan trung (trong L1 cua model do) cao nhat.
-Neu seed nay du doan dung ky 00871, no se THANG HANG (thanh L2) ngay ky nay.
+Neu seed nay du doan dung ky 00872, no se THANG HANG (thanh L2) ngay ky nay.
 
 --- Model (l1_merged file: l1_merged/merged_seed1062788782639.json) ---
   seed_start cua model: 1062788782639
   so seed con lai trong L1 cua model nay: 79888
   seed duoc chon (manh nhat): 1062788800204
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00864)
-  DU DOAN ky 00871: 11-16-23-26-34 + DAC BIET 8
+  DU DOAN ky 00872: 01-16-22-32-34 + DAC BIET 9
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
   so seed con lai trong L1 cua model nay: 160430
   seed duoc chon (manh nhat): 108477820729
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00863)
-  DU DOAN ky 00871: 11-13-17-23-34 + DAC BIET 5
+  DU DOAN ky 00872: 05-19-21-26-31 + DAC BIET 3
 
 --- Model (l1_merged file: l1_merged/merged_seed1093944298639.json) ---
   seed_start cua model: 1093944298639
   so seed con lai trong L1 cua model nay: 79936
   seed duoc chon (manh nhat): 1093945634126
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00868)
-  DU DOAN ky 00871: 05-08-09-21-26 + DAC BIET 6
+  DU DOAN ky 00872: 05-20-24-28-34 + DAC BIET 12
 
 --- Model (l1_merged file: l1_merged/merged_seed1125099814639.json) ---
   seed_start cua model: 1125099814639
   so seed con lai trong L1 cua model nay: 80244
   seed duoc chon (manh nhat): 1125099975752
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00862)
-  DU DOAN ky 00871: 01-20-22-31-34 + DAC BIET 9
+  DU DOAN ky 00872: 04-14-18-24-26 + DAC BIET 6
 
 --- Model (l1_merged file: l1_merged/merged_seed1156255330639.json) ---
   seed_start cua model: 1156255330639
   so seed con lai trong L1 cua model nay: 79834
   seed duoc chon (manh nhat): 1156255698483
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00868)
-  DU DOAN ky 00871: 09-12-16-23-28 + DAC BIET 4
+  DU DOAN ky 00872: 03-07-12-16-21 + DAC BIET 9
 
 --- Model (l1_merged file: l1_merged/merged_seed1187410846639.json) ---
   seed_start cua model: 1187410846639
   so seed con lai trong L1 cua model nay: 80004
   seed duoc chon (manh nhat): 1187411228954
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00866)
-  DU DOAN ky 00871: 02-04-16-25-27 + DAC BIET 1
+  DU DOAN ky 00872: 07-15-18-24-34 + DAC BIET 4
+
+--- Model (l1_merged file: l1_merged/merged_seed1218566362639.json) ---
+  seed_start cua model: 1218566362639
+  so seed con lai trong L1 cua model nay: 80138
+  seed duoc chon (manh nhat): 1218566630559
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00867)
+  DU DOAN ky 00872: 06-12-13-15-29 + DAC BIET 9
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  so seed con lai trong L1 cua model nay: 347867
+  so seed con lai trong L1 cua model nay: 348245
   seed duoc chon (manh nhat): 682305806894
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00136)
-  DU DOAN ky 00871: 03-07-15-26-29 + DAC BIET 4
+  DU DOAN ky 00872: 06-11-25-29-33 + DAC BIET 1
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
   so seed con lai trong L1 cua model nay: 79821
   seed duoc chon (manh nhat): 708477963055
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00865)
-  DU DOAN ky 00871: 04-10-11-22-27 + DAC BIET 3
+  DU DOAN ky 00872: 04-06-08-19-35 + DAC BIET 8
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
   so seed con lai trong L1 cua model nay: 120211
   seed duoc chon (manh nhat): 900478188142
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00865)
-  DU DOAN ky 00871: 06-14-19-20-28 + DAC BIET 5
+  DU DOAN ky 00872: 08-10-14-18-24 + DAC BIET 4
 
