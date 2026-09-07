@@ -1,34 +1,28 @@
-DU DOAN KY 00872 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
+DU DOAN KY 00873 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
 Model AI su dung (Groq, mien phi vinh vien): openai/gpt-oss-120b
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
---- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
-  seed_start cua model: 108477750639
-  seed AI chon: 108479421887
-  ly do AI dua ra: Contains 18 and 27, the two most frequently drawn numbers in the last 15 draws.
-  DU DOAN ky 00872: 04-18-19-27-34 + DAC BIET 11
-
---- Model (l1_merged file: l1_merged/merged_seed1249721878639.json) ---
-  seed_start cua model: 1249721878639
-  seed AI chon: 1249722598580
-  ly do AI dua ra: Features both 11 and 20, each appearing five times in recent results.
-  DU DOAN ky 00872: 10-11-12-20-33 + DAC BIET 8
+--- Model (l1_merged file: l1_merged/merged_seed1280877394639.json) ---
+  seed_start cua model: 1280877394639
+  seed AI chon: 1280880038412
+  ly do AI dua ra: Bộ số (2,3,27,29,35) chứa 27 và 35, là những số xuất hiện liên tục trong các kỳ gần đây.
+  DU DOAN ky 00873: 02-03-27-29-35 + DAC BIET 7
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  seed AI chon: 682305830772
-  ly do AI dua ra: Includes 11 and 20, the two top‑frequency numbers from the latest draws.
-  DU DOAN ky 00872: 05-08-11-19-20 + DAC BIET 3
+  seed AI chon: 682305822691
+  ly do AI dua ra: Số 7,14,24,25,27 đều xuất hiện ít nhất 3 lần trong 15 kỳ gần nhất, thể hiện xu hướng lặp lại.
+  DU DOAN ky 00873: 07-14-24-25-27 + DAC BIET 7
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
-  seed AI chon: 708478217447
-  ly do AI dua ra: Covers 11, 18 and 27 – three of the most common numbers in the last 15 draws.
-  DU DOAN ky 00872: 08-10-11-18-27 + DAC BIET 6
+  seed AI chon: 708482407914
+  ly do AI dua ra: Bộ số (3,11,27,31,35) bao gồm 27 và 35, hai số xuất hiện thường xuyên trong các kỳ gần đây.
+  DU DOAN ky 00873: 03-11-27-31-35 + DAC BIET 6
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 900483461669
-  ly do AI dua ra: Picks 27, one of the five‑time frequent numbers in the recent draw history.
-  DU DOAN ky 00872: 17-21-27-32-34 + DAC BIET 2
+  seed AI chon: 900483210564
+  ly do AI dua ra: Số 13,15,20 xuất hiện trong nhiều kỳ gần đây, cho thấy khả năng lặp lại cao.
+  DU DOAN ky 00873: 02-03-13-15-20 + DAC BIET 3
 
