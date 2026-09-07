@@ -64,15 +64,7 @@
       "share_date": "2026-09-08",
       "peak_jackpot": 12309874500,
       "trigger_draw_id": "00871",
-      "last_event": {
-        "id": "scheduled-2026-09-08-00871",
-        "kind": "scheduled",
-        "title_vi": "📅 Đã xác định kỳ CHIA GIẢI Lotto 5/35",
-        "title_en": "📅 Lotto 5/35 SHARE DRAW confirmed",
-        "message_vi": "Độc Đắc 12.309.874.500 (~12.3 tỷ) đã vượt 12 tỷ sau kỳ #00871. Kỳ quay 21:00 ngày 08/09/2026 là kỳ CHIA GIẢI.",
-        "message_en": "The jackpot (12.309.874.500 (~12.3 tỷ)) passed 12 billion VND after draw #00871. The 21:00 draw on 08/09/2026 is the SHARE draw.",
-        "urgent": true
-      }
+      "last_event": null
     }
   }
 ]
