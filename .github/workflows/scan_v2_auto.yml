@@ -13,6 +13,15 @@ name: Scan V2 (2 lan/ngay theo lich Vietlott) - dai seed co dinh, 1 file duy nha
 # should_run cua model 1 - xem output cua job scan_and_check), khong phu
 # thuoc workflow_dispatch input nao - khong ai phai nhap tay seed/mode gi ca.
 # Muon doi seed/so ky cua model phu nao thi sua truc tiep O DAY (env ONCE*).
+#
+# LUU Y: model phu #1/#2/#3 (ONCE/ONCE2/ONCE3) TRUOC DAY chi chay 1 LAN DUY
+# NHAT roi tu khoa vinh vien qua file co (once_done.flag/once2_done.flag/
+# once3_done.flag) - vi vay 3 file l1_merged/merged_seed{ONCE*}.json bi dong
+# bang mai o ky luc chung chay lan dau, khong bao gio cap nhat ky moi nua.
+# Da BO co che khoa nay: ca 3 model phu nay gio quet lai TU DAU (FORCE_RESCAN=1)
+# theo dung cua so *_LAST_N_DRAWS ky gan nhat MOI LAN CO KY MOI, giong het
+# model chinh. Cac file once*_done.flag cu (neu con trong repo) khong con
+# duoc doc/ghi boi workflow nay nua, co the xoa thu cong.
 
 on:
   schedule:
@@ -34,13 +43,10 @@ env:
   ONCE_BATCH_SIZE: "1557775800"
   ONCE_SEED_START: "708477750639"
   ONCE_LAST_N_DRAWS: "10"
-  ONCE_DONE_FILE: "once_done.flag"
   ONCE2_SEED_START: "108477750639"
   ONCE2_LAST_N_DRAWS: "20"
-  ONCE2_DONE_FILE: "once2_done.flag"
   ONCE3_SEED_START: "900477750639"
   ONCE3_LAST_N_DRAWS: "15"
-  ONCE3_DONE_FILE: "once3_done.flag"
   # Model phu #4: SEED TU NOI TIEP (khong co dinh) - moi lan chay se doc
   # ONCE4_STATE_FILE de biet quet tiep tu dau (KHONG quet lai dai cu), quet
   # xong thi tu ghi lai vi tri ke tiep vao chinh file nay. Lan dau chua co
@@ -64,9 +70,6 @@ jobs:
     outputs:
       should_run: ${{ steps.check_ky.outputs.should_run }}
       latest_ky: ${{ steps.check_ky.outputs.latest_ky }}
-      once_pending: ${{ steps.check_once_done.outputs.once_pending }}
-      once2_pending: ${{ steps.check_once_done.outputs.once2_pending }}
-      once3_pending: ${{ steps.check_once_done.outputs.once3_pending }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -188,21 +191,6 @@ jobs:
           echo "LATEST_KY=$LATEST_KY" >> "$GITHUB_ENV"
           echo "latest_ky=$LATEST_KY" >> "$GITHUB_OUTPUT"
 
-      - name: Kiem tra model 2/3/4 da quet lan nao chua (chi quet 1 LAN DUY NHAT, khong lap lai moi ky)
-        id: check_once_done
-        env:
-          ONCE_DONE_FILE: ${{ env.ONCE_DONE_FILE }}
-          ONCE2_DONE_FILE: ${{ env.ONCE2_DONE_FILE }}
-          ONCE3_DONE_FILE: ${{ env.ONCE3_DONE_FILE }}
-        run: |
-          set -e
-          [ -f "$ONCE_DONE_FILE" ] && echo "once_pending=false" >> "$GITHUB_OUTPUT" || echo "once_pending=true" >> "$GITHUB_OUTPUT"
-          [ -f "$ONCE2_DONE_FILE" ] && echo "once2_pending=false" >> "$GITHUB_OUTPUT" || echo "once2_pending=true" >> "$GITHUB_OUTPUT"
-          [ -f "$ONCE3_DONE_FILE" ] && echo "once3_pending=false" >> "$GITHUB_OUTPUT" || echo "once3_pending=true" >> "$GITHUB_OUTPUT"
-          echo "Model 2 da quet chua: $([ -f "$ONCE_DONE_FILE" ] && echo co || echo CHUA)"
-          echo "Model 3 da quet chua: $([ -f "$ONCE2_DONE_FILE" ] && echo co || echo CHUA)"
-          echo "Model 4 da quet chua: $([ -f "$ONCE3_DONE_FILE" ] && echo co || echo CHUA)"
-
       - name: Compile scan_per_draw (co pthread cho da luong)
         if: steps.check_ky.outputs.should_run == 'true'
         run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
@@ -272,13 +260,11 @@ jobs:
           done
 
   scan_once_chunk:
-    # Model phu: CHI quet 1 LAN DUY NHAT (khong lap lai moi ky moi nua) -
-    # kiem tra qua needs.scan_and_check.outputs.once_pending (dua tren
-    # marker file ONCE_DONE_FILE). Re-scan lien tuc khong lam thay doi ket
-    # qua co y nghia thong ke gi (xem giai thich truoc do), nen dung lai
-    # de tiet kiem tai nguyen Actions.
+    # Model phu #1: quet lai TU DAU (FORCE_RESCAN=1) theo cua so
+    # ONCE_LAST_N_DRAWS ky gan nhat, MOI LAN CO KY MOI (khong con khoa
+    # "chi 1 lan" nhu truoc - xem ghi chu dau file).
     needs: scan_and_check
-    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && needs.scan_and_check.outputs.once_pending == 'true' }}
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
     name: Scan once chunk ${{ matrix.chunk }}
     strategy:
       fail-fast: false
@@ -339,11 +325,10 @@ jobs:
   merge_once:
     # Gop 20 chunk cua model phu thanh 1 file, roi thang hang - KHONG prune
     # dung luong (chi model chinh moi gioi han 5MB, model phu gioi han bang
-    # so ky co dinh ONCE_LAST_N_DRAWS nen khong can prune). CHI chay 1 LAN
-    # (dieu kien giong scan_once_chunk), ghi marker file khi xong de lan
-    # sau khong quet lai nua.
+    # so ky co dinh ONCE_LAST_N_DRAWS nen khong can prune). Chay lai MOI LAN
+    # co ky moi (khong con khoa "chi 1 lan" nhu truoc).
     needs: [scan_and_check, scan_once_chunk]
-    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && needs.scan_and_check.outputs.once_pending == 'true' && always() }}
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     # QUAN TRONG: merge_once/2/3/4 deu commit+push vao l1_merged/l2_merged
     # tren cung nhanh main - neu chay SONG SONG se dua nhau push (git
     # pull --rebase lien tuc that bai sau 5 lan retry -> mat ket qua cua
@@ -434,9 +419,6 @@ jobs:
           L2_MERGED_DIR: l2_merged
         run: python3 check_l1_merged.py
 
-      - name: Danh dau model 2 da quet xong (khong quet lai nua tu day)
-        run: echo "Da quet xong luc $(date -u +%Y-%m-%d\ %H:%M) UTC, seed_start=${{ env.ONCE_SEED_START }}" > "${{ env.ONCE_DONE_FILE }}"
-
       - name: Commit ket qua
         run: |
           set -e
@@ -447,7 +429,6 @@ jobs:
           git stash pop || true
           [ -d l1_merged ] && git add l1_merged/ || true
           [ -d l2_merged ] && git add l2_merged/ || true
-          [ -f "${{ env.ONCE_DONE_FILE }}" ] && git add "${{ env.ONCE_DONE_FILE }}" || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
@@ -468,9 +449,9 @@ jobs:
           done
 
   scan_once2_chunk:
-    # Model phu (model 3): CHI quet 1 LAN DUY NHAT (khong lap lai moi ky).
+    # Model phu (model 3): quet lai TU DAU moi lan co ky moi (FORCE_RESCAN=1).
     needs: scan_and_check
-    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && needs.scan_and_check.outputs.once2_pending == 'true' }}
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
     name: Scan once3 (20ky) chunk ${{ matrix.chunk }}
     strategy:
       fail-fast: false
@@ -529,9 +510,9 @@ jobs:
           retention-days: 14
 
   merge_once2:
-    # Gop 20 chunk cua model phu (model 3) - CHI chay 1 LAN.
+    # Gop 20 chunk cua model phu (model 3) - chay lai moi lan co ky moi.
     needs: [scan_and_check, scan_once2_chunk, merge_once]
-    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && needs.scan_and_check.outputs.once2_pending == 'true' && always() }}
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -616,9 +597,6 @@ jobs:
           L2_MERGED_DIR: l2_merged
         run: python3 check_l1_merged.py
 
-      - name: Danh dau model 3 da quet xong (khong quet lai nua tu day)
-        run: echo "Da quet xong luc $(date -u +%Y-%m-%d\ %H:%M) UTC, seed_start=${{ env.ONCE2_SEED_START }}" > "${{ env.ONCE2_DONE_FILE }}"
-
       - name: Commit ket qua
         run: |
           set -e
@@ -629,7 +607,6 @@ jobs:
           git stash pop || true
           [ -d l1_merged ] && git add l1_merged/ || true
           [ -d l2_merged ] && git add l2_merged/ || true
-          [ -f "${{ env.ONCE2_DONE_FILE }}" ] && git add "${{ env.ONCE2_DONE_FILE }}" || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
@@ -650,9 +627,9 @@ jobs:
           done
 
   scan_once3_chunk:
-    # Model phu (model 4): CHI quet 1 LAN DUY NHAT (khong lap lai moi ky).
+    # Model phu (model 4): quet lai TU DAU moi lan co ky moi (FORCE_RESCAN=1).
     needs: scan_and_check
-    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && needs.scan_and_check.outputs.once3_pending == 'true' }}
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
     name: Scan once4 (15ky, AI chon) chunk ${{ matrix.chunk }}
     strategy:
       fail-fast: false
@@ -711,9 +688,9 @@ jobs:
           retention-days: 14
 
   merge_once3:
-    # Gop 20 chunk cua model phu (model 4) - CHI chay 1 LAN.
+    # Gop 20 chunk cua model phu (model 4) - chay lai moi lan co ky moi.
     needs: [scan_and_check, scan_once3_chunk, merge_once2]
-    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && needs.scan_and_check.outputs.once3_pending == 'true' && always() }}
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -798,9 +775,6 @@ jobs:
           L2_MERGED_DIR: l2_merged
         run: python3 check_l1_merged.py
 
-      - name: Danh dau model 4 da quet xong (khong quet lai nua tu day)
-        run: echo "Da quet xong luc $(date -u +%Y-%m-%d\ %H:%M) UTC, seed_start=${{ env.ONCE3_SEED_START }}" > "${{ env.ONCE3_DONE_FILE }}"
-
       - name: Commit ket qua
         run: |
           set -e
@@ -811,7 +785,6 @@ jobs:
           git stash pop || true
           [ -d l1_merged ] && git add l1_merged/ || true
           [ -d l2_merged ] && git add l2_merged/ || true
-          [ -f "${{ env.ONCE3_DONE_FILE }}" ] && git add "${{ env.ONCE3_DONE_FILE }}" || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
