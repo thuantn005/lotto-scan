@@ -344,6 +344,12 @@ jobs:
     # sau khong quet lai nua.
     needs: [scan_and_check, scan_once_chunk]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && needs.scan_and_check.outputs.once_pending == 'true' && always() }}
+    # QUAN TRONG: merge_once/2/3/4 deu commit+push vao l1_merged/l2_merged
+    # tren cung nhanh main - neu chay SONG SONG se dua nhau push (git
+    # pull --rebase lien tuc that bai sau 5 lan retry -> mat ket qua cua
+    # job do). Da xich merge_once2 needs merge_once, merge_once3 needs
+    # merge_once2, merge_once4 needs merge_once3 (xem cac job ben duoi)
+    # de dam bao CHI 1 job push tai 1 thoi diem.
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -524,7 +530,7 @@ jobs:
 
   merge_once2:
     # Gop 20 chunk cua model phu (model 3) - CHI chay 1 LAN.
-    needs: [scan_and_check, scan_once2_chunk]
+    needs: [scan_and_check, scan_once2_chunk, merge_once]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && needs.scan_and_check.outputs.once2_pending == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:
@@ -706,7 +712,7 @@ jobs:
 
   merge_once3:
     # Gop 20 chunk cua model phu (model 4) - CHI chay 1 LAN.
-    needs: [scan_and_check, scan_once3_chunk]
+    needs: [scan_and_check, scan_once3_chunk, merge_once2]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && needs.scan_and_check.outputs.once3_pending == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:
@@ -904,7 +910,7 @@ jobs:
     # cua LAN NAY, se khac lan sau vi seed tu nhay tiep), roi thang hang.
     # Xong thi ghi lai vi tri KE TIEP vao ONCE4_STATE_FILE de lan sau quet
     # tiep, khong quet lai dai vua roi.
-    needs: [scan_and_check, scan_once4_chunk]
+    needs: [scan_and_check, scan_once4_chunk, merge_once3]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:
@@ -1089,6 +1095,14 @@ jobs:
     # cua ca 5 model - CHECKOUT o day se lay dung ban moi nhat vi job nay
     # needs toan bo cac job merge da push xong). KHONG dung L2 lam input -
     # L2 (l2_merged/) chi la KET QUA thang hang, khong phai nguon du doan.
+    # QUAN TRONG: predict_next/predict_next_ml/predict_next_ai/predict_next_ai2
+    # deu commit+push vao predict/ tren cung nhanh main - neu chay SONG SONG
+    # se dua nhau push (git pull --rebase lien tuc that bai sau 5 lan retry
+    # -> mat ket qua du doan cua job do, khien predict/*.txt bi LECH 1 KY so
+    # voi data/all.csv + data/full_results.json da duoc scan_and_check commit
+    # xong). Da xich predict_next_ml needs predict_next, predict_next_ai
+    # needs predict_next_ml, predict_next_ai2 needs predict_next_ai (xem cac
+    # job ben duoi) de dam bao CHI 1 job push tai 1 thoi diem.
     needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
@@ -1215,7 +1229,7 @@ jobs:
     # Du doan ky ke tiep BAN ML - DOC LAP HOAN TOAN voi job predict_next
     # (khong dung chung file, khong goi lan nhau). Mien phi, khong can API
     # key, chi dung sklearn chay local trong runner.
-    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4]
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:
@@ -1274,7 +1288,7 @@ jobs:
     # secret GEMINI_API_KEY (MIEN PHI, lay tai https://aistudio.google.com/apikey).
     # Neu chua co secret nay, job se FAIL o buoc goi API - khong anh huong
     # cac job khac vi khong job nao needs job nay.
-    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4]
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_ml]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:
@@ -1336,7 +1350,7 @@ jobs:
     # khong can the, lay tai https://console.groq.com/keys). Neu chua co
     # secret nay, job se FAIL o buoc goi API - khong anh huong cac job
     # khac vi khong job nao needs job nay.
-    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4]
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_ai]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:
