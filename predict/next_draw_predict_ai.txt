@@ -1,64 +1,34 @@
-DU DOAN KY 00872 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)
+DU DOAN KY 00873 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)
 Model AI su dung: gemini-3-flash-preview
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
---- Model (l1_merged file: l1_merged/merged_seed1062788782639.json) ---
-  seed_start cua model: 1062788782639
-  seed AI chon: 1062791720982
-  ly do AI dua ra: Chon vi co so 9, 20 va DB 1 xuat hien voi tan suat cao trong cac ky gan day.
-  DU DOAN ky 00872: 09-16-20-25-31 + DAC BIET 1
-
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  seed AI chon: 108479430844
-  ly do AI dua ra: Tap trung vao cac so 9, 27, 35 vua ra o ky 00871 va DB 2 da tung xuat hien.
-  DU DOAN ky 00872: 09-22-27-31-35 + DAC BIET 2
+  seed AI chon: 108477820729
+  ly do AI dua ra: Dãy số này chứa các số xuất hiện với tần suất rất cao trong 15 kỳ gần đây như 11, 13, 20 và 27.
+  DU DOAN ky 00873: 11-13-17-20-27 + DAC BIET 9
 
---- Model (l1_merged file: l1_merged/merged_seed1093944298639.json) ---
-  seed_start cua model: 1093944298639
-  seed AI chon: 1093949135412
-  ly do AI dua ra: Ket hop cac so 9, 10, 20 la nhung so dang co chu ky roi day va DB 7 tu ky 00867.
-  DU DOAN ky 00872: 04-09-10-16-20 + DAC BIET 7
-
---- Model (l1_merged file: l1_merged/merged_seed1125099814639.json) ---
-  seed_start cua model: 1125099814639
-  seed AI chon: 1125101455399
-  ly do AI dua ra: Lua chon dua tren su lap lai cua bo so 9, 15 va 20 cung voi DB 3.
-  DU DOAN ky 00872: 09-14-15-20-31 + DAC BIET 3
-
---- Model (l1_merged file: l1_merged/merged_seed1156255330639.json) ---
-  seed_start cua model: 1156255330639
-  seed AI chon: 1156259965874
-  ly do AI dua ra: Co do trung khop cao voi ky gan nhat (9, 15, 35) va DB 1 rat hay ve.
-  DU DOAN ky 00872: 09-15-20-28-35 + DAC BIET 1
-
---- Model (l1_merged file: l1_merged/merged_seed1187410846639.json) ---
-  seed_start cua model: 1187410846639
-  seed AI chon: 1187413843037
-  ly do AI dua ra: Bao gom cac so hot 9, 13, 20 va giu nguyen DB 11 vua moi ra.
-  DU DOAN ky 00872: 03-09-13-20-30 + DAC BIET 11
-
---- Model (l1_merged file: l1_merged/merged_seed1218566362639.json) ---
-  seed_start cua model: 1218566362639
-  seed AI chon: 1218575506700
-  ly do AI dua ra: Tap trung vao cum so 11, 20, 23 dang co tan suat day dac va DB 12 kinh dien.
-  DU DOAN ky 00872: 07-11-18-20-23 + DAC BIET 12
+--- Model (l1_merged file: l1_merged/merged_seed1280877394639.json) ---
+  seed_start cua model: 1280877394639
+  seed AI chon: 1280881757860
+  ly do AI dua ra: Kết hợp tốt các số 'nóng' gồm 9, 11, 20 và 24, phản ánh xu hướng lặp lại của các kỳ vừa qua.
+  DU DOAN ky 00873: 08-09-11-20-24 + DAC BIET 8
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  seed AI chon: 682305853272
-  ly do AI dua ra: Ky vong vao su lap lai cua bo ba 9, 10, 15 vua xuat hien o ky 00871.
-  DU DOAN ky 00872: 09-10-15-21-34 + DAC BIET 5
+  seed AI chon: 682305836287
+  ly do AI dua ra: Bao gồm bộ ba 9, 13, 20 thường xuyên xuất hiện cùng nhau và số đặc biệt 12 có tần suất rơi lại rất cao.
+  DU DOAN ky 00873: 09-12-13-20-26 + DAC BIET 12
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
-  seed AI chon: 708481029895
-  ly do AI dua ra: Ky vong vao DB 1 va su tro lai cua cac con so tam trung nhu 7, 12, 24.
-  DU DOAN ky 00872: 02-07-12-24-25 + DAC BIET 1
+  seed AI chon: 708482669931
+  ly do AI dua ra: Lựa chọn các số có nhịp độ ổn định như 13, 20, 27 và số đặc biệt 8 từng xuất hiện ở kỳ 00869.
+  DU DOAN ky 00873: 05-13-20-27-34 + DAC BIET 8
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 900482037114
-  ly do AI dua ra: Lua chon cac so 10, 11 va DB 1 do day la nhung con so co xac suat xuat hien cao.
-  DU DOAN ky 00872: 07-10-11-25-32 + DAC BIET 1
+  seed AI chon: 900481618110
+  ly do AI dua ra: Tập trung vào các số 11, 17, 18 và 24 vốn đang có xu hướng rơi dày đặc trong 5-7 kỳ gần nhất.
+  DU DOAN ky 00873: 05-11-17-18-24 + DAC BIET 8
 
