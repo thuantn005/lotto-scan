@@ -2,63 +2,33 @@ DU DOAN KY 00872 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict
 Model AI su dung (Groq, mien phi vinh vien): openai/gpt-oss-120b
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
---- Model (l1_merged file: l1_merged/merged_seed1062788782639.json) ---
-  seed_start cua model: 1062788782639
-  seed AI chon: 1062790565639
-  ly do AI dua ra: Highest DB (10) among Model 0 seeds
-  DU DOAN ky 00872: 01-04-05-13-21 + DAC BIET 10
-
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  seed AI chon: 108479862599
-  ly do AI dua ra: Highest DB (12) among Model 1 seeds
-  DU DOAN ky 00872: 11-14-16-23-28 + DAC BIET 12
+  seed AI chon: 108479421887
+  ly do AI dua ra: Contains 18 and 27, the two most frequently drawn numbers in the last 15 draws.
+  DU DOAN ky 00872: 04-18-19-27-34 + DAC BIET 11
 
---- Model (l1_merged file: l1_merged/merged_seed1093944298639.json) ---
-  seed_start cua model: 1093944298639
-  seed AI chon: 1093945634126
-  ly do AI dua ra: Highest DB (12) among Model 2 seeds
-  DU DOAN ky 00872: 05-20-24-28-34 + DAC BIET 12
-
---- Model (l1_merged file: l1_merged/merged_seed1125099814639.json) ---
-  seed_start cua model: 1125099814639
-  seed AI chon: 1125103426931
-  ly do AI dua ra: Highest DB (11) among Model 3 seeds
-  DU DOAN ky 00872: 07-12-17-27-32 + DAC BIET 11
-
---- Model (l1_merged file: l1_merged/merged_seed1156255330639.json) ---
-  seed_start cua model: 1156255330639
-  seed AI chon: 1156259796356
-  ly do AI dua ra: Highest DB (12) among Model 4 seeds
-  DU DOAN ky 00872: 01-04-09-23-29 + DAC BIET 9
-
---- Model (l1_merged file: l1_merged/merged_seed1187410846639.json) ---
-  seed_start cua model: 1187410846639
-  seed AI chon: 1187411422869
-  ly do AI dua ra: Highest DB (12) among Model 5 seeds
-  DU DOAN ky 00872: 03-11-22-27-31 + DAC BIET 12
-
---- Model (l1_merged file: l1_merged/merged_seed1218566362639.json) ---
-  seed_start cua model: 1218566362639
-  seed AI chon: 1218575506700
-  ly do AI dua ra: Highest DB (12) among Model 6 seeds
-  DU DOAN ky 00872: 07-11-18-20-23 + DAC BIET 12
+--- Model (l1_merged file: l1_merged/merged_seed1249721878639.json) ---
+  seed_start cua model: 1249721878639
+  seed AI chon: 1249722598580
+  ly do AI dua ra: Features both 11 and 20, each appearing five times in recent results.
+  DU DOAN ky 00872: 10-11-12-20-33 + DAC BIET 8
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  seed AI chon: 682305822691
-  ly do AI dua ra: Highest DB (12) among Model 7 seeds
-  DU DOAN ky 00872: 07-08-19-25-26 + DAC BIET 12
+  seed AI chon: 682305830772
+  ly do AI dua ra: Includes 11 and 20, the two top‑frequency numbers from the latest draws.
+  DU DOAN ky 00872: 05-08-11-19-20 + DAC BIET 3
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
-  seed AI chon: 708478308501
-  ly do AI dua ra: Highest DB (12) among Model 8 seeds
-  DU DOAN ky 00872: 03-09-25-26-35 + DAC BIET 12
+  seed AI chon: 708478217447
+  ly do AI dua ra: Covers 11, 18 and 27 – three of the most common numbers in the last 15 draws.
+  DU DOAN ky 00872: 08-10-11-18-27 + DAC BIET 6
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 900481594148
-  ly do AI dua ra: Highest DB (12) among Model 9 seeds
-  DU DOAN ky 00872: 03-08-13-25-28 + DAC BIET 12
+  seed AI chon: 900483461669
+  ly do AI dua ra: Picks 27, one of the five‑time frequent numbers in the recent draw history.
+  DU DOAN ky 00872: 17-21-27-32-34 + DAC BIET 2
 
