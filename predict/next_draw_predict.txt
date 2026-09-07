@@ -9,12 +9,12 @@ Neu seed nay du doan dung ky 00873, no se THANG HANG (thanh L2) ngay ky nay.
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00863)
   DU DOAN ky 00873: 11-13-17-20-27 + DAC BIET 9
 
---- Model (l1_merged file: l1_merged/merged_seed1280877394639.json) ---
-  seed_start cua model: 1280877394639
-  so seed con lai trong L1 cua model nay: 80228
-  seed duoc chon (manh nhat): 1280877421236
-  seed nay da tung trung: 1 lan (lan gan nhat: ky 00865)
-  DU DOAN ky 00873: 01-09-25-27-32 + DAC BIET 6
+--- Model (l1_merged file: l1_merged/merged_seed1312032910639.json) ---
+  seed_start cua model: 1312032910639
+  so seed con lai trong L1 cua model nay: 79785
+  seed duoc chon (manh nhat): 1312033217789
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00866)
+  DU DOAN ky 00873: 17-21-23-24-27 + DAC BIET 9
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
