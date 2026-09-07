@@ -64,7 +64,15 @@
       "share_date": "2026-09-08",
       "peak_jackpot": 14964268000,
       "trigger_draw_id": "00871",
-      "last_event": null
+      "last_event": {
+        "id": "reminder-2026-09-08-00871",
+        "kind": "reminder",
+        "title_vi": "🔔 TỐI NAY: kỳ CHIA GIẢI Độc Đắc Lotto 5/35!",
+        "title_en": "🔔 TONIGHT: Lotto 5/35 jackpot SHARE DRAW!",
+        "message_vi": "Kỳ quay 21:00 hôm nay (08/09/2026) là kỳ CHIA GIẢI. Độc Đắc ~14.964.268.000 (~15.0 tỷ) sẽ chia cho Giải Nhất (2/6) và Nhì/Ba/Tư/Năm (mỗi giải 1/6) nếu không ai trúng trực tiếp. Nhớ mua vé trước giờ quay!",
+        "message_en": "Tonight's 21:00 draw (08/09/2026) is the SHARE draw. The ~14.964.268.000 (~15.0 tỷ) jackpot will be split among 1st prize (2/6 shares) and 2nd/3rd/4th/5th (1/6 each) if nobody wins outright. Get your ticket before the draw!",
+        "urgent": true
+      }
     }
   }
 ]
