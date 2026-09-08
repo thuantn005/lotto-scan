@@ -1,4 +1,5 @@
-DU DOAN KY 00873 - PHIEN BAN AI3/OPENROUTER (doc lap voi predict_next_draw.py, predict_next_draw_ml.py, predict_next_draw_ai.py va predict_next_draw_ai2.py)
+DU DOAN KY 00874 - PHIEN BAN AI3/OPENROUTER (doc lap voi predict_next_draw.py, predict_next_draw_ml.py, predict_next_draw_ai.py va predict_next_draw_ai2.py)
 Model AI su dung (OpenRouter, mien phi): openrouter/free
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
+(OpenRouter khong tra ve ket qua hop le lan nay, xem log de biet chi tiet.)
