@@ -2,9 +2,3 @@ DU DOAN KY 00873 - PHIEN BAN AI3/OPENROUTER (doc lap voi predict_next_draw.py, p
 Model AI su dung (OpenRouter, mien phi): openrouter/free
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
---- Model (l1_merged file: l1_merged/merged_seed1374343942639.json) ---
-  seed_start cua model: 1374343942639
-  seed AI chon: 1374345603485
-  ly do AI dua ra: Upon analyzing the provided Lotto 5/35 draws, the number 00872 appears consistently across the generated combinations in Models 0, 1, 3, and 4, establishing it as the primary 'middle' indicator for the target strategy. To determine the best model, we evaluate the hit rates of the high-performing models that exhibit this 'middle' characteristic. Model 0 has a hit rate of 0.050, Model 4 has 0.067, while both Model 1 and Model 3 achieve the highest hit rate of 0.100. Between Model 1 and Model 3, Model 1 is selected as it maintains the optimal predictive strength with a superior hit rate. The seed 1374345603485 from Model 1 is chosen as it uniquely contributes to this top-tier performance.
-  DU DOAN ky 00873: 01-06-24-25-29 + DAC BIET 10
-
