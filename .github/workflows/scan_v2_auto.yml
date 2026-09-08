@@ -1168,12 +1168,11 @@ jobs:
           git pull --rebase origin main
           git stash pop || true
           [ -d j1_535 ] && git add j1_535/ || true
-          [ -f predict/strategy_stats.json ] && git add predict/strategy_stats.json || true
           if git diff --cached --quiet; then
             echo "Khong co du doan dung nao moi, khong co gi de commit"
             exit 0
           fi
-          git commit -m "cap nhat thong ke du doan + doi chieu ky ${{ needs.scan_and_check.outputs.latest_ky }} $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git commit -m "du doan dung ky ${{ needs.scan_and_check.outputs.latest_ky }} - luu vao j1_535/ $(date -u +%Y-%m-%d\ %H:%M) UTC"
           for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
@@ -1225,7 +1224,6 @@ jobs:
           CSV_PATH: data/all.csv
           L1_GLOB: "l1_merged/merged_seed*.json"
           OUT_PATH: "predict/next_draw_predict_ml.txt"
-          HISTORY_DIR: "predict/history"
           ML_SCORES_PATH: "predict/ml_scores.json"
         run: python3 predict_next_draw_ml.py
 
@@ -1282,7 +1280,6 @@ jobs:
           CSV_PATH: data/all.csv
           L1_GLOB: "l1_merged/merged_seed*.json"
           OUT_PATH: "predict/next_draw_predict_ai.txt"
-          HISTORY_DIR: "predict/history"
           CANDIDATES_PER_MODEL: "15"
           GEMINI_MODEL: "gemini-3-flash-preview"
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -1345,7 +1342,6 @@ jobs:
           CSV_PATH: data/all.csv
           L1_GLOB: "l1_merged/merged_seed*.json"
           OUT_PATH: "predict/next_draw_predict_ai2.txt"
-          HISTORY_DIR: "predict/history"
           CANDIDATES_PER_MODEL: "15"
           GROQ_MODEL: "openai/gpt-oss-120b"
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
@@ -1368,6 +1364,70 @@ jobs:
             exit 0
           fi
           git commit -m "du doan ky ke tiep - ban AI2/Groq $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  predict_next_ai3:
+    # Du doan ky ke tiep BAN AI3/OPENROUTER - DOC LAP HOAN TOAN voi
+    # predict_next, predict_next_ml, predict_next_ai (Gemini) va
+    # predict_next_ai2 (Groq) - khong dung chung file, khong goi lan nhau.
+    # Dung model router mien phi "openrouter/free" (OpenRouter tu dong
+    # chon 1 model dang mien phi tai thoi diem goi). Can secret
+    # OPENROUTER_API_KEY (MIEN PHI, lay tai https://openrouter.ai/keys,
+    # khong can the tin dung). Neu chua co secret nay, job se FAIL o buoc
+    # goi API - khong anh huong cac job khac vi khong job nao needs job nay.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_ai2]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Du doan ky ke tiep - phien ban AI3 (OpenRouter, mien phi)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          OUT_PATH: "predict/next_draw_predict_ai3.txt"
+          CANDIDATES_PER_MODEL: "15"
+          OPENROUTER_MODEL: "openrouter/free"
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -e
+          pip install --quiet requests
+          python3 predict_next_draw_ai3.py
+
+      - name: Commit ket qua du doan AI3
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict ai3 truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban AI3/OpenRouter $(date -u +%Y-%m-%d\ %H:%M) UTC"
           for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
