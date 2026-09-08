@@ -5,30 +5,30 @@ Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
   seed AI chon: 108477820729
-  ly do AI dua ra: Dãy số này chứa các số xuất hiện với tần suất rất cao trong 15 kỳ gần đây như 11, 13, 20 và 27.
+  ly do AI dua ra: This seed includes the high-frequency main numbers 11, 20, and 27, which have appeared frequently in recent draws.
   DU DOAN ky 00873: 11-13-17-20-27 + DAC BIET 9
 
---- Model (l1_merged file: l1_merged/merged_seed1280877394639.json) ---
-  seed_start cua model: 1280877394639
-  seed AI chon: 1280881757860
-  ly do AI dua ra: Kết hợp tốt các số 'nóng' gồm 9, 11, 20 và 24, phản ánh xu hướng lặp lại của các kỳ vừa qua.
-  DU DOAN ky 00873: 08-09-11-20-24 + DAC BIET 8
+--- Model (l1_merged file: l1_merged/merged_seed1343188426639.json) ---
+  seed_start cua model: 1343188426639
+  seed AI chon: 1343191509815
+  ly do AI dua ra: Combines persistent trend numbers 18 and 27 with Special Number 1, which has a strong historical recurrence rate.
+  DU DOAN ky 00873: 03-05-18-27-28 + DAC BIET 1
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
   seed AI chon: 682305836287
-  ly do AI dua ra: Bao gồm bộ ba 9, 13, 20 thường xuyên xuất hiện cùng nhau và số đặc biệt 12 có tần suất rơi lại rất cao.
+  ly do AI dua ra: Features key numbers 9 and 20 and predicts Special Number 12, which is the most frequent result in the last 15 draws.
   DU DOAN ky 00873: 09-12-13-20-26 + DAC BIET 12
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
   seed AI chon: 708482669931
-  ly do AI dua ra: Lựa chọn các số có nhịp độ ổn định như 13, 20, 27 và số đặc biệt 8 từng xuất hiện ở kỳ 00869.
+  ly do AI dua ra: Captures a strong set of active numbers (20, 27, 34) and aligns with the recent occurrence of Special Number 8.
   DU DOAN ky 00873: 05-13-20-27-34 + DAC BIET 8
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 900481618110
-  ly do AI dua ra: Tập trung vào các số 11, 17, 18 và 24 vốn đang có xu hướng rơi dày đặc trong 5-7 kỳ gần nhất.
-  DU DOAN ky 00873: 05-11-17-18-24 + DAC BIET 8
+  seed AI chon: 900480669310
+  ly do AI dua ra: Closely tracks the immediate momentum of the last draw by including the core cluster of 17, 18, and 20.
+  DU DOAN ky 00873: 01-07-17-18-20 + DAC BIET 5
 
