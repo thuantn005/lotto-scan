@@ -1,10 +1,10 @@
-DU DOAN KY 00874 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
+DU DOAN KY 00873 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
 Model AI su dung (Groq, mien phi vinh vien): openai/gpt-oss-120b
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
---- Model (l1_merged file: l1_merged/merged_seed1436654974639.json) ---
-  seed_start cua model: 1436654974639
-  seed AI chon: 1436660241576
-  ly do AI dua ra: Highest hit_rate (0.100) among all examined models, with a match in the most recent draw (ky 00872), making it the most noteworthy candidate for monitoring.
-  DU DOAN ky 00874: 03-19-20-25-27 + DAC BIET 6
+--- Model (l1_merged file: l1_merged/merged_seed1405499458639.json) ---
+  seed_start cua model: 1405499458639
+  seed AI chon: 1405501229742
+  ly do AI dua ra: Highest observed hit_rate (0.100) across models and matched the most recent draw (00872), making it the most noteworthy candidate.
+  DU DOAN ky 00873: 09-14-16-18-32 + DAC BIET 8
 

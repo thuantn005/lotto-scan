@@ -434,8 +434,16 @@ def validate_record(r: dict) -> str | None:
     if tier_names != EXPECTED_TIER_ORDER:
         return f"sai ten/thu tu hang giai: {tier_names}"
 
+    # Nguong SL toi da: truoc day 200_000, nhung KY CHIA GIAI DOC DAC co
+    # luong nguoi mua tang manh o MOI hang giai (da xac nhan thuc te: ky
+    # #00874 - 08/09/2026, Giai Khuyen Khich SL that = 273_491, cao hon
+    # nguong cu -> toan bo ky bi loai bo oan). Nang len 2_000_000 (van
+    # thap hon RAT NHIEU so voi moi gia tri tien te trong bang - luon o
+    # muc hang chuc/hang tram trieu tro len - nen van giu duoc tac dung
+    # bat loi cao nham gia tri tien vao truong count).
+    MAX_PLAUSIBLE_COUNT = 2_000_000
     for p in prizes:
-        if p.get("count") is None or p["count"] < 0 or p["count"] > 200_000:
+        if p.get("count") is None or p["count"] < 0 or p["count"] > MAX_PLAUSIBLE_COUNT:
             return f"SL hang '{p.get('tier')}' vo ly: {p.get('count')}"
         if p.get("value") is None or p["value"] < 0:
             return f"gia tri hang '{p.get('tier')}' vo ly: {p.get('value')}"
