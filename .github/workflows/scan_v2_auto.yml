@@ -1168,11 +1168,12 @@ jobs:
           git pull --rebase origin main
           git stash pop || true
           [ -d j1_535 ] && git add j1_535/ || true
+          [ -f predict/strategy_stats.json ] && git add predict/strategy_stats.json || true
           if git diff --cached --quiet; then
             echo "Khong co du doan dung nao moi, khong co gi de commit"
             exit 0
           fi
-          git commit -m "du doan dung ky ${{ needs.scan_and_check.outputs.latest_ky }} - luu vao j1_535/ $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git commit -m "cap nhat thong ke du doan + doi chieu ky ${{ needs.scan_and_check.outputs.latest_ky }} $(date -u +%Y-%m-%d\ %H:%M) UTC"
           for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
@@ -1224,6 +1225,7 @@ jobs:
           CSV_PATH: data/all.csv
           L1_GLOB: "l1_merged/merged_seed*.json"
           OUT_PATH: "predict/next_draw_predict_ml.txt"
+          HISTORY_DIR: "predict/history"
           ML_SCORES_PATH: "predict/ml_scores.json"
         run: python3 predict_next_draw_ml.py
 
@@ -1280,6 +1282,7 @@ jobs:
           CSV_PATH: data/all.csv
           L1_GLOB: "l1_merged/merged_seed*.json"
           OUT_PATH: "predict/next_draw_predict_ai.txt"
+          HISTORY_DIR: "predict/history"
           CANDIDATES_PER_MODEL: "15"
           GEMINI_MODEL: "gemini-3-flash-preview"
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -1342,6 +1345,7 @@ jobs:
           CSV_PATH: data/all.csv
           L1_GLOB: "l1_merged/merged_seed*.json"
           OUT_PATH: "predict/next_draw_predict_ai2.txt"
+          HISTORY_DIR: "predict/history"
           CANDIDATES_PER_MODEL: "15"
           GROQ_MODEL: "openai/gpt-oss-120b"
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}

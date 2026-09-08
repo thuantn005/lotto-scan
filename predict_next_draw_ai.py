@@ -16,7 +16,9 @@ Luu y: day la 1 lop "y kien" bo sung mang tinh nghien cuu/thu nghiem -
 xo so la ngau nhien that su, cau tra loi cua AI khong co gia tri du doan
 chinh xac, chi de tham khao/so sanh voi cac phuong phap khac.
 
-Ghi ra file RIENG: predict/next_draw_predict_ai.txt
+Ghi ra file RIENG: predict/next_draw_predict_ai.txt. Chien luoc nay duoc
+danh dau la "ai" trong lich su du doan (predict/history/{draw_id}_ai.txt),
+doc lap voi base/ml/ai2.
 
 Can bien moi truong GEMINI_API_KEY (API key MIEN PHI, lay tai
 https://aistudio.google.com/apikey, khong can the tin dung, luu duoi
@@ -26,11 +28,11 @@ ENV:
     CSV_PATH         - file CSV cac ky quay (mac dinh data/all.csv)
     L1_GLOB          - pattern glob cac file L1 (mac dinh l1_merged/merged_seed*.json)
     OUT_PATH         - file .txt ket qua rieng cua AI (mac dinh predict/next_draw_predict_ai.txt)
+    HISTORY_DIR      - thu muc luu lich su du doan (mac dinh predict/history)
     CANDIDATES_PER_MODEL - so seed ung vien gui cho AI moi model (mac dinh 15)
     GEMINI_MODEL     - model Gemini dung de goi (mac dinh gemini-3.8-flash, moi nhat, mien phi trong han muc)
 """
 
-import csv
 import glob
 import json
 import os
@@ -40,109 +42,16 @@ from pathlib import Path
 
 import requests
 
-M1 = 0x9E3779B97F4A7C15
-M2 = 0xD1B54A32D192ED03
-M3 = 0xBF58476D1CE4E5B9
-M4 = 0x94D049BB133111EB
-MASK64 = 0xFFFFFFFFFFFFFFFF
-C = 324632  # C(35,5)
+from lotto_common import (
+    build_binom,
+    build_rank_to_mask,
+    predict_ticket,
+    get_next_draw_id,
+    load_recent_draws_summary,
+    save_prediction_history,
+)
 
-
-def build_binom():
-    binom = [[0] * 6 for _ in range(36)]
-    for n in range(36):
-        for k in range(6):
-            if k == 0:
-                binom[n][k] = 1
-            elif k > n:
-                binom[n][k] = 0
-            else:
-                num, den = 1, 1
-                for i in range(k):
-                    num *= (n - i)
-                    den *= (i + 1)
-                binom[n][k] = num // den
-    return binom
-
-
-def build_rank_to_mask(binom):
-    lut = [0] * C
-    for r in range(C):
-        mask, rem = 0, r
-        for k in range(5, 0, -1):
-            x = k - 1
-            while binom[x + 1][k] <= rem:
-                x += 1
-            mask |= (1 << x)
-            rem -= binom[x][k]
-        lut[r] = mask
-    return lut
-
-
-def mix64(x):
-    x &= MASK64
-    x ^= (x >> 30)
-    x = (x * M3) & MASK64
-    x ^= (x >> 27)
-    x = (x * M4) & MASK64
-    x ^= (x >> 31)
-    return x
-
-
-def predict_ticket(seed, draw_id, rank_to_mask):
-    combined = (seed * M1 + draw_id * M2) & MASK64
-    mixed = mix64(combined)
-    rank = mixed % C
-    mask = rank_to_mask[rank]
-    mixed2 = mix64(mixed)
-    special = (mixed2 % 12) + 1
-    numbers = [i + 1 for i in range(35) if mask & (1 << i)]
-    return numbers, special
-
-
-def get_next_draw_id(csv_path):
-    max_id = 0
-    with open(csv_path, "r", encoding="utf-8") as f:
-        next(f, None)
-        for line in f:
-            parts = line.split(",", 2)
-            if len(parts) < 2:
-                continue
-            try:
-                did = int(parts[1])
-            except ValueError:
-                continue
-            if did > max_id:
-                max_id = did
-    return max_id + 1
-
-
-def load_recent_draws_summary(csv_path, last_k=15):
-    """Tra ve list [(draw_id, [5 so], dac biet)] cua last_k ky GAN NHAT,
-    dung lam ngu canh cho AI (khong dung de tinh toan chinh xac gi)."""
-    rows = []
-    with open(csv_path, "r", encoding="utf-8", newline="") as f:
-        reader = csv.reader(f)
-        next(reader, None)
-        for row in reader:
-            if len(row) < 5:
-                continue
-            try:
-                draw_id = int(row[1])
-            except ValueError:
-                continue
-            result_json = row[4]
-            nums_match = re.search(r'"numbers"\s*:\s*\[([^\]]*)\]', result_json)
-            sp_match = re.search(r'"special_numbers"\s*:\s*\[([^\]]*)\]', result_json)
-            if not nums_match or not sp_match:
-                continue
-            numbers = sorted(int(x) for x in nums_match.group(1).split(",") if x.strip() != "")
-            specials = [int(x) for x in sp_match.group(1).split(",") if x.strip() != ""]
-            if len(numbers) != 5 or not specials:
-                continue
-            rows.append((draw_id, numbers, specials[0]))
-    rows.sort(key=lambda r: r[0])
-    return rows[-last_k:]
+STRATEGY = "ai"
 
 
 def collect_candidates_per_model(fp, next_draw_id, rank_to_mask, top_k):
@@ -228,6 +137,7 @@ def main():
     csv_path = os.environ.get("CSV_PATH", "data/all.csv")
     l1_glob = os.environ.get("L1_GLOB", "l1_merged/merged_seed*.json")
     out_path = os.environ.get("OUT_PATH", "predict/next_draw_predict_ai.txt")
+    history_dir = os.environ.get("HISTORY_DIR", "predict/history")
     top_k = int(os.environ.get("CANDIDATES_PER_MODEL", "15"))
     model_name = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
 
@@ -268,6 +178,7 @@ def main():
         print(f"[AI] Khong parse duoc JSON tu Gemini: {e}\nRaw response:\n{raw_response}", file=sys.stderr)
         picks = []
 
+    predictions = []
     os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(f"DU DOAN KY {next_draw_id:05d} - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)\n")
@@ -290,11 +201,21 @@ def main():
             f.write(f"  seed AI chon: {seed}\n")
             f.write(f"  ly do AI dua ra: {reasoning}\n")
             f.write(f"  DU DOAN ky {next_draw_id:05d}: {nums_str} + DAC BIET {cand['special']}\n\n")
+            predictions.append({
+                "seed_start": m["seed_start"],
+                "seed": seed,
+                "numbers": cand["numbers"],
+                "special": cand["special"],
+                "file": m["file"],
+            })
 
         if not picks:
             f.write("(Gemini khong tra ve ket qua hop le lan nay, xem log de biet chi tiet.)\n")
 
+    hpath = save_prediction_history(history_dir, next_draw_id, STRATEGY, predictions)
+
     print(f"[AI] Da ghi {len(picks)} du doan vao {out_path}")
+    print(f"[AI] Da luu lich su du doan ({STRATEGY}) vao {hpath}")
     print(f"NEXT_DRAW_ID={next_draw_id}")
 
 

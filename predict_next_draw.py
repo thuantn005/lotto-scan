@@ -11,18 +11,20 @@ THANG HANG (thanh L2) ngay khi ky moi duoc xac nhan.
 
 KHONG dung L2 (l2_merged/) lam input - L2 chi la KET QUA thang hang.
 
-Thuat toan giu NGUYEN 100% cong thuc trong scan_per_draw.cpp:
-    combined = seed*M1 + draw_id*M2   (mod 2^64)
-    mixed    = mix64(combined)
-    rank     = mixed mod C(35,5)
-    mask     = unrank_colex(rank)      -> 5 so chinh
-    mixed2   = mix64(mixed)
-    special  = mixed2 mod 12 + 1
+Thuat toan sinh ve + cac ham dung chung nam trong lotto_common.py (dung
+chung voi predict_next_draw_ml.py/_ai.py/_ai2.py - xem file do de biet
+chi tiet cong thuc).
+
+Chien luoc nay duoc danh dau la "base" trong lich su du doan
+(predict/history/{draw_id}_base.txt), de check_prediction_result.py doi
+chieu rieng voi 3 chien luoc con lai (ml/ai/ai2) - truoc day chi chien
+luoc nay duoc ghi lich su nen 3 ban con lai chua bao gio duoc kiem chung.
 
 ENV:
     CSV_PATH   - file CSV cac ky quay (mac dinh data/all.csv)
     L1_GLOB    - pattern glob cac file L1 (mac dinh l1_merged/merged_seed*.json)
     OUT_PATH   - file .txt ket qua (mac dinh predict/next_draw_predict.txt)
+    HISTORY_DIR - thu muc luu lich su du doan (mac dinh predict/history)
 """
 
 import glob
@@ -30,81 +32,15 @@ import json
 import os
 from pathlib import Path
 
-M1 = 0x9E3779B97F4A7C15
-M2 = 0xD1B54A32D192ED03
-M3 = 0xBF58476D1CE4E5B9
-M4 = 0x94D049BB133111EB
-MASK64 = 0xFFFFFFFFFFFFFFFF
-C = 324632  # C(35,5)
+from lotto_common import (
+    build_binom,
+    build_rank_to_mask,
+    predict_ticket,
+    get_next_draw_id,
+    save_prediction_history,
+)
 
-
-def build_binom():
-    binom = [[0] * 6 for _ in range(36)]
-    for n in range(36):
-        for k in range(6):
-            if k == 0:
-                binom[n][k] = 1
-            elif k > n:
-                binom[n][k] = 0
-            else:
-                num, den = 1, 1
-                for i in range(k):
-                    num *= (n - i)
-                    den *= (i + 1)
-                binom[n][k] = num // den
-    return binom
-
-
-def build_rank_to_mask(binom):
-    lut = [0] * C
-    for r in range(C):
-        mask, rem = 0, r
-        for k in range(5, 0, -1):
-            x = k - 1
-            while binom[x + 1][k] <= rem:
-                x += 1
-            mask |= (1 << x)
-            rem -= binom[x][k]
-        lut[r] = mask
-    return lut
-
-
-def mix64(x):
-    x &= MASK64
-    x ^= (x >> 30)
-    x = (x * M3) & MASK64
-    x ^= (x >> 27)
-    x = (x * M4) & MASK64
-    x ^= (x >> 31)
-    return x
-
-
-def predict_ticket(seed, draw_id, rank_to_mask):
-    combined = (seed * M1 + draw_id * M2) & MASK64
-    mixed = mix64(combined)
-    rank = mixed % C
-    mask = rank_to_mask[rank]
-    mixed2 = mix64(mixed)
-    special = (mixed2 % 12) + 1
-    numbers = [i + 1 for i in range(35) if mask & (1 << i)]
-    return numbers, special
-
-
-def get_next_draw_id(csv_path):
-    max_id = 0
-    with open(csv_path, "r", encoding="utf-8") as f:
-        next(f, None)  # header
-        for line in f:
-            parts = line.split(",", 2)
-            if len(parts) < 2:
-                continue
-            try:
-                did = int(parts[1])
-            except ValueError:
-                continue
-            if did > max_id:
-                max_id = did
-    return max_id + 1
+STRATEGY = "base"
 
 
 def pick_strongest_seed_per_model(fp):
@@ -179,21 +115,13 @@ def main():
             f.write(f"  seed nay da tung trung: {info['weight']} lan (lan gan nhat: ky {info['last_hit_draw']:05d})\n")
             f.write(f"  DU DOAN ky {next_draw_id:05d}: {nums_str} + DAC BIET {info['special']}\n\n")
 
-    # Luu them 1 file .txt LICH SU theo tung ky (de sau nay, khi ky nay THUC
-    # SU duoc xac nhan, check_prediction_result.py co the doc lai va so
-    # khop voi ket qua that - phuc vu viec luu vao j1_535/ khi doan dung).
-    os.makedirs(history_dir, exist_ok=True)
-    history_path = os.path.join(history_dir, f"{next_draw_id:05d}.txt")
-    with open(history_path, "w", encoding="utf-8") as f:
-        for info in predictions:
-            nums_str = ",".join(str(n) for n in info["numbers"])
-            f.write(
-                f"{info['seed_start']}|{info['seed']}|{info['weight']}|"
-                f"{nums_str}|{info['special']}|{info['file']}\n"
-            )
+    # Luu lich su rieng cho chien luoc "base" (predict/history/{ky}_base.txt)
+    # - de check_prediction_result.py sau nay doi chieu voi ket qua that,
+    # DOC LAP voi lich su cua ml/ai/ai2 (xem lotto_common.save_prediction_history).
+    hpath = save_prediction_history(history_dir, next_draw_id, STRATEGY, predictions)
 
     print(f"Da ghi {len(predictions)} du doan (1 model = 1 seed) vao {out_path}")
-    print(f"Da luu lich su du doan vao {history_path} (de doi chieu sau nay)")
+    print(f"Da luu lich su du doan ({STRATEGY}) vao {hpath} (de doi chieu sau nay)")
     print(f"NEXT_DRAW_ID={next_draw_id}")
     print(f"TOTAL_MODELS={len(predictions)}")
 
