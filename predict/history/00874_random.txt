@@ -1,0 +1,15 @@
+random|0|6,7,15,28,33|1|random
+random|1|6,10,15,18,26|8|random
+random|2|10,12,14,27,30|7|random
+random|3|5,10,14,23,33|12|random
+random|4|10,14,19,22,29|2|random
+random|5|2,4,11,28,32|10|random
+random|6|1,2,4,9,12|11|random
+random|7|8,23,24,28,33|3|random
+random|8|10,21,25,27,35|9|random
+random|9|12,24,25,29,35|3|random
+random|10|5,16,20,26,33|4|random
+random|11|2,9,11,24,32|11|random
+random|12|1,6,8,14,35|3|random
+random|13|6,12,17,23,35|3|random
+random|14|9,12,26,33,34|6|random
