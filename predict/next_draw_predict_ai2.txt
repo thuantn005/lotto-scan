@@ -2,33 +2,9 @@ DU DOAN KY 00873 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict
 Model AI su dung (Groq, mien phi vinh vien): openai/gpt-oss-120b
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
---- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
-  seed_start cua model: 108477750639
-  seed AI chon: 108478110827
-  ly do AI dua ra: Có hit_rate 0.05, trùng một lần ở kỳ gần nhất (00872), là đại diện cho các seed có hiệu suất cao nhất trong model này.
-  DU DOAN ky 00873: 05-11-12-33-35 + DAC BIET 2
-
---- Model (l1_merged file: l1_merged/merged_seed1374343942639.json) ---
-  seed_start cua model: 1374343942639
-  seed AI chon: 1374345603485
-  ly do AI dua ra: Hit_rate cao nhất 0.10 và trùng một lần ở kỳ 00872, nổi bật so với các seed khác trong model này.
-  DU DOAN ky 00873: 01-06-24-25-29 + DAC BIET 10
-
---- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
-  seed_start cua model: 682305800400
-  seed AI chon: 682307390972
-  ly do AI dua ra: Mặc dù hit_rate thấp (0.001), đây là seed đầu tiên đạt trùng một lần ở kỳ 00872, làm nổi bật trong model có nhiều seed.
-  DU DOAN ky 00873: 01-03-06-10-32 + DAC BIET 10
-
---- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
-  seed_start cua model: 708477750639
-  seed AI chon: 708480507342
-  ly do AI dua ra: Hit_rate 0.10 và trùng một lần ở kỳ 00872, là mẫu tiêu biểu cho model này.
-  DU DOAN ky 00873: 08-12-16-18-34 + DAC BIET 7
-
---- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
-  seed_start cua model: 900477750639
-  seed AI chon: 900478035516
-  ly do AI dua ra: Hit_rate 0.067 và trùng một lần ở kỳ 00872, là seed duy nhất đạt trùng trong model này.
-  DU DOAN ky 00873: 06-22-24-27-31 + DAC BIET 9
+--- Model (l1_merged file: l1_merged/merged_seed1405499458639.json) ---
+  seed_start cua model: 1405499458639
+  seed AI chon: 1405501229742
+  ly do AI dua ra: Highest observed hit_rate (0.100) across models and matched the most recent draw (00872), making it the most noteworthy candidate.
+  DU DOAN ky 00873: 09-14-16-18-32 + DAC BIET 8
 
