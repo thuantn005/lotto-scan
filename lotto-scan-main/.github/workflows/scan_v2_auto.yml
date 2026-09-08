@@ -1,0 +1,1553 @@
+name: Scan V2 (2 lan/ngay theo lich Vietlott) - dai seed co dinh, 1 file duy nhat
+
+# Workflow nay quet 5 "MODEL" seed SONG SONG, TU DONG, KHONG can nhap tay gi ca:
+#   1. Model chinh   (FIXED_SEED_START) - quet TOAN BO CSV, gioi han 5MB.
+#   2. Model phu #1  (ONCE_SEED_START)  - 10 ky gan nhat, seed CO DINH.
+#   3. Model phu #2  (ONCE2_SEED_START) - 20 ky gan nhat, seed CO DINH.
+#   4. Model phu #3  (ONCE3_SEED_START) - 15 ky gan nhat, seed CO DINH.
+#   5. Model phu #4  (ONCE4_*)          - 10 ky gan nhat, seed TU NOI TIEP:
+#      moi lan chay tu doc vi tri da quet toi dau (ONCE4_STATE_FILE) va quet
+#      tiep dai seed MOI (khong lap lai dai cu), ghi vi tri ke tiep lai vao
+#      chinh state file do.
+# Ca 5 model CUNG tu dong chay MOI KHI CO KY MOI (theo dung dieu kien
+# should_run cua model 1 - xem output cua job scan_and_check), khong phu
+# thuoc workflow_dispatch input nao - khong ai phai nhap tay seed/mode gi ca.
+# Muon doi seed/so ky cua model phu nao thi sua truc tiep O DAY (env ONCE*).
+#
+# LUU Y: model phu #1/#2/#3 (ONCE/ONCE2/ONCE3) TRUOC DAY chi chay 1 LAN DUY
+# NHAT roi tu khoa vinh vien qua file co (once_done.flag/once2_done.flag/
+# once3_done.flag) - vi vay 3 file l1_merged/merged_seed{ONCE*}.json bi dong
+# bang mai o ky luc chung chay lan dau, khong bao gio cap nhat ky moi nua.
+# Da BO co che khoa nay: ca 3 model phu nay gio quet lai TU DAU (FORCE_RESCAN=1)
+# theo dung cua so *_LAST_N_DRAWS ky gan nhat MOI LAN CO KY MOI, giong het
+# model chinh. Cac file once*_done.flag cu (neu con trong repo) khong con
+# duoc doc/ghi boi workflow nay nua, co the xoa thu cong.
+
+on:
+  schedule:
+    # 3h sau ky quay 13:00 VN -> 16:00 VN = 09:00 UTC
+    - cron: "0 9 * * *"
+    # 3h sau ky quay 21:00 VN -> 00:00 VN hom sau = 17:00 UTC cung ngay
+    - cron: "0 17 * * *"
+  workflow_dispatch: {}
+  push:
+    tags:
+      - 'run-*'   # day tag "run-YYYYMMDD-HHMM" de kich hoat cao ngay lap tuc
+
+env:
+  FIXED_SEED_START: "682305800400"
+  FIXED_SEED_COUNT: "1557775799"
+  # 3 model phu (seed CO DINH, sua truc tiep o day neu muon doi - KHONG can
+  # workflow_dispatch input). Moi model quet CHI *_LAST_N_DRAWS ky gan nhat,
+  # dai seed ~31 ty chia deu cho 20 runner (ONCE_BATCH_SIZE dung chung).
+  ONCE_BATCH_SIZE: "1557775800"
+  ONCE_SEED_START: "708477750639"
+  ONCE_LAST_N_DRAWS: "10"
+  ONCE2_SEED_START: "108477750639"
+  ONCE2_LAST_N_DRAWS: "20"
+  ONCE3_SEED_START: "900477750639"
+  ONCE3_LAST_N_DRAWS: "15"
+  # Model phu #4: SEED TU NOI TIEP (khong co dinh) - moi lan chay se doc
+  # ONCE4_STATE_FILE de biet quet tiep tu dau (KHONG quet lai dai cu), quet
+  # xong thi tu ghi lai vi tri ke tiep vao chinh file nay. Lan dau chua co
+  # file thi dung ONCE4_INITIAL_SEED_START lam diem bat dau.
+  ONCE4_INITIAL_SEED_START: "1000477750639"
+  ONCE4_LAST_N_DRAWS: "10"
+  ONCE4_STATE_FILE: "once4_seed_state.json"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scan-v2-single-runner
+  cancel-in-progress: false
+
+jobs:
+  scan_and_check:
+    # LUON LUON chay - day la model chinh, hanh vi giu nguyen 100% nhu truoc.
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    outputs:
+      should_run: ${{ steps.check_ky.outputs.should_run }}
+      latest_ky: ${{ steps.check_ky.outputs.latest_ky }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Download dataset moi nhat
+        run: |
+          set -e
+          mkdir -p data
+          curl -sL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.csv
+          wc -l data/all.csv
+
+      - name: Fallback cao xosominhngoc.net.vn neu dataset cham cap nhat
+        run: |
+          set -e
+          python3 scrape_xosominhngoc_fallback.py --csv data/all.csv --lookback-days 2
+          wc -l data/all.csv
+
+      - name: Cao ket qua day du (jackpot + bang 7 giai) ra JSON
+        run: |
+          set -e
+          python3 scrape_full_result_json.py --json data/full_results.json --lookback-days 2
+
+      # Tinh trang thai "ky CHIA GIAI" O DAY (server), KHONG de app tu tinh
+      # tren may (xem giai thich chi tiet trong share_draw_machine.py) -
+      # ghi thang vao ban ghi moi nhat cua full_results.json (truong
+      # "share_state"), app doc 1 lan la co du ca jackpot lan trang thai
+      # chia giai. LUON CHAY (khong cho should_run/changed) vi su kien
+      # "nhac toi nay" chi phu thuoc NGAY HOM NAY, khong phu thuoc jackpot
+      # co doi hay khong.
+      - name: Tinh trang thai ky chia giai (server-side, khong de app tu tinh)
+        id: share_state
+        run: |
+          set -e
+          python3 update_share_draw_state.py \
+            --results data/full_results.json \
+            --state share_draw_state.json \
+            --csv data/all.csv \
+            | tee /tmp/share_state_out.txt
+          grep -q "NEW_EVENT=true" /tmp/share_state_out.txt \
+            && echo "new_event=true" >> "$GITHUB_OUTPUT" \
+            || echo "new_event=false" >> "$GITHUB_OUTPUT"
+
+      # QUAN TRONG: commit rieng file nay NGAY TAI DAY, KHONG phu thuoc
+      # should_run cua buoc check_ky ben duoi - vi should_run dua theo
+      # dataset cua ben thu 3 (NhanAZ-Data), thuong cap nhat CHAM HON 2
+      # nguon mirror dung de cao file nay. Neu gop chung vao buoc "Commit
+      # ket qua" (co dieu kien should_run == true) thi phan lon cac lan
+      # chay se cao xong nhung KHONG BAO GIO duoc push len GitHub - file
+      # chi ton tai tren may chay job roi bi xoa khi job ket thuc.
+      - name: Commit data/full_results.json + share_draw_state.json (luon chay, khong cho should_run)
+        id: commit_full_results
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "truoc khi commit full_results.json" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -f data/full_results.json ] && git add data/full_results.json || true
+          [ -f share_draw_state.json ] && git add share_draw_state.json || true
+          if git diff --cached --quiet; then
+            echo "full_results.json khong doi, khong co gi de commit"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "cap nhat full_results.json (jackpot) $(date -u +%Y-%m-%d\ %H:%M) UTC"
+            for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Danh thuc app khi (a) full_results.json THUC SU vua doi (ky moi /
+      # jackpot doi), HOAC (b) may trang thai ky chia giai vua sinh 1 su
+      # kien MOI (VD "nhac toi nay" - khong lam thay doi jackpot nhung van
+      # can bao nguoi dung). Bo qua khi ca 2 dieu kien deu khong dung,
+      # tranh goi FCM vo ich.
+      - name: Danh thuc app qua FCM (data message, app tu quyet dinh co bao hay khong)
+        if: steps.commit_full_results.outputs.changed == 'true' || steps.share_state.outputs.new_event == 'true'
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.FCM_SERVICE_ACCOUNT_JSON }}
+        run: |
+          set -e
+          pip install --quiet google-auth requests
+          python3 send_fcm_push.py --topic chiagiai_updates
+
+      - name: Kiem tra ky moi nhat, bo qua neu da quet roi
+        id: check_ky
+        run: |
+          set -e
+          LATEST_KY=$(tail -n 1 data/all.csv | cut -d',' -f2)
+          echo "Ky moi nhat trong dataset: $LATEST_KY"
+
+          if [ -f last_ky.txt ]; then
+            LAST_SCANNED=$(cat last_ky.txt)
+          else
+            LAST_SCANNED=""
+          fi
+          echo "Ky da quet lan truoc: $LAST_SCANNED"
+
+          if [ "$LATEST_KY" = "$LAST_SCANNED" ]; then
+            echo "Ky $LATEST_KY da quet roi, bo qua lan nay."
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Ky $LATEST_KY la ky moi, se chay scan."
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          fi
+          echo "LATEST_KY=$LATEST_KY" >> "$GITHUB_ENV"
+          echo "latest_ky=$LATEST_KY" >> "$GITHUB_OUTPUT"
+
+      - name: Compile scan_per_draw (co pthread cho da luong)
+        if: steps.check_ky.outputs.should_run == 'true'
+        run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
+
+      - name: Xem so core cua runner
+        if: steps.check_ky.outputs.should_run == 'true'
+        run: nproc
+
+      - name: Quet dai seed co dinh, CHI KY MOI, ghi vao 1 file duy nhat (l1_merged/)
+        if: steps.check_ky.outputs.should_run == 'true'
+        env:
+          CSV_PATH: data/all.csv
+          OUT_DIR: l1_merged
+          SEED_START: ${{ env.FIXED_SEED_START }}
+          SEED_COUNT: ${{ env.FIXED_SEED_COUNT }}
+        run: ./scan_per_draw
+
+      - name: Thang hang seed J1>=2 tu l1_merged sang l2_merged (van 1 file duy nhat)
+        if: steps.check_ky.outputs.should_run == 'true'
+        env:
+          L1_MERGED_FILE: l1_merged/merged_seed${{ env.FIXED_SEED_START }}.json
+          L2_MERGED_DIR: l2_merged
+        run: python3 check_l1_merged.py
+
+      # File nay app doc THANG qua CDN, khong phan trang - phai chan dung
+      # khong cho phinh to vo han (moi ky quay them ~5-6KB). Tia bot cac ky
+      # QUA CU (khong con nam trong cua so 500+200 ky ma app can) neu vuot
+      # gioi han, giu file <= 5MB.
+      - name: Gioi han kich thuoc l1_merged (toi da 5MB, tia ky qua cu)
+        if: steps.check_ky.outputs.should_run == 'true'
+        run: python3 prune_merged_seed.py --file l1_merged/merged_seed${{ env.FIXED_SEED_START }}.json
+
+      - name: Commit ket qua
+        if: steps.check_ky.outputs.should_run == 'true'
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "ket qua truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          echo "$LATEST_KY" > last_ky.txt
+          # QUAN TRONG: add tung duong dan RIENG, vi neu 1 duong dan khong ton tai
+          # thi ca lenh "git add a b c" se that bai va KHONG add duoc gi ca
+          [ -d l1_merged ] && git add l1_merged/ || true
+          [ -d l2_merged ] && git add l2_merged/ || true
+          [ -f last_ky.txt ] && git add last_ky.txt || true
+          [ -f data/all.csv ] && git add data/all.csv || true
+          [ -f data/full_results.json ] && git add data/full_results.json || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "scan v2 (1 file duy nhat): cap nhat sau ky quay $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  scan_once_chunk:
+    # Model phu #1: quet lai TU DAU (FORCE_RESCAN=1) theo cua so
+    # ONCE_LAST_N_DRAWS ky gan nhat, MOI LAN CO KY MOI (khong con khoa
+    # "chi 1 lan" nhu truoc - xem ghi chu dau file).
+    needs: scan_and_check
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
+    name: Scan once chunk ${{ matrix.chunk }}
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    runs-on: ubuntu-latest
+    timeout-minutes: 370
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Compile scan_per_draw (co pthread cho da luong)
+        run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
+
+      - name: Tinh dai seed cho chunk nay
+        env:
+          SEED_START: ${{ env.ONCE_SEED_START }}
+          BATCH_SIZE: ${{ env.ONCE_BATCH_SIZE }}
+          CHUNK: ${{ matrix.chunk }}
+        run: |
+          set -e
+          python3 << 'PY' >> "$GITHUB_ENV"
+          import os
+          seed_start = int(os.environ["SEED_START"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          chunk = int(os.environ["CHUNK"])
+          chunk_start = seed_start + chunk * batch_size
+          print(f"CHUNK_SEED_START={chunk_start}")
+          PY
+
+      - name: Quet chunk (chi N ky gan nhat)
+        env:
+          CSV_PATH: data/all.csv
+          OUT_DIR: chunk_out
+          OUT_NAME: chunk_${{ matrix.chunk }}.json
+          SEED_START: ${{ env.CHUNK_SEED_START }}
+          SEED_COUNT: ${{ env.ONCE_BATCH_SIZE }}
+          LAST_N_DRAWS: ${{ env.ONCE_LAST_N_DRAWS }}
+          FORCE_RESCAN: "1"
+        run: ./scan_per_draw
+
+      - name: Upload chunk artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v2once-chunk-${{ matrix.chunk }}
+          path: chunk_out/chunk_${{ matrix.chunk }}.json
+          if-no-files-found: error
+          retention-days: 14
+
+  merge_once:
+    # Gop 20 chunk cua model phu thanh 1 file, roi thang hang - KHONG prune
+    # dung luong (chi model chinh moi gioi han 5MB, model phu gioi han bang
+    # so ky co dinh ONCE_LAST_N_DRAWS nen khong can prune). Chay lai MOI LAN
+    # co ky moi (khong con khoa "chi 1 lan" nhu truoc).
+    needs: [scan_and_check, scan_once_chunk]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    # QUAN TRONG: merge_once/2/3/4 deu commit+push vao l1_merged/l2_merged
+    # tren cung nhanh main - neu chay SONG SONG se dua nhau push (git
+    # pull --rebase lien tuc that bai sau 5 lan retry -> mat ket qua cua
+    # job do). Da xich merge_once2 needs merge_once, merge_once3 needs
+    # merge_once2, merge_once4 needs merge_once3 (xem cac job ben duoi)
+    # de dam bao CHI 1 job push tai 1 thoi diem.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Download tat ca chunk artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: v2once-chunk-*
+          path: artifacts
+          merge-multiple: false
+
+      - name: Kiem tra du 20 chunk
+        run: |
+          set -e
+          python3 << 'PY'
+          import sys
+          from pathlib import Path
+          missing = [i for i in range(20)
+                     if not Path(f"artifacts/v2once-chunk-{i}/chunk_{i}.json").exists()]
+          print("MISSING:", missing)
+          if missing:
+              sys.exit(1)
+          print("ALL 20 CHUNKS OK")
+          PY
+
+      - name: Gop 20 chunk thanh l1_merged/merged_seed{X}.json (dung format cu)
+        env:
+          SEED_START: ${{ env.ONCE_SEED_START }}
+          BATCH_SIZE: ${{ env.ONCE_BATCH_SIZE }}
+        run: |
+          set -e
+          mkdir -p l1_merged
+          python3 << 'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          seed_start = int(os.environ["SEED_START"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          seed_end = seed_start + 20 * batch_size - 1
+
+          draws_by_id = {}
+          for i in range(20):
+              p = Path(f"artifacts/v2once-chunk-{i}/chunk_{i}.json")
+              data = json.loads(p.read_text(encoding="utf-8"))
+              for d in data.get("draws", []):
+                  did = d["draw_id"]
+                  entry = draws_by_id.setdefault(did, {"draw_id": did, "draw_date": d["draw_date"], "seeds": []})
+                  entry["seeds"].extend(d.get("seeds", []))
+
+          draws = []
+          total_found = 0
+          for did in sorted(draws_by_id.keys()):
+              entry = draws_by_id[did]
+              entry["seeds"].sort()
+              entry["found"] = len(entry["seeds"])
+              total_found += entry["found"]
+              draws.append(entry)
+
+          out = {
+              "seed_start": seed_start,
+              "seed_end": seed_end,
+              "total_draws": len(draws),
+              "total_found": total_found,
+              "draws": draws,
+          }
+          # Dung dung ten file ma scan_per_draw.cpp / check_l1_merged.py mac
+          # dinh dung (merged_seed{seed_start}.json) - nam CHUNG thu muc
+          # l1_merged/ voi file dang chay lien tuc (FIXED_SEED_START khac
+          # ONCE_SEED_START nen khong dung file, khong bi ghi de).
+          out_path = Path(f"l1_merged/merged_seed{seed_start}.json")
+          out_path.write_text(json.dumps(out, separators=(",", ":")), encoding="utf-8")
+          print(f"Da gop {len(draws)} ky, tong {total_found} luot trung J1, ghi vao {out_path}")
+          PY
+
+      - name: Thang hang (promote) seed trung >=2 ky sang l2_merged/promoted_seed{X}.json
+        env:
+          L1_MERGED_FILE: l1_merged/merged_seed${{ env.ONCE_SEED_START }}.json
+          L2_MERGED_DIR: l2_merged
+        run: python3 check_l1_merged.py
+
+      - name: Commit ket qua
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "scan model phu truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d l1_merged ] && git add l1_merged/ || true
+          [ -d l2_merged ] && git add l2_merged/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "scan v2 model phu: seed ${{ env.ONCE_SEED_START }} (+20x${{ env.ONCE_BATCH_SIZE }}), ${{ env.ONCE_LAST_N_DRAWS }} ky gan nhat, ky moi $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  scan_once2_chunk:
+    # Model phu (model 3): quet lai TU DAU moi lan co ky moi (FORCE_RESCAN=1).
+    needs: scan_and_check
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
+    name: Scan once3 (20ky) chunk ${{ matrix.chunk }}
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    runs-on: ubuntu-latest
+    timeout-minutes: 370
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Compile scan_per_draw (co pthread cho da luong)
+        run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
+
+      - name: Tinh dai seed cho chunk nay
+        env:
+          SEED_START: ${{ env.ONCE2_SEED_START }}
+          BATCH_SIZE: ${{ env.ONCE_BATCH_SIZE }}
+          CHUNK: ${{ matrix.chunk }}
+        run: |
+          set -e
+          python3 << 'PY' >> "$GITHUB_ENV"
+          import os
+          seed_start = int(os.environ["SEED_START"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          chunk = int(os.environ["CHUNK"])
+          chunk_start = seed_start + chunk * batch_size
+          print(f"CHUNK_SEED_START={chunk_start}")
+          PY
+
+      - name: Quet chunk (chi N ky gan nhat)
+        env:
+          CSV_PATH: data/all.csv
+          OUT_DIR: chunk_out
+          OUT_NAME: chunk_${{ matrix.chunk }}.json
+          SEED_START: ${{ env.CHUNK_SEED_START }}
+          SEED_COUNT: ${{ env.ONCE_BATCH_SIZE }}
+          LAST_N_DRAWS: ${{ env.ONCE2_LAST_N_DRAWS }}
+          FORCE_RESCAN: "1"
+        run: ./scan_per_draw
+
+      - name: Upload chunk artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v2once2-chunk-${{ matrix.chunk }}
+          path: chunk_out/chunk_${{ matrix.chunk }}.json
+          if-no-files-found: error
+          retention-days: 14
+
+  merge_once2:
+    # Gop 20 chunk cua model phu (model 3) - chay lai moi lan co ky moi.
+    needs: [scan_and_check, scan_once2_chunk, merge_once]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Download tat ca chunk artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: v2once2-chunk-*
+          path: artifacts
+          merge-multiple: false
+
+      - name: Kiem tra du 20 chunk
+        run: |
+          set -e
+          python3 << 'PY'
+          import sys
+          from pathlib import Path
+          missing = [i for i in range(20)
+                     if not Path(f"artifacts/v2once2-chunk-{i}/chunk_{i}.json").exists()]
+          print("MISSING:", missing)
+          if missing:
+              sys.exit(1)
+          print("ALL 20 CHUNKS OK")
+          PY
+
+      - name: Gop 20 chunk thanh l1_merged/merged_seed{X}.json (dung format cu)
+        env:
+          SEED_START: ${{ env.ONCE2_SEED_START }}
+          BATCH_SIZE: ${{ env.ONCE_BATCH_SIZE }}
+        run: |
+          set -e
+          mkdir -p l1_merged
+          python3 << 'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          seed_start = int(os.environ["SEED_START"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          seed_end = seed_start + 20 * batch_size - 1
+
+          draws_by_id = {}
+          for i in range(20):
+              p = Path(f"artifacts/v2once2-chunk-{i}/chunk_{i}.json")
+              data = json.loads(p.read_text(encoding="utf-8"))
+              for d in data.get("draws", []):
+                  did = d["draw_id"]
+                  entry = draws_by_id.setdefault(did, {"draw_id": did, "draw_date": d["draw_date"], "seeds": []})
+                  entry["seeds"].extend(d.get("seeds", []))
+
+          draws = []
+          total_found = 0
+          for did in sorted(draws_by_id.keys()):
+              entry = draws_by_id[did]
+              entry["seeds"].sort()
+              entry["found"] = len(entry["seeds"])
+              total_found += entry["found"]
+              draws.append(entry)
+
+          out = {
+              "seed_start": seed_start,
+              "seed_end": seed_end,
+              "total_draws": len(draws),
+              "total_found": total_found,
+              "draws": draws,
+          }
+          # Dung dung ten file ma scan_per_draw.cpp / check_l1_merged.py mac
+          # dinh dung (merged_seed{seed_start}.json) - nam CHUNG thu muc
+          # l1_merged/ voi file dang chay lien tuc (FIXED_SEED_START khac
+          # ONCE_SEED_START nen khong dung file, khong bi ghi de).
+          out_path = Path(f"l1_merged/merged_seed{seed_start}.json")
+          out_path.write_text(json.dumps(out, separators=(",", ":")), encoding="utf-8")
+          print(f"Da gop {len(draws)} ky, tong {total_found} luot trung J1, ghi vao {out_path}")
+          PY
+
+      - name: Thang hang (promote) seed trung >=2 ky sang l2_merged/promoted_seed{X}.json
+        env:
+          L1_MERGED_FILE: l1_merged/merged_seed${{ env.ONCE2_SEED_START }}.json
+          L2_MERGED_DIR: l2_merged
+        run: python3 check_l1_merged.py
+
+      - name: Commit ket qua
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "scan model phu 3 (20ky) truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d l1_merged ] && git add l1_merged/ || true
+          [ -d l2_merged ] && git add l2_merged/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "scan v2 model phu 3 (20ky): seed ${{ env.ONCE2_SEED_START }} (+20x${{ env.ONCE_BATCH_SIZE }}), ${{ env.ONCE2_LAST_N_DRAWS }} ky gan nhat, ky moi $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  scan_once3_chunk:
+    # Model phu (model 4): quet lai TU DAU moi lan co ky moi (FORCE_RESCAN=1).
+    needs: scan_and_check
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
+    name: Scan once4 (15ky, AI chon) chunk ${{ matrix.chunk }}
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    runs-on: ubuntu-latest
+    timeout-minutes: 370
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Compile scan_per_draw (co pthread cho da luong)
+        run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
+
+      - name: Tinh dai seed cho chunk nay
+        env:
+          SEED_START: ${{ env.ONCE3_SEED_START }}
+          BATCH_SIZE: ${{ env.ONCE_BATCH_SIZE }}
+          CHUNK: ${{ matrix.chunk }}
+        run: |
+          set -e
+          python3 << 'PY' >> "$GITHUB_ENV"
+          import os
+          seed_start = int(os.environ["SEED_START"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          chunk = int(os.environ["CHUNK"])
+          chunk_start = seed_start + chunk * batch_size
+          print(f"CHUNK_SEED_START={chunk_start}")
+          PY
+
+      - name: Quet chunk (chi N ky gan nhat)
+        env:
+          CSV_PATH: data/all.csv
+          OUT_DIR: chunk_out
+          OUT_NAME: chunk_${{ matrix.chunk }}.json
+          SEED_START: ${{ env.CHUNK_SEED_START }}
+          SEED_COUNT: ${{ env.ONCE_BATCH_SIZE }}
+          LAST_N_DRAWS: ${{ env.ONCE3_LAST_N_DRAWS }}
+          FORCE_RESCAN: "1"
+        run: ./scan_per_draw
+
+      - name: Upload chunk artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v2once3-chunk-${{ matrix.chunk }}
+          path: chunk_out/chunk_${{ matrix.chunk }}.json
+          if-no-files-found: error
+          retention-days: 14
+
+  merge_once3:
+    # Gop 20 chunk cua model phu (model 4) - chay lai moi lan co ky moi.
+    needs: [scan_and_check, scan_once3_chunk, merge_once2]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Download tat ca chunk artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: v2once3-chunk-*
+          path: artifacts
+          merge-multiple: false
+
+      - name: Kiem tra du 20 chunk
+        run: |
+          set -e
+          python3 << 'PY'
+          import sys
+          from pathlib import Path
+          missing = [i for i in range(20)
+                     if not Path(f"artifacts/v2once3-chunk-{i}/chunk_{i}.json").exists()]
+          print("MISSING:", missing)
+          if missing:
+              sys.exit(1)
+          print("ALL 20 CHUNKS OK")
+          PY
+
+      - name: Gop 20 chunk thanh l1_merged/merged_seed{X}.json (dung format cu)
+        env:
+          SEED_START: ${{ env.ONCE3_SEED_START }}
+          BATCH_SIZE: ${{ env.ONCE_BATCH_SIZE }}
+        run: |
+          set -e
+          mkdir -p l1_merged
+          python3 << 'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          seed_start = int(os.environ["SEED_START"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          seed_end = seed_start + 20 * batch_size - 1
+
+          draws_by_id = {}
+          for i in range(20):
+              p = Path(f"artifacts/v2once3-chunk-{i}/chunk_{i}.json")
+              data = json.loads(p.read_text(encoding="utf-8"))
+              for d in data.get("draws", []):
+                  did = d["draw_id"]
+                  entry = draws_by_id.setdefault(did, {"draw_id": did, "draw_date": d["draw_date"], "seeds": []})
+                  entry["seeds"].extend(d.get("seeds", []))
+
+          draws = []
+          total_found = 0
+          for did in sorted(draws_by_id.keys()):
+              entry = draws_by_id[did]
+              entry["seeds"].sort()
+              entry["found"] = len(entry["seeds"])
+              total_found += entry["found"]
+              draws.append(entry)
+
+          out = {
+              "seed_start": seed_start,
+              "seed_end": seed_end,
+              "total_draws": len(draws),
+              "total_found": total_found,
+              "draws": draws,
+          }
+          # Dung dung ten file ma scan_per_draw.cpp / check_l1_merged.py mac
+          # dinh dung (merged_seed{seed_start}.json) - nam CHUNG thu muc
+          # l1_merged/ voi file dang chay lien tuc (FIXED_SEED_START khac
+          # ONCE_SEED_START nen khong dung file, khong bi ghi de).
+          out_path = Path(f"l1_merged/merged_seed{seed_start}.json")
+          out_path.write_text(json.dumps(out, separators=(",", ":")), encoding="utf-8")
+          print(f"Da gop {len(draws)} ky, tong {total_found} luot trung J1, ghi vao {out_path}")
+          PY
+
+      - name: Thang hang (promote) seed trung >=2 ky sang l2_merged/promoted_seed{X}.json
+        env:
+          L1_MERGED_FILE: l1_merged/merged_seed${{ env.ONCE3_SEED_START }}.json
+          L2_MERGED_DIR: l2_merged
+        run: python3 check_l1_merged.py
+
+      - name: Commit ket qua
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "scan model phu 4 (15ky, AI chon) truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d l1_merged ] && git add l1_merged/ || true
+          [ -d l2_merged ] && git add l2_merged/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "scan v2 model phu 4 (15ky, AI chon): seed ${{ env.ONCE3_SEED_START }} (+20x${{ env.ONCE_BATCH_SIZE }}), ${{ env.ONCE3_LAST_N_DRAWS }} ky gan nhat, ky moi $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  scan_once4_chunk:
+    # Model phu #4: seed TU NOI TIEP - doc vi tri da quet toi dau tu
+    # ONCE4_STATE_FILE (neu chua co file thi dung ONCE4_INITIAL_SEED_START),
+    # quet tiep 20 chunk KE TU DO (khong lap lai dai cu).
+    needs: scan_and_check
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
+    name: Scan once4 chunk ${{ matrix.chunk }}
+    strategy:
+      fail-fast: false
+      matrix:
+        chunk: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    runs-on: ubuntu-latest
+    timeout-minutes: 370
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Compile scan_per_draw (co pthread cho da luong)
+        run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
+
+      - name: Doc vi tri da quet toi dau (noi tiep tu lan truoc), tinh dai seed cho chunk nay
+        env:
+          STATE_FILE: ${{ env.ONCE4_STATE_FILE }}
+          INITIAL_SEED_START: ${{ env.ONCE4_INITIAL_SEED_START }}
+          BATCH_SIZE: ${{ env.ONCE_BATCH_SIZE }}
+          CHUNK: ${{ matrix.chunk }}
+        run: |
+          set -e
+          python3 << 'PY' >> "$GITHUB_ENV"
+          import json
+          import os
+          from pathlib import Path
+
+          state_path = Path(os.environ["STATE_FILE"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          chunk = int(os.environ["CHUNK"])
+
+          if state_path.exists():
+              current_start = int(json.loads(state_path.read_text(encoding="utf-8"))["seed_next"])
+          else:
+              current_start = int(os.environ["INITIAL_SEED_START"])
+
+          chunk_start = current_start + chunk * batch_size
+          print(f"CURRENT_SEED_START={current_start}")
+          print(f"CHUNK_SEED_START={chunk_start}")
+          PY
+
+      - name: Quet chunk (chi N ky gan nhat)
+        env:
+          CSV_PATH: data/all.csv
+          OUT_DIR: chunk_out
+          OUT_NAME: chunk_${{ matrix.chunk }}.json
+          SEED_START: ${{ env.CHUNK_SEED_START }}
+          SEED_COUNT: ${{ env.ONCE_BATCH_SIZE }}
+          LAST_N_DRAWS: ${{ env.ONCE4_LAST_N_DRAWS }}
+          FORCE_RESCAN: "1"
+        run: ./scan_per_draw
+
+      - name: Upload chunk artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v2once4-chunk-${{ matrix.chunk }}
+          path: chunk_out/chunk_${{ matrix.chunk }}.json
+          if-no-files-found: error
+          retention-days: 14
+
+  merge_once4:
+    # Gop 20 chunk cua model phu #4 thanh 1 file MOI (ten file = seed_start
+    # cua LAN NAY, se khac lan sau vi seed tu nhay tiep), roi thang hang.
+    # Xong thi ghi lai vi tri KE TIEP vao ONCE4_STATE_FILE de lan sau quet
+    # tiep, khong quet lai dai vua roi.
+    needs: [scan_and_check, scan_once4_chunk, merge_once3]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Download tat ca chunk artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: v2once4-chunk-*
+          path: artifacts
+          merge-multiple: false
+
+      - name: Kiem tra du 20 chunk
+        run: |
+          set -e
+          python3 << 'PY'
+          import sys
+          from pathlib import Path
+          missing = [i for i in range(20)
+                     if not Path(f"artifacts/v2once4-chunk-{i}/chunk_{i}.json").exists()]
+          print("MISSING:", missing)
+          if missing:
+              sys.exit(1)
+          print("ALL 20 CHUNKS OK")
+          PY
+
+      - name: Doc lai vi tri da quet toi dau (dong bo voi job scan_once4_chunk)
+        env:
+          STATE_FILE: ${{ env.ONCE4_STATE_FILE }}
+          INITIAL_SEED_START: ${{ env.ONCE4_INITIAL_SEED_START }}
+        run: |
+          set -e
+          python3 << 'PY' >> "$GITHUB_ENV"
+          import json
+          import os
+          from pathlib import Path
+
+          state_path = Path(os.environ["STATE_FILE"])
+          last_file_seed_start = ""
+          if state_path.exists():
+              state = json.loads(state_path.read_text(encoding="utf-8"))
+              current_start = int(state["seed_next"])
+              last_file_seed_start = str(state.get("last_file_seed_start", ""))
+          else:
+              current_start = int(os.environ["INITIAL_SEED_START"])
+          print(f"CURRENT_SEED_START={current_start}")
+          print(f"LAST_FILE_SEED_START={last_file_seed_start}")
+          PY
+
+      - name: Xoa file L1/L2 cua LAN CHAY TRUOC (chi model 5 nay moi ra file moi moi lan, tranh tich tu vo han)
+        env:
+          LAST_FILE_SEED_START: ${{ env.LAST_FILE_SEED_START }}
+        run: |
+          set -e
+          if [ -n "$LAST_FILE_SEED_START" ]; then
+            OLD_L1="l1_merged/merged_seed${LAST_FILE_SEED_START}.json"
+            OLD_L2="l2_merged/promoted_seed${LAST_FILE_SEED_START}.json"
+            [ -f "$OLD_L1" ] && rm -v "$OLD_L1" || echo "Khong thay $OLD_L1, bo qua"
+            [ -f "$OLD_L2" ] && rm -v "$OLD_L2" || echo "Khong thay $OLD_L2, bo qua"
+          else
+            echo "Chua co file cua lan truoc (lan dau chay model 5), khong can xoa gi"
+          fi
+
+      - name: Gop 20 chunk thanh l1_merged/merged_seed{X}.json (X = seed cua LAN NAY)
+        env:
+          SEED_START: ${{ env.CURRENT_SEED_START }}
+          BATCH_SIZE: ${{ env.ONCE_BATCH_SIZE }}
+        run: |
+          set -e
+          mkdir -p l1_merged
+          python3 << 'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          seed_start = int(os.environ["SEED_START"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          seed_end = seed_start + 20 * batch_size - 1
+
+          draws_by_id = {}
+          for i in range(20):
+              p = Path(f"artifacts/v2once4-chunk-{i}/chunk_{i}.json")
+              data = json.loads(p.read_text(encoding="utf-8"))
+              for d in data.get("draws", []):
+                  did = d["draw_id"]
+                  entry = draws_by_id.setdefault(did, {"draw_id": did, "draw_date": d["draw_date"], "seeds": []})
+                  entry["seeds"].extend(d.get("seeds", []))
+
+          draws = []
+          total_found = 0
+          for did in sorted(draws_by_id.keys()):
+              entry = draws_by_id[did]
+              entry["seeds"].sort()
+              entry["found"] = len(entry["seeds"])
+              total_found += entry["found"]
+              draws.append(entry)
+
+          out = {
+              "seed_start": seed_start,
+              "seed_end": seed_end,
+              "total_draws": len(draws),
+              "total_found": total_found,
+              "draws": draws,
+          }
+          # Moi lan chay se ra 1 file MOI (ten khac nhau) vi seed_start tu
+          # nhay tiep - KHONG ghi de len file cua lan truoc.
+          out_path = Path(f"l1_merged/merged_seed{seed_start}.json")
+          out_path.write_text(json.dumps(out, separators=(",", ":")), encoding="utf-8")
+          print(f"Da gop {len(draws)} ky, tong {total_found} luot trung J1, ghi vao {out_path}")
+          PY
+
+      - name: Thang hang (promote) seed trung >=2 ky sang l2_merged/promoted_seed{X}.json
+        env:
+          L1_MERGED_FILE: l1_merged/merged_seed${{ env.CURRENT_SEED_START }}.json
+          L2_MERGED_DIR: l2_merged
+        run: python3 check_l1_merged.py
+
+      - name: Ghi vi tri KE TIEP vao state file (de lan sau quet tiep, khong quet lai)
+        env:
+          STATE_FILE: ${{ env.ONCE4_STATE_FILE }}
+          CURRENT_SEED_START: ${{ env.CURRENT_SEED_START }}
+          BATCH_SIZE: ${{ env.ONCE_BATCH_SIZE }}
+        run: |
+          set -e
+          python3 << 'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          current_start = int(os.environ["CURRENT_SEED_START"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          seed_next = current_start + 20 * batch_size
+
+          # last_file_seed_start = seed cua file VUA TAO lan nay - de LAN SAU
+          # biet ma xoa (file cua lan nay se thanh "cu" o lan chay ke tiep).
+          Path(os.environ["STATE_FILE"]).write_text(
+              json.dumps({
+                  "seed_next": seed_next,
+                  "last_file_seed_start": current_start,
+              }, separators=(",", ":")),
+              encoding="utf-8",
+          )
+          print(f"Da ghi seed_next={seed_next}, last_file_seed_start={current_start} "
+                f"vao {os.environ['STATE_FILE']} (lan sau se quet tu day va xoa file nay)")
+          PY
+
+      - name: Commit ket qua
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "scan model phu 5 (noi tiep) truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d l1_merged ] && git add l1_merged/ || true
+          [ -d l2_merged ] && git add l2_merged/ || true
+          [ -f "${{ env.ONCE4_STATE_FILE }}" ] && git add "${{ env.ONCE4_STATE_FILE }}" || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "scan v2 model phu 5 (seed noi tiep): seed ${{ env.CURRENT_SEED_START }} (+20x${{ env.ONCE_BATCH_SIZE }}), ${{ env.ONCE4_LAST_N_DRAWS }} ky gan nhat, ky moi $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  predict_next:
+    # Du doan ky KE TIEP dua tren TAT CA seed dang co trong L1 (l1_merged/
+    # cua ca 5 model - CHECKOUT o day se lay dung ban moi nhat vi job nay
+    # needs toan bo cac job merge da push xong). KHONG dung L2 lam input -
+    # L2 (l2_merged/) chi la KET QUA thang hang, khong phai nguon du doan.
+    # QUAN TRONG: predict_next/predict_next_ml/predict_next_ai/predict_next_ai2
+    # deu commit+push vao predict/ tren cung nhanh main - neu chay SONG SONG
+    # se dua nhau push (git pull --rebase lien tuc that bai sau 5 lan retry
+    # -> mat ket qua du doan cua job do, khien predict/*.txt bi LECH 1 KY so
+    # voi data/all.csv + data/full_results.json da duoc scan_and_check commit
+    # xong). Da xich predict_next_ml needs predict_next, predict_next_ai
+    # needs predict_next_ml, predict_next_ai2 needs predict_next_ai (xem cac
+    # job ben duoi) de dam bao CHI 1 job push tai 1 thoi diem.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Du doan ky ke tiep (chi dung seed L1, khong dung L2)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          OUT_PATH: "predict/next_draw_predict.txt"
+          HISTORY_DIR: "predict/history"
+        run: python3 predict_next_draw.py
+
+      - name: Commit ket qua du doan
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep (tu seed L1) $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  check_prediction:
+    # Sau khi ky moi duoc XAC NHAN (should_run=true), doi chieu voi du doan
+    # DA LUU TU LAN CHAY TRUOC (predict/history/{ky}.txt - luc do ky nay
+    # chua co ket qua) voi ket qua THAT vua ve. Model nao doan DUNG (trung
+    # ca 5 so + dac biet) thi luu vao thu muc j1_535/. Chay doc lap, khong
+    # can cho cac job scan/predict khac (chi can data/all.csv + lich su cu).
+    needs: scan_and_check
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Doi chieu du doan cu voi ket qua that cua ky vua xac nhan
+        id: check_prediction
+        env:
+          CSV_PATH: data/all.csv
+          DRAW_ID: ${{ needs.scan_and_check.outputs.latest_ky }}
+          HISTORY_DIR: "predict/history"
+          OUT_DIR: "j1_535"
+          KEEP_LAST_N_HISTORY_DRAWS: "60"
+        run: |
+          set -e
+          python3 check_prediction_result.py | tee /tmp/check_prediction_out.txt
+          MATCHED=$(grep -o 'MATCHED_COUNT=[0-9]*' /tmp/check_prediction_out.txt | tail -1 | cut -d'=' -f2)
+          echo "matched_count=${MATCHED:-0}" >> "$GITHUB_OUTPUT"
+
+      - name: Commit ket qua doan dung + thong ke chien luoc (neu co)
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "check_prediction truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d j1_535 ] && git add j1_535/ || true
+          # QUAN TRONG: predict/strategy_stats.json (thong ke tich luy) va
+          # cac file predict/history/ vua bi prune_old_history() xoa deu
+          # nam trong predict/ - truoc day buoc nay CHI add j1_535/ nen
+          # strategy_stats.json bi tinh lai roi MAT moi lan chay (job
+          # chay tren container tam thoi). Them dong duoi de sua.
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co du doan dung nao moi, khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan dung ky ${{ needs.scan_and_check.outputs.latest_ky }} - luu vao j1_535/ + cap nhat strategy_stats.json $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+      - name: Bao FCM khi co model doan DUNG (j1_535 co file moi)
+        if: steps.check_prediction.outputs.matched_count != '0'
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.FCM_SERVICE_ACCOUNT_JSON }}
+        run: |
+          set -e
+          pip install --quiet google-auth requests
+          python3 send_fcm_push.py --topic chiagiai_updates \
+            --event-type j1_prediction_hit \
+            --event-json "j1_535/${{ needs.scan_and_check.outputs.latest_ky }}.json"
+
+  predict_next_ml:
+    # Du doan ky ke tiep BAN ML - DOC LAP HOAN TOAN voi job predict_next
+    # (khong dung chung file, khong goi lan nhau). Mien phi, khong can API
+    # key, chi dung sklearn chay local trong runner.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Cai thu vien ML
+        run: pip install --quiet scikit-learn numpy
+
+      - name: Du doan ky ke tiep - phien ban ML (chon seed theo diem Logistic Regression)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          OUT_PATH: "predict/next_draw_predict_ml.txt"
+          ML_SCORES_PATH: "predict/ml_scores.json"
+        run: python3 predict_next_draw_ml.py
+
+      - name: Commit ket qua du doan ML
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict ml truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban ML $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  predict_next_ai:
+    # Du doan ky ke tiep BAN AI (Gemini) - DOC LAP HOAN TOAN voi predict_next
+    # va predict_next_ml (khong dung chung file, khong goi lan nhau). Can
+    # secret GEMINI_API_KEY (MIEN PHI, lay tai https://aistudio.google.com/apikey).
+    # Neu chua co secret nay, job se FAIL o buoc goi API - khong anh huong
+    # cac job khac vi khong job nao needs job nay.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_ml]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Du doan ky ke tiep - phien ban AI (Gemini, mien phi)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          OUT_PATH: "predict/next_draw_predict_ai.txt"
+          CANDIDATES_PER_MODEL: "15"
+          GEMINI_MODEL: "gemini-3-flash-preview"
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -e
+          pip install --quiet requests
+          python3 predict_next_draw_ai.py
+
+      - name: Commit ket qua du doan AI
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict ai truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban AI/Gemini $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  predict_next_ai2:
+    # Du doan ky ke tiep BAN AI2/GROQ - DOC LAP HOAN TOAN voi predict_next,
+    # predict_next_ml va predict_next_ai (Gemini) - khong dung chung file,
+    # khong goi lan nhau. Can secret GROQ_API_KEY (MIEN PHI VINH VIEN,
+    # khong can the, lay tai https://console.groq.com/keys). Neu chua co
+    # secret nay, job se FAIL o buoc goi API - khong anh huong cac job
+    # khac vi khong job nao needs job nay.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_ai]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Du doan ky ke tiep - phien ban AI2 (Groq, mien phi vinh vien)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          OUT_PATH: "predict/next_draw_predict_ai2.txt"
+          CANDIDATES_PER_MODEL: "15"
+          GROQ_MODEL: "openai/gpt-oss-120b"
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -e
+          pip install --quiet requests
+          python3 predict_next_draw_ai2.py
+
+      - name: Commit ket qua du doan AI2
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict ai2 truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban AI2/Groq $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  predict_next_ai3:
+    # Du doan ky ke tiep BAN AI3/OPENROUTER - DOC LAP HOAN TOAN voi
+    # predict_next, predict_next_ml, predict_next_ai (Gemini) va
+    # predict_next_ai2 (Groq) - khong dung chung file, khong goi lan nhau.
+    # Dung model router mien phi "openrouter/free" (OpenRouter tu dong
+    # chon 1 model dang mien phi tai thoi diem goi). Can secret
+    # OPENROUTER_API_KEY (MIEN PHI, lay tai https://openrouter.ai/keys,
+    # khong can the tin dung). Neu chua co secret nay, job se FAIL o buoc
+    # goi API - khong anh huong cac job khac vi khong job nao needs job nay.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_ai2]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Du doan ky ke tiep - phien ban AI3 (OpenRouter, mien phi)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          OUT_PATH: "predict/next_draw_predict_ai3.txt"
+          CANDIDATES_PER_MODEL: "15"
+          OPENROUTER_MODEL: "openrouter/free"
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -e
+          pip install --quiet requests
+          python3 predict_next_draw_ai3.py
+
+      - name: Commit ket qua du doan AI3
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict ai3 truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban AI3/OpenRouter $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  cleanup_l1:
+    # Don dep l1_merged/ va l2_merged/: xoa moi file KHONG khop voi seed
+    # cua cac model dang ACTIVE (FIXED_SEED_START, ONCE_SEED_START,
+    # ONCE2_SEED_START, ONCE3_SEED_START, va seed HIEN TAI cua model 5 doc
+    # trong once4_seed_state.json). Phong truong hop doi seed model trong
+    # tuong lai hoac con sot file rac tu cac lan chay thu truoc - KHONG
+    # dung ban seed_start cu se tu bi xoa, tranh l1_merged/l2_merged phinh
+    # to vo ich theo thoi gian. Chay SAU CUNG, sau khi moi job merge/du
+    # doan da xong (needs toan bo) de khong xoa nham file dang can dung.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next, predict_next_ml]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Xoa file l1_merged/l2_merged khong thuoc model nao dang active
+        env:
+          FIXED_SEED_START: ${{ env.FIXED_SEED_START }}
+          ONCE_SEED_START: ${{ env.ONCE_SEED_START }}
+          ONCE2_SEED_START: ${{ env.ONCE2_SEED_START }}
+          ONCE3_SEED_START: ${{ env.ONCE3_SEED_START }}
+          ONCE4_STATE_FILE: ${{ env.ONCE4_STATE_FILE }}
+          ONCE4_INITIAL_SEED_START: ${{ env.ONCE4_INITIAL_SEED_START }}
+        run: |
+          set -e
+          python3 << 'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          active = {
+              os.environ["FIXED_SEED_START"],
+              os.environ["ONCE_SEED_START"],
+              os.environ["ONCE2_SEED_START"],
+              os.environ["ONCE3_SEED_START"],
+          }
+
+          # Model 5 (seed noi tiep): file DANG con hieu luc la file ung voi
+          # last_file_seed_start trong state (hoac INITIAL neu chua chay lan nao).
+          state_path = Path(os.environ["ONCE4_STATE_FILE"])
+          if state_path.exists():
+              state = json.loads(state_path.read_text(encoding="utf-8"))
+              last_file = state.get("last_file_seed_start")
+              if last_file is not None:
+                  active.add(str(last_file))
+
+          print("Cac seed_start dang ACTIVE (giu lai):", sorted(active))
+
+          removed = []
+          for folder, prefix in [("l1_merged", "merged_seed"), ("l2_merged", "promoted_seed")]:
+              d = Path(folder)
+              if not d.exists():
+                  continue
+              for f in d.glob(f"{prefix}*.json"):
+                  m = re.match(rf"^{prefix}(\d+)\.json$", f.name)
+                  if not m:
+                      continue
+                  seed_start = m.group(1)
+                  if seed_start not in active:
+                      f.unlink()
+                      removed.append(str(f))
+
+          if removed:
+              print(f"Da xoa {len(removed)} file khong thuoc model nao dang active:")
+              for r in removed:
+                  print(f"  - {r}")
+          else:
+              print("Khong co file rac nao can xoa.")
+          PY
+
+      - name: Commit don dep (neu co xoa file)
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "cleanup l1 truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d l1_merged ] && git add l1_merged/ || true
+          [ -d l2_merged ] && git add l2_merged/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "don dep l1_merged/l2_merged: xoa file khong thuoc model dang active $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
