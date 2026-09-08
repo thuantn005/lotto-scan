@@ -35,6 +35,12 @@ ENV:
     OUT_DIR       - thu muc luu ket qua doan DUNG tuyet doi (mac dinh j1_535)
     STATS_PATH    - file JSON thong ke tich luy theo chien luoc
                     (mac dinh predict/strategy_stats.json)
+    KEEP_LAST_N_HISTORY_DRAWS - so ky GAN NHAT giu lai file lich su tho
+                    trong predict/history/, cac ky cu hon se bi XOA sau
+                    khi da cong don vao strategy_stats.json (mac dinh 60,
+                    ~1 thang o lich 2 ky/ngay). Dat -1 de tat (giu mai
+                    mai nhu truoc). Chan predict/history phinh to vo han
+                    khi so chien luoc (base/ml/ai/ai2/ai3/...) tang dan.
 """
 
 import json
@@ -45,6 +51,7 @@ from lotto_common import (
     get_actual_result,
     load_prediction_history,
     known_strategies,
+    prune_old_history,
     score_ticket,
     EXPECTED_RANDOM_MATCHES,
     EXPECTED_RANDOM_SPECIAL_HIT_RATE,
@@ -107,6 +114,7 @@ def main():
     history_dir = os.environ.get("HISTORY_DIR", "predict/history")
     out_dir = os.environ.get("OUT_DIR", "j1_535")
     stats_path = os.environ.get("STATS_PATH", "predict/strategy_stats.json")
+    keep_last_n = int(os.environ.get("KEEP_LAST_N_HISTORY_DRAWS", "60"))
 
     if not draw_id_str:
         print("Thieu DRAW_ID, bo qua.")
@@ -152,6 +160,14 @@ def main():
     os.makedirs(os.path.dirname(stats_path) or ".", exist_ok=True)
     Path(stats_path).write_text(json.dumps(stats, ensure_ascii=False, indent=2), encoding="utf-8")
     print_stats_summary(stats)
+
+    # Ky nay da duoc cong don vao strategy_stats.json o tren - tu day
+    # tro di du lieu tho tung ky (predict/history/) khong con can giu
+    # mai, chi giu 1 cua so gan day de debug. Xoa cac ky qua cu de
+    # predict/history khong phinh to vo han khi so chien luoc tang dan.
+    removed = prune_old_history(history_dir, draw_id, keep_last_n)
+    if removed:
+        print(f"Da xoa {removed} file lich su cu (qua {keep_last_n} ky gan nhat) trong {history_dir}")
 
     if all_matched:
         os.makedirs(out_dir, exist_ok=True)

@@ -49,70 +49,15 @@ from lotto_common import (
     get_next_draw_id,
     load_recent_draws_summary,
     save_prediction_history,
+    collect_ai_candidates_per_model,
+    build_ai_prompt,
 )
 
 STRATEGY = "ai"
 
 
-def collect_candidates_per_model(fp, next_draw_id, rank_to_mask, top_k):
-    try:
-        data = json.loads(Path(fp).read_text(encoding="utf-8"))
-    except Exception as e:
-        print(f"Bo qua {fp}: {e}")
-        return None
-
-    seed_weight = {}
-    for d in data.get("draws", []):
-        for s in d.get("seeds", []):
-            seed_weight[s] = seed_weight.get(s, 0) + 1
-
-    if not seed_weight:
-        return None
-
-    top_seeds = sorted(seed_weight.keys(), key=lambda s: (-seed_weight[s], s))[:top_k]
-    candidates = []
-    for s in top_seeds:
-        numbers, special = predict_ticket(s, next_draw_id, rank_to_mask)
-        candidates.append({
-            "seed": s,
-            "weight": seed_weight[s],
-            "numbers": numbers,
-            "special": special,
-        })
-    return {
-        "file": fp,
-        "seed_start": data.get("seed_start"),
-        "total_seeds_in_model": len(seed_weight),
-        "candidates": candidates,
-    }
-
-
 def build_prompt(next_draw_id, recent_draws, models):
-    lines = []
-    lines.append(f"Ban dang phan tich du lieu NGHIEN CUU THONG KE cho xo so Lotto 5/35 Viet Nam "
-                 f"(du an mang tinh hoc thuat, KHONG khuyen khich co bac). Ky can du doan la ky {next_draw_id:05d}.")
-    lines.append("")
-    lines.append(f"{len(recent_draws)} ky GAN NHAT (draw_id, 5 so chinh, dac biet):")
-    for draw_id, numbers, special in recent_draws:
-        lines.append(f"  ky {draw_id:05d}: {numbers} + DB {special}")
-    lines.append("")
-    lines.append("Co nhieu 'model' (dai seed khac nhau) dang duoc quet doc lap. Voi MOI model, "
-                 "duoi day la mot vai seed ung vien (da tung khop ket qua o cac ky truoc do trong "
-                 "qua khu) kem ve du doan cua tung seed NEU dung lai cho ky sap toi:")
-    for i, m in enumerate(models):
-        lines.append(f"\nModel {i} (seed_start={m['seed_start']}, tong {m['total_seeds_in_model']} seed trong L1):")
-        for c in m["candidates"]:
-            lines.append(f"  seed={c['seed']} (tung trung {c['weight']} lan) -> "
-                         f"{c['numbers']} + DB {c['special']}")
-    lines.append("")
-    lines.append("Voi MOI model, hay chon DUNG 1 seed ung vien (trong danh sach da cho, KHONG duoc "
-                 "bia ra seed moi) ma ban cho la 'dang chu y' nhat de theo doi, va giai thich NGAN "
-                 "GON (1-2 cau) tai sao. Luu y ro rang day chi la BAI TAP THONG KE/nghien cuu, ban "
-                 "KHONG the du doan chinh xac ket qua xo so that su.")
-    lines.append("")
-    lines.append("Tra loi CHI DUOI DANG JSON (khong markdown, khong giai thich ngoai JSON), dinh dang:")
-    lines.append('{"picks": [{"model_index": 0, "seed": 123, "reasoning": "..."}]}')
-    return "\n".join(lines)
+    return build_ai_prompt(next_draw_id, recent_draws, models)
 
 
 def call_gemini(prompt, api_key, model):
@@ -158,7 +103,7 @@ def main():
 
     models = []
     for fp in files:
-        m = collect_candidates_per_model(fp, next_draw_id, rank_to_mask, top_k)
+        m = collect_ai_candidates_per_model(fp, next_draw_id, rank_to_mask, top_k)
         if m:
             models.append(m)
 

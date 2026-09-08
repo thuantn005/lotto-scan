@@ -272,6 +272,159 @@ def known_strategies(history_dir, draw_id):
 
 
 # ---------------------------------------------------------------------
+# Loc candidate seed gui cho AI chon (dung chung cho predict_next_draw_ai.py
+# /_ai2.py/_ai3.py - truoc day 3 file COPY-PASTE Y HET nhau ham nay, sua 1
+# cho de quen sua 2 cho kia). CAI THIEN so voi ban cu:
+#   - Cu: xep hang CHI theo so lan trung TUYET DOI (weight) - model quet
+#     cua so dai hon luon co weight cao hon du ty le trung thuc te khong
+#     hon, hoa thi chon seed NHO NHAT (khong co y nghia gi).
+#   - Moi: chuan hoa thanh hit_rate = weight / total_draws_in_model de so
+#     sanh CONG BANG giua cac model co cua so quet khac nhau; hoa thi uu
+#     tien seed TRUNG GAN DAY HON (last_hit_draw lon hon) thay vi seed nho
+#     nhat - bam sat huong quan tam "khoang cach giua cac lan trung ngan".
+#   - Them: loai bot candidate GAN TRUNG LAP (ve 5 so trung >= 4/5 so voi
+#     1 candidate DA CHON) de top_k gui cho AI thuc su da dang, AI co gi
+#     do khac biet de so sanh thay vi 15 ve gan nhu giong het nhau.
+# ---------------------------------------------------------------------
+
+def collect_ai_candidates_per_model(fp, next_draw_id, rank_to_mask, top_k,
+                                     max_overlap_with_selected=3):
+    """Doc 1 file L1, tra ve dict mo ta model + top_k candidate DA XEP
+    HANG lai (hit_rate giam dan, hoa thi uu tien trung gan day hon, hoa
+    tiep thi seed nho hon de on dinh ket qua) VA da loc bot trung lap
+    (bo qua candidate co >= max_overlap_with_selected/5 so trung voi 1
+    candidate DA CHON truoc do trong top_k nay). Tra ve None neu file
+    rong/loi."""
+    try:
+        data = json.loads(Path(fp).read_text(encoding="utf-8"))
+    except Exception as e:
+        print(f"Bo qua {fp}: {e}")
+        return None
+
+    seed_weight = {}
+    seed_last_draw = {}
+    for d in data.get("draws", []):
+        did = d.get("draw_id")
+        for s in d.get("seeds", []):
+            seed_weight[s] = seed_weight.get(s, 0) + 1
+            seed_last_draw[s] = max(seed_last_draw.get(s, 0), did or 0)
+
+    if not seed_weight:
+        return None
+
+    total_draws_in_model = data.get("total_draws") or len(data.get("draws", [])) or 1
+
+    # Xep hang: hit_rate giam dan -> trung gan day hon -> seed nho hon
+    # (tie-break cuoi cung chi de ON DINH ket qua, khong mang y nghia
+    # thong ke).
+    ranked_seeds = sorted(
+        seed_weight.keys(),
+        key=lambda s: (-(seed_weight[s] / total_draws_in_model), -seed_last_draw[s], s),
+    )
+
+    candidates = []
+    chosen_number_sets = []
+    for s in ranked_seeds:
+        if len(candidates) >= top_k:
+            break
+        numbers, special = predict_ticket(s, next_draw_id, rank_to_mask)
+        num_set = set(numbers)
+        if any(len(num_set & prev) >= max_overlap_with_selected for prev in chosen_number_sets):
+            continue  # qua giong 1 candidate da chon, bo qua de tang da dang
+        candidates.append({
+            "seed": s,
+            "weight": seed_weight[s],
+            "hit_rate": seed_weight[s] / total_draws_in_model,
+            "last_hit_draw": seed_last_draw[s],
+            "numbers": numbers,
+            "special": special,
+        })
+        chosen_number_sets.append(num_set)
+
+    return {
+        "file": fp,
+        "seed_start": data.get("seed_start"),
+        "total_draws_in_model": total_draws_in_model,
+        "total_seeds_in_model": len(seed_weight),
+        "candidates": candidates,
+    }
+
+
+def build_ai_prompt(next_draw_id, recent_draws, models):
+    """Dung chung cho ca 3 script AI - sinh prompt gui cho model ngon
+    ngu, kem MOC SO SANH ngau nhien (EXPECTED_RANDOM_MATCHES) de AI hieu
+    hit_rate cao hay thap so voi thuan tuy ngau nhien, tranh AI dua ra ly
+    do nghe co ve chac chan qua muc."""
+    lines = []
+    lines.append(f"Ban dang phan tich du lieu NGHIEN CUU THONG KE cho xo so Lotto 5/35 Viet Nam "
+                 f"(du an mang tinh hoc thuat, KHONG khuyen khich co bac). Ky can du doan la ky {next_draw_id:05d}.")
+    lines.append("")
+    lines.append(f"{len(recent_draws)} ky GAN NHAT (draw_id, 5 so chinh, dac biet):")
+    for draw_id, numbers, special in recent_draws:
+        lines.append(f"  ky {draw_id:05d}: {numbers} + DB {special}")
+    lines.append("")
+    lines.append(f"Moc so sanh: neu HOAN TOAN ngau nhien, ty le 1 seed 'trung' 1 ky bat ky la rat "
+                 f"thap ({MATCH_PROB:.2e}); hit_rate cua cac candidate duoi day CAO HON nhieu chi vi "
+                 f"tieu chi 'trung' o day la mot phan cua ve (khong phai trung tuyet doi ca 5+1), "
+                 f"KHONG co nghia la seed do co kha nang du doan that su.")
+    lines.append("")
+    lines.append("Co nhieu 'model' (dai seed khac nhau) dang duoc quet doc lap. Voi MOI model, "
+                 "duoi day la mot vai seed ung vien DA duoc loc bot trung lap va xep hang theo "
+                 "TY LE trung (hit_rate = so lan trung / tong so ky da quet cua model do, de so "
+                 "sanh CONG BANG giua cac model co cua so quet khac nhau) kem ve du doan cua tung "
+                 "seed NEU dung lai cho ky sap toi:")
+    for i, m in enumerate(models):
+        lines.append(f"\nModel {i} (seed_start={m['seed_start']}, da quet {m['total_draws_in_model']} ky, "
+                     f"tong {m['total_seeds_in_model']} seed trong L1):")
+        for c in m["candidates"]:
+            lines.append(f"  seed={c['seed']} (hit_rate={c['hit_rate']:.3f}, tung trung {c['weight']} lan, "
+                         f"lan gan nhat ky {c['last_hit_draw']:05d}) -> "
+                         f"{c['numbers']} + DB {c['special']}")
+    lines.append("")
+    lines.append("Voi MOI model, hay chon DUNG 1 seed ung vien (trong danh sach da cho, KHONG duoc "
+                 "bia ra seed moi) ma ban cho la 'dang chu y' nhat de theo doi, va giai thich NGAN "
+                 "GON (1-2 cau) tai sao. Luu y ro rang day chi la BAI TAP THONG KE/nghien cuu, ban "
+                 "KHONG the du doan chinh xac ket qua xo so that su.")
+    lines.append("")
+    lines.append("Tra loi CHI DUOI DANG JSON (khong markdown, khong giai thich ngoai JSON), dinh dang:")
+    lines.append('{"picks": [{"model_index": 0, "seed": 123, "reasoning": "..."}]}')
+    return "\n".join(lines)
+
+
+def prune_old_history(history_dir, current_draw_id, keep_last_n):
+    """Xoa cac file predict/history/{draw_id}_{strategy}.txt cua nhung ky
+    DA CU (draw_id <= current_draw_id - keep_last_n). Goi ham nay SAU KHI
+    check_prediction_result.py da doi chieu + cong don ket qua ky
+    current_draw_id vao predict/strategy_stats.json - tu luc do du lieu
+    tho tung ky khong con can giu mai (da nam trong so tich luy), chi giu
+    lai 1 cua so gan day de tien debug/doi chieu thu cong. Cang nhieu
+    chien luoc (base/ml/ai/ai2/ai3/...) thi so file/ky cang nhieu, nen
+    can chan de predict/history khong phinh to vo han theo thoi gian.
+
+    Tra ve so file da xoa.
+    """
+    d = Path(history_dir)
+    if not d.exists() or keep_last_n < 0:
+        return 0
+    cutoff = current_draw_id - keep_last_n
+    if cutoff < 0:
+        return 0
+    removed = 0
+    for p in d.glob("*_*.txt"):
+        m = re.match(r"^(\d+)_", p.name)
+        if not m:
+            continue
+        file_draw_id = int(m.group(1))
+        if file_draw_id <= cutoff:
+            try:
+                p.unlink()
+                removed += 1
+            except OSError:
+                pass
+    return removed
+
+
+# ---------------------------------------------------------------------
 # Cham diem trung TUNG PHAN - xem docstring dau file.
 # ---------------------------------------------------------------------
 
