@@ -1153,13 +1153,14 @@ jobs:
           DRAW_ID: ${{ needs.scan_and_check.outputs.latest_ky }}
           HISTORY_DIR: "predict/history"
           OUT_DIR: "j1_535"
+          KEEP_LAST_N_HISTORY_DRAWS: "60"
         run: |
           set -e
           python3 check_prediction_result.py | tee /tmp/check_prediction_out.txt
           MATCHED=$(grep -o 'MATCHED_COUNT=[0-9]*' /tmp/check_prediction_out.txt | tail -1 | cut -d'=' -f2)
           echo "matched_count=${MATCHED:-0}" >> "$GITHUB_OUTPUT"
 
-      - name: Commit ket qua doan dung (neu co)
+      - name: Commit ket qua doan dung + thong ke chien luoc (neu co)
         run: |
           set -e
           git config user.name "github-actions[bot]"
@@ -1168,11 +1169,17 @@ jobs:
           git pull --rebase origin main
           git stash pop || true
           [ -d j1_535 ] && git add j1_535/ || true
+          # QUAN TRONG: predict/strategy_stats.json (thong ke tich luy) va
+          # cac file predict/history/ vua bi prune_old_history() xoa deu
+          # nam trong predict/ - truoc day buoc nay CHI add j1_535/ nen
+          # strategy_stats.json bi tinh lai roi MAT moi lan chay (job
+          # chay tren container tam thoi). Them dong duoi de sua.
+          [ -d predict ] && git add predict/ || true
           if git diff --cached --quiet; then
             echo "Khong co du doan dung nao moi, khong co gi de commit"
             exit 0
           fi
-          git commit -m "du doan dung ky ${{ needs.scan_and_check.outputs.latest_ky }} - luu vao j1_535/ $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git commit -m "du doan dung ky ${{ needs.scan_and_check.outputs.latest_ky }} - luu vao j1_535/ + cap nhat strategy_stats.json $(date -u +%Y-%m-%d\ %H:%M) UTC"
           for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
