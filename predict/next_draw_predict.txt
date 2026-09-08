@@ -4,17 +4,17 @@ Neu seed nay du doan dung ky 00873, no se THANG HANG (thanh L2) ngay ky nay.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  so seed con lai trong L1 cua model nay: 160303
+  so seed con lai trong L1 cua model nay: 160287
   seed duoc chon (manh nhat): 108477820729
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00863)
   DU DOAN ky 00873: 11-13-17-20-27 + DAC BIET 9
 
---- Model (l1_merged file: l1_merged/merged_seed1312032910639.json) ---
-  seed_start cua model: 1312032910639
-  so seed con lai trong L1 cua model nay: 79785
-  seed duoc chon (manh nhat): 1312033217789
-  seed nay da tung trung: 1 lan (lan gan nhat: ky 00866)
-  DU DOAN ky 00873: 17-21-23-24-27 + DAC BIET 9
+--- Model (l1_merged file: l1_merged/merged_seed1343188426639.json) ---
+  seed_start cua model: 1343188426639
+  so seed con lai trong L1 cua model nay: 79409
+  seed duoc chon (manh nhat): 1343188806717
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00872)
+  DU DOAN ky 00873: 01-19-30-34-35 + DAC BIET 2
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
@@ -25,15 +25,15 @@ Neu seed nay du doan dung ky 00873, no se THANG HANG (thanh L2) ngay ky nay.
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
-  so seed con lai trong L1 cua model nay: 79933
+  so seed con lai trong L1 cua model nay: 79994
   seed duoc chon (manh nhat): 708477963055
   seed nay da tung trung: 1 lan (lan gan nhat: ky 00865)
   DU DOAN ky 00873: 03-07-09-33-35 + DAC BIET 7
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  so seed con lai trong L1 cua model nay: 120175
-  seed duoc chon (manh nhat): 900478188142
-  seed nay da tung trung: 1 lan (lan gan nhat: ky 00865)
-  DU DOAN ky 00873: 03-12-14-24-32 + DAC BIET 2
+  so seed con lai trong L1 cua model nay: 120300
+  seed duoc chon (manh nhat): 900478035516
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00872)
+  DU DOAN ky 00873: 06-22-24-27-31 + DAC BIET 9
 
