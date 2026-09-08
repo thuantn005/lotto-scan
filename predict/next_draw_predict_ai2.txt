@@ -4,31 +4,31 @@ Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  seed AI chon: 108479430844
-  ly do AI dua ra: Chứa ba số (16, 32, 35) xuất hiện trong các kỳ gần nhất, trong đó 32 và 35 xuất hiện liên tiếp ở kỳ 00872 và 00871, cho thấy khả năng tái xuất cao.
-  DU DOAN ky 00873: 08-16-28-32-35 + DAC BIET 9
+  seed AI chon: 108478110827
+  ly do AI dua ra: Có hit_rate 0.05, trùng một lần ở kỳ gần nhất (00872), là đại diện cho các seed có hiệu suất cao nhất trong model này.
+  DU DOAN ky 00873: 05-11-12-33-35 + DAC BIET 2
 
---- Model (l1_merged file: l1_merged/merged_seed1343188426639.json) ---
-  seed_start cua model: 1343188426639
-  seed AI chon: 1343195825962
-  ly do AI dua ra: Bao gồm số 18 – một trong những số xuất hiện thường xuyên trong các kỳ gần đây, và kết hợp với 24, 27 vốn có tần suất cao.
-  DU DOAN ky 00873: 02-18-19-24-27 + DAC BIET 6
+--- Model (l1_merged file: l1_merged/merged_seed1374343942639.json) ---
+  seed_start cua model: 1374343942639
+  seed AI chon: 1374345603485
+  ly do AI dua ra: Hit_rate cao nhất 0.10 và trùng một lần ở kỳ 00872, nổi bật so với các seed khác trong model này.
+  DU DOAN ky 00873: 01-06-24-25-29 + DAC BIET 10
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  seed AI chon: 682305824931
-  ly do AI dua ra: Có số 16, một số thường xuất hiện trong các kỳ gần nhất (00872), đồng thời chứa 15 và 23, cũng thường xuất hiện.
-  DU DOAN ky 00873: 09-14-15-16-23 + DAC BIET 3
+  seed AI chon: 682307390972
+  ly do AI dua ra: Mặc dù hit_rate thấp (0.001), đây là seed đầu tiên đạt trùng một lần ở kỳ 00872, làm nổi bật trong model có nhiều seed.
+  DU DOAN ky 00873: 01-03-06-10-32 + DAC BIET 10
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
-  seed AI chon: 708479426668
-  ly do AI dua ra: Gồm hai số (17, 32) xuất hiện trong kỳ 00872, trong khi 32 là số xuất hiện liên tiếp trong các kỳ gần đây.
-  DU DOAN ky 00873: 10-17-24-30-32 + DAC BIET 4
+  seed AI chon: 708480507342
+  ly do AI dua ra: Hit_rate 0.10 và trùng một lần ở kỳ 00872, là mẫu tiêu biểu cho model này.
+  DU DOAN ky 00873: 08-12-16-18-34 + DAC BIET 7
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 900479261591
-  ly do AI dua ra: Chứa hai số (20, 32) vừa xuất hiện trong kỳ 00872, cho thấy tiềm năng lặp lại trong kỳ tiếp theo.
-  DU DOAN ky 00873: 12-20-23-28-32 + DAC BIET 4
+  seed AI chon: 900478035516
+  ly do AI dua ra: Hit_rate 0.067 và trùng một lần ở kỳ 00872, là seed duy nhất đạt trùng trong model này.
+  DU DOAN ky 00873: 06-22-24-27-31 + DAC BIET 9
 
