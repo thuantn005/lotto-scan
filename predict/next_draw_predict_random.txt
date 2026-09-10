@@ -1,21 +1,21 @@
-DU DOAN KY 00874 - PHIEN BAN RANDOM (doi chung ngau nhien,
+DU DOAN KY 00875 - PHIEN BAN RANDOM (doi chung ngau nhien,
 doc lap hoan toan voi cac chien luoc dua vao seed: base/ml/ai/ai2/ai3)
 Luu y: day la BOC SO NGAU NHIEN THAT SU (random.SystemRandom), KHONG
 dua vao seed/L1/lich su gi ca - dung de LAM MOC SO SANH thong ke, so
 xem cac chien luoc kia co thuc su hon ngau nhien hay khong.
 
-  ve #1: 06-07-15-28-33 + DAC BIET 1
-  ve #2: 06-10-15-18-26 + DAC BIET 8
-  ve #3: 10-12-14-27-30 + DAC BIET 7
-  ve #4: 05-10-14-23-33 + DAC BIET 12
-  ve #5: 10-14-19-22-29 + DAC BIET 2
-  ve #6: 02-04-11-28-32 + DAC BIET 10
-  ve #7: 01-02-04-09-12 + DAC BIET 11
-  ve #8: 08-23-24-28-33 + DAC BIET 3
-  ve #9: 10-21-25-27-35 + DAC BIET 9
-  ve #10: 12-24-25-29-35 + DAC BIET 3
-  ve #11: 05-16-20-26-33 + DAC BIET 4
-  ve #12: 02-09-11-24-32 + DAC BIET 11
-  ve #13: 01-06-08-14-35 + DAC BIET 3
-  ve #14: 06-12-17-23-35 + DAC BIET 3
-  ve #15: 09-12-26-33-34 + DAC BIET 6
+  ve #1: 01-04-16-26-32 + DAC BIET 4
+  ve #2: 14-19-24-28-35 + DAC BIET 11
+  ve #3: 20-21-26-28-31 + DAC BIET 8
+  ve #4: 11-21-29-31-35 + DAC BIET 3
+  ve #5: 03-04-05-18-29 + DAC BIET 1
+  ve #6: 04-05-16-31-34 + DAC BIET 11
+  ve #7: 14-15-20-24-27 + DAC BIET 8
+  ve #8: 01-08-14-28-30 + DAC BIET 12
+  ve #9: 03-24-27-30-32 + DAC BIET 9
+  ve #10: 02-09-18-29-35 + DAC BIET 9
+  ve #11: 03-16-17-25-32 + DAC BIET 11
+  ve #12: 06-09-16-19-23 + DAC BIET 3
+  ve #13: 02-04-11-20-22 + DAC BIET 5
+  ve #14: 15-16-22-23-29 + DAC BIET 5
+  ve #15: 08-09-11-22-30 + DAC BIET 2
