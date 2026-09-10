@@ -1063,10 +1063,19 @@ jobs:
             fi
           done
 
-  predict_next_seed:
-    # Du doan ky ke tiep BAN SEED - moi model (moi file l1_merged/) chon
-    # ra 1 seed manh nhat (weight cao nhat) lam du doan rieng. Can CHECKOUT
-    # SAU KHI cac job merge da push xong nen needs toan bo 4 job merge_once*.
+  predict_next:
+    # Du doan ky KE TIEP dua tren TAT CA seed dang co trong L1 (l1_merged/
+    # cua ca 5 model - CHECKOUT o day se lay dung ban moi nhat vi job nay
+    # needs toan bo cac job merge da push xong). KHONG dung L2 lam input -
+    # L2 (l2_merged/) chi la KET QUA thang hang, khong phai nguon du doan.
+    # QUAN TRONG: predict_next/predict_next_ml/predict_next_ai/predict_next_ai2
+    # deu commit+push vao predict/ tren cung nhanh main - neu chay SONG SONG
+    # se dua nhau push (git pull --rebase lien tuc that bai sau 5 lan retry
+    # -> mat ket qua du doan cua job do, khien predict/*.txt bi LECH 1 KY so
+    # voi data/all.csv + data/full_results.json da duoc scan_and_check commit
+    # xong). Da xich predict_next_ml needs predict_next, predict_next_ai
+    # needs predict_next_ml, predict_next_ai2 needs predict_next_ai (xem cac
+    # job ben duoi) de dam bao CHI 1 job push tai 1 thoi diem.
     needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
@@ -1076,21 +1085,25 @@ jobs:
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Du doan ky ke tiep - phien ban Seed (moi model 1 seed manh nhat)
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Du doan ky ke tiep (chi dung seed L1, khong dung L2)
         env:
           CSV_PATH: data/all.csv
           L1_GLOB: "l1_merged/merged_seed*.json"
-          OUT_PATH: "predict/next_draw_predict_seed.txt"
-        run: |
-          set -e
-          python3 predict_next_draw_seed.py
+          OUT_PATH: "predict/next_draw_predict.txt"
+          HISTORY_DIR: "predict/history"
+        run: python3 predict_next_draw.py
 
-      - name: Commit ket qua du doan Seed
+      - name: Commit ket qua du doan
         run: |
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash push -u -m "predict seed truoc rebase" || true
+          git stash push -u -m "predict truoc rebase" || true
           git pull --rebase origin main
           git stash pop || true
           [ -d predict ] && git add predict/ || true
@@ -1098,7 +1111,7 @@ jobs:
             echo "Khong co gi de commit"
             exit 0
           fi
-          git commit -m "du doan ky ke tiep - ban Seed $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git commit -m "du doan ky ke tiep (tu seed L1) $(date -u +%Y-%m-%d\ %H:%M) UTC"
           for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
@@ -1140,14 +1153,13 @@ jobs:
           DRAW_ID: ${{ needs.scan_and_check.outputs.latest_ky }}
           HISTORY_DIR: "predict/history"
           OUT_DIR: "j1_535"
-          KEEP_LAST_N_HISTORY_DRAWS: "60"
         run: |
           set -e
           python3 check_prediction_result.py | tee /tmp/check_prediction_out.txt
           MATCHED=$(grep -o 'MATCHED_COUNT=[0-9]*' /tmp/check_prediction_out.txt | tail -1 | cut -d'=' -f2)
           echo "matched_count=${MATCHED:-0}" >> "$GITHUB_OUTPUT"
 
-      - name: Commit ket qua doan dung + thong ke chien luoc (neu co)
+      - name: Commit ket qua doan dung (neu co)
         run: |
           set -e
           git config user.name "github-actions[bot]"
@@ -1156,17 +1168,11 @@ jobs:
           git pull --rebase origin main
           git stash pop || true
           [ -d j1_535 ] && git add j1_535/ || true
-          # QUAN TRONG: predict/strategy_stats.json (thong ke tich luy) va
-          # cac file predict/history/ vua bi prune_old_history() xoa deu
-          # nam trong predict/ - truoc day buoc nay CHI add j1_535/ nen
-          # strategy_stats.json bi tinh lai roi MAT moi lan chay (job
-          # chay tren container tam thoi). Them dong duoi de sua.
-          [ -d predict ] && git add predict/ || true
           if git diff --cached --quiet; then
             echo "Khong co du doan dung nao moi, khong co gi de commit"
             exit 0
           fi
-          git commit -m "du doan dung ky ${{ needs.scan_and_check.outputs.latest_ky }} - luu vao j1_535/ + cap nhat strategy_stats.json $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git commit -m "du doan dung ky ${{ needs.scan_and_check.outputs.latest_ky }} - luu vao j1_535/ $(date -u +%Y-%m-%d\ %H:%M) UTC"
           for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
@@ -1192,35 +1198,41 @@ jobs:
             --event-type j1_prediction_hit \
             --event-json "j1_535/${{ needs.scan_and_check.outputs.latest_ky }}.json"
 
-  predict_next_random:
-    # Du doan ky ke tiep BAN RANDOM (doi chung ngau nhien that su, KHONG
-    # dua vao seed/L1) - dung lam moc so sanh thong ke cho cac chien luoc
-    # con lai. Chi can data/all.csv (de lay next_draw_id) -> KHONG can
-    # cho cac job merge L1 xong, chi needs scan_and_check.
-    needs: scan_and_check
-    if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
+  predict_next_ml:
+    # Du doan ky ke tiep BAN ML - DOC LAP HOAN TOAN voi job predict_next
+    # (khong dung chung file, khong goi lan nhau). Mien phi, khong can API
+    # key, chi dung sklearn chay local trong runner.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Du doan ky ke tiep - phien ban Random (doi chung ngau nhien)
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Cai thu vien ML
+        run: pip install --quiet scikit-learn numpy
+
+      - name: Du doan ky ke tiep - phien ban ML (chon seed theo diem Logistic Regression)
         env:
           CSV_PATH: data/all.csv
-          OUT_PATH: "predict/next_draw_predict_random.txt"
-          NUM_PICKS: "15"
-        run: |
-          set -e
-          python3 predict_next_draw_random.py
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          OUT_PATH: "predict/next_draw_predict_ml.txt"
+          ML_SCORES_PATH: "predict/ml_scores.json"
+        run: python3 predict_next_draw_ml.py
 
-      - name: Commit ket qua du doan Random
+      - name: Commit ket qua du doan ML
         run: |
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash push -u -m "predict random truoc rebase" || true
+          git stash push -u -m "predict ml truoc rebase" || true
           git pull --rebase origin main
           git stash pop || true
           [ -d predict ] && git add predict/ || true
@@ -1228,7 +1240,190 @@ jobs:
             echo "Khong co gi de commit"
             exit 0
           fi
-          git commit -m "du doan ky ke tiep - ban Random $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git commit -m "du doan ky ke tiep - ban ML $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  predict_next_ai:
+    # Du doan ky ke tiep BAN AI (Gemini) - DOC LAP HOAN TOAN voi predict_next
+    # va predict_next_ml (khong dung chung file, khong goi lan nhau). Can
+    # secret GEMINI_API_KEY (MIEN PHI, lay tai https://aistudio.google.com/apikey).
+    # Neu chua co secret nay, job se FAIL o buoc goi API - khong anh huong
+    # cac job khac vi khong job nao needs job nay.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_ml]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Du doan ky ke tiep - phien ban AI (Gemini, mien phi)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          OUT_PATH: "predict/next_draw_predict_ai.txt"
+          CANDIDATES_PER_MODEL: "15"
+          GEMINI_MODEL: "gemini-3-flash-preview"
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -e
+          pip install --quiet requests
+          python3 predict_next_draw_ai.py
+
+      - name: Commit ket qua du doan AI
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict ai truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban AI/Gemini $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  predict_next_ai2:
+    # Du doan ky ke tiep BAN AI2/GROQ - DOC LAP HOAN TOAN voi predict_next,
+    # predict_next_ml va predict_next_ai (Gemini) - khong dung chung file,
+    # khong goi lan nhau. Can secret GROQ_API_KEY (MIEN PHI VINH VIEN,
+    # khong can the, lay tai https://console.groq.com/keys). Neu chua co
+    # secret nay, job se FAIL o buoc goi API - khong anh huong cac job
+    # khac vi khong job nao needs job nay.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_ai]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Du doan ky ke tiep - phien ban AI2 (Groq, mien phi vinh vien)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          OUT_PATH: "predict/next_draw_predict_ai2.txt"
+          CANDIDATES_PER_MODEL: "15"
+          GROQ_MODEL: "openai/gpt-oss-120b"
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          set -e
+          pip install --quiet requests
+          python3 predict_next_draw_ai2.py
+
+      - name: Commit ket qua du doan AI2
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict ai2 truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban AI2/Groq $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  predict_next_app:
+    # Du doan ky ke tiep BAN "APP" - mo phong DUNG co che sinh so cua app
+    # Flutter "San Chia Giai 535" (tab "Sinh So Tu Seed" - RandomPickScreen
+    # + GithubSeedSource + TicketFormula): chon NGAU NHIEN seed trong cua
+    # so uu tien [cach ky can du doan 200 ky, lui them 500 ky nua] roi ap
+    # dung DUNG cong thuc hash giong TicketFormula.dart/scan_v2.cpp. DOC
+    # LAP HOAN TOAN voi predict_next/_ml/_ai/_ai2 (khong dung chung file,
+    # khong AI/ML, khong can API key nao).
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_ai2]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Du doan ky ke tiep - phien ban APP (mo phong co che sinh so cua app)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          OUT_PATH: "predict/next_draw_predict_app.txt"
+          APP_GAP_DRAWS: "200"
+          APP_WINDOW_DRAWS: "500"
+          APP_LINE_COUNT: "5"
+        run: python3 predict_next_draw_app.py
+
+      - name: Commit ket qua du doan APP
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict app truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban APP (mo phong co che sinh so app) $(date -u +%Y-%m-%d\ %H:%M) UTC"
           for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
@@ -1252,7 +1447,7 @@ jobs:
     # dung ban seed_start cu se tu bi xoa, tranh l1_merged/l2_merged phinh
     # to vo ich theo thoi gian. Chay SAU CUNG, sau khi moi job merge/du
     # doan da xong (needs toan bo) de khong xoa nham file dang can dung.
-    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4]
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next, predict_next_ml]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:
