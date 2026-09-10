@@ -5,15 +5,15 @@ tan suat lich su) CAO NHAT.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  so seed trong L1 cua model nay: 160274
+  so seed trong L1 cua model nay: 160084
   seed duoc chon (diem ML cao nhat): 113738613119 (diem=3.0418)
   DU DOAN ky 00877: 01-03-21-28-33 + DAC BIET 5
 
---- Model (l1_merged file: l1_merged/merged_seed1498966006639.json) ---
-  seed_start cua model: 1498966006639
-  so seed trong L1 cua model nay: 79729
-  seed duoc chon (diem ML cao nhat): 1515535806523 (diem=3.0437)
-  DU DOAN ky 00877: 01-13-21-22-34 + DAC BIET 5
+--- Model (l1_merged file: l1_merged/merged_seed1530121522639.json) ---
+  seed_start cua model: 1530121522639
+  so seed trong L1 cua model nay: 80015
+  seed duoc chon (diem ML cao nhat): 1536660853455 (diem=3.0412)
+  DU DOAN ky 00877: 01-21-28-33-34 + DAC BIET 5
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
@@ -23,13 +23,13 @@ tan suat lich su) CAO NHAT.
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
-  so seed trong L1 cua model nay: 80182
+  so seed trong L1 cua model nay: 79794
   seed duoc chon (diem ML cao nhat): 726687599420 (diem=3.0439)
   DU DOAN ky 00877: 01-03-10-21-26 + DAC BIET 5
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  so seed trong L1 cua model nay: 120116
-  seed duoc chon (diem ML cao nhat): 923791365954 (diem=3.0435)
-  DU DOAN ky 00877: 03-21-22-26-34 + DAC BIET 5
+  so seed trong L1 cua model nay: 120383
+  seed duoc chon (diem ML cao nhat): 924052125092 (diem=3.0433)
+  DU DOAN ky 00877: 01-03-10-26-34 + DAC BIET 5
 
