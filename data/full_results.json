@@ -64,15 +64,7 @@
       "share_date": null,
       "peak_jackpot": 6302387500,
       "trigger_draw_id": null,
-      "last_event": {
-        "id": "completed-2026-09-08-00871",
-        "kind": "completed",
-        "title_vi": "✅ Kỳ chia giải Lotto 5/35 đã diễn ra",
-        "title_en": "✅ Lotto 5/35 share draw has taken place",
-        "message_vi": "Kỳ chia giải ngày 08/09/2026 đã xong (pot trước chia ~35.959.161.000 (~36.0 tỷ)). Pot hiện tại: 6.302.387.500 (~6.3 tỷ).",
-        "message_en": "The 08/09/2026 share draw is complete (pot before sharing was ~35.959.161.000 (~36.0 tỷ)). Current pot: 6.302.387.500 (~6.3 tỷ).",
-        "urgent": false
-      }
+      "last_event": null
     }
   }
 ]
