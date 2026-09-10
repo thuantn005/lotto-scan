@@ -1,8 +1,8 @@
 {
-  "batch_start": 1000186933095998,
-  "batch_end": 1000218088611997,
+  "batch_start": 1000218088611998,
+  "batch_end": 1000249244127997,
   "total_scanned": 31155516000,
-  "found": 1,
+  "found": 2,
   "results": [
     {
       "seed": 135853193942,
@@ -43,6 +43,48 @@
             29
           ],
           "special": 7
+        }
+      ]
+    },
+    {
+      "seed": 1000229784750373,
+      "j1_count": 3,
+      "jackpot1_hits": [
+        {
+          "draw_id": 404,
+          "draw_date": "2026-01-16",
+          "numbers": [
+            2,
+            6,
+            10,
+            24,
+            29
+          ],
+          "special": 5
+        },
+        {
+          "draw_id": 698,
+          "draw_date": "2026-06-12",
+          "numbers": [
+            14,
+            15,
+            20,
+            26,
+            30
+          ],
+          "special": 12
+        },
+        {
+          "draw_id": 853,
+          "draw_date": "2026-08-29",
+          "numbers": [
+            2,
+            26,
+            27,
+            32,
+            34
+          ],
+          "special": 8
         }
       ]
     }
