@@ -75,6 +75,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Download dataset moi nhat
         run: |
@@ -277,6 +278,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -341,6 +343,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Download tat ca chunk artifact
         uses: actions/download-artifact@v4
@@ -464,6 +467,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -519,6 +523,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Download tat ca chunk artifact
         uses: actions/download-artifact@v4
@@ -642,6 +647,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -697,6 +703,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Download tat ca chunk artifact
         uses: actions/download-artifact@v4
@@ -822,6 +829,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -891,6 +899,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Download tat ca chunk artifact
         uses: actions/download-artifact@v4
@@ -1084,6 +1093,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -1140,6 +1150,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -1210,6 +1221,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -1269,6 +1281,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -1331,6 +1344,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -1378,6 +1392,67 @@ jobs:
             fi
           done
 
+  predict_next_app:
+    # Du doan ky ke tiep BAN "APP" - mo phong DUNG co che sinh so cua app
+    # Flutter "San Chia Giai 535" (tab "Sinh So Tu Seed" - RandomPickScreen
+    # + GithubSeedSource + TicketFormula): chon NGAU NHIEN seed trong cua
+    # so uu tien [cach ky can du doan 200 ky, lui them 500 ky nua] roi ap
+    # dung DUNG cong thuc hash giong TicketFormula.dart/scan_v2.cpp. DOC
+    # LAP HOAN TOAN voi predict_next/_ml/_ai/_ai2 (khong dung chung file,
+    # khong AI/ML, khong can API key nao).
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_ai2]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          ref: main
+
+      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
+      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
+      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
+      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
+
+      - name: Du doan ky ke tiep - phien ban APP (mo phong co che sinh so cua app)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          OUT_PATH: "predict/next_draw_predict_app.txt"
+          APP_GAP_DRAWS: "200"
+          APP_WINDOW_DRAWS: "500"
+          APP_LINE_COUNT: "5"
+        run: python3 predict_next_draw_app.py
+
+      - name: Commit ket qua du doan APP
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict app truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban APP (mo phong co che sinh so app) $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
   cleanup_l1:
     # Don dep l1_merged/ va l2_merged/: xoa moi file KHONG khop voi seed
     # cua cac model dang ACTIVE (FIXED_SEED_START, ONCE_SEED_START,
@@ -1395,6 +1470,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Xoa file l1_merged/l2_merged khong thuoc model nao dang active
         env:
