@@ -1,8 +1,0 @@
-KY 00877 (2026-09-10) - DU DOAN DUNG (trung J1)
-Ket qua thuc te: [2, 3, 10, 15, 27] + DAC BIET 3
-
-chien luoc: base
-seed: 682305806894
-model seed_start: 682305800400
-nguon file L1: l1_merged/merged_seed682305800400.json
-
