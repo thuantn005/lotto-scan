@@ -1,34 +1,34 @@
-DU DOAN KY 00877 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)
+DU DOAN KY 00878 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)
 Model AI su dung: gemini-3-flash-preview
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  seed AI chon: 108528569185
-  ly do AI dua ra: Seed nay chua cac so 7 va 23 dang co tan suat xuat hien cao (5 lan trong 15 ky), cung voi so dac biet 11 thuong xuyen lap lai.
-  DU DOAN ky 00877: 06-07-15-23-31 + DAC BIET 11
+  seed AI chon: 108513894652
+  ly do AI dua ra: Lựa chọn này đáng chú ý vì chứa cặp số 2, 3 vừa xuất hiện ở kỳ 877 kết hợp với DB 2 vốn có tần suất xuất hiện dày đặc gần đây.
+  DU DOAN ky 00878: 02-03-17-18-31 + DAC BIET 2
 
---- Model (l1_merged file: l1_merged/merged_seed1530121522639.json) ---
-  seed_start cua model: 1530121522639
-  seed AI chon: 1530180403243
-  ly do AI dua ra: Lua chon dua tren so 20 va so dac biet 2, ca hai deu la nhung con so xuat hien voi mat do day dac trong cac ky gan day.
-  DU DOAN ky 00877: 01-10-12-19-20 + DAC BIET 2
+--- Model (l1_merged file: l1_merged/merged_seed1592432554639.json) ---
+  seed_start cua model: 1592432554639
+  seed AI chon: 1592439573243
+  ly do AI dua ra: Seed này có độ tương đồng rất cao với kết quả kỳ 877 (bao gồm số 2, 3 và DB 3), lý tưởng để theo dõi giả thuyết về sự lặp lại của bộ số.
+  DU DOAN ky 00878: 02-03-05-08-14 + DAC BIET 3
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  seed AI chon: 682338747537
-  ly do AI dua ra: Seed tap trung vao so 11 va so dac biet 2, von la nhung gia tri co xu huong quay tro lai cao trong chu ky thong ke 15 phien.
-  DU DOAN ky 00877: 02-11-24-31-35 + DAC BIET 2
+  seed AI chon: 682346066919
+  ly do AI dua ra: Duy trì số đặc biệt 3 từ kỳ gần nhất và kết hợp với các số 16, 23 thường xuyên xuất hiện trong các kỳ quay trước đó.
+  DU DOAN ky 00878: 06-16-21-23-26 + DAC BIET 3
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
-  seed AI chon: 708498110715
-  ly do AI dua ra: Day la seed co do trung lap cao nhat voi cac 'hot numbers' hien tai bao gom 7, 9, 20 va so dac biet 1.
-  DU DOAN ky 00877: 07-09-20-29-35 + DAC BIET 1
+  seed AI chon: 708519933879
+  ly do AI dua ra: Tập trung vào các số 24 và 27, vốn là những số có nhịp xuất hiện khá ổn định trong chu kỳ 15 kỳ quay vừa qua.
+  DU DOAN ky 00878: 06-14-24-27-33 + DAC BIET 2
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 900506328753
-  ly do AI dua ra: Chon seed nay vi chua cap so 7-23 va 24, nhung con so co tan suat xuat hien lien tuc va on dinh trong cac ky gan nhat.
-  DU DOAN ky 00877: 04-07-12-23-24 + DAC BIET 3
+  seed AI chon: 900480982722
+  ly do AI dua ra: Tái hiện cụm số 2, 3, 10 từ kỳ 00877, giúp kiểm chứng khả năng rơi lại của một nhóm số liền kề trong thống kê học.
+  DU DOAN ky 00878: 02-03-10-14-34 + DAC BIET 4
 
