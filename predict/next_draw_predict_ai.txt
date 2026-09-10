@@ -1,34 +1,34 @@
-DU DOAN KY 00873 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)
+DU DOAN KY 00877 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)
 Model AI su dung: gemini-3-flash-preview
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  seed AI chon: 108477820729
-  ly do AI dua ra: This seed includes the high-frequency main numbers 11, 20, and 27, which have appeared frequently in recent draws.
-  DU DOAN ky 00873: 11-13-17-20-27 + DAC BIET 9
+  seed AI chon: 108500550796
+  ly do AI dua ra: Ket hop hai so xuat hien rat thuong xuyen trong 15 ky gan nhat la 7 va 23, phu hop voi xu huong lap lai gan day.
+  DU DOAN ky 00877: 07-12-15-23-26 + DAC BIET 3
 
---- Model (l1_merged file: l1_merged/merged_seed1343188426639.json) ---
-  seed_start cua model: 1343188426639
-  seed AI chon: 1343191509815
-  ly do AI dua ra: Combines persistent trend numbers 18 and 27 with Special Number 1, which has a strong historical recurrence rate.
-  DU DOAN ky 00873: 03-05-18-27-28 + DAC BIET 1
+--- Model (l1_merged file: l1_merged/merged_seed1498966006639.json) ---
+  seed_start cua model: 1498966006639
+  seed AI chon: 1498966110639
+  ly do AI dua ra: Tap trung vao nhom so co tan suat cao gom 7, 11 va 23, von la cac diem tua thong ke manh trong chu ky ngan han.
+  DU DOAN ky 00877: 07-11-22-23-32 + DAC BIET 5
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  seed AI chon: 682305836287
-  ly do AI dua ra: Features key numbers 9 and 20 and predicts Special Number 12, which is the most frequent result in the last 15 draws.
-  DU DOAN ky 00873: 09-12-13-20-26 + DAC BIET 12
+  seed AI chon: 682338747537
+  ly do AI dua ra: Giu lai so dac biet 2 tu ky moi nhat va bao gom so 11, 24 co tan suat xuat hien on dinh trong dai ky du lieu.
+  DU DOAN ky 00877: 02-11-24-31-35 + DAC BIET 2
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
-  seed AI chon: 708482669931
-  ly do AI dua ra: Captures a strong set of active numbers (20, 27, 34) and aligns with the recent occurrence of Special Number 8.
-  DU DOAN ky 00873: 05-13-20-27-34 + DAC BIET 8
+  seed AI chon: 708537194463
+  ly do AI dua ra: Chon hat giong co so 19 tu ky vua roi va so dac biet 2, tan dung da lap lai cua cac con so moi xuat hien.
+  DU DOAN ky 00877: 01-19-22-23-28 + DAC BIET 2
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 900480669310
-  ly do AI dua ra: Closely tracks the immediate momentum of the last draw by including the core cluster of 17, 18, and 20.
-  DU DOAN ky 00873: 01-07-17-18-20 + DAC BIET 5
+  seed AI chon: 900533397552
+  ly do AI dua ra: Mat do tap trung cao vao cac so 'nong' nhu 11, 20 va 23, nhung con so lien tuc gop mat trong 10 ky gan day.
+  DU DOAN ky 00877: 11-17-20-23-28 + DAC BIET 8
 
