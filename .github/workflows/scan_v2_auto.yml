@@ -75,6 +75,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Download dataset moi nhat
         run: |
@@ -277,6 +278,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -341,6 +343,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Download tat ca chunk artifact
         uses: actions/download-artifact@v4
@@ -464,6 +467,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -519,6 +523,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Download tat ca chunk artifact
         uses: actions/download-artifact@v4
@@ -642,6 +647,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -697,6 +703,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Download tat ca chunk artifact
         uses: actions/download-artifact@v4
@@ -822,6 +829,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -891,6 +899,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Download tat ca chunk artifact
         uses: actions/download-artifact@v4
@@ -1084,6 +1093,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -1140,6 +1150,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -1210,6 +1221,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -1269,6 +1281,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -1331,6 +1344,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -1394,6 +1408,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       # data/all.csv da co san tu buoc Checkout (job scan_and_check da
       # cao + fallback + commit ban moi nhat truoc do, job nay needs no
@@ -1455,6 +1470,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
+          ref: main
 
       - name: Xoa file l1_merged/l2_merged khong thuoc model nao dang active
         env:
