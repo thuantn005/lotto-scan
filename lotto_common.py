@@ -283,18 +283,43 @@ def known_strategies(history_dir, draw_id):
 #     tien seed TRUNG GAN DAY HON (last_hit_draw lon hon) thay vi seed nho
 #     nhat - bam sat huong quan tam "khoang cach giua cac lan trung ngan".
 #   - Them: loai bot candidate GAN TRUNG LAP (ve 5 so trung >= 4/5 so voi
-#     1 candidate DA CHON) de top_k gui cho AI thuc su da dang, AI co gi
-#     do khac biet de so sanh thay vi 15 ve gan nhu giong het nhau.
+#     1 candidate DA CHON) de so gui cho AI thuc su da dang, AI co gi
+#     do khac biet de so sanh thay vi nhieu ve gan nhu giong het nhau.
+#   - Them (2026-09): TACH rieng pool_size (do sau quet/khu trung lap noi
+#     bo, co the rat lon vd 10000, luu ra file rieng phuc vu backtest) va
+#     send_k (so candidate THUC SU dua vao prompt AI, giu nho vd 200) -
+#     truoc day dung chung 1 con so top_k nen tang len de "loc ky hon" vo
+#     tinh lam prompt goi AI phinh to theo, du khong co bang chung tang
+#     so luong ung vien AI thay giup AI chon dung hon.
 # ---------------------------------------------------------------------
 
-def collect_ai_candidates_per_model(fp, next_draw_id, rank_to_mask, top_k,
-                                     max_overlap_with_selected=3):
-    """Doc 1 file L1, tra ve dict mo ta model + top_k candidate DA XEP
-    HANG lai (hit_rate giam dan, hoa thi uu tien trung gan day hon, hoa
-    tiep thi seed nho hon de on dinh ket qua) VA da loc bot trung lap
-    (bo qua candidate co >= max_overlap_with_selected/5 so trung voi 1
-    candidate DA CHON truoc do trong top_k nay). Tra ve None neu file
-    rong/loi."""
+def collect_ai_candidates_per_model(fp, next_draw_id, rank_to_mask, send_k,
+                                     max_overlap_with_selected=3,
+                                     pool_size=None, pool_out_dir=None):
+    """Doc 1 file L1, tra ve dict mo ta model + candidate DA XEP HANG lai
+    (hit_rate giam dan, hoa thi uu tien trung gan day hon, hoa tiep thi
+    seed nho hon de on dinh ket qua) VA da loc bot trung lap (bo qua
+    candidate co >= max_overlap_with_selected/5 so trung voi 1 candidate
+    DA CHON truoc do). Tra ve None neu file rong/loi.
+
+    2 muc dich TACH BIET (truoc day dung chung 1 tham so top_k gay nham
+    lan giua "quet sau bao nhieu" va "gui AI bao nhieu"):
+      - pool_size: do SAU cua vong quet/khu trung lap noi bo (mac dinh =
+        send_k neu khong truyen, tuc giu dung hanh vi cu). Tang so nay
+        KHONG lam AI thay nhieu ung vien hon - chi de co 1 pool lon hon
+        luu lai phuc vu backtest_predictions.py / phan tich thong ke sau
+        nay (xem pool_out_dir).
+      - send_k: so candidate THUC SU tra ve trong candidates[] de dua
+        vao prompt AI - day la con so anh huong truc tiep kich thuoc
+        request goi API. Da co bang chung (backtest_predictions.py) rang
+        so luong ung vien AI nhin thay KHONG lam AI "doan dung" hon -
+        tang so nay chi ton token/de loi API, khong tang do chinh xac.
+
+    Neu pool_out_dir duoc truyen, GHI toan bo pool (toi da pool_size
+    candidate, sau khu trung lap) ra file JSON rieng
+    {pool_out_dir}/pool_{seed_start}.json de dung cho phan tich/backtest
+    sau nay, DOC LAP voi candidates[] (chi top send_k) dua vao prompt.
+    """
     try:
         data = json.loads(Path(fp).read_text(encoding="utf-8"))
     except Exception as e:
@@ -313,6 +338,7 @@ def collect_ai_candidates_per_model(fp, next_draw_id, rank_to_mask, top_k,
         return None
 
     total_draws_in_model = data.get("total_draws") or len(data.get("draws", [])) or 1
+    effective_pool_size = pool_size if pool_size is not None else send_k
 
     # Xep hang: hit_rate giam dan -> trung gan day hon -> seed nho hon
     # (tie-break cuoi cung chi de ON DINH ket qua, khong mang y nghia
@@ -322,16 +348,16 @@ def collect_ai_candidates_per_model(fp, next_draw_id, rank_to_mask, top_k,
         key=lambda s: (-(seed_weight[s] / total_draws_in_model), -seed_last_draw[s], s),
     )
 
-    candidates = []
+    pool = []
     chosen_number_sets = []
     for s in ranked_seeds:
-        if len(candidates) >= top_k:
+        if len(pool) >= effective_pool_size:
             break
         numbers, special = predict_ticket(s, next_draw_id, rank_to_mask)
         num_set = set(numbers)
         if any(len(num_set & prev) >= max_overlap_with_selected for prev in chosen_number_sets):
             continue  # qua giong 1 candidate da chon, bo qua de tang da dang
-        candidates.append({
+        pool.append({
             "seed": s,
             "weight": seed_weight[s],
             "hit_rate": seed_weight[s] / total_draws_in_model,
@@ -341,12 +367,27 @@ def collect_ai_candidates_per_model(fp, next_draw_id, rank_to_mask, top_k,
         })
         chosen_number_sets.append(num_set)
 
+    if pool_out_dir:
+        os.makedirs(pool_out_dir, exist_ok=True)
+        pool_path = Path(pool_out_dir) / f"pool_{data.get('seed_start')}.json"
+        pool_path.write_text(
+            json.dumps({
+                "seed_start": data.get("seed_start"),
+                "next_draw_id": next_draw_id,
+                "total_draws_in_model": total_draws_in_model,
+                "pool_size": len(pool),
+                "candidates": pool,
+            }, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
     return {
         "file": fp,
         "seed_start": data.get("seed_start"),
         "total_draws_in_model": total_draws_in_model,
         "total_seeds_in_model": len(seed_weight),
-        "candidates": candidates,
+        "pool_size": len(pool),
+        "candidates": pool[:send_k],
     }
 
 

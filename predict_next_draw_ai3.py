@@ -33,7 +33,18 @@ ENV:
     L1_GLOB          - pattern glob cac file L1 (mac dinh l1_merged/merged_seed*.json)
     OUT_PATH         - file .txt ket qua rieng cua AI3 (mac dinh predict/next_draw_predict_ai3.txt)
     HISTORY_DIR      - thu muc luu lich su du doan (mac dinh predict/history)
-    CANDIDATES_PER_MODEL - so seed ung vien gui cho AI moi model (mac dinh 15)
+    CANDIDATES_PER_MODEL - so seed ung vien THUC SU gui cho OpenRouter moi
+                        model (mac dinh 200) - anh huong truc tiep kich
+                        thuoc request goi API, KHONG co bang chung tang
+                        so nay giup AI chon dung hon (xem
+                        backtest_predictions.py), chi de AI co nhieu lua
+                        chon da dang hon de so sanh.
+    CANDIDATE_POOL_SIZE - do SAU cua vong quet/khu trung lap NOI BO moi
+                        model (mac dinh 10000, >= CANDIDATES_PER_MODEL).
+                        KHONG anh huong prompt goi AI (chi lay top
+                        CANDIDATES_PER_MODEL tu pool nay) - dung de luu
+                        pool day du ra predict/candidate_pool_ai3/ phuc
+                        vu phan tich/backtest sau nay.
     OPENROUTER_MODEL - model OpenRouter dung de goi (mac dinh openrouter/free
                         - router tu dong chon model MIEN PHI dang co san;
                         co the doi sang slug cu the co duoi ":free" neu muon,
@@ -111,7 +122,9 @@ def main():
     l1_glob = os.environ.get("L1_GLOB", "l1_merged/merged_seed*.json")
     out_path = os.environ.get("OUT_PATH", "predict/next_draw_predict_ai3.txt")
     history_dir = os.environ.get("HISTORY_DIR", "predict/history")
-    top_k = int(os.environ.get("CANDIDATES_PER_MODEL", "15"))
+    send_k = int(os.environ.get("CANDIDATES_PER_MODEL", "200"))
+    pool_size = int(os.environ.get("CANDIDATE_POOL_SIZE", "10000"))
+    pool_out_dir = os.environ.get("CANDIDATE_POOL_DIR", "predict/candidate_pool_ai3")
     model_name = os.environ.get("OPENROUTER_MODEL", "openrouter/free")
 
     api_key = os.environ.get("OPENROUTER_API_KEY")
@@ -131,7 +144,10 @@ def main():
 
     models = []
     for fp in files:
-        m = collect_ai_candidates_per_model(fp, next_draw_id, rank_to_mask, top_k)
+        m = collect_ai_candidates_per_model(
+            fp, next_draw_id, rank_to_mask, send_k,
+            pool_size=pool_size, pool_out_dir=pool_out_dir,
+        )
         if m:
             models.append(m)
 

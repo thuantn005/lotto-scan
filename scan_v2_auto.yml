@@ -2,10 +2,10 @@ name: Scan V2 (2 lan/ngay theo lich Vietlott) - dai seed co dinh, 1 file duy nha
 
 # Workflow nay quet 5 "MODEL" seed SONG SONG, TU DONG, KHONG can nhap tay gi ca:
 #   1. Model chinh   (FIXED_SEED_START) - quet TOAN BO CSV, gioi han 5MB.
-#   2. Model phu #1  (ONCE_SEED_START)  - 10 ky gan nhat, seed CO DINH.
-#   3. Model phu #2  (ONCE2_SEED_START) - 20 ky gan nhat, seed CO DINH.
-#   4. Model phu #3  (ONCE3_SEED_START) - 15 ky gan nhat, seed CO DINH.
-#   5. Model phu #4  (ONCE4_*)          - 10 ky gan nhat, seed TU NOI TIEP:
+#   2. Model phu #1  (ONCE_SEED_START)  - 5 ky gan nhat, seed CO DINH.
+#   3. Model phu #2  (ONCE2_SEED_START) - 5 ky gan nhat, seed CO DINH.
+#   4. Model phu #3  (ONCE3_SEED_START) - 5 ky gan nhat, seed CO DINH.
+#   5. Model phu #4  (ONCE4_*)          - 1 ky gan nhat, seed TU NOI TIEP:
 #      moi lan chay tu doc vi tri da quet toi dau (ONCE4_STATE_FILE) va quet
 #      tiep dai seed MOI (khong lap lai dai cu), ghi vi tri ke tiep lai vao
 #      chinh state file do.
@@ -42,17 +42,17 @@ env:
   # dai seed ~31 ty chia deu cho 20 runner (ONCE_BATCH_SIZE dung chung).
   ONCE_BATCH_SIZE: "1557775800"
   ONCE_SEED_START: "708477750639"
-  ONCE_LAST_N_DRAWS: "10"
+  ONCE_LAST_N_DRAWS: "5"
   ONCE2_SEED_START: "108477750639"
-  ONCE2_LAST_N_DRAWS: "20"
+  ONCE2_LAST_N_DRAWS: "5"
   ONCE3_SEED_START: "900477750639"
-  ONCE3_LAST_N_DRAWS: "15"
+  ONCE3_LAST_N_DRAWS: "5"
   # Model phu #4: SEED TU NOI TIEP (khong co dinh) - moi lan chay se doc
   # ONCE4_STATE_FILE de biet quet tiep tu dau (KHONG quet lai dai cu), quet
   # xong thi tu ghi lai vi tri ke tiep vao chinh file nay. Lan dau chua co
   # file thi dung ONCE4_INITIAL_SEED_START lam diem bat dau.
   ONCE4_INITIAL_SEED_START: "1000477750639"
-  ONCE4_LAST_N_DRAWS: "10"
+  ONCE4_LAST_N_DRAWS: "1"
   ONCE4_STATE_FILE: "once4_seed_state.json"
 
 permissions:
@@ -455,7 +455,7 @@ jobs:
     # Model phu (model 3): quet lai TU DAU moi lan co ky moi (FORCE_RESCAN=1).
     needs: scan_and_check
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
-    name: Scan once3 (20ky) chunk ${{ matrix.chunk }}
+    name: Scan once3 (5ky) chunk ${{ matrix.chunk }}
     strategy:
       fail-fast: false
       matrix:
@@ -607,7 +607,7 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash push -u -m "scan model phu 3 (20ky) truoc rebase" || true
+          git stash push -u -m "scan model phu 3 (5ky) truoc rebase" || true
           git pull --rebase origin main
           git stash pop || true
           [ -d l1_merged ] && git add l1_merged/ || true
@@ -616,7 +616,7 @@ jobs:
             echo "Khong co gi de commit"
             exit 0
           fi
-          git commit -m "scan v2 model phu 3 (20ky): seed ${{ env.ONCE2_SEED_START }} (+20x${{ env.ONCE_BATCH_SIZE }}), ${{ env.ONCE2_LAST_N_DRAWS }} ky gan nhat, ky moi $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git commit -m "scan v2 model phu 3 (5ky): seed ${{ env.ONCE2_SEED_START }} (+20x${{ env.ONCE_BATCH_SIZE }}), ${{ env.ONCE2_LAST_N_DRAWS }} ky gan nhat, ky moi $(date -u +%Y-%m-%d\ %H:%M) UTC"
           for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
@@ -635,7 +635,7 @@ jobs:
     # Model phu (model 4): quet lai TU DAU moi lan co ky moi (FORCE_RESCAN=1).
     needs: scan_and_check
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
-    name: Scan once4 (15ky, AI chon) chunk ${{ matrix.chunk }}
+    name: Scan once4 (5ky, AI chon) chunk ${{ matrix.chunk }}
     strategy:
       fail-fast: false
       matrix:
@@ -787,7 +787,7 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash push -u -m "scan model phu 4 (15ky, AI chon) truoc rebase" || true
+          git stash push -u -m "scan model phu 4 (5ky, AI chon) truoc rebase" || true
           git pull --rebase origin main
           git stash pop || true
           [ -d l1_merged ] && git add l1_merged/ || true
@@ -796,7 +796,7 @@ jobs:
             echo "Khong co gi de commit"
             exit 0
           fi
-          git commit -m "scan v2 model phu 4 (15ky, AI chon): seed ${{ env.ONCE3_SEED_START }} (+20x${{ env.ONCE_BATCH_SIZE }}), ${{ env.ONCE3_LAST_N_DRAWS }} ky gan nhat, ky moi $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git commit -m "scan v2 model phu 4 (5ky, AI chon): seed ${{ env.ONCE3_SEED_START }} (+20x${{ env.ONCE_BATCH_SIZE }}), ${{ env.ONCE3_LAST_N_DRAWS }} ky gan nhat, ky moi $(date -u +%Y-%m-%d\ %H:%M) UTC"
           for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
