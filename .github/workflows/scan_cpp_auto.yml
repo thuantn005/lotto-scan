@@ -46,10 +46,10 @@ jobs:
 
           batch_end = 0
           try:
-              data = json.loads(Path("results/final_j1_2plus.json").read_text(encoding="utf-8"))
+              data = json.loads(Path("results/final_j1_3plus.json").read_text(encoding="utf-8"))
               batch_end = data.get("batch_end", 0)
           except Exception as e:
-              print("Khong doc duoc final_j1_2plus.json:", e)
+              print("Khong doc duoc final_j1_3plus.json:", e)
               raise SystemExit(0)
 
           if batch_end <= 0:
@@ -240,6 +240,11 @@ jobs:
           print("ALL CHUNKS OK")
           PY
 
+      - name: Pull latest truoc khi doc old_results (tranh doc ban cu)
+        run: |
+          set -e
+          git pull --ff-only origin main || git pull --rebase origin main
+
       - name: Merge results (tach rieng 6 loai file)
         env:
           BATCH_START: ${{ github.event.inputs.batch_start }}
@@ -307,9 +312,36 @@ jobs:
               for r in final[:5]:
                   print(f"  {r}")
 
+          def merge_j1_2plus_per_batch(batch_end):
+              """RIENG file nay: KHONG doc/gop voi batch truoc - moi batch
+              (~31 ty seed) ghi ra 1 file RIENG (ten co batch_start/
+              batch_end), khong bao gio dong vao/de len file batch khac.
+              5 file con lai (_j1_3plus/_j1_4plus/_top_main5/_top_main4/
+              _top_special) VAN cong don nhu cu qua merge_one()."""
+              collected = []
+              for i in range(20):
+                  p = Path(f"artifacts/cpp-chunk-{i}/chunk_{i}_j1_2plus.json")
+                  if p.exists():
+                      data = json.loads(p.read_text(encoding="utf-8"))
+                      collected.extend(data.get("results", []))
+
+              final = dedup_j1(collected)  # dedup NOI BO batch nay thoi, khong gop batch khac
+              out_path = Path(f"results/final_j1_2plus_{batch_start}_{batch_end}.json")
+              output = {
+                  "batch_start": batch_start,
+                  "batch_end": batch_end,
+                  "total_scanned": total_scanned,
+                  "found": len(final),
+                  "results": final,
+              }
+              out_path.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+              print(f"_j1_2plus (rieng file, khong gop batch khac) -> {out_path}: found={len(final)}")
+              for r in final[:5]:
+                  print(f"  {r}")
+
           batch_end = batch_start + 20*batch_size - 1
 
-          merge_one("_j1_2plus", dedup_j1, batch_end)
+          merge_j1_2plus_per_batch(batch_end)
           merge_one("_j1_3plus", dedup_j1, batch_end)
           merge_one("_j1_4plus", dedup_j1, batch_end)
           merge_one("_top_main5", dedup_top, batch_end)
@@ -324,16 +356,31 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash push -u -m "final.json truoc khi rebase"
-          git pull --rebase origin main
-          git stash pop
-          git add results/final_j1_2plus.json results/final_j1_3plus.json results/final_j1_4plus.json results/final_top_main5.json results/final_top_main4.json results/final_top_special.json
+          git add results/final_j1_2plus_*.json results/final_j1_3plus.json results/final_j1_4plus.json results/final_top_main5.json results/final_top_main4.json results/final_top_special.json
           if git diff --cached --quiet; then
             echo "Nothing to commit"
             exit 0
           fi
           git commit -m "cpp scan: batch ${{ github.event.inputs.batch_start }}"
-          git push origin main
+
+          # Push voi retry: neu co lan chay khac push xen giua (schedule
+          # resume trung voi next-batch...), rebase lai (KHONG stash - da
+          # commit roi nen rebase se tu dong giu commit nay len tren) roi
+          # thu push lai, toi da 5 lan, tranh mat du lieu vua gop cua
+          # nguoi/job khac (xem buoc "Pull latest truoc khi doc old_results"
+          # o tren - buoc do chi tranh doc old_results cu, KHONG tranh duoc
+          # race luc push neu co 2 job merge chay gan nhu dong thoi).
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push OK (lan thu $i)"
+              exit 0
+            fi
+            echo "Push that bai (lan thu $i), pull --rebase roi thu lai..."
+            git pull --rebase origin main
+            sleep $((i * 5))
+          done
+          echo "Push that bai sau 5 lan thu -- can kiem tra thu cong"
+          exit 1
 
   next-batch:
     name: Trigger next batch (vo han cho den khi tim thay J1>=4)
