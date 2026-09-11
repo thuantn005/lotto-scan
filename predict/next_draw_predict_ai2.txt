@@ -2,33 +2,9 @@ DU DOAN KY 00879 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict
 Model AI su dung (Groq, mien phi vinh vien): openai/gpt-oss-120b
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
---- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
-  seed_start cua model: 108477750639
-  seed AI chon: 108492719695
-  ly do AI dua ra: Highest hit_rate (0.050) in Model 0 and matches the most recent draw 00878.
-  DU DOAN ky 00879: 02-06-16-23-29 + DAC BIET 2
-
---- Model (l1_merged file: l1_merged/merged_seed1623588070639.json) ---
-  seed_start cua model: 1623588070639
-  seed AI chon: 1623592500136
-  ly do AI dua ra: Top hit_rate (0.100) in Model 1, indicating a relatively stronger fit to past draws.
-  DU DOAN ky 00879: 12-13-21-24-27 + DAC BIET 12
-
---- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
-  seed_start cua model: 682305800400
-  seed AI chon: 682308682691
-  ly do AI dua ra: Only seed in Model 2 that achieved a hit (hit_rate 0.001), making it noteworthy despite low frequency.
-  DU DOAN ky 00879: 03-14-15-24-26 + DAC BIET 9
-
---- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
-  seed_start cua model: 708477750639
-  seed AI chon: 708485733650
-  ly do AI dua ra: Highest hit_rate (0.100) in Model 3 and aligns with the latest draw.
-  DU DOAN ky 00879: 08-10-16-18-24 + DAC BIET 3
-
---- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
-  seed_start cua model: 900477750639
-  seed AI chon: 900480294599
-  ly do AI dua ra: Top hit_rate (0.067) in Model 4, showing the best performance among its candidates.
-  DU DOAN ky 00879: 11-12-22-23-33 + DAC BIET 8
+--- Model (l1_merged file: l1_merged/merged_seed1654743586639.json) ---
+  seed_start cua model: 1654743586639
+  seed AI chon: 1654748159076
+  ly do AI dua ra: Highest hit_rate (1.0) with a perfect match on the most recent draw, making it the most notable candidate.
+  DU DOAN ky 00879: 13-15-26-28-34 + DAC BIET 3
 
