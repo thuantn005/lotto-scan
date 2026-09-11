@@ -4,31 +4,31 @@ Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  seed AI chon: 108497957963
-  ly do AI dua ra: Chon seed nay vi chua cac so 13, 20, 22, 26 co tan suat xuat hien day dac trong 15 ky gan nhat, dac biet la trung khop nhieu so tu ky 00878.
-  DU DOAN ky 00879: 13-14-20-22-26 + DAC BIET 6
+  seed AI chon: 108573011769
+  ly do AI dua ra: Lựa chọn DB 2 xuất hiện nhiều lần gần đây và bao gồm các số 19, 28 vốn có tần suất ổn định trong 10 kỳ qua.
+  DU DOAN ky 00879: 03-17-19-25-28 + DAC BIET 2
 
---- Model (l1_merged file: l1_merged/merged_seed1623588070639.json) ---
-  seed_start cua model: 1623588070639
-  seed AI chon: 1623592500136
-  ly do AI dua ra: Seed nay duy tri so 27 va so Dac biet 12 tu ky vua roi, phu hop voi xu huong lap lai so trong ngan han.
-  DU DOAN ky 00879: 12-13-21-24-27 + DAC BIET 12
+--- Model (l1_merged file: l1_merged/merged_seed1654743586639.json) ---
+  seed_start cua model: 1654743586639
+  seed AI chon: 1654783291391
+  ly do AI dua ra: Kết hợp DB 2 (tần suất cao nhất) với số 26 từ kỳ gần nhất và số 35 xuất hiện ở các kỳ 871, 867.
+  DU DOAN ky 00879: 13-19-26-33-35 + DAC BIET 2
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
   seed AI chon: 682323316434
-  ly do AI dua ra: Day la lua chon an toan voi mo hinh quet dai han vi tap trung vao cac so chan dang 'hot' nhu 20, 22, 24, 26.
+  ly do AI dua ra: Sở hữu dãy số [22, 24, 26] bám sát xu hướng các số hàng chục 2 đang xuất hiện dày đặc trong các kỳ gần đây.
   DU DOAN ky 00879: 18-20-22-24-26 + DAC BIET 9
 
 --- Model (l1_merged file: l1_merged/merged_seed708477750639.json) ---
   seed_start cua model: 708477750639
-  seed AI chon: 708492718454
-  ly do AI dua ra: Seed nay co do tuong quan cao voi ket qua ky 00878 khi bao gom ca 16, 27 va 34, tan dung da xuat hien cua nhom so nay.
-  DU DOAN ky 00879: 10-16-21-27-34 + DAC BIET 6
+  seed AI chon: 708561778190
+  ly do AI dua ra: Trùng khớp 2 số (26, 34) của kỳ vừa qua và dự đoán DB 3, con số đã xuất hiện ở kỳ 877.
+  DU DOAN ky 00879: 07-19-26-33-34 + DAC BIET 3
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
   seed AI chon: 900542671389
-  ly do AI dua ra: Tap hop bo ba so 13, 20, 23 la nhung so xuat hien nhieu nhat trong chu ky 15 ky, kem theo DB 2 cung rat hay ra.
+  ly do AI dua ra: Lựa chọn DB 2 phổ biến và bao gồm các số 15, 20, 23 đều là những số có tần suất lặp lại cao trong chu kỳ 15 kỳ.
   DU DOAN ky 00879: 13-15-20-23-29 + DAC BIET 2
 
