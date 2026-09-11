@@ -2,7 +2,8 @@ name: Scan V2 (2 lan/ngay theo lich Vietlott) - dai seed co dinh, 1 file duy nha
 
 # Workflow nay quet 5 "MODEL" seed SONG SONG, TU DONG, KHONG can nhap tay gi ca:
 #   1. Model chinh   (FIXED_SEED_START) - quet TOAN BO CSV, gioi han 5MB.
-#   2. Model phu #1  (ONCE_SEED_START)  - 5 ky gan nhat, seed CO DINH.
+#   2. Model phu #1  (ONCE_*)            - 5 ky gan nhat, seed TU NOI TIEP
+#      (giong het model phu #4, xem muc 5 - khong con co dinh nua).
 #   3. Model phu #2  (ONCE2_SEED_START) - 5 ky gan nhat, seed CO DINH.
 #   4. Model phu #3  (ONCE3_SEED_START) - 5 ky gan nhat, seed CO DINH.
 #   5. Model phu #4  (ONCE4_*)          - 1 ky gan nhat, seed TU NOI TIEP:
@@ -22,6 +23,11 @@ name: Scan V2 (2 lan/ngay theo lich Vietlott) - dai seed co dinh, 1 file duy nha
 # theo dung cua so *_LAST_N_DRAWS ky gan nhat MOI LAN CO KY MOI, giong het
 # model chinh. Cac file once*_done.flag cu (neu con trong repo) khong con
 # duoc doc/ghi boi workflow nay nua, co the xoa thu cong.
+#
+# Rieng model phu #1 (ONCE) da doi tiep 1 buoc nua: thay vi quet lai dai
+# seed CO DINH moi lan (708477750639...), gio SEED cung TU NOI TIEP nhu
+# model phu #4 (xem ONCE_STATE_FILE) - moi lan co ky moi se quet 1 dai
+# seed MOI (chua tung quet), khong lap lai dai cu.
 
 on:
   schedule:
@@ -37,12 +43,15 @@ on:
 env:
   FIXED_SEED_START: "682305800400"
   FIXED_SEED_COUNT: "1557775799"
-  # 3 model phu (seed CO DINH, sua truc tiep o day neu muon doi - KHONG can
-  # workflow_dispatch input). Moi model quet CHI *_LAST_N_DRAWS ky gan nhat,
-  # dai seed ~31 ty chia deu cho 20 runner (ONCE_BATCH_SIZE dung chung).
+  # Model phu #1: SEED TU NOI TIEP (khong con co dinh nua) - hoat dong
+  # giong het model phu #4 (xem ONCE4_* o duoi): moi lan chay doc vi tri
+  # da quet toi dau tu ONCE_STATE_FILE (lan dau chua co file thi dung
+  # ONCE_INITIAL_SEED_START), quet tiep dai seed MOI (khong lap lai dai
+  # cu), ghi vi tri ke tiep lai vao chinh state file do.
   ONCE_BATCH_SIZE: "1557775800"
-  ONCE_SEED_START: "708477750639"
+  ONCE_INITIAL_SEED_START: "708477750639"
   ONCE_LAST_N_DRAWS: "5"
+  ONCE_STATE_FILE: "once_seed_state.json"
   ONCE2_SEED_START: "108477750639"
   ONCE2_LAST_N_DRAWS: "5"
   ONCE3_SEED_START: "900477750639"
@@ -288,19 +297,30 @@ jobs:
       - name: Compile scan_per_draw (co pthread cho da luong)
         run: g++ -O3 -march=x86-64-v3 -funroll-loops -std=c++17 -pthread -o scan_per_draw scan_per_draw.cpp
 
-      - name: Tinh dai seed cho chunk nay
+      - name: Doc vi tri da quet toi dau (noi tiep tu lan truoc), tinh dai seed cho chunk nay
         env:
-          SEED_START: ${{ env.ONCE_SEED_START }}
+          STATE_FILE: ${{ env.ONCE_STATE_FILE }}
+          INITIAL_SEED_START: ${{ env.ONCE_INITIAL_SEED_START }}
           BATCH_SIZE: ${{ env.ONCE_BATCH_SIZE }}
           CHUNK: ${{ matrix.chunk }}
         run: |
           set -e
           python3 << 'PY' >> "$GITHUB_ENV"
+          import json
           import os
-          seed_start = int(os.environ["SEED_START"])
+          from pathlib import Path
+
+          state_path = Path(os.environ["STATE_FILE"])
           batch_size = int(os.environ["BATCH_SIZE"])
           chunk = int(os.environ["CHUNK"])
-          chunk_start = seed_start + chunk * batch_size
+
+          if state_path.exists():
+              current_start = int(json.loads(state_path.read_text(encoding="utf-8"))["seed_next"])
+          else:
+              current_start = int(os.environ["INITIAL_SEED_START"])
+
+          chunk_start = current_start + chunk * batch_size
+          print(f"CURRENT_SEED_START={current_start}")
           print(f"CHUNK_SEED_START={chunk_start}")
           PY
 
@@ -366,9 +386,46 @@ jobs:
           print("ALL 20 CHUNKS OK")
           PY
 
-      - name: Gop 20 chunk thanh l1_merged/merged_seed{X}.json (dung format cu)
+      - name: Doc lai vi tri da quet toi dau (dong bo voi job scan_once_chunk)
         env:
-          SEED_START: ${{ env.ONCE_SEED_START }}
+          STATE_FILE: ${{ env.ONCE_STATE_FILE }}
+          INITIAL_SEED_START: ${{ env.ONCE_INITIAL_SEED_START }}
+        run: |
+          set -e
+          python3 << 'PY' >> "$GITHUB_ENV"
+          import json
+          import os
+          from pathlib import Path
+
+          state_path = Path(os.environ["STATE_FILE"])
+          last_file_seed_start = ""
+          if state_path.exists():
+              state = json.loads(state_path.read_text(encoding="utf-8"))
+              current_start = int(state["seed_next"])
+              last_file_seed_start = str(state.get("last_file_seed_start", ""))
+          else:
+              current_start = int(os.environ["INITIAL_SEED_START"])
+          print(f"CURRENT_SEED_START={current_start}")
+          print(f"LAST_FILE_SEED_START={last_file_seed_start}")
+          PY
+
+      - name: Xoa file L1/L2 cua LAN CHAY TRUOC (chi model nay moi ra file moi moi lan, tranh tich tu vo han)
+        env:
+          LAST_FILE_SEED_START: ${{ env.LAST_FILE_SEED_START }}
+        run: |
+          set -e
+          if [ -n "$LAST_FILE_SEED_START" ]; then
+            OLD_L1="l1_merged/merged_seed${LAST_FILE_SEED_START}.json"
+            OLD_L2="l2_merged/promoted_seed${LAST_FILE_SEED_START}.json"
+            [ -f "$OLD_L1" ] && rm -v "$OLD_L1" || echo "Khong thay $OLD_L1, bo qua"
+            [ -f "$OLD_L2" ] && rm -v "$OLD_L2" || echo "Khong thay $OLD_L2, bo qua"
+          else
+            echo "Chua co file cua lan truoc (lan dau chay model nay), khong can xoa gi"
+          fi
+
+      - name: Gop 20 chunk thanh l1_merged/merged_seed{X}.json (X = seed cua LAN NAY, dung format cu)
+        env:
+          SEED_START: ${{ env.CURRENT_SEED_START }}
           BATCH_SIZE: ${{ env.ONCE_BATCH_SIZE }}
         run: |
           set -e
@@ -407,10 +464,9 @@ jobs:
               "total_found": total_found,
               "draws": draws,
           }
-          # Dung dung ten file ma scan_per_draw.cpp / check_l1_merged.py mac
-          # dinh dung (merged_seed{seed_start}.json) - nam CHUNG thu muc
-          # l1_merged/ voi file dang chay lien tuc (FIXED_SEED_START khac
-          # ONCE_SEED_START nen khong dung file, khong bi ghi de).
+          # Moi lan chay se ra 1 file MOI (ten khac nhau) vi seed_start tu
+          # nhay tiep - KHONG ghi de len file cua lan truoc (file cu se bi
+          # xoa o buoc "Xoa file L1/L2 cua LAN CHAY TRUOC" phia tren).
           out_path = Path(f"l1_merged/merged_seed{seed_start}.json")
           out_path.write_text(json.dumps(out, separators=(",", ":")), encoding="utf-8")
           print(f"Da gop {len(draws)} ky, tong {total_found} luot trung J1, ghi vao {out_path}")
@@ -418,25 +474,55 @@ jobs:
 
       - name: Thang hang (promote) seed trung >=2 ky sang l2_merged/promoted_seed{X}.json
         env:
-          L1_MERGED_FILE: l1_merged/merged_seed${{ env.ONCE_SEED_START }}.json
+          L1_MERGED_FILE: l1_merged/merged_seed${{ env.CURRENT_SEED_START }}.json
           L2_MERGED_DIR: l2_merged
         run: python3 check_l1_merged.py
+
+      - name: Ghi vi tri KE TIEP vao state file (de lan sau quet tiep, khong quet lai)
+        env:
+          STATE_FILE: ${{ env.ONCE_STATE_FILE }}
+          CURRENT_SEED_START: ${{ env.CURRENT_SEED_START }}
+          BATCH_SIZE: ${{ env.ONCE_BATCH_SIZE }}
+        run: |
+          set -e
+          python3 << 'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          current_start = int(os.environ["CURRENT_SEED_START"])
+          batch_size = int(os.environ["BATCH_SIZE"])
+          seed_next = current_start + 20 * batch_size
+
+          # last_file_seed_start = seed cua file VUA TAO lan nay - de LAN SAU
+          # biet ma xoa (file cua lan nay se thanh "cu" o lan chay ke tiep).
+          Path(os.environ["STATE_FILE"]).write_text(
+              json.dumps({
+                  "seed_next": seed_next,
+                  "last_file_seed_start": current_start,
+              }, separators=(",", ":")),
+              encoding="utf-8",
+          )
+          print(f"Da ghi seed_next={seed_next}, last_file_seed_start={current_start} "
+                f"vao {os.environ['STATE_FILE']} (lan sau se quet tu day va xoa file nay)")
+          PY
 
       - name: Commit ket qua
         run: |
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash push -u -m "scan model phu truoc rebase" || true
+          git stash push -u -m "scan model phu (noi tiep) truoc rebase" || true
           git pull --rebase origin main
           git stash pop || true
           [ -d l1_merged ] && git add l1_merged/ || true
           [ -d l2_merged ] && git add l2_merged/ || true
+          [ -f "${{ env.ONCE_STATE_FILE }}" ] && git add "${{ env.ONCE_STATE_FILE }}" || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
           fi
-          git commit -m "scan v2 model phu: seed ${{ env.ONCE_SEED_START }} (+20x${{ env.ONCE_BATCH_SIZE }}), ${{ env.ONCE_LAST_N_DRAWS }} ky gan nhat, ky moi $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git commit -m "scan v2 model phu (seed noi tiep): seed ${{ env.CURRENT_SEED_START }} (+20x${{ env.ONCE_BATCH_SIZE }}), ${{ env.ONCE_LAST_N_DRAWS }} ky gan nhat, ky moi $(date -u +%Y-%m-%d\ %H:%M) UTC"
           for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
@@ -1455,13 +1541,14 @@ jobs:
 
   cleanup_l1:
     # Don dep l1_merged/ va l2_merged/: xoa moi file KHONG khop voi seed
-    # cua cac model dang ACTIVE (FIXED_SEED_START, ONCE_SEED_START,
-    # ONCE2_SEED_START, ONCE3_SEED_START, va seed HIEN TAI cua model 5 doc
-    # trong once4_seed_state.json). Phong truong hop doi seed model trong
-    # tuong lai hoac con sot file rac tu cac lan chay thu truoc - KHONG
-    # dung ban seed_start cu se tu bi xoa, tranh l1_merged/l2_merged phinh
-    # to vo ich theo thoi gian. Chay SAU CUNG, sau khi moi job merge/du
-    # doan da xong (needs toan bo) de khong xoa nham file dang can dung.
+    # cua cac model dang ACTIVE (FIXED_SEED_START, ONCE2_SEED_START,
+    # ONCE3_SEED_START co dinh; seed HIEN TAI cua model 1 va model 5 doc
+    # tu once_seed_state.json / once4_seed_state.json vi 2 model nay seed
+    # noi tiep, doi ten file moi lan chay). Phong truong hop doi seed model
+    # trong tuong lai hoac con sot file rac tu cac lan chay thu truoc -
+    # KHONG dung ban seed_start cu se tu bi xoa, tranh l1_merged/l2_merged
+    # phinh to vo ich theo thoi gian. Chay SAU CUNG, sau khi moi job merge/
+    # du doan da xong (needs toan bo) de khong xoa nham file dang can dung.
     needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next, predict_next_ml]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
@@ -1475,7 +1562,8 @@ jobs:
       - name: Xoa file l1_merged/l2_merged khong thuoc model nao dang active
         env:
           FIXED_SEED_START: ${{ env.FIXED_SEED_START }}
-          ONCE_SEED_START: ${{ env.ONCE_SEED_START }}
+          ONCE_STATE_FILE: ${{ env.ONCE_STATE_FILE }}
+          ONCE_INITIAL_SEED_START: ${{ env.ONCE_INITIAL_SEED_START }}
           ONCE2_SEED_START: ${{ env.ONCE2_SEED_START }}
           ONCE3_SEED_START: ${{ env.ONCE3_SEED_START }}
           ONCE4_STATE_FILE: ${{ env.ONCE4_STATE_FILE }}
@@ -1490,19 +1578,25 @@ jobs:
 
           active = {
               os.environ["FIXED_SEED_START"],
-              os.environ["ONCE_SEED_START"],
               os.environ["ONCE2_SEED_START"],
               os.environ["ONCE3_SEED_START"],
           }
 
-          # Model 5 (seed noi tiep): file DANG con hieu luc la file ung voi
-          # last_file_seed_start trong state (hoac INITIAL neu chua chay lan nao).
-          state_path = Path(os.environ["ONCE4_STATE_FILE"])
-          if state_path.exists():
-              state = json.loads(state_path.read_text(encoding="utf-8"))
-              last_file = state.get("last_file_seed_start")
-              if last_file is not None:
-                  active.add(str(last_file))
+          # Model 1 va Model 5 (ca 2 deu seed noi tiep): file DANG con hieu
+          # luc la file ung voi last_file_seed_start trong state rieng cua
+          # tung model (hoac INITIAL neu chua chay lan nao).
+          for state_file_env, initial_env in [
+              ("ONCE_STATE_FILE", "ONCE_INITIAL_SEED_START"),
+              ("ONCE4_STATE_FILE", "ONCE4_INITIAL_SEED_START"),
+          ]:
+              state_path = Path(os.environ[state_file_env])
+              if state_path.exists():
+                  state = json.loads(state_path.read_text(encoding="utf-8"))
+                  last_file = state.get("last_file_seed_start")
+                  if last_file is not None:
+                      active.add(str(last_file))
+              else:
+                  active.add(os.environ[initial_env])
 
           print("Cac seed_start dang ACTIVE (giu lai):", sorted(active))
 
