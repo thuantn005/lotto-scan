@@ -1,34 +1,10 @@
-DU DOAN KY 00882 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
+DU DOAN KY 00883 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
 Model AI su dung (Groq, mien phi vinh vien): openai/gpt-oss-120b
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
---- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
-  seed_start cua model: 108477750639
-  seed AI chon: 108482550032
-  ly do AI dua ra: Hit rate is highest among its group and the draw matches three recent winning numbers (5, 6, 30), indicating stronger alignment with the latest results.
-  DU DOAN ky 00882: 04-05-06-30-35 + DAC BIET 3
-
---- Model (l1_merged file: l1_merged/merged_seed1748210134639.json) ---
-  seed_start cua model: 1748210134639
-  seed AI chon: 1748223865989
-  ly do AI dua ra: Achieves a perfect hit_rate of 1.0 and includes one of the most recent main numbers (10), making it the most consistent among its candidates.
-  DU DOAN ky 00882: 01-10-11-25-26 + DAC BIET 10
-
---- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
-  seed_start cua model: 682305800400
-  seed AI chon: 682320304951
-  ly do AI dua ra: Although hit_rate is low, this seed matches two of the latest winning numbers (6 and 10), the highest overlap in its model.
-  DU DOAN ky 00882: 06-10-23-28-33 + DAC BIET 6
-
---- Model (l1_merged file: l1_merged/merged_seed770788782639.json) ---
-  seed_start cua model: 770788782639
-  seed AI chon: 770817756082
-  ly do AI dua ra: Shares the same DB (6) as the most recent draw and also matches a recent main number (10), giving it a dual relevance.
-  DU DOAN ky 00882: 02-10-15-16-28 + DAC BIET 6
-
---- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
-  seed_start cua model: 900477750639
-  seed AI chon: 900511898519
-  ly do AI dua ra: Matches two recent main numbers (10 and 30), the greatest overlap among Model 4 candidates, suggesting a notable pattern.
-  DU DOAN ky 00882: 04-10-13-28-30 + DAC BIET 7
+--- Model (l1_merged file: l1_merged/merged_seed1779365650639.json) ---
+  seed_start cua model: 1779365650639
+  seed AI chon: 1779366074660
+  ly do AI dua ra: Hit rate 1.0 – this seed exactly matched the latest draw, making it the most significant candidate to monitor.
+  DU DOAN ky 00883: 06-08-14-27-30 + DAC BIET 4
 
