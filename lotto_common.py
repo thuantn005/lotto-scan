@@ -36,6 +36,7 @@ import csv
 import json
 import os
 import math
+import random
 import re
 from pathlib import Path
 
@@ -340,12 +341,17 @@ def collect_ai_candidates_per_model(fp, next_draw_id, rank_to_mask, send_k,
     total_draws_in_model = data.get("total_draws") or len(data.get("draws", [])) or 1
     effective_pool_size = pool_size if pool_size is not None else send_k
 
-    # Xep hang: hit_rate giam dan -> trung gan day hon -> seed nho hon
-    # (tie-break cuoi cung chi de ON DINH ket qua, khong mang y nghia
-    # thong ke).
+    # Xep hang: hit_rate giam dan; hoa thi XAO TRON NGAU NHIEN (thay vi luon
+    # uu tien seed trung gan day nhat) - tranh danh sach gui AI bi don vao
+    # dung 1 huong (vd toan seed cua ky moi nhat) khi nhieu seed dong hang.
+    # rng seed theo next_draw_id de van TAI LAP duoc khi backtest lai 1 ky
+    # cu, nhung thu tu doc lap voi lan chay truoc.
+    rng = random.Random(next_draw_id)
+    seeds_list = list(seed_weight.keys())
+    rng.shuffle(seeds_list)
     ranked_seeds = sorted(
-        seed_weight.keys(),
-        key=lambda s: (-(seed_weight[s] / total_draws_in_model), -seed_last_draw[s], s),
+        seeds_list,
+        key=lambda s: -(seed_weight[s] / total_draws_in_model),
     )
 
     pool = []

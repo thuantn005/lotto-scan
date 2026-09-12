@@ -30,6 +30,7 @@ ENV:
 import glob
 import json
 import os
+import random
 from pathlib import Path
 
 from lotto_common import (
@@ -43,10 +44,12 @@ from lotto_common import (
 STRATEGY = "base"
 
 
-def pick_strongest_seed_per_model(fp):
+def pick_strongest_seed_per_model(fp, next_draw_id):
     """Doc 1 file L1, tra ve (seed manh nhat, weight, so ky da trung, seed_start)
     hoac None neu file rong. 'Manh nhat' = so lan tung trung (weight) CAO
-    NHAT trong model nay; hoa thi chon seed nho nhat de on dinh ket qua."""
+    NHAT trong model nay; hoa thi CHON NGAU NHIEN 1 seed trong nhom dong
+    hang cao nhat (thay vi luon lay seed nho nhat co dinh) - rng seed theo
+    next_draw_id de van tai lap duoc khi backtest lai 1 ky cu."""
     try:
         data = json.loads(Path(fp).read_text(encoding="utf-8"))
     except Exception as e:
@@ -64,7 +67,10 @@ def pick_strongest_seed_per_model(fp):
     if not seed_weight:
         return None
 
-    best_seed = min(seed_weight.keys(), key=lambda s: (-seed_weight[s], s))
+    max_weight = max(seed_weight.values())
+    top_seeds = sorted(s for s, w in seed_weight.items() if w == max_weight)
+    rng = random.Random((next_draw_id, data.get("seed_start")))
+    best_seed = rng.choice(top_seeds)
     return {
         "seed": best_seed,
         "weight": seed_weight[best_seed],
@@ -91,7 +97,7 @@ def main():
 
     predictions = []
     for fp in files:
-        info = pick_strongest_seed_per_model(fp)
+        info = pick_strongest_seed_per_model(fp, next_draw_id)
         if info is None:
             continue
         numbers, special = predict_ticket(info["seed"], next_draw_id, rank_to_mask)
