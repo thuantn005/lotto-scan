@@ -50,18 +50,18 @@ env:
   # cu), ghi vi tri ke tiep lai vao chinh state file do.
   ONCE_BATCH_SIZE: "1557775800"
   ONCE_INITIAL_SEED_START: "708477750639"
-  ONCE_LAST_N_DRAWS: "5"
+  ONCE_LAST_N_DRAWS: "500"
   ONCE_STATE_FILE: "once_seed_state.json"
   ONCE2_SEED_START: "108477750639"
-  ONCE2_LAST_N_DRAWS: "5"
+  ONCE2_LAST_N_DRAWS: "500"
   ONCE3_SEED_START: "900477750639"
-  ONCE3_LAST_N_DRAWS: "5"
+  ONCE3_LAST_N_DRAWS: "500"
   # Model phu #4: SEED TU NOI TIEP (khong co dinh) - moi lan chay se doc
   # ONCE4_STATE_FILE de biet quet tiep tu dau (KHONG quet lai dai cu), quet
   # xong thi tu ghi lai vi tri ke tiep vao chinh file nay. Lan dau chua co
   # file thi dung ONCE4_INITIAL_SEED_START lam diem bat dau.
   ONCE4_INITIAL_SEED_START: "1000477750639"
-  ONCE4_LAST_N_DRAWS: "1"
+  ONCE4_LAST_N_DRAWS: "500"
   ONCE4_STATE_FILE: "once4_seed_state.json"
 
 permissions:
