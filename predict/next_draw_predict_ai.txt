@@ -1,34 +1,34 @@
-DU DOAN KY 00882 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)
+DU DOAN KY 00883 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)
 Model AI su dung: gemini-3-flash-preview
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  seed AI chon: 108482550032
-  ly do AI dua ra: Dãy số này bao gồm các số 4, 5, 6 và 30 vốn xuất hiện rất đậm nét trong hai kỳ gần nhất (00880 và 00881).
-  DU DOAN ky 00882: 04-05-06-30-35 + DAC BIET 3
+  seed AI chon: 108549422705
+  ly do AI dua ra: Contains high-frequency numbers 10, 20, and 27, which have appeared multiple times in the last 15 draws, suggesting a strong cluster.
+  DU DOAN ky 00883: 10-20-25-27-34 + DAC BIET 11
 
---- Model (l1_merged file: l1_merged/merged_seed1748210134639.json) ---
-  seed_start cua model: 1748210134639
-  seed AI chon: 1748239953621
-  ly do AI dua ra: Lựa chọn này giữ lại số 10 và số đặc biệt 2, là số đặc biệt có tần suất xuất hiện cao nhất trong 15 kỳ vừa qua.
-  DU DOAN ky 00882: 10-18-22-24-26 + DAC BIET 2
+--- Model (l1_merged file: l1_merged/merged_seed1779365650639.json) ---
+  seed_start cua model: 1779365650639
+  seed AI chon: 1779440822999
+  ly do AI dua ra: Combines recently active numbers 5, 13, and 20 with DB 8, matching the most recent draw's special number.
+  DU DOAN ky 00883: 05-13-18-20-30 + DAC BIET 8
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  seed AI chon: 682358623895
-  ly do AI dua ra: Seed này nắm bắt cặp số 6 và 20 từ kỳ 00881, phù hợp với xu hướng các số cũ thường xuyên xuất hiện lại trong kỳ kế tiếp.
-  DU DOAN ky 00882: 06-11-20-29-35 + DAC BIET 11
+  seed AI chon: 682383881635
+  ly do AI dua ra: Selects a balanced set including recent numbers 13, 22, 27 and replicates the DB 8 from the previous cycle for continuity analysis.
+  DU DOAN ky 00883: 13-18-22-24-27 + DAC BIET 8
 
---- Model (l1_merged file: l1_merged/merged_seed770788782639.json) ---
-  seed_start cua model: 770788782639
-  seed AI chon: 770830479720
-  ly do AI dua ra: Dãy số chứa số 20 và số đặc biệt 6 từ kỳ gần nhất, tập trung vào khả năng lặp lại cục bộ của các giá trị vừa ra.
-  DU DOAN ky 00882: 07-12-13-19-20 + DAC BIET 6
+--- Model (l1_merged file: l1_merged/merged_seed801944298639.json) ---
+  seed_start cua model: 801944298639
+  seed AI chon: 801962853731
+  ly do AI dua ra: Focuses on the low-to-mid range numbers (5, 20, 22, 25) that have dominated the results over the last three periods.
+  DU DOAN ky 00883: 05-20-22-24-25 + DAC BIET 5
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 900503419915
-  ly do AI dua ra: Kết hợp các số 4, 20 và số đặc biệt 2, đây là những con số có mật độ xuất hiện dày đặc trong chuỗi 15 kỳ nghiên cứu.
-  DU DOAN ky 00882: 01-04-08-20-24 + DAC BIET 2
+  seed AI chon: 900510401944
+  ly do AI dua ra: Integrates the consistent performers 10, 20, and 27 with DB 6, which was the special number just two draws prior.
+  DU DOAN ky 00883: 10-17-20-27-28 + DAC BIET 6
 
