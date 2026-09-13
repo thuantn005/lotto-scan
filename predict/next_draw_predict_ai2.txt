@@ -2,9 +2,33 @@ DU DOAN KY 00883 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict
 Model AI su dung (Groq, mien phi vinh vien): openai/gpt-oss-120b
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
---- Model (l1_merged file: l1_merged/merged_seed1779365650639.json) ---
-  seed_start cua model: 1779365650639
-  seed AI chon: 1779366074660
-  ly do AI dua ra: Hit rate 1.0 – this seed exactly matched the latest draw, making it the most significant candidate to monitor.
-  DU DOAN ky 00883: 06-08-14-27-30 + DAC BIET 4
+--- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
+  seed_start cua model: 108477750639
+  seed AI chon: 138459104574
+  ly do AI dua ra: Latest hit (ky 00842) among model 0 seeds, suggesting the pattern is most recent.
+  DU DOAN ky 00883: 01-06-15-28-35 + DAC BIET 4
+
+--- Model (l1_merged file: l1_merged/merged_seed1810521166639.json) ---
+  seed_start cua model: 1810521166639
+  seed AI chon: 1814179195608
+  ly do AI dua ra: Hit at the newest draw (ky 00876) in model 1, making it the most timely candidate.
+  DU DOAN ky 00883: 04-06-29-33-35 + DAC BIET 12
+
+--- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
+  seed_start cua model: 682305800400
+  seed AI chon: 683190707561
+  ly do AI dua ra: Only model 2 seed with a hit close to the present (ky 00772), thus most relevant.
+  DU DOAN ky 00883: 09-13-14-25-31 + DAC BIET 12
+
+--- Model (l1_merged file: l1_merged/merged_seed833099814639.json) ---
+  seed_start cua model: 833099814639
+  seed AI chon: 837772860826
+  ly do AI dua ra: Achieved a match at the latest draw (ky 00871) within model 3.
+  DU DOAN ky 00883: 09-14-28-29-34 + DAC BIET 2
+
+--- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
+  seed_start cua model: 900477750639
+  seed AI chon: 926569988108
+  ly do AI dua ra: Recorded a hit at the most recent draw (ky 00876) among model 4 seeds.
+  DU DOAN ky 00883: 02-16-22-29-33 + DAC BIET 2
 
