@@ -5,15 +5,15 @@ tan suat lich su) CAO NHAT.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  so seed trong L1 cua model nay: 39813
-  seed duoc chon (diem ML cao nhat): 137784925879 (diem=3.0409)
-  DU DOAN ky 00883: 01-14-21-26-34 + DAC BIET 6
+  so seed trong L1 cua model nay: 3997343
+  seed duoc chon (diem ML cao nhat): 126870414768 (diem=3.0474)
+  DU DOAN ky 00883: 01-11-21-28-34 + DAC BIET 6
 
---- Model (l1_merged file: l1_merged/merged_seed1779365650639.json) ---
-  seed_start cua model: 1779365650639
-  so seed trong L1 cua model nay: 7786
-  seed duoc chon (diem ML cao nhat): 1784444594882 (diem=3.0391)
-  DU DOAN ky 00883: 18-21-22-28-34 + DAC BIET 6
+--- Model (l1_merged file: l1_merged/merged_seed1810521166639.json) ---
+  seed_start cua model: 1810521166639
+  so seed trong L1 cua model nay: 3998683
+  seed duoc chon (diem ML cao nhat): 1815406529918 (diem=3.0489)
+  DU DOAN ky 00883: 01-18-21-28-34 + DAC BIET 6
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
@@ -21,15 +21,15 @@ tan suat lich su) CAO NHAT.
   seed duoc chon (diem ML cao nhat): 682355975089 (diem=3.0454)
   DU DOAN ky 00883: 01-12-21-28-34 + DAC BIET 6
 
---- Model (l1_merged file: l1_merged/merged_seed801944298639.json) ---
-  seed_start cua model: 801944298639
-  so seed trong L1 cua model nay: 39845
-  seed duoc chon (diem ML cao nhat): 806393217328 (diem=3.0452)
-  DU DOAN ky 00883: 01-13-26-28-34 + DAC BIET 6
+--- Model (l1_merged file: l1_merged/merged_seed833099814639.json) ---
+  seed_start cua model: 833099814639
+  so seed trong L1 cua model nay: 4000222
+  seed duoc chon (diem ML cao nhat): 848763020973 (diem=3.0489)
+  DU DOAN ky 00883: 01-18-21-28-34 + DAC BIET 6
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  so seed trong L1 cua model nay: 40500
-  seed duoc chon (diem ML cao nhat): 926224883828 (diem=3.0432)
-  DU DOAN ky 00883: 01-13-14-28-34 + DAC BIET 6
+  so seed trong L1 cua model nay: 3999586
+  seed duoc chon (diem ML cao nhat): 917459685138 (diem=3.0489)
+  DU DOAN ky 00883: 01-18-21-28-34 + DAC BIET 6
 
