@@ -1,10 +1,34 @@
-DU DOAN KY 00884 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
+DU DOAN KY 00885 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
 Model AI su dung (Groq, mien phi vinh vien): openai/gpt-oss-120b
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
+--- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
+  seed_start cua model: 108477750639
+  seed AI chon: 128310390741
+  ly do AI dua ra: Có lần trùng gần nhất ở kỳ 00868, là thời gian gần nhất trong danh sách Model 0.
+  DU DOAN ky 00885: 01-06-15-24-26 + DAC BIET 4
+
+--- Model (l1_merged file: l1_merged/merged_seed1872832198639.json) ---
+  seed_start cua model: 1872832198639
+  seed AI chon: 1889018376051
+  ly do AI dua ra: Lần trùng gần nhất ở kỳ 00865, là thời gian gần nhất trong Model 1.
+  DU DOAN ky 00885: 01-06-07-21-29 + DAC BIET 10
+
+--- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
+  seed_start cua model: 682305800400
+  seed AI chon: 683709761037
+  ly do AI dua ra: Lần trùng gần nhất ở kỳ 00880, gần nhất với kỳ hiện tại so với các seed khác của Model 2.
+  DU DOAN ky 00885: 06-15-19-22-31 + DAC BIET 3
+
+--- Model (l1_merged file: l1_merged/merged_seed895410846639.json) ---
+  seed_start cua model: 895410846639
+  seed AI chon: 910582589497
+  ly do AI dua ra: Lần trùng gần nhất ở kỳ 00824, là thời gian gần nhất trong Model 3.
+  DU DOAN ky 00885: 08-19-27-28-35 + DAC BIET 9
+
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 908768685569
-  ly do AI dua ra: This seed had its most recent match at draw 00880, the closest to the upcoming draw 00884, making it the most notable among the candidates.
-  DU DOAN ky 00884: 02-09-10-18-25 + DAC BIET 4
+  seed AI chon: 920264934433
+  ly do AI dua ra: Lần trùng gần nhất ở kỳ 00857, là thời gian gần nhất trong Model 4.
+  DU DOAN ky 00885: 03-15-24-26-32 + DAC BIET 9
 
