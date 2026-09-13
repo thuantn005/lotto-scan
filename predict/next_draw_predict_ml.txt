@@ -1,35 +1,35 @@
-DU DOAN KY 00883 - PHIEN BAN ML (doc lap voi predict_next_draw.py)
+DU DOAN KY 00884 - PHIEN BAN ML (doc lap voi predict_next_draw.py)
 Tieu chi chon seed: trong tat ca seed dang co trong L1 cua tung model,
 chon seed co ve (5 so + dac biet) dat TONG DIEM ML (Logistic Regression
 tan suat lich su) CAO NHAT.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  so seed trong L1 cua model nay: 3997343
-  seed duoc chon (diem ML cao nhat): 126870414768 (diem=3.0474)
-  DU DOAN ky 00883: 01-11-21-28-34 + DAC BIET 6
+  so seed trong L1 cua model nay: 3997440
+  seed duoc chon (diem ML cao nhat): 135867711684 (diem=3.0394)
+  DU DOAN ky 00884: 13-18-21-28-34 + DAC BIET 6
 
---- Model (l1_merged file: l1_merged/merged_seed1810521166639.json) ---
-  seed_start cua model: 1810521166639
-  so seed trong L1 cua model nay: 3998683
-  seed duoc chon (diem ML cao nhat): 1815406529918 (diem=3.0489)
-  DU DOAN ky 00883: 01-18-21-28-34 + DAC BIET 6
+--- Model (l1_merged file: l1_merged/merged_seed1841676682639.json) ---
+  seed_start cua model: 1841676682639
+  so seed trong L1 cua model nay: 3998739
+  seed duoc chon (diem ML cao nhat): 1846390002092 (diem=3.0394)
+  DU DOAN ky 00884: 13-18-21-28-34 + DAC BIET 6
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  so seed trong L1 cua model nay: 352587
-  seed duoc chon (diem ML cao nhat): 682355975089 (diem=3.0454)
-  DU DOAN ky 00883: 01-12-21-28-34 + DAC BIET 6
+  so seed trong L1 cua model nay: 352983
+  seed duoc chon (diem ML cao nhat): 683454976780 (diem=3.0394)
+  DU DOAN ky 00884: 13-18-21-28-34 + DAC BIET 6
 
---- Model (l1_merged file: l1_merged/merged_seed833099814639.json) ---
-  seed_start cua model: 833099814639
-  so seed trong L1 cua model nay: 4000222
-  seed duoc chon (diem ML cao nhat): 848763020973 (diem=3.0489)
-  DU DOAN ky 00883: 01-18-21-28-34 + DAC BIET 6
+--- Model (l1_merged file: l1_merged/merged_seed864255330639.json) ---
+  seed_start cua model: 864255330639
+  so seed trong L1 cua model nay: 3995910
+  seed duoc chon (diem ML cao nhat): 870701712907 (diem=3.0394)
+  DU DOAN ky 00884: 13-18-21-28-34 + DAC BIET 6
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  so seed trong L1 cua model nay: 3999586
-  seed duoc chon (diem ML cao nhat): 917459685138 (diem=3.0489)
-  DU DOAN ky 00883: 01-18-21-28-34 + DAC BIET 6
+  so seed trong L1 cua model nay: 3999527
+  seed duoc chon (diem ML cao nhat): 928116548452 (diem=3.0394)
+  DU DOAN ky 00884: 13-18-21-28-34 + DAC BIET 6
 
