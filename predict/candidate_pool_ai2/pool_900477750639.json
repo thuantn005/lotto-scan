@@ -1,5382 +1,5480 @@
 {
   "seed_start": 900477750639,
-  "next_draw_id": 885,
+  "next_draw_id": 886,
   "total_draws_in_model": 500,
-  "pool_size": 384,
+  "pool_size": 391,
   "candidates": [
     {
-      "seed": 915046841927,
+      "seed": 911573414693,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 742,
+      "last_hit_draw": 497,
       "numbers": [
-        1,
-        7,
-        19,
+        3,
+        8,
+        10,
         20,
-        27
+        30
+      ],
+      "special": 6
+    },
+    {
+      "seed": 902825036212,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 449,
+      "numbers": [
+        4,
+        8,
+        15,
+        22,
+        35
+      ],
+      "special": 1
+    },
+    {
+      "seed": 927947812425,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 762,
+      "numbers": [
+        4,
+        9,
+        20,
+        21,
+        31
+      ],
+      "special": 12
+    },
+    {
+      "seed": 928060848737,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 486,
+      "numbers": [
+        10,
+        13,
+        16,
+        21,
+        33
+      ],
+      "special": 6
+    },
+    {
+      "seed": 905758456811,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 537,
+      "numbers": [
+        2,
+        9,
+        27,
+        28,
+        35
       ],
       "special": 11
     },
     {
-      "seed": 916976673821,
+      "seed": 921893940947,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 734,
+      "last_hit_draw": 548,
       "numbers": [
-        17,
+        3,
+        5,
+        8,
+        26,
+        29
+      ],
+      "special": 2
+    },
+    {
+      "seed": 930037363021,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 738,
+      "numbers": [
+        4,
+        11,
         22,
-        25,
-        33,
+        27,
+        34
+      ],
+      "special": 2
+    },
+    {
+      "seed": 919159996544,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 821,
+      "numbers": [
+        5,
+        19,
+        22,
+        28,
         35
       ],
       "special": 6
     },
     {
-      "seed": 904745202631,
+      "seed": 906107529825,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 441,
-      "numbers": [
-        8,
-        11,
-        13,
-        20,
-        30
-      ],
-      "special": 8
-    },
-    {
-      "seed": 906627701788,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 834,
-      "numbers": [
-        12,
-        16,
-        25,
-        32,
-        34
-      ],
-      "special": 1
-    },
-    {
-      "seed": 913370175224,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 433,
-      "numbers": [
-        6,
-        11,
-        15,
-        20,
-        29
-      ],
-      "special": 8
-    },
-    {
-      "seed": 926949393719,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 667,
-      "numbers": [
-        3,
-        18,
-        21,
-        26,
-        31
-      ],
-      "special": 1
-    },
-    {
-      "seed": 910582339094,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 533,
-      "numbers": [
-        7,
-        8,
-        15,
-        25,
-        34
-      ],
-      "special": 12
-    },
-    {
-      "seed": 907648557217,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 450,
+      "last_hit_draw": 627,
       "numbers": [
         1,
-        7,
-        21,
-        29,
-        34
-      ],
-      "special": 4
-    },
-    {
-      "seed": 929551098555,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 511,
-      "numbers": [
-        4,
-        20,
-        27,
-        29,
-        31
-      ],
-      "special": 9
-    },
-    {
-      "seed": 908376742084,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 386,
-      "numbers": [
+        2,
         6,
-        14,
-        28,
-        29,
+        20,
         35
       ],
-      "special": 8
+      "special": 3
     },
     {
-      "seed": 928801876886,
+      "seed": 905864908765,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 635,
-      "numbers": [
-        6,
-        10,
-        14,
-        18,
-        22
-      ],
-      "special": 1
-    },
-    {
-      "seed": 905040555775,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 565,
-      "numbers": [
-        10,
-        17,
-        19,
-        20,
-        31
-      ],
-      "special": 2
-    },
-    {
-      "seed": 920264934433,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 857,
+      "last_hit_draw": 545,
       "numbers": [
         3,
-        15,
-        24,
-        26,
-        32
-      ],
-      "special": 9
-    },
-    {
-      "seed": 905529051628,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 686,
-      "numbers": [
-        2,
-        8,
-        15,
-        18,
-        33
+        4,
+        19,
+        25,
+        30
       ],
       "special": 5
     },
     {
-      "seed": 903017099572,
+      "seed": 929677902721,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 488,
+      "last_hit_draw": 501,
       "numbers": [
-        9,
-        12,
+        2,
+        6,
         21,
         25,
-        26
+        28
       ],
-      "special": 8
+      "special": 6
     },
     {
-      "seed": 919298695876,
+      "seed": 904442809045,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 428,
-      "numbers": [
-        7,
-        13,
-        16,
-        31,
-        35
-      ],
-      "special": 8
-    },
-    {
-      "seed": 919061173455,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 499,
+      "last_hit_draw": 715,
       "numbers": [
         5,
+        6,
         8,
-        27,
-        30,
+        10,
+        11
+      ],
+      "special": 10
+    },
+    {
+      "seed": 911294150821,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 860,
+      "numbers": [
+        21,
+        32,
+        33,
+        34,
         35
       ],
       "special": 11
     },
     {
-      "seed": 906218043551,
+      "seed": 920842016821,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 457,
-      "numbers": [
-        2,
-        11,
-        14,
-        22,
-        25
-      ],
-      "special": 12
-    },
-    {
-      "seed": 904459683951,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 505,
-      "numbers": [
-        4,
-        7,
-        16,
-        20,
-        24
-      ],
-      "special": 4
-    },
-    {
-      "seed": 911399209352,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 656,
-      "numbers": [
-        8,
-        14,
-        27,
-        28,
-        34
-      ],
-      "special": 8
-    },
-    {
-      "seed": 918516433070,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 411,
-      "numbers": [
-        9,
-        11,
-        22,
-        32,
-        33
-      ],
-      "special": 7
-    },
-    {
-      "seed": 915650203343,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 773,
-      "numbers": [
-        3,
-        22,
-        25,
-        30,
-        31
-      ],
-      "special": 3
-    },
-    {
-      "seed": 926995130675,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 710,
+      "last_hit_draw": 429,
       "numbers": [
         1,
-        3,
-        10,
-        26,
-        28
-      ],
-      "special": 9
-    },
-    {
-      "seed": 905380579538,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 612,
-      "numbers": [
-        6,
-        12,
-        15,
-        18,
-        27
-      ],
-      "special": 2
-    },
-    {
-      "seed": 922118584512,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 882,
-      "numbers": [
-        10,
-        12,
+        9,
         17,
-        29,
-        30
+        23,
+        25
       ],
-      "special": 12
+      "special": 1
     },
     {
-      "seed": 906603478411,
+      "seed": 924887325728,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 696,
+      "last_hit_draw": 669,
       "numbers": [
         6,
         7,
         13,
+        23,
+        30
+      ],
+      "special": 2
+    },
+    {
+      "seed": 908842010750,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 798,
+      "numbers": [
+        7,
+        13,
+        20,
         22,
+        29
+      ],
+      "special": 4
+    },
+    {
+      "seed": 920548129543,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 849,
+      "numbers": [
+        4,
+        11,
+        17,
+        18,
+        20
+      ],
+      "special": 4
+    },
+    {
+      "seed": 913328863836,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 763,
+      "numbers": [
+        6,
+        14,
+        24,
+        27,
         34
       ],
       "special": 7
     },
     {
-      "seed": 922524156462,
+      "seed": 929463001836,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 812,
+      "last_hit_draw": 706,
       "numbers": [
-        4,
-        10,
-        23,
-        32,
-        33
+        1,
+        7,
+        8,
+        14,
+        17
       ],
-      "special": 3
+      "special": 6
     },
     {
-      "seed": 906094479231,
+      "seed": 907017287072,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 840,
+      "last_hit_draw": 506,
       "numbers": [
-        18,
-        27,
-        32,
-        34,
+        4,
+        5,
+        23,
+        25,
+        32
+      ],
+      "special": 10
+    },
+    {
+      "seed": 902795703390,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 653,
+      "numbers": [
+        3,
+        8,
+        16,
+        24,
         35
       ],
       "special": 4
     },
     {
-      "seed": 925902476362,
+      "seed": 911394720471,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 629,
+      "last_hit_draw": 474,
       "numbers": [
-        3,
         5,
         7,
+        16,
+        21,
+        26
+      ],
+      "special": 12
+    },
+    {
+      "seed": 928373015793,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 507,
+      "numbers": [
+        1,
+        6,
+        8,
+        12,
+        16
+      ],
+      "special": 5
+    },
+    {
+      "seed": 914333388876,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 866,
+      "numbers": [
+        6,
+        8,
+        9,
         17,
+        26
+      ],
+      "special": 2
+    },
+    {
+      "seed": 913169739676,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 510,
+      "numbers": [
+        1,
+        6,
+        10,
+        22,
+        32
+      ],
+      "special": 3
+    },
+    {
+      "seed": 920740524092,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 419,
+      "numbers": [
+        5,
+        15,
+        16,
+        23,
+        30
+      ],
+      "special": 9
+    },
+    {
+      "seed": 912462615489,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 782,
+      "numbers": [
+        9,
+        10,
+        13,
+        15,
         20
       ],
       "special": 8
     },
     {
-      "seed": 925883062306,
+      "seed": 930222298234,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 728,
+      "last_hit_draw": 540,
       "numbers": [
-        6,
-        14,
-        15,
-        17,
-        33
-      ],
-      "special": 7
-    },
-    {
-      "seed": 909866726710,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 629,
-      "numbers": [
-        8,
-        19,
-        20,
-        21,
-        35
-      ],
-      "special": 11
-    },
-    {
-      "seed": 915398648459,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 735,
-      "numbers": [
-        1,
-        7,
-        9,
+        4,
+        18,
         23,
-        35
-      ],
-      "special": 4
-    },
-    {
-      "seed": 930473567255,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 409,
-      "numbers": [
-        5,
-        15,
-        16,
-        20,
-        21
-      ],
-      "special": 3
-    },
-    {
-      "seed": 922201871669,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 869,
-      "numbers": [
-        3,
-        5,
-        12,
-        16,
+        24,
         31
       ],
       "special": 11
     },
     {
-      "seed": 914429256070,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 513,
-      "numbers": [
-        7,
-        10,
-        25,
-        29,
-        32
-      ],
-      "special": 5
-    },
-    {
-      "seed": 928517639159,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 616,
-      "numbers": [
-        1,
-        3,
-        13,
-        14,
-        16
-      ],
-      "special": 5
-    },
-    {
-      "seed": 915040982784,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 541,
-      "numbers": [
-        2,
-        9,
-        20,
-        22,
-        28
-      ],
-      "special": 6
-    },
-    {
-      "seed": 915509300257,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 580,
-      "numbers": [
-        13,
-        15,
-        22,
-        24,
-        29
-      ],
-      "special": 6
-    },
-    {
-      "seed": 901170246535,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 449,
-      "numbers": [
-        2,
-        31,
-        32,
-        33,
-        34
-      ],
-      "special": 11
-    },
-    {
-      "seed": 922611263650,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 605,
-      "numbers": [
-        10,
-        13,
-        16,
-        18,
-        29
-      ],
-      "special": 10
-    },
-    {
-      "seed": 918205305069,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 457,
-      "numbers": [
-        5,
-        8,
-        22,
-        26,
-        31
-      ],
-      "special": 12
-    },
-    {
-      "seed": 914474617393,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 427,
-      "numbers": [
-        11,
-        12,
-        17,
-        19,
-        33
-      ],
-      "special": 12
-    },
-    {
-      "seed": 924801762630,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 487,
-      "numbers": [
-        20,
-        22,
-        23,
-        26,
-        27
-      ],
-      "special": 11
-    },
-    {
-      "seed": 902398820193,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 638,
-      "numbers": [
-        6,
-        10,
-        24,
-        27,
-        32
-      ],
-      "special": 9
-    },
-    {
-      "seed": 920377205361,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 814,
-      "numbers": [
-        3,
-        9,
-        11,
-        20,
-        34
-      ],
-      "special": 2
-    },
-    {
-      "seed": 910736581192,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 855,
-      "numbers": [
-        9,
-        16,
-        24,
-        28,
-        31
-      ],
-      "special": 6
-    },
-    {
-      "seed": 931380267709,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 478,
-      "numbers": [
-        5,
-        10,
-        23,
-        24,
-        25
-      ],
-      "special": 8
-    },
-    {
-      "seed": 926713857466,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 822,
-      "numbers": [
-        3,
-        9,
-        14,
-        30,
-        35
-      ],
-      "special": 5
-    },
-    {
-      "seed": 919876832938,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 808,
-      "numbers": [
-        11,
-        21,
-        27,
-        29,
-        32
-      ],
-      "special": 3
-    },
-    {
-      "seed": 930902232552,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 866,
-      "numbers": [
-        7,
-        13,
-        17,
-        24,
-        25
-      ],
-      "special": 2
-    },
-    {
-      "seed": 906497972247,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 420,
-      "numbers": [
-        8,
-        14,
-        16,
-        21,
-        26
-      ],
-      "special": 6
-    },
-    {
-      "seed": 912697604577,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 868,
-      "numbers": [
-        6,
-        16,
-        22,
-        26,
-        35
-      ],
-      "special": 3
-    },
-    {
-      "seed": 927231669170,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 564,
-      "numbers": [
-        1,
-        5,
-        6,
-        25,
-        30
-      ],
-      "special": 1
-    },
-    {
-      "seed": 923248170990,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 863,
-      "numbers": [
-        6,
-        20,
-        21,
-        28,
-        32
-      ],
-      "special": 8
-    },
-    {
-      "seed": 917560195849,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 489,
-      "numbers": [
-        7,
-        14,
-        24,
-        27,
-        33
-      ],
-      "special": 1
-    },
-    {
-      "seed": 911417462582,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 703,
-      "numbers": [
-        4,
-        11,
-        25,
-        27,
-        30
-      ],
-      "special": 6
-    },
-    {
-      "seed": 916834066589,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 520,
-      "numbers": [
-        10,
-        12,
-        20,
-        27,
-        34
-      ],
-      "special": 9
-    },
-    {
-      "seed": 907191845014,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 722,
-      "numbers": [
-        4,
-        8,
-        10,
-        14,
-        30
-      ],
-      "special": 5
-    },
-    {
-      "seed": 915922920418,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 626,
-      "numbers": [
-        4,
-        9,
-        14,
-        21,
-        29
-      ],
-      "special": 7
-    },
-    {
-      "seed": 920007765683,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 681,
-      "numbers": [
-        2,
-        8,
-        17,
-        24,
-        26
-      ],
-      "special": 5
-    },
-    {
-      "seed": 928164791926,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 727,
-      "numbers": [
-        1,
-        21,
-        22,
-        31,
-        35
-      ],
-      "special": 12
-    },
-    {
-      "seed": 911948260546,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 835,
-      "numbers": [
-        1,
-        4,
-        28,
-        32,
-        35
-      ],
-      "special": 3
-    },
-    {
-      "seed": 907371527931,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 610,
-      "numbers": [
-        7,
-        9,
-        16,
-        21,
-        32
-      ],
-      "special": 1
-    },
-    {
-      "seed": 907223732874,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 450,
-      "numbers": [
-        20,
-        22,
-        30,
-        32,
-        35
-      ],
-      "special": 11
-    },
-    {
-      "seed": 927128134586,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 504,
-      "numbers": [
-        4,
-        13,
-        16,
-        17,
-        28
-      ],
-      "special": 6
-    },
-    {
-      "seed": 901948229499,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 639,
-      "numbers": [
-        7,
-        10,
-        12,
-        21,
-        35
-      ],
-      "special": 12
-    },
-    {
-      "seed": 907858990727,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 812,
-      "numbers": [
-        4,
-        5,
-        10,
-        26,
-        27
-      ],
-      "special": 12
-    },
-    {
-      "seed": 902463716797,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 768,
-      "numbers": [
-        14,
-        17,
-        18,
-        19,
-        30
-      ],
-      "special": 12
-    },
-    {
-      "seed": 916314088280,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 734,
-      "numbers": [
-        2,
-        7,
-        20,
-        23,
-        30
-      ],
-      "special": 7
-    },
-    {
-      "seed": 905164409851,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 622,
-      "numbers": [
-        3,
-        10,
-        13,
-        25,
-        27
-      ],
-      "special": 7
-    },
-    {
-      "seed": 929316363333,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 419,
-      "numbers": [
-        9,
-        12,
-        14,
-        19,
-        24
-      ],
-      "special": 7
-    },
-    {
-      "seed": 907800635915,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 461,
-      "numbers": [
-        6,
-        8,
-        12,
-        17,
-        22
-      ],
-      "special": 7
-    },
-    {
-      "seed": 902298672537,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 486,
-      "numbers": [
-        15,
-        21,
-        23,
-        30,
-        32
-      ],
-      "special": 4
-    },
-    {
-      "seed": 904318419537,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 517,
-      "numbers": [
-        4,
-        6,
-        12,
-        19,
-        34
-      ],
-      "special": 11
-    },
-    {
-      "seed": 912141320233,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 490,
-      "numbers": [
-        8,
-        10,
-        19,
-        22,
-        27
-      ],
-      "special": 3
-    },
-    {
-      "seed": 909295488473,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 695,
-      "numbers": [
-        2,
-        14,
-        26,
-        33,
-        35
-      ],
-      "special": 5
-    },
-    {
-      "seed": 904178905138,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 440,
-      "numbers": [
-        4,
-        10,
-        15,
-        19,
-        29
-      ],
-      "special": 2
-    },
-    {
-      "seed": 917118301720,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 848,
-      "numbers": [
-        1,
-        8,
-        11,
-        17,
-        28
-      ],
-      "special": 10
-    },
-    {
-      "seed": 911377237807,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 697,
-      "numbers": [
-        6,
-        17,
-        23,
-        26,
-        32
-      ],
-      "special": 1
-    },
-    {
-      "seed": 921866966408,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 470,
-      "numbers": [
-        2,
-        5,
-        19,
-        21,
-        22
-      ],
-      "special": 7
-    },
-    {
-      "seed": 925205719414,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 842,
-      "numbers": [
-        10,
-        11,
-        20,
-        33,
-        35
-      ],
-      "special": 5
-    },
-    {
-      "seed": 915954659639,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 794,
-      "numbers": [
-        18,
-        23,
-        25,
-        26,
-        30
-      ],
-      "special": 3
-    },
-    {
-      "seed": 907694121152,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 516,
-      "numbers": [
-        1,
-        12,
-        20,
-        23,
-        32
-      ],
-      "special": 12
-    },
-    {
-      "seed": 906070962769,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 438,
-      "numbers": [
-        4,
-        19,
-        21,
-        24,
-        27
-      ],
-      "special": 2
-    },
-    {
-      "seed": 906504904550,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 552,
-      "numbers": [
-        1,
-        2,
-        14,
-        18,
-        27
-      ],
-      "special": 9
-    },
-    {
-      "seed": 913320347138,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 696,
-      "numbers": [
-        2,
-        3,
-        6,
-        29,
-        32
-      ],
-      "special": 6
-    },
-    {
-      "seed": 901792150547,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 493,
-      "numbers": [
-        7,
-        11,
-        18,
-        23,
-        29
-      ],
-      "special": 1
-    },
-    {
-      "seed": 906239450902,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 544,
-      "numbers": [
-        4,
-        13,
-        19,
-        26,
-        35
-      ],
-      "special": 6
-    },
-    {
-      "seed": 928017995324,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 798,
-      "numbers": [
-        15,
-        18,
-        21,
-        28,
-        35
-      ],
-      "special": 2
-    },
-    {
-      "seed": 901349753344,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 647,
-      "numbers": [
-        4,
-        9,
-        18,
-        20,
-        33
-      ],
-      "special": 12
-    },
-    {
-      "seed": 905327634799,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 834,
-      "numbers": [
-        3,
-        17,
-        18,
-        29,
-        35
-      ],
-      "special": 8
-    },
-    {
-      "seed": 909206430339,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 436,
-      "numbers": [
-        2,
-        5,
-        9,
-        12,
-        23
-      ],
-      "special": 3
-    },
-    {
-      "seed": 901655172386,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 403,
-      "numbers": [
-        4,
-        13,
-        18,
-        25,
-        32
-      ],
-      "special": 2
-    },
-    {
-      "seed": 910013503155,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 734,
-      "numbers": [
-        3,
-        8,
-        20,
-        27,
-        33
-      ],
-      "special": 3
-    },
-    {
-      "seed": 905507597662,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 398,
-      "numbers": [
-        1,
-        3,
-        11,
-        12,
-        21
-      ],
-      "special": 3
-    },
-    {
-      "seed": 916477651740,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 507,
-      "numbers": [
-        14,
-        17,
-        21,
-        34,
-        35
-      ],
-      "special": 1
-    },
-    {
-      "seed": 913743532961,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 707,
-      "numbers": [
-        8,
-        9,
-        10,
-        12,
-        18
-      ],
-      "special": 12
-    },
-    {
-      "seed": 910353816602,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 453,
-      "numbers": [
-        3,
-        8,
-        10,
-        15,
-        23
-      ],
-      "special": 1
-    },
-    {
-      "seed": 906948948572,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 756,
-      "numbers": [
-        2,
-        5,
-        7,
-        25,
-        26
-      ],
-      "special": 2
-    },
-    {
-      "seed": 913191388542,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 655,
-      "numbers": [
-        4,
-        15,
-        21,
-        22,
-        33
-      ],
-      "special": 8
-    },
-    {
-      "seed": 928554493560,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 637,
-      "numbers": [
-        3,
-        6,
-        11,
-        17,
-        24
-      ],
-      "special": 4
-    },
-    {
-      "seed": 922749946560,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 717,
-      "numbers": [
-        2,
-        9,
-        13,
-        15,
-        35
-      ],
-      "special": 1
-    },
-    {
-      "seed": 920922047510,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 812,
-      "numbers": [
-        7,
-        8,
-        14,
-        17,
-        23
-      ],
-      "special": 3
-    },
-    {
-      "seed": 918975297138,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 731,
-      "numbers": [
-        1,
-        11,
-        19,
-        22,
-        24
-      ],
-      "special": 5
-    },
-    {
-      "seed": 902123185546,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 490,
-      "numbers": [
-        2,
-        11,
-        21,
-        24,
-        33
-      ],
-      "special": 7
-    },
-    {
-      "seed": 926762079310,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 688,
-      "numbers": [
-        12,
-        13,
-        23,
-        27,
-        28
-      ],
-      "special": 5
-    },
-    {
-      "seed": 903347022958,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 821,
-      "numbers": [
-        9,
-        11,
-        28,
-        29,
-        30
-      ],
-      "special": 3
-    },
-    {
-      "seed": 931106387205,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 734,
-      "numbers": [
-        5,
-        8,
-        29,
-        33,
-        34
-      ],
-      "special": 2
-    },
-    {
-      "seed": 929923795127,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 608,
-      "numbers": [
-        1,
-        16,
-        19,
-        26,
-        33
-      ],
-      "special": 7
-    },
-    {
-      "seed": 909770862919,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 813,
-      "numbers": [
-        19,
-        21,
-        28,
-        29,
-        31
-      ],
-      "special": 10
-    },
-    {
-      "seed": 904435151605,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 778,
-      "numbers": [
-        11,
-        16,
-        20,
-        22,
-        31
-      ],
-      "special": 3
-    },
-    {
-      "seed": 914556267736,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 740,
-      "numbers": [
-        10,
-        22,
-        28,
-        31,
-        32
-      ],
-      "special": 6
-    },
-    {
-      "seed": 917228613584,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 798,
-      "numbers": [
-        11,
-        15,
-        17,
-        22,
-        27
-      ],
-      "special": 6
-    },
-    {
-      "seed": 917405639557,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 496,
-      "numbers": [
-        19,
-        24,
-        30,
-        33,
-        34
-      ],
-      "special": 6
-    },
-    {
-      "seed": 926923531930,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 744,
-      "numbers": [
-        1,
-        5,
-        12,
-        24,
-        34
-      ],
-      "special": 10
-    },
-    {
-      "seed": 921529076699,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 518,
-      "numbers": [
-        6,
-        18,
-        23,
-        28,
-        31
-      ],
-      "special": 12
-    },
-    {
-      "seed": 913145131043,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 614,
-      "numbers": [
-        17,
-        23,
-        30,
-        31,
-        35
-      ],
-      "special": 5
-    },
-    {
-      "seed": 906590655237,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 603,
-      "numbers": [
-        2,
-        27,
-        28,
-        30,
-        32
-      ],
-      "special": 2
-    },
-    {
-      "seed": 914460263356,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 771,
-      "numbers": [
-        13,
-        18,
-        24,
-        26,
-        27
-      ],
-      "special": 7
-    },
-    {
-      "seed": 919872914379,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 576,
-      "numbers": [
-        6,
-        9,
-        13,
-        19,
-        27
-      ],
-      "special": 5
-    },
-    {
-      "seed": 921868914324,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 686,
-      "numbers": [
-        5,
-        18,
-        24,
-        29,
-        31
-      ],
-      "special": 11
-    },
-    {
-      "seed": 910646228884,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 841,
-      "numbers": [
-        6,
-        15,
-        19,
-        24,
-        25
-      ],
-      "special": 12
-    },
-    {
-      "seed": 908912294778,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 878,
-      "numbers": [
-        7,
-        12,
-        26,
-        28,
-        33
-      ],
-      "special": 8
-    },
-    {
-      "seed": 924651732002,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 736,
-      "numbers": [
-        1,
-        2,
-        4,
-        6,
-        23
-      ],
-      "special": 6
-    },
-    {
-      "seed": 926853024137,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 697,
-      "numbers": [
-        3,
-        10,
-        11,
-        14,
-        29
-      ],
-      "special": 9
-    },
-    {
-      "seed": 906656103385,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 558,
-      "numbers": [
-        9,
-        10,
-        30,
-        31,
-        34
-      ],
-      "special": 8
-    },
-    {
-      "seed": 929617003921,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 436,
-      "numbers": [
-        1,
-        8,
-        22,
-        23,
-        25
-      ],
-      "special": 1
-    },
-    {
-      "seed": 923109955380,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 466,
-      "numbers": [
-        12,
-        21,
-        22,
-        30,
-        34
-      ],
-      "special": 8
-    },
-    {
-      "seed": 929207010208,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 716,
-      "numbers": [
-        4,
-        11,
-        12,
-        31,
-        35
-      ],
-      "special": 11
-    },
-    {
-      "seed": 921643610370,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 723,
-      "numbers": [
-        7,
-        12,
-        15,
-        19,
-        22
-      ],
-      "special": 7
-    },
-    {
-      "seed": 917328703198,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 468,
-      "numbers": [
-        3,
-        6,
-        19,
-        23,
-        35
-      ],
-      "special": 3
-    },
-    {
-      "seed": 909244034104,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 601,
-      "numbers": [
-        4,
-        7,
-        22,
-        29,
-        30
-      ],
-      "special": 1
-    },
-    {
-      "seed": 903863595657,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 844,
-      "numbers": [
-        2,
-        3,
-        10,
-        19,
-        34
-      ],
-      "special": 4
-    },
-    {
-      "seed": 927499156035,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 423,
-      "numbers": [
-        4,
-        6,
-        7,
-        8,
-        26
-      ],
-      "special": 6
-    },
-    {
-      "seed": 917555670211,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 463,
-      "numbers": [
-        17,
-        26,
-        27,
-        29,
-        34
-      ],
-      "special": 2
-    },
-    {
-      "seed": 925185560837,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 797,
-      "numbers": [
-        2,
-        5,
-        10,
-        28,
-        35
-      ],
-      "special": 3
-    },
-    {
-      "seed": 912004270192,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 659,
-      "numbers": [
-        5,
-        8,
-        16,
-        19,
-        32
-      ],
-      "special": 7
-    },
-    {
-      "seed": 904739006834,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 662,
-      "numbers": [
-        1,
-        2,
-        8,
-        10,
-        16
-      ],
-      "special": 1
-    },
-    {
-      "seed": 923988116421,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 569,
-      "numbers": [
-        2,
-        13,
-        20,
-        29,
-        33
-      ],
-      "special": 4
-    },
-    {
-      "seed": 917016306632,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 857,
-      "numbers": [
-        1,
-        3,
-        8,
-        34,
-        35
-      ],
-      "special": 2
-    },
-    {
-      "seed": 906419084390,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 449,
-      "numbers": [
-        5,
-        13,
-        17,
-        21,
-        30
-      ],
-      "special": 4
-    },
-    {
-      "seed": 915409087381,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 798,
-      "numbers": [
-        2,
-        11,
-        15,
-        26,
-        28
-      ],
-      "special": 3
-    },
-    {
-      "seed": 917583908766,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 778,
-      "numbers": [
-        5,
-        6,
-        14,
-        20,
-        31
-      ],
-      "special": 10
-    },
-    {
-      "seed": 902231785841,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 703,
-      "numbers": [
-        9,
-        14,
-        15,
-        26,
-        27
-      ],
-      "special": 2
-    },
-    {
-      "seed": 931618938003,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 555,
-      "numbers": [
-        3,
-        20,
-        21,
-        24,
-        29
-      ],
-      "special": 4
-    },
-    {
-      "seed": 914094033333,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 842,
-      "numbers": [
-        4,
-        5,
-        20,
-        28,
-        34
-      ],
-      "special": 12
-    },
-    {
-      "seed": 914552130720,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 745,
-      "numbers": [
-        12,
-        17,
-        18,
-        25,
-        28
-      ],
-      "special": 4
-    },
-    {
-      "seed": 917390662005,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 859,
-      "numbers": [
-        12,
-        13,
-        24,
-        32,
-        35
-      ],
-      "special": 8
-    },
-    {
-      "seed": 921711752428,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 479,
-      "numbers": [
-        7,
-        12,
-        14,
-        18,
-        34
-      ],
-      "special": 2
-    },
-    {
-      "seed": 907050191507,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 711,
-      "numbers": [
-        2,
-        7,
-        15,
-        27,
-        29
-      ],
-      "special": 3
-    },
-    {
-      "seed": 918041750158,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 732,
-      "numbers": [
-        12,
-        14,
-        16,
-        20,
-        35
-      ],
-      "special": 11
-    },
-    {
-      "seed": 919371093407,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 505,
-      "numbers": [
-        1,
-        2,
-        11,
-        29,
-        35
-      ],
-      "special": 10
-    },
-    {
-      "seed": 902061694909,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 530,
-      "numbers": [
-        2,
-        7,
-        9,
-        18,
-        24
-      ],
-      "special": 4
-    },
-    {
-      "seed": 902504415984,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 656,
-      "numbers": [
-        16,
-        18,
-        20,
-        26,
-        34
-      ],
-      "special": 11
-    },
-    {
-      "seed": 923976609788,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 576,
-      "numbers": [
-        6,
-        8,
-        21,
-        31,
-        34
-      ],
-      "special": 1
-    },
-    {
-      "seed": 930580268987,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 451,
-      "numbers": [
-        4,
-        5,
-        7,
-        11,
-        19
-      ],
-      "special": 10
-    },
-    {
-      "seed": 926651311802,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 718,
-      "numbers": [
-        1,
-        9,
-        10,
-        20,
-        21
-      ],
-      "special": 6
-    },
-    {
-      "seed": 909190115831,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 545,
-      "numbers": [
-        5,
-        13,
-        20,
-        22,
-        25
-      ],
-      "special": 12
-    },
-    {
-      "seed": 909948995855,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 400,
-      "numbers": [
-        5,
-        13,
-        19,
-        31,
-        33
-      ],
-      "special": 3
-    },
-    {
-      "seed": 901106249103,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 421,
-      "numbers": [
-        14,
-        23,
-        25,
-        29,
-        34
-      ],
-      "special": 1
-    },
-    {
-      "seed": 921872764395,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 495,
-      "numbers": [
-        16,
-        21,
-        23,
-        31,
-        33
-      ],
-      "special": 6
-    },
-    {
-      "seed": 927275197005,
+      "seed": 901963464918,
       "weight": 1,
       "hit_rate": 0.002,
       "last_hit_draw": 774,
       "numbers": [
         4,
-        18,
-        19,
-        22,
-        28
-      ],
-      "special": 11
-    },
-    {
-      "seed": 927336160630,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 668,
-      "numbers": [
-        1,
-        5,
-        9,
-        17,
-        22
-      ],
-      "special": 5
-    },
-    {
-      "seed": 911357591951,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 394,
-      "numbers": [
-        8,
-        16,
-        23,
-        30,
-        34
-      ],
-      "special": 9
-    },
-    {
-      "seed": 928258529343,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 548,
-      "numbers": [
-        5,
-        8,
-        11,
-        14,
-        15
-      ],
-      "special": 11
-    },
-    {
-      "seed": 911264659484,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 473,
-      "numbers": [
-        1,
-        16,
-        17,
-        23,
-        29
-      ],
-      "special": 11
-    },
-    {
-      "seed": 919345594835,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 855,
-      "numbers": [
-        2,
-        14,
-        15,
-        23,
-        24
-      ],
-      "special": 1
-    },
-    {
-      "seed": 922713127530,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 681,
-      "numbers": [
-        3,
-        7,
-        16,
-        18,
-        33
-      ],
-      "special": 2
-    },
-    {
-      "seed": 902429378409,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 707,
-      "numbers": [
-        2,
-        7,
-        14,
-        19,
-        31
-      ],
-      "special": 1
-    },
-    {
-      "seed": 929700847959,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 393,
-      "numbers": [
-        5,
-        6,
-        10,
-        17,
-        34
-      ],
-      "special": 2
-    },
-    {
-      "seed": 912862466000,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 855,
-      "numbers": [
-        7,
-        21,
-        25,
-        27,
-        31
-      ],
-      "special": 4
-    },
-    {
-      "seed": 918247568362,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 588,
-      "numbers": [
-        7,
-        11,
-        24,
-        32,
-        34
-      ],
-      "special": 3
-    },
-    {
-      "seed": 916710243770,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 691,
-      "numbers": [
-        3,
-        11,
-        27,
-        28,
-        35
-      ],
-      "special": 5
-    },
-    {
-      "seed": 906689508570,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 568,
-      "numbers": [
-        15,
-        29,
-        31,
-        32,
-        35
-      ],
-      "special": 9
-    },
-    {
-      "seed": 907665420642,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 746,
-      "numbers": [
-        8,
-        12,
-        30,
-        31,
-        33
-      ],
-      "special": 7
-    },
-    {
-      "seed": 930545434423,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 540,
-      "numbers": [
-        4,
-        8,
-        12,
-        24,
-        28
-      ],
-      "special": 12
-    },
-    {
-      "seed": 912717249944,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 655,
-      "numbers": [
-        2,
-        3,
-        16,
-        25,
-        28
-      ],
-      "special": 5
-    },
-    {
-      "seed": 903860618478,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 419,
-      "numbers": [
-        6,
         7,
         10,
-        11,
-        28
-      ],
-      "special": 7
-    },
-    {
-      "seed": 912118105725,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 521,
-      "numbers": [
-        3,
-        8,
-        17,
-        21,
-        25
-      ],
-      "special": 3
-    },
-    {
-      "seed": 914581766186,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 748,
-      "numbers": [
-        2,
-        3,
-        4,
-        12,
-        22
-      ],
-      "special": 12
-    },
-    {
-      "seed": 923361547276,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 505,
-      "numbers": [
-        1,
-        7,
-        13,
-        18,
-        30
-      ],
-      "special": 6
-    },
-    {
-      "seed": 909996532645,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 624,
-      "numbers": [
-        12,
-        14,
         15,
-        25,
-        30
-      ],
-      "special": 6
-    },
-    {
-      "seed": 906957228559,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 666,
-      "numbers": [
-        1,
-        12,
-        15,
-        26,
-        35
-      ],
-      "special": 8
-    },
-    {
-      "seed": 907360002484,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 416,
-      "numbers": [
-        4,
-        9,
-        15,
-        23,
-        25
-      ],
-      "special": 5
-    },
-    {
-      "seed": 903737354345,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 619,
-      "numbers": [
-        4,
-        8,
-        13,
-        15,
-        31
-      ],
-      "special": 5
-    },
-    {
-      "seed": 903959575623,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 397,
-      "numbers": [
-        3,
-        9,
-        23,
-        26,
-        33
-      ],
-      "special": 10
-    },
-    {
-      "seed": 918469492515,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 666,
-      "numbers": [
-        4,
-        14,
-        16,
-        27,
-        32
-      ],
-      "special": 7
-    },
-    {
-      "seed": 925388756856,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 852,
-      "numbers": [
-        7,
-        10,
-        16,
-        23,
-        26
-      ],
-      "special": 1
-    },
-    {
-      "seed": 913745857919,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 712,
-      "numbers": [
-        3,
-        4,
-        5,
-        8,
-        9
-      ],
-      "special": 8
-    },
-    {
-      "seed": 906285922504,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 861,
-      "numbers": [
-        7,
-        14,
-        21,
-        22,
-        28
-      ],
-      "special": 1
-    },
-    {
-      "seed": 924222658769,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 848,
-      "numbers": [
-        6,
-        11,
-        13,
-        25,
-        26
-      ],
-      "special": 3
-    },
-    {
-      "seed": 916150286453,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 570,
-      "numbers": [
-        1,
-        5,
-        18,
-        21,
-        23
-      ],
-      "special": 3
-    },
-    {
-      "seed": 928538727947,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 875,
-      "numbers": [
-        4,
-        10,
-        16,
-        21,
-        25
-      ],
-      "special": 8
-    },
-    {
-      "seed": 929832941485,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 561,
-      "numbers": [
-        5,
-        9,
-        24,
-        30,
-        32
-      ],
-      "special": 3
-    },
-    {
-      "seed": 900646819014,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 707,
-      "numbers": [
-        4,
-        9,
-        17,
-        31,
-        32
-      ],
-      "special": 9
-    },
-    {
-      "seed": 901008419229,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 743,
-      "numbers": [
-        9,
-        17,
-        18,
-        23,
-        34
-      ],
-      "special": 10
-    },
-    {
-      "seed": 927629921796,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 393,
-      "numbers": [
-        2,
-        10,
-        11,
-        17,
-        18
-      ],
-      "special": 4
-    },
-    {
-      "seed": 900967581273,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 532,
-      "numbers": [
-        1,
-        4,
-        11,
-        16,
-        34
-      ],
-      "special": 11
-    },
-    {
-      "seed": 905918759818,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 695,
-      "numbers": [
-        12,
-        13,
-        15,
-        33,
-        34
-      ],
-      "special": 8
-    },
-    {
-      "seed": 922426364531,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 735,
-      "numbers": [
-        2,
-        9,
-        25,
-        29,
-        31
-      ],
-      "special": 10
-    },
-    {
-      "seed": 930753891007,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 402,
-      "numbers": [
-        1,
-        4,
-        14,
-        31,
-        33
-      ],
-      "special": 9
-    },
-    {
-      "seed": 931220782406,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 561,
-      "numbers": [
-        8,
-        9,
-        15,
-        17,
-        29
-      ],
-      "special": 2
-    },
-    {
-      "seed": 928660470011,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 723,
-      "numbers": [
-        1,
-        10,
-        14,
-        19,
-        35
-      ],
-      "special": 10
-    },
-    {
-      "seed": 907274475491,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 784,
-      "numbers": [
-        5,
-        6,
-        7,
-        23,
-        33
-      ],
-      "special": 5
-    },
-    {
-      "seed": 925375376831,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 718,
-      "numbers": [
-        8,
-        9,
-        13,
-        16,
-        22
-      ],
-      "special": 9
-    },
-    {
-      "seed": 903426314512,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 549,
-      "numbers": [
-        16,
-        22,
-        24,
-        27,
-        30
-      ],
-      "special": 3
-    },
-    {
-      "seed": 907334730351,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 651,
-      "numbers": [
-        2,
-        17,
-        19,
-        23,
-        28
-      ],
-      "special": 10
-    },
-    {
-      "seed": 925338280080,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 750,
-      "numbers": [
-        1,
-        6,
-        12,
-        16,
-        28
-      ],
-      "special": 2
-    },
-    {
-      "seed": 922875651524,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 739,
-      "numbers": [
-        11,
-        25,
-        28,
-        31,
-        34
-      ],
-      "special": 4
-    },
-    {
-      "seed": 902533372420,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 834,
-      "numbers": [
-        3,
-        5,
-        14,
-        28,
-        33
-      ],
-      "special": 12
-    },
-    {
-      "seed": 902589891426,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 783,
-      "numbers": [
-        1,
-        5,
-        11,
-        31,
-        32
-      ],
-      "special": 11
-    },
-    {
-      "seed": 906297601978,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 410,
-      "numbers": [
-        2,
-        6,
-        9,
-        17,
-        30
-      ],
-      "special": 5
-    },
-    {
-      "seed": 919487059771,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 399,
-      "numbers": [
-        4,
-        7,
-        10,
-        18,
-        31
-      ],
-      "special": 3
-    },
-    {
-      "seed": 923335046199,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 537,
-      "numbers": [
-        6,
-        7,
-        9,
-        12,
-        31
-      ],
-      "special": 12
-    },
-    {
-      "seed": 926791685276,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 526,
-      "numbers": [
-        18,
-        26,
-        28,
-        29,
-        32
-      ],
-      "special": 4
-    },
-    {
-      "seed": 914197068500,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 541,
-      "numbers": [
-        4,
-        24,
-        29,
-        33,
-        35
-      ],
-      "special": 2
-    },
-    {
-      "seed": 908382040246,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 419,
-      "numbers": [
-        7,
-        8,
-        12,
-        16,
-        29
-      ],
-      "special": 6
-    },
-    {
-      "seed": 913945201773,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 747,
-      "numbers": [
-        11,
-        14,
-        19,
-        21,
-        23
-      ],
-      "special": 6
-    },
-    {
-      "seed": 911082004551,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 546,
-      "numbers": [
-        14,
-        26,
-        28,
-        30,
-        31
-      ],
-      "special": 10
-    },
-    {
-      "seed": 920518816848,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 649,
-      "numbers": [
-        6,
-        16,
-        18,
-        19,
         21
       ],
       "special": 7
     },
     {
-      "seed": 915458855761,
+      "seed": 923003065312,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 548,
+      "last_hit_draw": 797,
+      "numbers": [
+        4,
+        13,
+        24,
+        27,
+        29
+      ],
+      "special": 10
+    },
+    {
+      "seed": 911014078842,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 835,
+      "numbers": [
+        5,
+        6,
+        14,
+        20,
+        30
+      ],
+      "special": 11
+    },
+    {
+      "seed": 900620882817,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 820,
+      "numbers": [
+        3,
+        14,
+        17,
+        18,
+        25
+      ],
+      "special": 1
+    },
+    {
+      "seed": 922559685766,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 463,
+      "numbers": [
+        1,
+        9,
+        12,
+        18,
+        28
+      ],
+      "special": 3
+    },
+    {
+      "seed": 930571752940,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 772,
+      "numbers": [
+        3,
+        4,
+        8,
+        11,
+        33
+      ],
+      "special": 8
+    },
+    {
+      "seed": 910713831000,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 780,
+      "numbers": [
+        1,
+        17,
+        22,
+        27,
+        31
+      ],
+      "special": 8
+    },
+    {
+      "seed": 929766457856,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 825,
+      "numbers": [
+        1,
+        3,
+        6,
+        9,
+        19
+      ],
+      "special": 6
+    },
+    {
+      "seed": 912921110481,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 726,
+      "numbers": [
+        4,
+        7,
+        11,
+        12,
+        28
+      ],
+      "special": 3
+    },
+    {
+      "seed": 923557250416,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 673,
+      "numbers": [
+        1,
+        5,
+        10,
+        25,
+        27
+      ],
+      "special": 5
+    },
+    {
+      "seed": 915684114567,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 631,
+      "numbers": [
+        4,
+        15,
+        25,
+        27,
+        31
+      ],
+      "special": 1
+    },
+    {
+      "seed": 920297042951,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 468,
+      "numbers": [
+        11,
+        22,
+        26,
+        30,
+        35
+      ],
+      "special": 4
+    },
+    {
+      "seed": 928120906348,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 555,
       "numbers": [
         8,
-        13,
+        10,
+        29,
+        31,
+        34
+      ],
+      "special": 1
+    },
+    {
+      "seed": 915569582649,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 703,
+      "numbers": [
+        5,
+        20,
+        25,
+        29,
+        34
+      ],
+      "special": 6
+    },
+    {
+      "seed": 904006534981,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 452,
+      "numbers": [
+        7,
         17,
+        30,
+        31,
+        33
+      ],
+      "special": 9
+    },
+    {
+      "seed": 914147473984,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 717,
+      "numbers": [
+        11,
+        13,
+        15,
+        17,
+        26
+      ],
+      "special": 7
+    },
+    {
+      "seed": 920868936600,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 866,
+      "numbers": [
+        8,
+        21,
+        25,
+        27,
+        35
+      ],
+      "special": 4
+    },
+    {
+      "seed": 904610641226,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 745,
+      "numbers": [
+        17,
+        18,
+        19,
+        21,
+        28
+      ],
+      "special": 1
+    },
+    {
+      "seed": 913476998121,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 720,
+      "numbers": [
+        2,
+        5,
+        6,
+        16,
+        32
+      ],
+      "special": 5
+    },
+    {
+      "seed": 930057950876,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 811,
+      "numbers": [
+        2,
+        3,
+        15,
         32,
+        35
+      ],
+      "special": 3
+    },
+    {
+      "seed": 912817797362,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 506,
+      "numbers": [
+        21,
+        22,
+        23,
+        28,
+        30
+      ],
+      "special": 3
+    },
+    {
+      "seed": 902544285549,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 722,
+      "numbers": [
+        7,
+        11,
+        14,
+        15,
+        32
+      ],
+      "special": 11
+    },
+    {
+      "seed": 911309637919,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 434,
+      "numbers": [
+        1,
+        3,
+        12,
+        21,
+        25
+      ],
+      "special": 10
+    },
+    {
+      "seed": 905848076762,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 474,
+      "numbers": [
+        5,
+        24,
+        26,
+        32,
+        34
+      ],
+      "special": 6
+    },
+    {
+      "seed": 920746773130,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 598,
+      "numbers": [
+        1,
+        11,
+        24,
+        27,
+        35
+      ],
+      "special": 12
+    },
+    {
+      "seed": 907283542663,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 619,
+      "numbers": [
+        1,
+        24,
+        25,
+        32,
+        33
+      ],
+      "special": 4
+    },
+    {
+      "seed": 911177126488,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 612,
+      "numbers": [
+        15,
+        20,
+        26,
+        29,
         33
       ],
       "special": 3
     },
     {
-      "seed": 925569872737,
+      "seed": 910983825586,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 432,
+      "last_hit_draw": 648,
       "numbers": [
-        2,
-        5,
-        15,
-        30,
-        34
-      ],
-      "special": 6
-    },
-    {
-      "seed": 904767279343,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 866,
-      "numbers": [
-        15,
-        16,
-        28,
-        30,
-        33
-      ],
-      "special": 12
-    },
-    {
-      "seed": 926822274830,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 759,
-      "numbers": [
-        5,
-        14,
-        22,
-        23,
-        32
-      ],
-      "special": 7
-    },
-    {
-      "seed": 904150469129,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 474,
-      "numbers": [
-        9,
-        16,
-        29,
-        34,
-        35
-      ],
-      "special": 10
-    },
-    {
-      "seed": 907528311199,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 657,
-      "numbers": [
-        2,
-        20,
-        24,
-        34,
-        35
-      ],
-      "special": 10
-    },
-    {
-      "seed": 927644806642,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 470,
-      "numbers": [
-        15,
-        19,
-        20,
-        23,
-        33
-      ],
-      "special": 6
-    },
-    {
-      "seed": 910171219173,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 437,
-      "numbers": [
-        6,
-        13,
-        17,
-        29,
-        31
-      ],
-      "special": 10
-    },
-    {
-      "seed": 918477620454,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 574,
-      "numbers": [
-        23,
-        24,
-        26,
-        28,
-        34
-      ],
-      "special": 12
-    },
-    {
-      "seed": 930113011150,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 665,
-      "numbers": [
-        1,
-        4,
-        12,
-        17,
-        27
-      ],
-      "special": 8
-    },
-    {
-      "seed": 907467186893,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 386,
-      "numbers": [
-        1,
-        3,
-        18,
-        20,
-        25
-      ],
-      "special": 2
-    },
-    {
-      "seed": 911560059785,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 428,
-      "numbers": [
-        2,
-        16,
-        19,
-        24,
-        29
-      ],
-      "special": 6
-    },
-    {
-      "seed": 925040396035,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 464,
-      "numbers": [
-        24,
-        25,
-        27,
-        28,
-        29
-      ],
-      "special": 12
-    },
-    {
-      "seed": 917348509263,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 841,
-      "numbers": [
-        1,
-        2,
-        17,
-        25,
-        34
-      ],
-      "special": 6
-    },
-    {
-      "seed": 923827142957,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 719,
-      "numbers": [
-        14,
-        19,
-        25,
-        26,
-        32
-      ],
-      "special": 9
-    },
-    {
-      "seed": 916153702999,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 738,
-      "numbers": [
-        15,
-        17,
-        20,
-        26,
-        30
-      ],
-      "special": 12
-    },
-    {
-      "seed": 918569679329,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 788,
-      "numbers": [
-        2,
-        6,
-        12,
-        20,
-        26
-      ],
-      "special": 1
-    },
-    {
-      "seed": 900767852234,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 870,
-      "numbers": [
-        7,
-        19,
-        25,
-        28,
-        35
-      ],
-      "special": 7
-    },
-    {
-      "seed": 931049889699,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 778,
-      "numbers": [
-        2,
-        16,
         18,
         22,
-        32
-      ],
-      "special": 8
-    },
-    {
-      "seed": 923973151521,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 489,
-      "numbers": [
-        10,
-        11,
-        13,
         23,
-        31
-      ],
-      "special": 2
-    },
-    {
-      "seed": 905380895647,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 559,
-      "numbers": [
-        3,
-        10,
-        16,
-        17,
-        32
-      ],
-      "special": 9
-    },
-    {
-      "seed": 909682863872,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 654,
-      "numbers": [
-        3,
-        5,
-        25,
-        32,
-        35
-      ],
-      "special": 1
-    },
-    {
-      "seed": 915344650360,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 440,
-      "numbers": [
-        1,
-        5,
-        7,
-        10,
-        15
-      ],
-      "special": 9
-    },
-    {
-      "seed": 928923893658,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 456,
-      "numbers": [
-        4,
-        7,
-        23,
-        27,
-        34
-      ],
-      "special": 12
-    },
-    {
-      "seed": 916886994701,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 762,
-      "numbers": [
-        1,
-        10,
-        27,
-        29,
-        33
-      ],
-      "special": 9
-    },
-    {
-      "seed": 927135004829,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 733,
-      "numbers": [
-        11,
-        12,
-        16,
-        26,
-        27
-      ],
-      "special": 6
-    },
-    {
-      "seed": 903673657434,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 757,
-      "numbers": [
-        12,
-        14,
-        22,
-        29,
-        33
-      ],
-      "special": 9
-    },
-    {
-      "seed": 916565837262,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 556,
-      "numbers": [
-        1,
-        22,
-        28,
         33,
-        34
+        35
+      ],
+      "special": 7
+    },
+    {
+      "seed": 927987190077,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 772,
+      "numbers": [
+        8,
+        12,
+        19,
+        20,
+        27
       ],
       "special": 10
     },
     {
-      "seed": 919059708519,
+      "seed": 921534057223,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 746,
+      "last_hit_draw": 515,
       "numbers": [
-        9,
-        11,
-        14,
-        16,
-        18
+        4,
+        6,
+        22,
+        28,
+        29
       ],
-      "special": 12
+      "special": 6
     },
     {
-      "seed": 901337412604,
+      "seed": 900981706155,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 718,
+      "last_hit_draw": 609,
       "numbers": [
-        5,
+        7,
+        8,
+        13,
         16,
-        17,
-        27,
+        34
+      ],
+      "special": 8
+    },
+    {
+      "seed": 901901474512,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 873,
+      "numbers": [
+        16,
+        19,
+        22,
+        24,
         33
       ],
       "special": 5
     },
     {
-      "seed": 919859848329,
+      "seed": 911331809551,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 564,
+      "numbers": [
+        10,
+        11,
+        20,
+        34,
+        35
+      ],
+      "special": 7
+    },
+    {
+      "seed": 906363859164,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 420,
+      "numbers": [
+        8,
+        12,
+        25,
+        29,
+        33
+      ],
+      "special": 5
+    },
+    {
+      "seed": 921501776895,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 681,
+      "numbers": [
+        10,
+        12,
+        17,
+        20,
+        28
+      ],
+      "special": 5
+    },
+    {
+      "seed": 928193399983,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 400,
+      "numbers": [
+        6,
+        12,
+        26,
+        32,
+        33
+      ],
+      "special": 10
+    },
+    {
+      "seed": 930458411613,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 704,
+      "numbers": [
+        20,
+        24,
+        27,
+        28,
+        33
+      ],
+      "special": 8
+    },
+    {
+      "seed": 903060954859,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 859,
+      "numbers": [
+        3,
+        15,
+        19,
+        28,
+        29
+      ],
+      "special": 3
+    },
+    {
+      "seed": 923190726376,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 660,
+      "numbers": [
+        1,
+        4,
+        21,
+        29,
+        32
+      ],
+      "special": 5
+    },
+    {
+      "seed": 929235465911,
       "weight": 1,
       "hit_rate": 0.002,
       "last_hit_draw": 574,
       "numbers": [
-        1,
+        8,
+        11,
         14,
+        18,
+        34
+      ],
+      "special": 7
+    },
+    {
+      "seed": 929787897070,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 623,
+      "numbers": [
+        2,
+        13,
+        17,
+        23,
+        34
+      ],
+      "special": 9
+    },
+    {
+      "seed": 912717225814,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 443,
+      "numbers": [
+        4,
+        17,
+        19,
+        26,
+        34
+      ],
+      "special": 11
+    },
+    {
+      "seed": 916767395969,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 516,
+      "numbers": [
+        5,
+        6,
         21,
+        27,
+        31
+      ],
+      "special": 10
+    },
+    {
+      "seed": 925479990247,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 820,
+      "numbers": [
+        1,
+        6,
+        15,
+        17,
+        21
+      ],
+      "special": 6
+    },
+    {
+      "seed": 905626045755,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 848,
+      "numbers": [
+        8,
+        9,
+        13,
+        28,
+        32
+      ],
+      "special": 2
+    },
+    {
+      "seed": 923025756447,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 697,
+      "numbers": [
+        7,
+        9,
+        16,
+        17,
+        20
+      ],
+      "special": 5
+    },
+    {
+      "seed": 902122856283,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 860,
+      "numbers": [
+        13,
+        16,
+        23,
+        26,
+        32
+      ],
+      "special": 11
+    },
+    {
+      "seed": 905210451956,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 855,
+      "numbers": [
+        2,
+        9,
+        11,
         24,
+        30
+      ],
+      "special": 6
+    },
+    {
+      "seed": 910652591376,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 750,
+      "numbers": [
+        3,
+        4,
+        6,
+        7,
+        32
+      ],
+      "special": 5
+    },
+    {
+      "seed": 922783999567,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 775,
+      "numbers": [
+        2,
+        3,
+        7,
+        12,
+        29
+      ],
+      "special": 7
+    },
+    {
+      "seed": 909849114909,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 656,
+      "numbers": [
+        6,
+        11,
+        17,
+        25,
         30
       ],
       "special": 11
     },
     {
-      "seed": 921404361805,
+      "seed": 922244630073,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 604,
+      "last_hit_draw": 495,
       "numbers": [
-        3,
-        8,
-        11,
-        18,
-        19
+        2,
+        12,
+        16,
+        20,
+        22
       ],
-      "special": 7
+      "special": 5
     },
     {
-      "seed": 921650762686,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 853,
-      "numbers": [
-        13,
-        14,
-        24,
-        31,
-        34
-      ],
-      "special": 4
-    },
-    {
-      "seed": 917414098646,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 649,
-      "numbers": [
-        3,
-        15,
-        17,
-        28,
-        34
-      ],
-      "special": 11
-    },
-    {
-      "seed": 929360919958,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 671,
-      "numbers": [
-        1,
-        7,
-        8,
-        24,
-        31
-      ],
-      "special": 8
-    },
-    {
-      "seed": 915211288646,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 467,
-      "numbers": [
-        18,
-        22,
-        23,
-        24,
-        35
-      ],
-      "special": 11
-    },
-    {
-      "seed": 906234402330,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 626,
-      "numbers": [
-        5,
-        13,
-        26,
-        32,
-        34
-      ],
-      "special": 4
-    },
-    {
-      "seed": 904596173126,
+      "seed": 916154509458,
       "weight": 1,
       "hit_rate": 0.002,
       "last_hit_draw": 540,
       "numbers": [
         6,
-        22,
-        24,
-        31,
+        17,
+        27,
+        29,
         33
       ],
       "special": 11
     },
     {
-      "seed": 917793479578,
+      "seed": 922714892345,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 864,
-      "numbers": [
-        13,
-        16,
-        19,
-        25,
-        30
-      ],
-      "special": 10
-    },
-    {
-      "seed": 909400987241,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 452,
+      "last_hit_draw": 653,
       "numbers": [
         2,
-        6,
-        13,
-        24,
-        28
-      ],
-      "special": 1
-    },
-    {
-      "seed": 905487555443,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 499,
-      "numbers": [
-        5,
-        7,
-        18,
-        27,
-        28
-      ],
-      "special": 2
-    },
-    {
-      "seed": 901885177921,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 517,
-      "numbers": [
-        3,
-        5,
+        19,
         22,
-        27,
-        34
-      ],
-      "special": 5
-    },
-    {
-      "seed": 903322279837,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 545,
-      "numbers": [
-        6,
-        10,
-        15,
-        26,
-        31
-      ],
-      "special": 6
-    },
-    {
-      "seed": 907411460976,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 545,
-      "numbers": [
-        13,
-        28,
-        30,
-        34,
-        35
-      ],
-      "special": 2
-    },
-    {
-      "seed": 919931510036,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 444,
-      "numbers": [
-        1,
-        14,
-        15,
-        20,
-        28
-      ],
-      "special": 9
-    },
-    {
-      "seed": 903331279771,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 749,
-      "numbers": [
-        10,
-        13,
-        17,
-        22,
-        26
+        23,
+        32
       ],
       "special": 12
     },
     {
-      "seed": 922957966607,
+      "seed": 903499655607,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 488,
+      "last_hit_draw": 644,
       "numbers": [
-        5,
-        11,
-        24,
+        3,
+        22,
         26,
+        28,
+        33
+      ],
+      "special": 3
+    },
+    {
+      "seed": 909599193385,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 387,
+      "numbers": [
+        7,
+        20,
+        21,
+        28,
         35
       ],
       "special": 9
     },
     {
-      "seed": 921316688886,
+      "seed": 913255300517,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 405,
+      "last_hit_draw": 676,
       "numbers": [
-        10,
-        21,
-        26,
-        33,
-        34
+        9,
+        13,
+        18,
+        19,
+        22
+      ],
+      "special": 9
+    },
+    {
+      "seed": 903750782493,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 495,
+      "numbers": [
+        4,
+        5,
+        18,
+        27,
+        35
       ],
       "special": 6
     },
     {
-      "seed": 922948963680,
+      "seed": 911957555982,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 815,
+      "last_hit_draw": 426,
       "numbers": [
-        13,
+        8,
+        9,
         14,
-        20,
-        21,
-        27
-      ],
-      "special": 2
-    },
-    {
-      "seed": 902386486457,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 546,
-      "numbers": [
-        2,
-        3,
-        24,
-        27,
-        31
-      ],
-      "special": 5
-    },
-    {
-      "seed": 913386882154,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 758,
-      "numbers": [
-        9,
-        10,
-        11,
-        15,
-        24
-      ],
-      "special": 7
-    },
-    {
-      "seed": 918718869465,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 667,
-      "numbers": [
-        3,
-        9,
-        12,
-        28,
-        32
-      ],
-      "special": 5
-    },
-    {
-      "seed": 921283647262,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 571,
-      "numbers": [
-        6,
-        8,
-        18,
-        30,
-        32
-      ],
-      "special": 11
-    },
-    {
-      "seed": 921747244706,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 673,
-      "numbers": [
-        8,
-        10,
-        25,
-        31,
-        35
-      ],
-      "special": 4
-    },
-    {
-      "seed": 913785503062,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 532,
-      "numbers": [
-        5,
-        6,
-        21,
-        26,
+        22,
         29
       ],
-      "special": 5
-    },
-    {
-      "seed": 918335308198,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 617,
-      "numbers": [
-        12,
-        19,
-        27,
-        29,
-        35
-      ],
-      "special": 8
-    },
-    {
-      "seed": 901303168472,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 575,
-      "numbers": [
-        11,
-        16,
-        25,
-        29,
-        33
-      ],
       "special": 9
     },
     {
-      "seed": 904729611768,
+      "seed": 903787454637,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 475,
+      "last_hit_draw": 520,
       "numbers": [
+        7,
         9,
-        22,
-        24,
-        25,
-        34
-      ],
-      "special": 9
-    },
-    {
-      "seed": 927140206169,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 526,
-      "numbers": [
-        9,
-        13,
-        21,
-        28,
-        33
-      ],
-      "special": 6
-    },
-    {
-      "seed": 916958361608,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 771,
-      "numbers": [
-        18,
-        21,
-        29,
-        30,
-        33
-      ],
-      "special": 3
-    },
-    {
-      "seed": 909435118441,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 508,
-      "numbers": [
-        6,
-        8,
-        9,
-        25,
-        33
-      ],
-      "special": 8
-    },
-    {
-      "seed": 923100395602,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 414,
-      "numbers": [
-        6,
-        9,
-        14,
-        32,
-        34
-      ],
-      "special": 10
-    },
-    {
-      "seed": 920945304350,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 530,
-      "numbers": [
-        1,
-        15,
-        27,
-        30,
-        31
-      ],
-      "special": 5
-    },
-    {
-      "seed": 909637602825,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 600,
-      "numbers": [
-        1,
-        24,
-        25,
-        32,
-        33
-      ],
-      "special": 8
-    },
-    {
-      "seed": 909384872084,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 873,
-      "numbers": [
-        14,
-        17,
-        20,
-        29,
-        32
-      ],
-      "special": 10
-    },
-    {
-      "seed": 923110937263,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 693,
-      "numbers": [
-        9,
-        19,
-        22,
-        23,
-        30
-      ],
-      "special": 2
-    },
-    {
-      "seed": 912610796844,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 878,
-      "numbers": [
-        6,
         11,
-        12,
-        23,
-        30
-      ],
-      "special": 3
-    },
-    {
-      "seed": 901340480753,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 410,
-      "numbers": [
-        5,
-        12,
-        18,
-        19,
-        26
-      ],
-      "special": 8
-    },
-    {
-      "seed": 915259733128,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 829,
-      "numbers": [
-        9,
-        27,
-        31,
-        33,
-        35
-      ],
-      "special": 6
-    },
-    {
-      "seed": 911462067655,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 543,
-      "numbers": [
-        10,
-        18,
-        20,
-        24,
-        30
-      ],
-      "special": 5
-    },
-    {
-      "seed": 904858565348,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 608,
-      "numbers": [
-        3,
-        14,
-        19,
-        20,
-        22
+        26,
+        34
       ],
       "special": 1
     },
     {
-      "seed": 925557959876,
+      "seed": 903785628053,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 491,
-      "numbers": [
-        8,
-        10,
-        11,
-        26,
-        32
-      ],
-      "special": 11
-    },
-    {
-      "seed": 919100609229,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 558,
+      "last_hit_draw": 670,
       "numbers": [
         2,
         3,
-        13,
-        26,
-        30
-      ],
-      "special": 5
-    },
-    {
-      "seed": 927234154227,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 548,
-      "numbers": [
-        6,
-        7,
-        24,
-        30,
-        35
-      ],
-      "special": 10
-    },
-    {
-      "seed": 919914343771,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 631,
-      "numbers": [
-        3,
-        4,
-        13,
-        23,
-        29
-      ],
-      "special": 8
-    },
-    {
-      "seed": 930745465110,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 714,
-      "numbers": [
-        3,
         5,
-        19,
-        29,
-        30
+        17,
+        28
       ],
-      "special": 4
+      "special": 3
     },
     {
-      "seed": 929892780014,
+      "seed": 903023841271,
       "weight": 1,
       "hit_rate": 0.002,
       "last_hit_draw": 437,
       "numbers": [
         10,
-        12,
-        16,
-        24,
-        33
-      ],
-      "special": 5
-    },
-    {
-      "seed": 923501814506,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 586,
-      "numbers": [
-        2,
-        4,
-        5,
-        17,
-        29
-      ],
-      "special": 3
-    },
-    {
-      "seed": 901713477406,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 582,
-      "numbers": [
-        15,
-        16,
-        17,
-        24,
-        35
-      ],
-      "special": 8
-    },
-    {
-      "seed": 913566773006,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 549,
-      "numbers": [
-        1,
-        9,
-        13,
-        29,
-        32
-      ],
-      "special": 10
-    },
-    {
-      "seed": 903371845550,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 500,
-      "numbers": [
-        3,
-        4,
-        6,
-        28,
-        30
-      ],
-      "special": 1
-    },
-    {
-      "seed": 925050584566,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 518,
-      "numbers": [
-        11,
-        13,
-        18,
-        21,
-        22
-      ],
-      "special": 9
-    },
-    {
-      "seed": 906479214954,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 579,
-      "numbers": [
-        8,
-        9,
-        23,
-        27,
-        32
-      ],
-      "special": 5
-    },
-    {
-      "seed": 920704163634,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 419,
-      "numbers": [
-        6,
-        13,
-        18,
-        33,
-        35
-      ],
-      "special": 3
-    },
-    {
-      "seed": 906206850957,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 426,
-      "numbers": [
-        7,
-        13,
-        15,
-        28,
-        32
-      ],
-      "special": 4
-    },
-    {
-      "seed": 911366477012,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 585,
-      "numbers": [
-        7,
-        20,
-        26,
-        31,
-        32
-      ],
-      "special": 6
-    },
-    {
-      "seed": 926592220948,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 639,
-      "numbers": [
-        7,
-        9,
-        17,
-        19,
-        26
-      ],
-      "special": 11
-    },
-    {
-      "seed": 922342223038,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 750,
-      "numbers": [
-        3,
-        7,
-        12,
-        23,
-        24
-      ],
-      "special": 5
-    },
-    {
-      "seed": 922733846640,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 474,
-      "numbers": [
-        3,
-        19,
-        21,
-        32,
-        33
-      ],
-      "special": 1
-    },
-    {
-      "seed": 903459438248,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 468,
-      "numbers": [
-        2,
-        12,
-        13,
         14,
-        17
+        23,
+        25,
+        33
       ],
       "special": 2
     },
     {
-      "seed": 927332554682,
+      "seed": 909344732521,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 499,
-      "numbers": [
-        7,
-        9,
-        14,
-        20,
-        25
-      ],
-      "special": 1
-    },
-    {
-      "seed": 924227849992,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 450,
+      "last_hit_draw": 635,
       "numbers": [
         2,
-        4,
-        9,
-        26,
-        34
-      ],
-      "special": 1
-    },
-    {
-      "seed": 911504334274,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 871,
-      "numbers": [
-        4,
         6,
-        9,
-        10,
-        35
-      ],
-      "special": 3
-    },
-    {
-      "seed": 925812126450,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 711,
-      "numbers": [
-        11,
-        15,
-        23,
-        34,
-        35
-      ],
-      "special": 12
-    },
-    {
-      "seed": 922119669448,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 686,
-      "numbers": [
-        5,
-        9,
-        10,
-        13,
-        14
-      ],
-      "special": 3
-    },
-    {
-      "seed": 904002519741,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 761,
-      "numbers": [
-        5,
-        11,
-        12,
-        13,
-        29
-      ],
-      "special": 1
-    },
-    {
-      "seed": 916151619214,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 880,
-      "numbers": [
-        8,
-        23,
-        28,
-        33,
-        35
-      ],
-      "special": 12
-    },
-    {
-      "seed": 925814546317,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 546,
-      "numbers": [
-        1,
-        15,
-        17,
-        19,
-        32
-      ],
-      "special": 7
-    },
-    {
-      "seed": 927892630191,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 569,
-      "numbers": [
-        12,
-        20,
-        24,
-        25,
-        31
-      ],
-      "special": 10
-    },
-    {
-      "seed": 928161332599,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 406,
-      "numbers": [
-        5,
-        15,
-        17,
-        25,
-        31
-      ],
-      "special": 6
-    },
-    {
-      "seed": 911986955243,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 714,
-      "numbers": [
-        2,
-        5,
-        11,
-        20,
+        22,
+        26,
         27
       ],
-      "special": 10
+      "special": 4
     },
     {
-      "seed": 913850847276,
+      "seed": 914575001349,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 391,
+      "last_hit_draw": 454,
       "numbers": [
-        2,
-        13,
-        21,
-        23,
-        25
-      ],
-      "special": 3
-    },
-    {
-      "seed": 908030099625,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 480,
-      "numbers": [
-        1,
-        3,
-        7,
-        22,
-        32
-      ],
-      "special": 10
-    },
-    {
-      "seed": 920389913185,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 558,
-      "numbers": [
-        3,
-        4,
         15,
-        20,
-        35
+        18,
+        25,
+        26,
+        28
       ],
       "special": 5
     },
     {
-      "seed": 930889960822,
+      "seed": 903690820603,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 679,
+      "last_hit_draw": 830,
       "numbers": [
-        4,
-        12,
-        26,
-        30,
-        32
-      ],
-      "special": 8
-    },
-    {
-      "seed": 903227674008,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 415,
-      "numbers": [
+        10,
         17,
-        18,
         21,
-        24,
+        23,
         32
       ],
-      "special": 8
+      "special": 10
     },
     {
-      "seed": 907395342804,
+      "seed": 913145853318,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 687,
+      "last_hit_draw": 827,
       "numbers": [
-        3,
-        15,
-        16,
-        19,
-        27
+        5,
+        18,
+        22,
+        29,
+        30
       ],
-      "special": 7
+      "special": 10
     },
     {
-      "seed": 900566905805,
+      "seed": 903600171251,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 691,
+      "last_hit_draw": 720,
       "numbers": [
-        1,
         3,
-        6,
-        9,
+        4,
+        13,
+        14,
         15
       ],
       "special": 11
     },
     {
-      "seed": 906494129516,
+      "seed": 901876722548,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 809,
+      "last_hit_draw": 825,
       "numbers": [
-        10,
-        14,
-        15,
-        16,
-        34
-      ],
-      "special": 6
-    },
-    {
-      "seed": 917146433222,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 529,
-      "numbers": [
-        4,
+        1,
         5,
-        12,
-        25,
-        33
-      ],
-      "special": 2
-    },
-    {
-      "seed": 923046801710,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 600,
-      "numbers": [
-        10,
-        20,
         23,
-        28,
-        29
+        26,
+        31
       ],
-      "special": 6
+      "special": 9
     },
     {
-      "seed": 920553027017,
+      "seed": 917052593928,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 497,
+      "last_hit_draw": 431,
       "numbers": [
-        4,
-        11,
-        20,
-        21,
-        26
-      ],
-      "special": 8
-    },
-    {
-      "seed": 917909388728,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 800,
-      "numbers": [
-        8,
-        10,
-        13,
-        21,
-        24
-      ],
-      "special": 12
-    },
-    {
-      "seed": 909474511366,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 879,
-      "numbers": [
-        12,
-        19,
-        20,
-        28,
-        30
+        15,
+        26,
+        27,
+        30,
+        32
       ],
       "special": 4
     },
     {
-      "seed": 914919522407,
+      "seed": 912557229876,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 799,
-      "numbers": [
-        1,
-        6,
-        8,
-        19,
-        29
-      ],
-      "special": 11
-    },
-    {
-      "seed": 902381728975,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 742,
+      "last_hit_draw": 806,
       "numbers": [
         8,
-        20,
-        25,
-        26,
-        28
-      ],
-      "special": 2
-    },
-    {
-      "seed": 931172070911,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 529,
-      "numbers": [
-        6,
-        13,
-        15,
-        16,
-        23
-      ],
-      "special": 12
-    },
-    {
-      "seed": 902330673865,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 648,
-      "numbers": [
-        2,
-        4,
-        19,
-        20,
-        25
+        11,
+        17,
+        31,
+        35
       ],
       "special": 3
     },
     {
-      "seed": 931499863478,
+      "seed": 911588096627,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 436,
+      "last_hit_draw": 777,
+      "numbers": [
+        2,
+        13,
+        21,
+        24,
+        32
+      ],
+      "special": 11
+    },
+    {
+      "seed": 907957937694,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 634,
       "numbers": [
         7,
-        11,
+        12,
+        23,
+        24,
+        32
+      ],
+      "special": 5
+    },
+    {
+      "seed": 931330971099,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 668,
+      "numbers": [
+        3,
+        7,
+        21,
+        23,
+        27
+      ],
+      "special": 9
+    },
+    {
+      "seed": 910856594541,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 874,
+      "numbers": [
+        3,
+        9,
+        20,
+        25,
+        27
+      ],
+      "special": 6
+    },
+    {
+      "seed": 927121274866,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 818,
+      "numbers": [
+        15,
+        20,
+        24,
+        30,
+        35
+      ],
+      "special": 10
+    },
+    {
+      "seed": 914280553409,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 450,
+      "numbers": [
+        4,
+        6,
         16,
-        17,
-        30
+        30,
+        31
+      ],
+      "special": 4
+    },
+    {
+      "seed": 929851103119,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 411,
+      "numbers": [
+        6,
+        16,
+        20,
+        26,
+        28
+      ],
+      "special": 6
+    },
+    {
+      "seed": 914561229298,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 794,
+      "numbers": [
+        3,
+        12,
+        18,
+        20,
+        31
+      ],
+      "special": 6
+    },
+    {
+      "seed": 918979163307,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 596,
+      "numbers": [
+        7,
+        10,
+        29,
+        30,
+        32
+      ],
+      "special": 9
+    },
+    {
+      "seed": 927026707659,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 604,
+      "numbers": [
+        1,
+        9,
+        20,
+        22,
+        26
       ],
       "special": 7
     },
     {
-      "seed": 926454723365,
+      "seed": 910930473451,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 506,
+      "last_hit_draw": 491,
+      "numbers": [
+        11,
+        15,
+        18,
+        21,
+        35
+      ],
+      "special": 6
+    },
+    {
+      "seed": 910146278674,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 575,
       "numbers": [
         16,
+        17,
+        23,
+        27,
+        35
+      ],
+      "special": 2
+    },
+    {
+      "seed": 924883040475,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 392,
+      "numbers": [
+        13,
+        14,
+        24,
+        31,
+        35
+      ],
+      "special": 4
+    },
+    {
+      "seed": 902316865176,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 781,
+      "numbers": [
+        1,
+        20,
+        23,
+        29,
+        30
+      ],
+      "special": 8
+    },
+    {
+      "seed": 922301680401,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 820,
+      "numbers": [
+        12,
+        15,
+        16,
+        33,
+        35
+      ],
+      "special": 2
+    },
+    {
+      "seed": 906783459007,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 469,
+      "numbers": [
+        20,
+        22,
         23,
         25,
-        27,
+        31
+      ],
+      "special": 3
+    },
+    {
+      "seed": 929368752116,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 679,
+      "numbers": [
+        2,
+        3,
+        8,
+        18,
+        27
+      ],
+      "special": 4
+    },
+    {
+      "seed": 927589545176,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 726,
+      "numbers": [
+        14,
+        18,
+        28,
+        30,
+        31
+      ],
+      "special": 3
+    },
+    {
+      "seed": 905411573151,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 694,
+      "numbers": [
+        5,
+        13,
+        20,
+        31,
+        32
+      ],
+      "special": 11
+    },
+    {
+      "seed": 923993006298,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 657,
+      "numbers": [
+        5,
+        11,
+        23,
+        24,
+        28
+      ],
+      "special": 6
+    },
+    {
+      "seed": 924782486664,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 806,
+      "numbers": [
+        6,
+        7,
+        15,
+        18,
+        34
+      ],
+      "special": 1
+    },
+    {
+      "seed": 919692202363,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 613,
+      "numbers": [
+        3,
+        10,
+        15,
+        17,
+        22
+      ],
+      "special": 4
+    },
+    {
+      "seed": 913418531318,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 520,
+      "numbers": [
+        2,
+        8,
+        12,
+        30,
+        31
+      ],
+      "special": 2
+    },
+    {
+      "seed": 915876814494,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 739,
+      "numbers": [
+        2,
+        11,
+        16,
+        19,
+        35
+      ],
+      "special": 4
+    },
+    {
+      "seed": 913637067181,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 670,
+      "numbers": [
+        16,
+        25,
+        26,
+        31,
+        34
+      ],
+      "special": 10
+    },
+    {
+      "seed": 924020516748,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 577,
+      "numbers": [
+        2,
+        5,
+        10,
+        18,
+        21
+      ],
+      "special": 7
+    },
+    {
+      "seed": 922437951685,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 746,
+      "numbers": [
+        7,
+        14,
+        25,
+        30,
         35
       ],
       "special": 5
     },
     {
-      "seed": 925739748194,
+      "seed": 925972072883,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 864,
-      "numbers": [
-        9,
-        17,
-        20,
-        24,
-        27
-      ],
-      "special": 2
-    },
-    {
-      "seed": 902752788768,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 604,
+      "last_hit_draw": 876,
       "numbers": [
         6,
-        9,
-        21,
+        16,
+        19,
         23,
-        24
+        25
       ],
-      "special": 10
+      "special": 5
     },
     {
-      "seed": 919629223873,
+      "seed": 926795254432,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 622,
+      "last_hit_draw": 737,
       "numbers": [
-        3,
-        4,
-        14,
-        24,
-        25
+        9,
+        11,
+        13,
+        29,
+        33
       ],
       "special": 4
     },
     {
-      "seed": 905601956688,
+      "seed": 910975873943,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 544,
+      "last_hit_draw": 486,
       "numbers": [
-        2,
-        10,
-        22,
-        30,
+        1,
+        13,
+        14,
+        32,
+        34
+      ],
+      "special": 2
+    },
+    {
+      "seed": 900977954101,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 442,
+      "numbers": [
+        8,
+        15,
+        17,
+        32,
         33
       ],
       "special": 2
     },
     {
-      "seed": 906450369196,
+      "seed": 910053153165,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 821,
+      "last_hit_draw": 592,
       "numbers": [
         2,
+        19,
+        27,
+        33,
+        34
+      ],
+      "special": 6
+    },
+    {
+      "seed": 930379721201,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 883,
+      "numbers": [
+        5,
+        9,
+        25,
+        26,
+        33
+      ],
+      "special": 3
+    },
+    {
+      "seed": 920967054505,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 401,
+      "numbers": [
+        12,
+        17,
+        24,
+        31,
+        34
+      ],
+      "special": 8
+    },
+    {
+      "seed": 927865264425,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 743,
+      "numbers": [
+        3,
+        6,
         10,
+        25,
+        29
+      ],
+      "special": 10
+    },
+    {
+      "seed": 908584968044,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 867,
+      "numbers": [
+        4,
+        19,
+        23,
+        29,
+        35
+      ],
+      "special": 9
+    },
+    {
+      "seed": 906304991718,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 882,
+      "numbers": [
+        2,
+        6,
+        15,
+        19,
+        31
+      ],
+      "special": 6
+    },
+    {
+      "seed": 923905970810,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 413,
+      "numbers": [
+        9,
+        10,
+        19,
+        25,
+        34
+      ],
+      "special": 10
+    },
+    {
+      "seed": 921337273708,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 481,
+      "numbers": [
+        1,
+        10,
+        18,
+        26,
+        33
+      ],
+      "special": 7
+    },
+    {
+      "seed": 926003561621,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 872,
+      "numbers": [
+        5,
+        11,
+        12,
+        30,
+        33
+      ],
+      "special": 10
+    },
+    {
+      "seed": 915408610068,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 724,
+      "numbers": [
+        2,
+        8,
+        10,
+        17,
+        19
+      ],
+      "special": 9
+    },
+    {
+      "seed": 908890123014,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 469,
+      "numbers": [
+        7,
+        17,
+        18,
+        23,
+        26
+      ],
+      "special": 1
+    },
+    {
+      "seed": 924701569151,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 490,
+      "numbers": [
+        14,
+        16,
+        17,
+        30,
+        34
+      ],
+      "special": 8
+    },
+    {
+      "seed": 918960941349,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 463,
+      "numbers": [
+        8,
+        13,
+        18,
+        24,
+        30
+      ],
+      "special": 6
+    },
+    {
+      "seed": 914124685572,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 688,
+      "numbers": [
+        6,
+        28,
+        30,
+        32,
+        35
+      ],
+      "special": 8
+    },
+    {
+      "seed": 909172428517,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 856,
+      "numbers": [
+        2,
+        13,
+        14,
+        20,
+        26
+      ],
+      "special": 7
+    },
+    {
+      "seed": 922983027222,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 615,
+      "numbers": [
+        5,
+        7,
+        14,
+        23,
+        34
+      ],
+      "special": 11
+    },
+    {
+      "seed": 906519583196,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 466,
+      "numbers": [
+        2,
+        15,
+        28,
+        30,
+        34
+      ],
+      "special": 4
+    },
+    {
+      "seed": 905665962502,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 736,
+      "numbers": [
+        2,
+        4,
+        7,
+        25,
+        34
+      ],
+      "special": 4
+    },
+    {
+      "seed": 910362157512,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 805,
+      "numbers": [
+        1,
+        15,
+        16,
+        24,
+        31
+      ],
+      "special": 8
+    },
+    {
+      "seed": 923448063284,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 425,
+      "numbers": [
+        5,
+        6,
+        12,
+        22,
+        24
+      ],
+      "special": 4
+    },
+    {
+      "seed": 913274956078,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 504,
+      "numbers": [
+        11,
+        13,
+        19,
+        30,
+        31
+      ],
+      "special": 7
+    },
+    {
+      "seed": 917470511688,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 493,
+      "numbers": [
+        7,
+        9,
+        13,
+        24,
+        25
+      ],
+      "special": 5
+    },
+    {
+      "seed": 904845291681,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 839,
+      "numbers": [
+        9,
+        10,
+        16,
+        22,
+        35
+      ],
+      "special": 12
+    },
+    {
+      "seed": 927697485620,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 698,
+      "numbers": [
+        14,
+        15,
+        19,
+        21,
+        23
+      ],
+      "special": 1
+    },
+    {
+      "seed": 930604260796,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 714,
+      "numbers": [
+        2,
+        4,
+        10,
+        11,
+        13
+      ],
+      "special": 5
+    },
+    {
+      "seed": 903501770861,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 449,
+      "numbers": [
+        15,
+        16,
+        22,
+        27,
+        29
+      ],
+      "special": 1
+    },
+    {
+      "seed": 926572111337,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 394,
+      "numbers": [
+        12,
+        21,
+        26,
+        30,
+        34
+      ],
+      "special": 1
+    },
+    {
+      "seed": 928579635257,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 753,
+      "numbers": [
+        9,
+        19,
+        21,
+        30,
+        35
+      ],
+      "special": 2
+    },
+    {
+      "seed": 920898191017,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 745,
+      "numbers": [
+        4,
+        12,
+        15,
+        18,
+        32
+      ],
+      "special": 11
+    },
+    {
+      "seed": 911821724811,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 503,
+      "numbers": [
+        3,
+        5,
         14,
         21,
+        22
+      ],
+      "special": 5
+    },
+    {
+      "seed": 924710645686,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 591,
+      "numbers": [
+        9,
+        10,
+        27,
+        31,
         32
       ],
       "special": 10
     },
     {
-      "seed": 923107321218,
+      "seed": 918755435348,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 532,
-      "numbers": [
-        3,
-        13,
-        20,
-        28,
-        31
-      ],
-      "special": 11
-    },
-    {
-      "seed": 913426464154,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 684,
+      "last_hit_draw": 862,
       "numbers": [
         1,
-        6,
-        17,
+        8,
+        27,
+        30,
+        33
+      ],
+      "special": 5
+    },
+    {
+      "seed": 922750917584,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 700,
+      "numbers": [
+        4,
+        10,
         20,
+        25,
+        26
+      ],
+      "special": 8
+    },
+    {
+      "seed": 918628717102,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 497,
+      "numbers": [
+        9,
+        23,
+        24,
+        34,
         35
       ],
       "special": 10
     },
     {
-      "seed": 901324820836,
+      "seed": 918025114761,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 406,
+      "last_hit_draw": 482,
       "numbers": [
-        10,
-        14,
-        17,
-        24,
-        28
-      ],
-      "special": 3
-    },
-    {
-      "seed": 925814484285,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 467,
-      "numbers": [
-        5,
         11,
-        16,
-        23,
-        28
+        12,
+        25,
+        26,
+        27
       ],
       "special": 2
     },
     {
-      "seed": 916593727348,
+      "seed": 922071229985,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 437,
+      "last_hit_draw": 820,
       "numbers": [
-        8,
-        16,
+        6,
+        13,
+        14,
+        28,
+        33
+      ],
+      "special": 5
+    },
+    {
+      "seed": 924146562486,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 699,
+      "numbers": [
+        13,
         18,
-        24,
-        25
+        25,
+        31,
+        33
+      ],
+      "special": 9
+    },
+    {
+      "seed": 901490241434,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 825,
+      "numbers": [
+        3,
+        13,
+        17,
+        21,
+        29
+      ],
+      "special": 1
+    },
+    {
+      "seed": 919703492988,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 463,
+      "numbers": [
+        7,
+        14,
+        16,
+        27,
+        33
       ],
       "special": 11
     },
     {
-      "seed": 911948669552,
+      "seed": 912008008628,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 401,
+      "last_hit_draw": 500,
+      "numbers": [
+        7,
+        8,
+        19,
+        24,
+        28
+      ],
+      "special": 12
+    },
+    {
+      "seed": 904007329711,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 511,
+      "numbers": [
+        6,
+        12,
+        14,
+        18,
+        23
+      ],
+      "special": 11
+    },
+    {
+      "seed": 924324541013,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 678,
       "numbers": [
         1,
         4,
-        15,
-        18,
-        24
+        14,
+        23,
+        27
       ],
-      "special": 2
+      "special": 10
     },
     {
-      "seed": 913459133020,
+      "seed": 903902634237,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 627,
+      "last_hit_draw": 440,
       "numbers": [
         4,
-        8,
-        22,
-        32,
-        34
+        10,
+        16,
+        19,
+        32
       ],
-      "special": 2
+      "special": 11
     },
     {
-      "seed": 918432782039,
+      "seed": 929445638898,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 828,
+      "last_hit_draw": 827,
       "numbers": [
-        2,
-        7,
         8,
-        32,
-        35
+        20,
+        21,
+        23,
+        26
       ],
-      "special": 3
+      "special": 6
     },
     {
-      "seed": 903892850744,
+      "seed": 912023430932,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 758,
+      "numbers": [
+        1,
+        8,
+        11,
+        19,
+        26
+      ],
+      "special": 6
+    },
+    {
+      "seed": 929740378635,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 776,
+      "numbers": [
+        4,
+        6,
+        9,
+        13,
+        34
+      ],
+      "special": 11
+    },
+    {
+      "seed": 920067334784,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 780,
+      "numbers": [
+        3,
+        22,
+        24,
+        30,
+        31
+      ],
+      "special": 5
+    },
+    {
+      "seed": 904493838135,
       "weight": 1,
       "hit_rate": 0.002,
       "last_hit_draw": 815,
       "numbers": [
+        5,
+        8,
+        15,
+        24,
+        27
+      ],
+      "special": 11
+    },
+    {
+      "seed": 909859886620,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 731,
+      "numbers": [
+        3,
         9,
-        18,
+        11,
         22,
+        23
+      ],
+      "special": 7
+    },
+    {
+      "seed": 909678127013,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 622,
+      "numbers": [
+        12,
+        13,
+        15,
+        19,
+        34
+      ],
+      "special": 7
+    },
+    {
+      "seed": 929487776311,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 497,
+      "numbers": [
+        4,
+        5,
+        13,
+        19,
+        33
+      ],
+      "special": 2
+    },
+    {
+      "seed": 906302810731,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 587,
+      "numbers": [
+        2,
+        8,
+        21,
+        22,
+        34
+      ],
+      "special": 5
+    },
+    {
+      "seed": 905825439995,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 849,
+      "numbers": [
+        3,
+        10,
+        12,
+        19,
+        33
+      ],
+      "special": 12
+    },
+    {
+      "seed": 902263784906,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 696,
+      "numbers": [
+        2,
+        12,
+        19,
+        24,
+        26
+      ],
+      "special": 2
+    },
+    {
+      "seed": 920397241724,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 502,
+      "numbers": [
+        16,
+        18,
         27,
+        28,
+        34
+      ],
+      "special": 3
+    },
+    {
+      "seed": 925754070792,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 769,
+      "numbers": [
+        1,
+        3,
+        10,
+        16,
+        28
+      ],
+      "special": 11
+    },
+    {
+      "seed": 911512653835,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 529,
+      "numbers": [
+        10,
+        12,
+        24,
+        25,
+        35
+      ],
+      "special": 1
+    },
+    {
+      "seed": 910463641283,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 736,
+      "numbers": [
+        2,
+        4,
+        17,
+        29,
+        30
+      ],
+      "special": 2
+    },
+    {
+      "seed": 912121140247,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 648,
+      "numbers": [
+        9,
+        12,
+        14,
+        15,
+        30
+      ],
+      "special": 1
+    },
+    {
+      "seed": 915665377341,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 597,
+      "numbers": [
+        19,
+        20,
+        21,
+        24,
+        29
+      ],
+      "special": 4
+    },
+    {
+      "seed": 922943764651,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 612,
+      "numbers": [
+        1,
+        4,
+        13,
+        17,
+        28
+      ],
+      "special": 8
+    },
+    {
+      "seed": 906224665913,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 483,
+      "numbers": [
+        2,
+        18,
+        29,
+        32,
+        34
+      ],
+      "special": 9
+    },
+    {
+      "seed": 916392076669,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 756,
+      "numbers": [
+        2,
+        4,
+        18,
+        28,
+        33
+      ],
+      "special": 11
+    },
+    {
+      "seed": 908016639811,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 445,
+      "numbers": [
+        7,
+        14,
+        19,
+        29,
+        31
+      ],
+      "special": 3
+    },
+    {
+      "seed": 906831775864,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 711,
+      "numbers": [
+        1,
+        2,
+        11,
+        28,
         29
       ],
       "special": 7
     },
     {
-      "seed": 927613687776,
+      "seed": 919621623780,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 688,
+      "last_hit_draw": 711,
       "numbers": [
-        3,
-        7,
-        11,
+        5,
+        9,
+        12,
+        13,
+        17
+      ],
+      "special": 7
+    },
+    {
+      "seed": 922043109623,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 845,
+      "numbers": [
+        14,
         15,
+        16,
+        18,
+        20
+      ],
+      "special": 3
+    },
+    {
+      "seed": 918788334893,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 745,
+      "numbers": [
+        5,
+        7,
+        17,
+        27,
+        32
+      ],
+      "special": 11
+    },
+    {
+      "seed": 920471214243,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 690,
+      "numbers": [
+        4,
+        12,
+        13,
+        22,
         31
+      ],
+      "special": 5
+    },
+    {
+      "seed": 919375495909,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 411,
+      "numbers": [
+        10,
+        18,
+        23,
+        27,
+        30
+      ],
+      "special": 3
+    },
+    {
+      "seed": 910219257905,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 731,
+      "numbers": [
+        14,
+        15,
+        24,
+        25,
+        29
       ],
       "special": 12
     },
     {
-      "seed": 905423735367,
+      "seed": 919676758445,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 451,
+      "last_hit_draw": 503,
       "numbers": [
-        4,
-        12,
         16,
         18,
-        23
+        30,
+        32,
+        33
       ],
-      "special": 10
+      "special": 3
     },
     {
-      "seed": 924278574362,
+      "seed": 920760624735,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 447,
+      "last_hit_draw": 496,
       "numbers": [
-        1,
+        10,
+        13,
         18,
-        19,
-        31,
-        34
+        29,
+        35
       ],
-      "special": 2
+      "special": 11
     },
     {
-      "seed": 915926222660,
+      "seed": 926936682281,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 698,
+      "last_hit_draw": 599,
+      "numbers": [
+        9,
+        17,
+        22,
+        24,
+        28
+      ],
+      "special": 4
+    },
+    {
+      "seed": 905780474009,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 610,
+      "numbers": [
+        3,
+        9,
+        16,
+        18,
+        21
+      ],
+      "special": 1
+    },
+    {
+      "seed": 901195986887,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 392,
+      "numbers": [
+        10,
+        11,
+        14,
+        16,
+        26
+      ],
+      "special": 5
+    },
+    {
+      "seed": 929361801661,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 674,
       "numbers": [
         6,
-        11,
-        27,
+        8,
+        23,
         33,
         34
       ],
       "special": 5
     },
     {
-      "seed": 905634180920,
+      "seed": 905033099723,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 608,
+      "last_hit_draw": 655,
       "numbers": [
-        2,
         11,
-        13,
-        19,
-        32
-      ],
-      "special": 11
-    },
-    {
-      "seed": 912072279828,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 591,
-      "numbers": [
-        2,
-        4,
-        21,
-        30,
-        31
-      ],
-      "special": 8
-    },
-    {
-      "seed": 915250555432,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 415,
-      "numbers": [
-        10,
-        17,
-        21,
         23,
-        27
+        27,
+        31,
+        33
+      ],
+      "special": 2
+    },
+    {
+      "seed": 920701361048,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 461,
+      "numbers": [
+        4,
+        8,
+        16,
+        20,
+        29
       ],
       "special": 12
     },
     {
-      "seed": 921531230465,
+      "seed": 930367811757,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 543,
+      "last_hit_draw": 693,
       "numbers": [
-        5,
-        6,
-        15,
-        22,
-        28
-      ],
-      "special": 4
-    },
-    {
-      "seed": 918813860476,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 697,
-      "numbers": [
-        1,
-        3,
-        17,
-        30,
-        33
-      ],
-      "special": 9
-    },
-    {
-      "seed": 903544121554,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 413,
-      "numbers": [
-        8,
-        17,
+        7,
         18,
-        27,
-        31
+        22,
+        25,
+        27
       ],
       "special": 5
     },
     {
-      "seed": 924065831595,
+      "seed": 915744608387,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 439,
+      "last_hit_draw": 799,
       "numbers": [
         7,
-        8,
-        18,
-        20,
-        22
+        23,
+        25,
+        28,
+        29
       ],
-      "special": 10
+      "special": 3
     },
     {
-      "seed": 911361402450,
+      "seed": 918090638194,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 718,
+      "last_hit_draw": 756,
       "numbers": [
-        10,
-        18,
-        19,
+        15,
+        22,
         25,
+        30,
         33
       ],
-      "special": 4
+      "special": 3
     },
     {
-      "seed": 931554065658,
+      "seed": 909345522743,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 469,
+      "numbers": [
+        21,
+        22,
+        26,
+        29,
+        31
+      ],
+      "special": 2
+    },
+    {
+      "seed": 927341121704,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 617,
+      "numbers": [
+        3,
+        12,
+        27,
+        32,
+        34
+      ],
+      "special": 3
+    },
+    {
+      "seed": 904111340165,
       "weight": 1,
       "hit_rate": 0.002,
       "last_hit_draw": 690,
       "numbers": [
-        7,
-        13,
-        14,
-        26,
-        29
-      ],
-      "special": 5
-    },
-    {
-      "seed": 903165082268,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 643,
-      "numbers": [
-        19,
-        23,
-        24,
+        8,
+        16,
+        22,
         31,
         32
       ],
       "special": 10
     },
     {
-      "seed": 917401265060,
+      "seed": 913229333396,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 592,
+      "last_hit_draw": 420,
+      "numbers": [
+        4,
+        5,
+        8,
+        21,
+        28
+      ],
+      "special": 9
+    },
+    {
+      "seed": 926978959225,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 567,
+      "numbers": [
+        4,
+        20,
+        30,
+        33,
+        34
+      ],
+      "special": 4
+    },
+    {
+      "seed": 912185088807,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 806,
+      "numbers": [
+        1,
+        3,
+        18,
+        23,
+        34
+      ],
+      "special": 8
+    },
+    {
+      "seed": 920249766293,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 440,
+      "numbers": [
+        3,
+        4,
+        9,
+        26,
+        35
+      ],
+      "special": 8
+    },
+    {
+      "seed": 919249930376,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 868,
+      "numbers": [
+        8,
+        19,
+        21,
+        31,
+        33
+      ],
+      "special": 9
+    },
+    {
+      "seed": 910051315856,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 570,
+      "numbers": [
+        7,
+        9,
+        21,
+        22,
+        32
+      ],
+      "special": 6
+    },
+    {
+      "seed": 927851009702,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 615,
+      "numbers": [
+        14,
+        20,
+        22,
+        27,
+        35
+      ],
+      "special": 2
+    },
+    {
+      "seed": 917826709374,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 707,
+      "numbers": [
+        14,
+        17,
+        26,
+        33,
+        35
+      ],
+      "special": 8
+    },
+    {
+      "seed": 922846097629,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 591,
+      "numbers": [
+        1,
+        5,
+        29,
+        33,
+        35
+      ],
+      "special": 4
+    },
+    {
+      "seed": 916057580694,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 683,
+      "numbers": [
+        3,
+        4,
+        5,
+        10,
+        24
+      ],
+      "special": 7
+    },
+    {
+      "seed": 922649142232,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 408,
+      "numbers": [
+        4,
+        17,
+        24,
+        32,
+        35
+      ],
+      "special": 8
+    },
+    {
+      "seed": 911459143402,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 847,
+      "numbers": [
+        12,
+        24,
+        28,
+        29,
+        30
+      ],
+      "special": 8
+    },
+    {
+      "seed": 909477531234,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 703,
+      "numbers": [
+        10,
+        19,
+        26,
+        31,
+        35
+      ],
+      "special": 2
+    },
+    {
+      "seed": 911675885121,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 869,
+      "numbers": [
+        13,
+        19,
+        21,
+        25,
+        26
+      ],
+      "special": 5
+    },
+    {
+      "seed": 926971082311,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 449,
+      "numbers": [
+        1,
+        13,
+        18,
+        20,
+        21
+      ],
+      "special": 2
+    },
+    {
+      "seed": 922432765551,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 844,
+      "numbers": [
+        3,
+        8,
+        12,
+        17,
+        23
+      ],
+      "special": 1
+    },
+    {
+      "seed": 917613515516,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 528,
+      "numbers": [
+        8,
+        10,
+        13,
+        14,
+        27
+      ],
+      "special": 7
+    },
+    {
+      "seed": 911432740642,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 501,
+      "numbers": [
+        3,
+        11,
+        18,
+        24,
+        32
+      ],
+      "special": 2
+    },
+    {
+      "seed": 919825840223,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 526,
+      "numbers": [
+        11,
+        16,
+        21,
+        28,
+        32
+      ],
+      "special": 1
+    },
+    {
+      "seed": 921007651424,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 821,
+      "numbers": [
+        9,
+        12,
+        16,
+        19,
+        29
+      ],
+      "special": 9
+    },
+    {
+      "seed": 923633480300,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 691,
       "numbers": [
         2,
-        12,
+        14,
         18,
+        22,
+        24
+      ],
+      "special": 6
+    },
+    {
+      "seed": 917749396790,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 455,
+      "numbers": [
+        8,
+        18,
+        26,
+        32,
+        35
+      ],
+      "special": 8
+    },
+    {
+      "seed": 925889621919,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 780,
+      "numbers": [
+        2,
+        4,
+        9,
+        14,
+        19
+      ],
+      "special": 5
+    },
+    {
+      "seed": 928458092665,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 585,
+      "numbers": [
+        3,
+        11,
+        13,
+        25,
+        35
+      ],
+      "special": 7
+    },
+    {
+      "seed": 922714296865,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 647,
+      "numbers": [
+        1,
+        7,
+        10,
+        11,
+        31
+      ],
+      "special": 9
+    },
+    {
+      "seed": 903628578640,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 612,
+      "numbers": [
+        14,
+        21,
+        29,
         30,
+        33
+      ],
+      "special": 2
+    },
+    {
+      "seed": 931085705102,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 839,
+      "numbers": [
+        6,
+        10,
+        16,
+        17,
+        24
+      ],
+      "special": 11
+    },
+    {
+      "seed": 918099961357,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 417,
+      "numbers": [
+        6,
+        11,
+        13,
+        16,
+        27
+      ],
+      "special": 10
+    },
+    {
+      "seed": 918144144119,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 437,
+      "numbers": [
+        12,
+        14,
+        17,
+        22,
+        32
+      ],
+      "special": 6
+    },
+    {
+      "seed": 919409391423,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 462,
+      "numbers": [
+        10,
+        11,
+        19,
+        21,
+        22
+      ],
+      "special": 7
+    },
+    {
+      "seed": 924530721234,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 630,
+      "numbers": [
+        6,
+        7,
+        21,
+        24,
+        33
+      ],
+      "special": 4
+    },
+    {
+      "seed": 928355409990,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 775,
+      "numbers": [
+        6,
+        9,
+        15,
+        23,
+        27
+      ],
+      "special": 3
+    },
+    {
+      "seed": 904180653046,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 475,
+      "numbers": [
+        1,
+        4,
+        10,
+        30,
+        35
+      ],
+      "special": 10
+    },
+    {
+      "seed": 916007944693,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 487,
+      "numbers": [
+        11,
+        19,
+        27,
+        29,
+        32
+      ],
+      "special": 6
+    },
+    {
+      "seed": 929247412757,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 833,
+      "numbers": [
+        7,
+        13,
+        19,
+        27,
         35
       ],
       "special": 1
     },
     {
-      "seed": 924695932536,
+      "seed": 924575438016,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 551,
+      "last_hit_draw": 817,
       "numbers": [
-        4,
         5,
-        14,
-        18,
-        35
-      ],
-      "special": 9
-    },
-    {
-      "seed": 908800394340,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 411,
-      "numbers": [
-        3,
-        8,
-        22,
-        28,
-        29
+        10,
+        12,
+        16,
+        34
       ],
       "special": 4
     },
     {
-      "seed": 903242378973,
+      "seed": 903988405883,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 415,
+      "last_hit_draw": 842,
       "numbers": [
-        1,
-        8,
-        9,
-        26,
-        30
+        5,
+        7,
+        12,
+        19,
+        25
+      ],
+      "special": 1
+    },
+    {
+      "seed": 909953413758,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 747,
+      "numbers": [
+        7,
+        10,
+        22,
+        24,
+        34
       ],
       "special": 12
     },
     {
-      "seed": 912599952472,
+      "seed": 915729856504,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 599,
+      "last_hit_draw": 839,
+      "numbers": [
+        10,
+        12,
+        22,
+        23,
+        26
+      ],
+      "special": 3
+    },
+    {
+      "seed": 909684321569,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 671,
+      "numbers": [
+        2,
+        23,
+        24,
+        29,
+        33
+      ],
+      "special": 3
+    },
+    {
+      "seed": 903715451197,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 684,
+      "numbers": [
+        1,
+        2,
+        16,
+        17,
+        18
+      ],
+      "special": 5
+    },
+    {
+      "seed": 930931671606,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 815,
+      "numbers": [
+        13,
+        14,
+        16,
+        22,
+        25
+      ],
+      "special": 11
+    },
+    {
+      "seed": 910961485323,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 641,
+      "numbers": [
+        4,
+        5,
+        12,
+        14,
+        26
+      ],
+      "special": 12
+    },
+    {
+      "seed": 909297188958,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 838,
+      "numbers": [
+        2,
+        7,
+        10,
+        14,
+        28
+      ],
+      "special": 10
+    },
+    {
+      "seed": 908444453284,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 617,
+      "numbers": [
+        1,
+        11,
+        12,
+        20,
+        32
+      ],
+      "special": 4
+    },
+    {
+      "seed": 924608695414,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 449,
+      "numbers": [
+        4,
+        5,
+        9,
+        11,
+        15
+      ],
+      "special": 10
+    },
+    {
+      "seed": 906607255965,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 530,
+      "numbers": [
+        1,
+        13,
+        19,
+        23,
+        24
+      ],
+      "special": 3
+    },
+    {
+      "seed": 929230110949,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 639,
+      "numbers": [
+        7,
+        8,
+        9,
+        10,
+        33
+      ],
+      "special": 8
+    },
+    {
+      "seed": 915227335910,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 429,
+      "numbers": [
+        1,
+        7,
+        15,
+        19,
+        30
+      ],
+      "special": 8
+    },
+    {
+      "seed": 916335756295,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 846,
+      "numbers": [
+        6,
+        7,
+        17,
+        19,
+        22
+      ],
+      "special": 9
+    },
+    {
+      "seed": 911605240380,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 642,
+      "numbers": [
+        11,
+        14,
+        21,
+        25,
+        31
+      ],
+      "special": 4
+    },
+    {
+      "seed": 921495718204,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 783,
+      "numbers": [
+        10,
+        11,
+        15,
+        23,
+        29
+      ],
+      "special": 10
+    },
+    {
+      "seed": 927468423436,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 387,
+      "numbers": [
+        1,
+        2,
+        5,
+        13,
+        30
+      ],
+      "special": 8
+    },
+    {
+      "seed": 918084649260,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 713,
+      "numbers": [
+        9,
+        10,
+        14,
+        21,
+        24
+      ],
+      "special": 4
+    },
+    {
+      "seed": 916152641677,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 817,
+      "numbers": [
+        9,
+        10,
+        26,
+        28,
+        29
+      ],
+      "special": 8
+    },
+    {
+      "seed": 903171889816,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 548,
+      "numbers": [
+        4,
+        6,
+        25,
+        33,
+        35
+      ],
+      "special": 5
+    },
+    {
+      "seed": 929225158435,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 531,
+      "numbers": [
+        5,
+        12,
+        15,
+        20,
+        21
+      ],
+      "special": 1
+    },
+    {
+      "seed": 902325651023,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 631,
+      "numbers": [
+        2,
+        9,
+        12,
+        25,
+        32
+      ],
+      "special": 5
+    },
+    {
+      "seed": 907491282667,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 877,
+      "numbers": [
+        7,
+        12,
+        13,
+        14,
+        21
+      ],
+      "special": 1
+    },
+    {
+      "seed": 909354977695,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 388,
+      "numbers": [
+        17,
+        19,
+        20,
+        25,
+        33
+      ],
+      "special": 5
+    },
+    {
+      "seed": 927652471176,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 814,
+      "numbers": [
+        2,
+        4,
+        16,
+        21,
+        27
+      ],
+      "special": 11
+    },
+    {
+      "seed": 921422722296,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 547,
+      "numbers": [
+        1,
+        2,
+        9,
+        31,
+        33
+      ],
+      "special": 4
+    },
+    {
+      "seed": 931162757516,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 713,
+      "numbers": [
+        3,
+        8,
+        9,
+        15,
+        31
+      ],
+      "special": 7
+    },
+    {
+      "seed": 925834493146,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 412,
+      "numbers": [
+        16,
+        17,
+        25,
+        29,
+        32
+      ],
+      "special": 9
+    },
+    {
+      "seed": 913820337129,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 664,
+      "numbers": [
+        3,
+        19,
+        20,
+        26,
+        32
+      ],
+      "special": 8
+    },
+    {
+      "seed": 931289451229,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 473,
+      "numbers": [
+        14,
+        19,
+        25,
+        28,
+        32
+      ],
+      "special": 9
+    },
+    {
+      "seed": 923948933609,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 866,
+      "numbers": [
+        9,
+        11,
+        14,
+        20,
+        28
+      ],
+      "special": 5
+    },
+    {
+      "seed": 908969948491,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 669,
+      "numbers": [
+        6,
+        10,
+        20,
+        31,
+        33
+      ],
+      "special": 2
+    },
+    {
+      "seed": 900518308071,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 635,
+      "numbers": [
+        6,
+        9,
+        20,
+        24,
+        32
+      ],
+      "special": 8
+    },
+    {
+      "seed": 921541936487,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 704,
       "numbers": [
         3,
         5,
-        13,
         15,
-        18
+        18,
+        33
       ],
-      "special": 6
+      "special": 4
     },
     {
-      "seed": 907191714785,
+      "seed": 902599572338,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 526,
+      "last_hit_draw": 808,
+      "numbers": [
+        19,
+        23,
+        28,
+        31,
+        34
+      ],
+      "special": 4
+    },
+    {
+      "seed": 923115481655,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 668,
+      "numbers": [
+        4,
+        21,
+        22,
+        24,
+        25
+      ],
+      "special": 3
+    },
+    {
+      "seed": 921059558698,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 676,
+      "numbers": [
+        4,
+        7,
+        8,
+        26,
+        30
+      ],
+      "special": 2
+    },
+    {
+      "seed": 916411486478,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 456,
+      "numbers": [
+        6,
+        11,
+        12,
+        29,
+        35
+      ],
+      "special": 10
+    },
+    {
+      "seed": 912164586232,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 708,
       "numbers": [
         12,
+        14,
+        28,
+        34,
+        35
+      ],
+      "special": 11
+    },
+    {
+      "seed": 909334464779,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 586,
+      "numbers": [
+        3,
+        6,
         23,
-        26,
+        31,
+        35
+      ],
+      "special": 7
+    },
+    {
+      "seed": 921037925508,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 427,
+      "numbers": [
+        1,
+        5,
+        11,
+        16,
+        22
+      ],
+      "special": 2
+    },
+    {
+      "seed": 914273016553,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 615,
+      "numbers": [
+        16,
+        21,
+        23,
+        29,
+        34
+      ],
+      "special": 12
+    },
+    {
+      "seed": 914889198723,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 485,
+      "numbers": [
+        1,
+        11,
+        17,
+        33,
+        34
+      ],
+      "special": 1
+    },
+    {
+      "seed": 905882236884,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 836,
+      "numbers": [
+        6,
+        11,
+        31,
+        32,
+        34
+      ],
+      "special": 9
+    },
+    {
+      "seed": 901715815676,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 438,
+      "numbers": [
+        5,
+        16,
+        28,
         29,
         31
       ],
       "special": 3
     },
     {
-      "seed": 917571675359,
+      "seed": 903751343781,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 621,
+      "last_hit_draw": 727,
+      "numbers": [
+        1,
+        15,
+        26,
+        34,
+        35
+      ],
+      "special": 4
+    },
+    {
+      "seed": 905712586775,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 400,
+      "numbers": [
+        3,
+        14,
+        23,
+        24,
+        26
+      ],
+      "special": 9
+    },
+    {
+      "seed": 910316017256,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 701,
+      "numbers": [
+        1,
+        5,
+        17,
+        20,
+        24
+      ],
+      "special": 12
+    },
+    {
+      "seed": 915964124508,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 660,
+      "numbers": [
+        14,
+        18,
+        26,
+        27,
+        29
+      ],
+      "special": 2
+    },
+    {
+      "seed": 926204148186,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 454,
+      "numbers": [
+        8,
+        16,
+        25,
+        28,
+        30
+      ],
+      "special": 6
+    },
+    {
+      "seed": 927159421415,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 402,
       "numbers": [
         2,
-        8,
-        12,
-        25,
-        27
+        7,
+        11,
+        17,
+        21
       ],
       "special": 8
     },
     {
-      "seed": 906324489583,
+      "seed": 923160668886,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 750,
+      "last_hit_draw": 524,
       "numbers": [
         2,
+        3,
+        13,
         16,
+        31
+      ],
+      "special": 1
+    },
+    {
+      "seed": 903195913535,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 510,
+      "numbers": [
+        4,
+        9,
+        12,
+        23,
+        33
+      ],
+      "special": 9
+    },
+    {
+      "seed": 902742360724,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 441,
+      "numbers": [
+        1,
+        4,
+        8,
+        9,
+        24
+      ],
+      "special": 1
+    },
+    {
+      "seed": 922106956732,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 771,
+      "numbers": [
+        2,
+        5,
+        11,
+        20,
+        27
+      ],
+      "special": 9
+    },
+    {
+      "seed": 912856778560,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 683,
+      "numbers": [
+        1,
+        7,
+        18,
+        24,
+        29
+      ],
+      "special": 12
+    },
+    {
+      "seed": 924180001933,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 648,
+      "numbers": [
+        5,
+        6,
+        18,
+        19,
+        26
+      ],
+      "special": 5
+    },
+    {
+      "seed": 926028939773,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 485,
+      "numbers": [
+        12,
+        18,
         21,
-        27,
+        24,
+        27
+      ],
+      "special": 9
+    },
+    {
+      "seed": 901771559886,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 834,
+      "numbers": [
+        3,
+        13,
+        20,
+        23,
+        33
+      ],
+      "special": 11
+    },
+    {
+      "seed": 921618091841,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 577,
+      "numbers": [
+        4,
+        15,
+        20,
+        23,
+        28
+      ],
+      "special": 8
+    },
+    {
+      "seed": 919746066766,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 660,
+      "numbers": [
+        14,
+        22,
+        31,
+        33,
         34
       ],
       "special": 12
     },
     {
-      "seed": 912620347418,
+      "seed": 901823595230,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 693,
+      "last_hit_draw": 592,
       "numbers": [
-        1,
-        4,
-        25,
-        26,
-        29
-      ],
-      "special": 7
-    },
-    {
-      "seed": 911546059991,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 618,
-      "numbers": [
+        5,
+        6,
         13,
-        14,
-        23,
-        30,
-        33
-      ],
-      "special": 8
-    },
-    {
-      "seed": 912916879530,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 586,
-      "numbers": [
-        9,
         15,
-        19,
-        21,
-        34
+        25
       ],
-      "special": 10
+      "special": 2
     },
     {
-      "seed": 921740456932,
+      "seed": 913843242173,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 506,
+      "last_hit_draw": 564,
       "numbers": [
         2,
-        12,
-        28,
-        29,
-        34
+        5,
+        7,
+        15,
+        22
       ],
-      "special": 9
+      "special": 6
     },
     {
-      "seed": 927470265978,
-      "weight": 1,
-      "hit_rate": 0.002,
-      "last_hit_draw": 602,
-      "numbers": [
-        16,
-        17,
-        19,
-        22,
-        34
-      ],
-      "special": 3
-    },
-    {
-      "seed": 930415483064,
+      "seed": 931234182611,
       "weight": 1,
       "hit_rate": 0.002,
       "last_hit_draw": 613,
       "numbers": [
-        3,
+        1,
         8,
-        14,
+        13,
+        15,
+        29
+      ],
+      "special": 4
+    },
+    {
+      "seed": 918060741646,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 474,
+      "numbers": [
+        2,
+        5,
+        24,
+        25,
+        31
+      ],
+      "special": 12
+    },
+    {
+      "seed": 915780804618,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 453,
+      "numbers": [
+        7,
+        10,
+        18,
+        19,
+        20
+      ],
+      "special": 10
+    },
+    {
+      "seed": 903897761725,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 392,
+      "numbers": [
+        1,
+        18,
+        19,
         31,
         32
+      ],
+      "special": 10
+    },
+    {
+      "seed": 905803437132,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 781,
+      "numbers": [
+        5,
+        12,
+        23,
+        27,
+        29
+      ],
+      "special": 11
+    },
+    {
+      "seed": 926604565378,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 697,
+      "numbers": [
+        3,
+        6,
+        11,
+        20,
+        21
+      ],
+      "special": 1
+    },
+    {
+      "seed": 907446268090,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 513,
+      "numbers": [
+        5,
+        8,
+        9,
+        18,
+        23
+      ],
+      "special": 2
+    },
+    {
+      "seed": 929421657404,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 820,
+      "numbers": [
+        6,
+        14,
+        16,
+        21,
+        35
+      ],
+      "special": 11
+    },
+    {
+      "seed": 903413872995,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 571,
+      "numbers": [
+        4,
+        6,
+        11,
+        23,
+        26
+      ],
+      "special": 9
+    },
+    {
+      "seed": 922660497675,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 425,
+      "numbers": [
+        7,
+        12,
+        15,
+        26,
+        31
+      ],
+      "special": 12
+    },
+    {
+      "seed": 930667076646,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 846,
+      "numbers": [
+        4,
+        16,
+        18,
+        22,
+        26
+      ],
+      "special": 8
+    },
+    {
+      "seed": 903057852082,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 628,
+      "numbers": [
+        1,
+        6,
+        24,
+        26,
+        30
+      ],
+      "special": 6
+    },
+    {
+      "seed": 921503349184,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 884,
+      "numbers": [
+        5,
+        30,
+        31,
+        34,
+        35
+      ],
+      "special": 4
+    },
+    {
+      "seed": 930470536815,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 393,
+      "numbers": [
+        9,
+        14,
+        16,
+        23,
+        31
+      ],
+      "special": 2
+    },
+    {
+      "seed": 911968415729,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 782,
+      "numbers": [
+        5,
+        8,
+        20,
+        22,
+        33
+      ],
+      "special": 1
+    },
+    {
+      "seed": 926498394856,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 515,
+      "numbers": [
+        5,
+        7,
+        9,
+        28,
+        30
+      ],
+      "special": 3
+    },
+    {
+      "seed": 930064114406,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 801,
+      "numbers": [
+        5,
+        11,
+        14,
+        17,
+        19
+      ],
+      "special": 6
+    },
+    {
+      "seed": 907552424846,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 768,
+      "numbers": [
+        13,
+        17,
+        20,
+        27,
+        30
+      ],
+      "special": 2
+    },
+    {
+      "seed": 918532512593,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 678,
+      "numbers": [
+        6,
+        13,
+        17,
+        18,
+        32
+      ],
+      "special": 3
+    },
+    {
+      "seed": 904140155246,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 396,
+      "numbers": [
+        1,
+        2,
+        10,
+        12,
+        15
+      ],
+      "special": 11
+    },
+    {
+      "seed": 926099151176,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 868,
+      "numbers": [
+        6,
+        7,
+        10,
+        12,
+        27
+      ],
+      "special": 12
+    },
+    {
+      "seed": 925933033766,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 689,
+      "numbers": [
+        5,
+        10,
+        14,
+        15,
+        35
+      ],
+      "special": 4
+    },
+    {
+      "seed": 907281703726,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 420,
+      "numbers": [
+        9,
+        25,
+        29,
+        31,
+        35
       ],
       "special": 7
     },
     {
-      "seed": 909870677164,
+      "seed": 903542460663,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 821,
+      "last_hit_draw": 817,
       "numbers": [
+        1,
+        7,
+        16,
+        32,
+        35
+      ],
+      "special": 12
+    },
+    {
+      "seed": 917456414383,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 839,
+      "numbers": [
+        2,
         11,
-        17,
-        20,
+        18,
         23,
         25
       ],
       "special": 3
     },
     {
-      "seed": 914179661792,
+      "seed": 908456748731,
       "weight": 1,
       "hit_rate": 0.002,
-      "last_hit_draw": 405,
+      "last_hit_draw": 461,
       "numbers": [
+        4,
+        7,
+        14,
+        20,
+        24
+      ],
+      "special": 11
+    },
+    {
+      "seed": 919064240245,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 564,
+      "numbers": [
+        1,
+        12,
+        17,
+        26,
+        29
+      ],
+      "special": 7
+    },
+    {
+      "seed": 920496813269,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 490,
+      "numbers": [
+        6,
+        8,
+        18,
+        21,
+        29
+      ],
+      "special": 6
+    },
+    {
+      "seed": 912398147129,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 535,
+      "numbers": [
+        2,
+        7,
+        18,
+        31,
+        35
+      ],
+      "special": 10
+    },
+    {
+      "seed": 904752800376,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 562,
+      "numbers": [
+        11,
+        15,
+        22,
+        28,
+        31
+      ],
+      "special": 4
+    },
+    {
+      "seed": 931466299085,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 736,
+      "numbers": [
+        2,
+        14,
+        15,
+        17,
+        27
+      ],
+      "special": 8
+    },
+    {
+      "seed": 904025324243,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 756,
+      "numbers": [
+        1,
+        3,
+        13,
+        26,
+        27
+      ],
+      "special": 7
+    },
+    {
+      "seed": 912904402038,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 828,
+      "numbers": [
+        11,
+        20,
+        24,
+        26,
+        31
+      ],
+      "special": 12
+    },
+    {
+      "seed": 906779097122,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 406,
+      "numbers": [
+        5,
+        11,
+        13,
+        21,
+        34
+      ],
+      "special": 10
+    },
+    {
+      "seed": 907452564968,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 637,
+      "numbers": [
+        3,
+        11,
+        29,
+        30,
+        34
+      ],
+      "special": 3
+    },
+    {
+      "seed": 927170682209,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 644,
+      "numbers": [
+        1,
+        7,
+        12,
+        22,
+        33
+      ],
+      "special": 3
+    },
+    {
+      "seed": 914566692898,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 742,
+      "numbers": [
+        2,
+        8,
         15,
         20,
+        25
+      ],
+      "special": 5
+    },
+    {
+      "seed": 916229933479,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 623,
+      "numbers": [
+        12,
+        17,
+        18,
+        30,
+        35
+      ],
+      "special": 6
+    },
+    {
+      "seed": 901663076838,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 516,
+      "numbers": [
+        1,
+        5,
+        6,
+        28,
+        34
+      ],
+      "special": 4
+    },
+    {
+      "seed": 930750150913,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 785,
+      "numbers": [
+        2,
+        3,
+        20,
+        24,
+        34
+      ],
+      "special": 11
+    },
+    {
+      "seed": 926451036405,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 695,
+      "numbers": [
+        9,
+        16,
+        24,
+        26,
+        27
+      ],
+      "special": 5
+    },
+    {
+      "seed": 913029166566,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 574,
+      "numbers": [
+        2,
+        17,
+        22,
         25,
-        27,
+        35
+      ],
+      "special": 1
+    },
+    {
+      "seed": 916920603319,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 805,
+      "numbers": [
+        8,
+        10,
+        18,
+        22,
+        28
+      ],
+      "special": 7
+    },
+    {
+      "seed": 908937042904,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 839,
+      "numbers": [
+        19,
+        23,
+        26,
+        30,
+        33
+      ],
+      "special": 10
+    },
+    {
+      "seed": 921646325090,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 503,
+      "numbers": [
+        2,
+        17,
+        26,
+        31,
         32
+      ],
+      "special": 12
+    },
+    {
+      "seed": 921547442401,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 479,
+      "numbers": [
+        3,
+        17,
+        19,
+        24,
+        27
+      ],
+      "special": 9
+    },
+    {
+      "seed": 909142225295,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 397,
+      "numbers": [
+        8,
+        19,
+        30,
+        32,
+        34
+      ],
+      "special": 1
+    },
+    {
+      "seed": 904932132438,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 564,
+      "numbers": [
+        9,
+        15,
+        16,
+        32,
+        34
+      ],
+      "special": 8
+    },
+    {
+      "seed": 926589531613,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 552,
+      "numbers": [
+        3,
+        6,
+        16,
+        22,
+        34
+      ],
+      "special": 10
+    },
+    {
+      "seed": 903415974696,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 436,
+      "numbers": [
+        8,
+        26,
+        27,
+        28,
+        31
+      ],
+      "special": 9
+    },
+    {
+      "seed": 906406097935,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 458,
+      "numbers": [
+        1,
+        9,
+        27,
+        29,
+        34
+      ],
+      "special": 8
+    },
+    {
+      "seed": 902627845588,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 850,
+      "numbers": [
+        7,
+        17,
+        29,
+        34,
+        35
+      ],
+      "special": 7
+    },
+    {
+      "seed": 901271918511,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 745,
+      "numbers": [
+        1,
+        2,
+        3,
+        4,
+        22
+      ],
+      "special": 12
+    },
+    {
+      "seed": 924349377801,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 601,
+      "numbers": [
+        2,
+        8,
+        16,
+        26,
+        33
+      ],
+      "special": 12
+    },
+    {
+      "seed": 903405092792,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 629,
+      "numbers": [
+        2,
+        9,
+        15,
+        21,
+        29
+      ],
+      "special": 7
+    },
+    {
+      "seed": 928945314337,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 540,
+      "numbers": [
+        3,
+        9,
+        14,
+        32,
+        33
+      ],
+      "special": 1
+    },
+    {
+      "seed": 928426768538,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 549,
+      "numbers": [
+        2,
+        3,
+        6,
+        30,
+        33
+      ],
+      "special": 10
+    },
+    {
+      "seed": 905130019376,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 799,
+      "numbers": [
+        2,
+        12,
+        21,
+        23,
+        35
+      ],
+      "special": 5
+    },
+    {
+      "seed": 931143190114,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 583,
+      "numbers": [
+        3,
+        7,
+        13,
+        18,
+        28
+      ],
+      "special": 9
+    },
+    {
+      "seed": 907236352614,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 595,
+      "numbers": [
+        20,
+        21,
+        25,
+        30,
+        32
+      ],
+      "special": 9
+    },
+    {
+      "seed": 928643401319,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 790,
+      "numbers": [
+        4,
+        10,
+        14,
+        17,
+        31
+      ],
+      "special": 11
+    },
+    {
+      "seed": 914247369519,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 636,
+      "numbers": [
+        8,
+        9,
+        11,
+        12,
+        21
+      ],
+      "special": 9
+    },
+    {
+      "seed": 910066843011,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 628,
+      "numbers": [
+        13,
+        15,
+        21,
+        27,
+        28
+      ],
+      "special": 3
+    },
+    {
+      "seed": 905348422848,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 629,
+      "numbers": [
+        20,
+        22,
+        28,
+        32,
+        34
+      ],
+      "special": 1
+    },
+    {
+      "seed": 907500910215,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 450,
+      "numbers": [
+        15,
+        17,
+        18,
+        29,
+        31
+      ],
+      "special": 3
+    },
+    {
+      "seed": 920271757046,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 578,
+      "numbers": [
+        7,
+        20,
+        27,
+        31,
+        34
+      ],
+      "special": 7
+    },
+    {
+      "seed": 918093926135,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 417,
+      "numbers": [
+        1,
+        14,
+        21,
+        26,
+        28
+      ],
+      "special": 4
+    },
+    {
+      "seed": 922348029115,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 558,
+      "numbers": [
+        1,
+        16,
+        19,
+        20,
+        34
+      ],
+      "special": 10
+    },
+    {
+      "seed": 920507482869,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 820,
+      "numbers": [
+        10,
+        15,
+        24,
+        28,
+        32
+      ],
+      "special": 12
+    },
+    {
+      "seed": 903715213371,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 475,
+      "numbers": [
+        6,
+        7,
+        8,
+        25,
+        31
+      ],
+      "special": 1
+    },
+    {
+      "seed": 910667435141,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 483,
+      "numbers": [
+        1,
+        3,
+        17,
+        30,
+        32
+      ],
+      "special": 8
+    },
+    {
+      "seed": 927362952373,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 478,
+      "numbers": [
+        2,
+        7,
+        20,
+        32,
+        33
+      ],
+      "special": 7
+    },
+    {
+      "seed": 916034476659,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 433,
+      "numbers": [
+        1,
+        19,
+        22,
+        25,
+        29
+      ],
+      "special": 9
+    },
+    {
+      "seed": 903939217039,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 429,
+      "numbers": [
+        13,
+        22,
+        27,
+        32,
+        33
+      ],
+      "special": 5
+    },
+    {
+      "seed": 909160999889,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 474,
+      "numbers": [
+        3,
+        7,
+        15,
+        16,
+        25
+      ],
+      "special": 12
+    },
+    {
+      "seed": 913341668558,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 543,
+      "numbers": [
+        1,
+        8,
+        23,
+        28,
+        35
+      ],
+      "special": 10
+    },
+    {
+      "seed": 911202943364,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 723,
+      "numbers": [
+        5,
+        10,
+        17,
+        26,
+        30
+      ],
+      "special": 4
+    },
+    {
+      "seed": 911057953400,
+      "weight": 1,
+      "hit_rate": 0.002,
+      "last_hit_draw": 716,
+      "numbers": [
+        4,
+        6,
+        12,
+        19,
+        21
       ],
       "special": 7
     }
