@@ -1,34 +1,34 @@
-DU DOAN KY 00886 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)
+DU DOAN KY 00887 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)
 Model AI su dung: gemini-3-flash-preview
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  seed AI chon: 111840536438
-  ly do AI dua ra: Seed nay co lan trung gan nhat o ky 00846 va du doan DB 2, mot so dac biet da xuat hien lien tuc (5/15 ky) trong thoi gian gan day.
-  DU DOAN ky 00886: 02-05-12-21-22 + DAC BIET 2
+  seed AI chon: 130853961874
+  ly do AI dua ra: Seed nay co lan trung gan nhat o ky 00836, cho thay su tuong thich gan day voi chu ky cua mo hinh.
+  DU DOAN ky 00887: 04-18-29-32-35 + DAC BIET 8
 
---- Model (l1_merged file: l1_merged/merged_seed1903987714639.json) ---
-  seed_start cua model: 1903987714639
-  seed AI chon: 1916016275306
-  ly do AI dua ra: Co hit_rate on dinh voi lan trung gan nhat tai ky 00852 va bao gom so 27, con so co tan suat xuat hien cao nhat trong 15 ky qua.
-  DU DOAN ky 00886: 02-08-19-22-27 + DAC BIET 5
+--- Model (l1_merged file: l1_merged/merged_seed1935143230639.json) ---
+  seed_start cua model: 1935143230639
+  seed AI chon: 1949613982309
+  ly do AI dua ra: Day la seed co ky trung gan nhat (00797) trong danh sach Model 1, phu hop de theo doi xu huong trung han.
+  DU DOAN ky 00887: 14-15-31-33-34 + DAC BIET 3
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  seed AI chon: 683720219348
-  ly do AI dua ra: Trung gan nhat o ky 00851 va chua con so 7, so vua xuat hien o ky moi nhat (00885) va dang co dau hieu roi lai.
-  DU DOAN ky 00886: 07-08-09-18-21 + DAC BIET 5
+  seed AI chon: 682558561905
+  ly do AI dua ra: Seed nay vua moi trung o ky 00877, cho thay kha nang bam sat bien do hien tai cua du lieu thuc te.
+  DU DOAN ky 00887: 06-16-19-21-35 + DAC BIET 11
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 911294150821
-  ly do AI dua ra: Xuat hien tai ky 00860 va tap trung vao nhom so lon (32-35), phu hop voi viec ky truoc vua co su quay lai cua cac so dau 3.
-  DU DOAN ky 00886: 21-32-33-34-35 + DAC BIET 11
+  seed AI chon: 911068263653
+  ly do AI dua ra: Trung o ky 00876 va du bao chua so 16, 27 - nhung con so xuat hien voi tan suat cao trong 15 ky gan nhat.
+  DU DOAN ky 00887: 08-16-25-26-27 + DAC BIET 1
 
---- Model (l1_merged file: l1_merged/merged_seed926566362639.json) ---
-  seed_start cua model: 926566362639
-  seed AI chon: 929239893089
-  ly do AI dua ra: Co khoang cach hit rat gan (vua trung ky 00883) va du doan cac so 4, 16, 17 von co tan suat ra deu dan trong chu ky gan day.
-  DU DOAN ky 00886: 04-05-16-17-32 + DAC BIET 4
+--- Model (l1_merged file: l1_merged/merged_seed957721878639.json) ---
+  seed_start cua model: 957721878639
+  seed AI chon: 968470296896
+  ly do AI dua ra: Co hit_rate on dinh va lan trung gan nhat tai ky 00835 cung voi su xuat hien cua so 19 dang hot.
+  DU DOAN ky 00887: 01-09-19-21-30 + DAC BIET 8
 
