@@ -1,34 +1,10 @@
-DU DOAN KY 00886 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
+DU DOAN KY 00887 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
 Model AI su dung (Groq, mien phi vinh vien): openai/gpt-oss-120b
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
---- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
-  seed_start cua model: 108477750639
-  seed AI chon: 126226197516
-  ly do AI dua ra: Seed has the most recent hit (draw 00854) among Model 0 candidates, suggesting a newer alignment with past results.
-  DU DOAN ky 00886: 18-21-28-29-34 + DAC BIET 4
-
---- Model (l1_merged file: l1_merged/merged_seed1903987714639.json) ---
-  seed_start cua model: 1903987714639
-  seed AI chon: 1909356334678
-  ly do AI dua ra: This seed achieved the latest matching draw (00868) in Model 1, making it the most temporally relevant candidate.
-  DU DOAN ky 00886: 07-28-29-30-34 + DAC BIET 4
-
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  seed AI chon: 682558778351
-  ly do AI dua ra: It recorded the highest recent hit (00864) within Model 2, indicating a relatively fresh correlation.
-  DU DOAN ky 00886: 09-15-19-23-25 + DAC BIET 11
-
---- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
-  seed_start cua model: 900477750639
-  seed AI chon: 911294150821
-  ly do AI dua ra: The seed’s last match occurred at draw 00860, the most recent among Model 3 seeds, thus standing out.
-  DU DOAN ky 00886: 21-32-33-34-35 + DAC BIET 11
-
---- Model (l1_merged file: l1_merged/merged_seed926566362639.json) ---
-  seed_start cua model: 926566362639
-  seed AI chon: 929239893089
-  ly do AI dua ra: This seed’s latest hit is at draw 00883, the furthest forward in time for Model 4, making it notable.
-  DU DOAN ky 00886: 04-05-16-17-32 + DAC BIET 4
+  seed AI chon: 682558561905
+  ly do AI dua ra: This seed recorded a hit in the most recent draw (ky 00877) among all listed candidates, so it is the most timely to monitor.
+  DU DOAN ky 00887: 06-16-19-21-35 + DAC BIET 11
 
