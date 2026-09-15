@@ -1163,14 +1163,15 @@ jobs:
     # cua ca 5 model - CHECKOUT o day se lay dung ban moi nhat vi job nay
     # needs toan bo cac job merge da push xong). KHONG dung L2 lam input -
     # L2 (l2_merged/) chi la KET QUA thang hang, khong phai nguon du doan.
-    # QUAN TRONG: predict_next/predict_next_ml/predict_next_ai/predict_next_ai2
+    # QUAN TRONG: predict_next/predict_next_ai/predict_next_ai2/predict_next_app
     # deu commit+push vao predict/ tren cung nhanh main - neu chay SONG SONG
     # se dua nhau push (git pull --rebase lien tuc that bai sau 5 lan retry
     # -> mat ket qua du doan cua job do, khien predict/*.txt bi LECH 1 KY so
     # voi data/all.csv + data/full_results.json da duoc scan_and_check commit
-    # xong). Da xich predict_next_ml needs predict_next, predict_next_ai
-    # needs predict_next_ml, predict_next_ai2 needs predict_next_ai (xem cac
-    # job ben duoi) de dam bao CHI 1 job push tai 1 thoi diem.
+    # xong). Da xich predict_next_ai needs predict_next, predict_next_ai2
+    # needs predict_next_ai, predict_next_app needs predict_next_ai2 (xem
+    # cac job ben duoi) de dam bao CHI 1 job push tai 1 thoi diem. (Da bo
+    # chien luoc "ml" khoi chuoi nay - xem README_THAY_DOI.txt.)
     needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
@@ -1295,71 +1296,16 @@ jobs:
             --event-type j1_prediction_hit \
             --event-json "j1_535/${{ needs.scan_and_check.outputs.latest_ky }}.json"
 
-  predict_next_ml:
-    # Du doan ky ke tiep BAN ML - DOC LAP HOAN TOAN voi job predict_next
-    # (khong dung chung file, khong goi lan nhau). Mien phi, khong can API
-    # key, chi dung sklearn chay local trong runner.
-    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next]
-    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
-          ref: main
-
-      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
-      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
-      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
-      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
-
-      - name: Cai thu vien ML
-        run: pip install --quiet scikit-learn numpy
-
-      - name: Du doan ky ke tiep - phien ban ML (chon seed theo diem Logistic Regression)
-        env:
-          CSV_PATH: data/all.csv
-          L1_GLOB: "l1_merged/merged_seed*.json"
-          OUT_PATH: "predict/next_draw_predict_ml.txt"
-          ML_SCORES_PATH: "predict/ml_scores.json"
-        run: python3 predict_next_draw_ml.py
-
-      - name: Commit ket qua du doan ML
-        run: |
-          set -e
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash push -u -m "predict ml truoc rebase" || true
-          git pull --rebase origin main
-          git stash pop || true
-          [ -d predict ] && git add predict/ || true
-          if git diff --cached --quiet; then
-            echo "Khong co gi de commit"
-            exit 0
-          fi
-          git commit -m "du doan ky ke tiep - ban ML $(date -u +%Y-%m-%d\ %H:%M) UTC"
-          for i in 1 2 3 4 5; do
-            if git push origin main; then
-              echo "Push thanh cong (lan thu $i)"
-              break
-            fi
-            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
-            git pull --rebase origin main
-            sleep $((i * 5))
-            if [ "$i" = "5" ]; then
-              echo "Push that bai sau 5 lan thu, dung lai"
-              exit 1
-            fi
-          done
-
   predict_next_ai:
     # Du doan ky ke tiep BAN AI (Gemini) - DOC LAP HOAN TOAN voi predict_next
-    # va predict_next_ml (khong dung chung file, khong goi lan nhau). Can
-    # secret GEMINI_API_KEY (MIEN PHI, lay tai https://aistudio.google.com/apikey).
-    # Neu chua co secret nay, job se FAIL o buoc goi API - khong anh huong
-    # cac job khac vi khong job nao needs job nay.
-    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_ml]
+    # (khong dung chung file, khong goi lan nhau). Can secret GEMINI_API_KEY
+    # (MIEN PHI, lay tai https://aistudio.google.com/apikey). Neu chua co
+    # secret nay, job se FAIL o buoc goi API - khong anh huong cac job
+    # khac vi khong job nao needs job nay.
+    # (Da bo chien luoc "ml" (predict_next_draw_ml.py/ml_scoring.py) khoi
+    # pipeline - xem README_THAY_DOI.txt. predict_next_ai gio noi truc
+    # tiep sau predict_next trong chuoi push tuan tu.)
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:
@@ -1416,9 +1362,9 @@ jobs:
           done
 
   predict_next_ai2:
-    # Du doan ky ke tiep BAN AI2/GROQ - DOC LAP HOAN TOAN voi predict_next,
-    # predict_next_ml va predict_next_ai (Gemini) - khong dung chung file,
-    # khong goi lan nhau. Can secret GROQ_API_KEY (MIEN PHI VINH VIEN,
+    # Du doan ky ke tiep BAN AI2/GROQ - DOC LAP HOAN TOAN voi predict_next
+    # va predict_next_ai (Gemini) - khong dung chung file, khong goi lan
+    # nhau. Can secret GROQ_API_KEY (MIEN PHI VINH VIEN,
     # khong can the, lay tai https://console.groq.com/keys). Neu chua co
     # secret nay, job se FAIL o buoc goi API - khong anh huong cac job
     # khac vi khong job nao needs job nay.
@@ -1479,13 +1425,15 @@ jobs:
           done
 
   predict_next_app:
-    # Du doan ky ke tiep BAN "APP" - mo phong DUNG co che sinh so cua app
-    # Flutter "San Chia Giai 535" (tab "Sinh So Tu Seed" - RandomPickScreen
-    # + GithubSeedSource + TicketFormula): chon NGAU NHIEN seed trong cua
-    # so uu tien [cach ky can du doan 200 ky, lui them 500 ky nua] roi ap
-    # dung DUNG cong thuc hash giong TicketFormula.dart/scan_v2.cpp. DOC
-    # LAP HOAN TOAN voi predict_next/_ml/_ai/_ai2 (khong dung chung file,
-    # khong AI/ML, khong can API key nao).
+    # CHIEN LUOC CHINH cua pipeline nay: mo phong DUNG co che sinh so cua
+    # app Flutter "San Chia Giai 535" (tab "Sinh So Tu Seed" -
+    # RandomPickScreen + GithubSeedSource + TicketFormula): chon NGAU
+    # NHIEN seed trong cua so uu tien [cach ky can du doan 200 ky, lui
+    # them 500 ky nua] roi ap dung DUNG cong thuc hash giong
+    # TicketFormula.dart/scan_v2.cpp. DOC LAP HOAN TOAN voi predict_next/
+    # _ai/_ai2 (khong dung chung file, khong AI/ML, khong can API key
+    # nao) - CHAY SAU CUNG trong chuoi push tuan tu de dam bao thu tu
+    # commit, va cleanup_l1 se doi job nay xong roi moi don dep l1_merged.
     needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_ai2]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
@@ -1548,8 +1496,9 @@ jobs:
     # trong tuong lai hoac con sot file rac tu cac lan chay thu truoc -
     # KHONG dung ban seed_start cu se tu bi xoa, tranh l1_merged/l2_merged
     # phinh to vo ich theo thoi gian. Chay SAU CUNG, sau khi moi job merge/
-    # du doan da xong (needs toan bo) de khong xoa nham file dang can dung.
-    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next, predict_next_ml]
+    # du doan da xong (needs toan bo, ke ca predict_next_app - job cuoi
+    # cung trong chuoi push tuan tu) de khong xoa nham file dang can dung.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, predict_next_app]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:

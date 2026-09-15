@@ -4,8 +4,8 @@ predict_next_draw_ai3.py - Du doan ky KE TIEP bang cach GOI OPENROUTER API
 (MIEN PHI - dung router "openrouter/free" tu dong chon 1 model mien phi
 dang co san, khong can the thanh toan - lay API key tai
 openrouter.ai/keys), DOC LAP HOAN TOAN voi predict_next_draw.py,
-predict_next_draw_ml.py, predict_next_draw_ai.py (Gemini) va
-predict_next_draw_ai2.py (Groq) - khong sua, khong goi, khong dung chung
+predict_next_draw_ai.py (Gemini) va predict_next_draw_ai2.py (Groq) -
+khong sua, khong goi, khong dung chung
 file ket qua voi bat ky script nao khac.
 
 Cung logic nhu predict_next_draw_ai.py / predict_next_draw_ai2.py (liet
@@ -171,7 +171,7 @@ def main():
     os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(f"DU DOAN KY {next_draw_id:05d} - PHIEN BAN AI3/OPENROUTER (doc lap voi predict_next_draw.py, "
-                f"predict_next_draw_ml.py, predict_next_draw_ai.py va predict_next_draw_ai2.py)\n")
+                f"predict_next_draw_ai.py va predict_next_draw_ai2.py)\n")
         f.write(f"Model AI su dung (OpenRouter, mien phi): {model_name}\n")
         f.write("Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.\n\n")
 

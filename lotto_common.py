@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """
-lotto_common.py - Thu vien DUNG CHUNG cho ca 4 script du doan ky ke tiep
-(predict_next_draw.py, predict_next_draw_ml.py, predict_next_draw_ai.py,
-predict_next_draw_ai2.py). Truoc day moi script tu copy-paste y het cung
+lotto_common.py - Thu vien DUNG CHUNG cho cac script du doan ky ke tiep
+(predict_next_draw.py, predict_next_draw_ai.py, predict_next_draw_ai2.py,
+predict_next_draw_app.py). Truoc day moi script tu copy-paste y het cung
 1 bo ham (build_binom/build_rank_to_mask/mix64/predict_ticket/
-get_next_draw_id) - gop lai day de sua 1 cho la ap dung cho ca 4, tranh
+get_next_draw_id) - gop lai day de sua 1 cho la ap dung cho tat ca, tranh
 lech thuat toan giua cac phien ban theo thoi gian.
+
+(2026-09: da bo chien luoc "ml" (predict_next_draw_ml.py/ml_scoring.py)
+khoi pipeline - xem README_THAY_DOI.txt. known_strategies() ben duoi tu
+dong glob theo file lich su hien co nen khong can sua gi them o day.)
 
 Cong thuc sinh ve (giu NGUYEN 100% tu scan_per_draw.cpp):
     combined = seed*M1 + draw_id*M2   (mod 2^64)
@@ -209,7 +213,7 @@ def load_all_actual_results(csv_path):
 
 
 # ---------------------------------------------------------------------
-# Lich su du doan theo tung CHIEN LUOC (base/ml/ai/ai2) - moi chien luoc
+# Lich su du doan theo tung CHIEN LUOC (base/ai/ai2/app) - moi chien luoc
 # 1 file rieng, KHONG con doi ghi len nhau nhu truoc.
 # ---------------------------------------------------------------------
 

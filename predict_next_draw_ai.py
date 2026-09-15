@@ -3,7 +3,7 @@
 predict_next_draw_ai.py - Du doan ky KE TIEP bang cach GOI GOOGLE GEMINI
 API (MIEN PHI, khong can the thanh toan - lay API key tai
 aistudio.google.com), DOC LAP HOAN TOAN voi predict_next_draw.py va
-predict_next_draw_ml.py (khong sua, khong goi, khong dung chung file
+predict_next_draw_ai2.py/_app.py (khong sua, khong goi, khong dung chung file
 ket qua).
 
 Van doc seed tu L1 (l1_merged/*.json), nhung thay vi tu tinh diem, script
@@ -142,7 +142,7 @@ def main():
     predictions = []
     os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
-        f.write(f"DU DOAN KY {next_draw_id:05d} - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)\n")
+        f.write(f"DU DOAN KY {next_draw_id:05d} - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py)\n")
         f.write(f"Model AI su dung: {model_name}\n")
         f.write("Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.\n\n")
 

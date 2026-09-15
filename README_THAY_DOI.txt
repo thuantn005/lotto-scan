@@ -1,65 +1,64 @@
-CAC FILE DA SUA/THEM TRONG PHIEN LAM VIEC NAY
-==============================================
-Giai nen de dung, COPY DE LEN dung vi tri cu trong repo
-(giu nguyen cau truc thu muc - file .github/workflows/scan_v2_auto.yml
-phai nam dung trong .github/workflows/).
+CAC THAY DOI TRONG PHIEN LAM VIEC NAY - BO CHIEN LUOC "ml", TAP TRUNG VAO "app"
+================================================================================
+Giai nen de dung, COPY DE LEN dung vi tri cu trong repo (giu nguyen cau
+truc thu muc - file .github/workflows/scan_v2_auto.yml phai nam dung
+trong .github/workflows/).
 
+A. FILE CAN XOA KHOI REPO (khong con dung nua)
+-----------------------------------------------
+1. predict_next_draw_ml.py
+2. ml_scoring.py
+3. predict/next_draw_predict_ml.txt (neu con trong repo)
+4. predict/ml_scores.json (neu con trong repo)
+5. predict/history/*_ml.txt (tat ca file lich su du doan cu cua ml,
+   vi du predict/history/00887_ml.txt)
+
+Chay lenh sau tai goc repo la du (khong anh huong file nao khac):
+    git rm -f predict_next_draw_ml.py ml_scoring.py
+    git rm -f predict/next_draw_predict_ml.txt predict/ml_scores.json 2>/dev/null
+    git rm -f predict/history/*_ml.txt 2>/dev/null
+
+B. FILE DA SUA (COPY DE LEN)
+-----------------------------
 1. .github/workflows/scan_v2_auto.yml
-   - Go bo co che "3 model phu (708477750639/108477750639/900477750639)
-     chi quet 1 LAN DUY NHAT roi khoa vinh vien". Gio ca 5 model deu tu
-     dong quet lai MOI KHI CO KY MOI, giong model chinh.
-   - Xoa cac file co (once_done.flag/once2_done.flag/once3_done.flag) -
-     khong con duoc doc/ghi nua, co the xoa thu cong khoi repo.
-   - Them HISTORY_DIR cho 3 job predict_next_ml/ai/ai2 (truoc thieu).
-   - Job check_prediction gio commit them predict/strategy_stats.json.
+   - Xoa han job "predict_next_ml" (khong con goi predict_next_draw_ml.py,
+     khong con cai scikit-learn/numpy trong runner).
+   - Noi lai chuoi push tuan tu (de tranh dua nhau push vao predict/):
+       TRUOC: predict_next -> predict_next_ml -> predict_next_ai -> predict_next_ai2 -> predict_next_app
+       SAU:   predict_next -> predict_next_ai -> predict_next_ai2 -> predict_next_app
+   - "predict_next_app" gio la CHIEN LUOC CHINH cua pipeline, chay sau
+     cung trong chuoi predict truoc khi push.
+   - SUA LOI: job "cleanup_l1" truoc day needs [..., predict_next,
+     predict_next_ml] - tuc no CO THE chay song song voi predict_next_ai/
+     ai2/app va don l1_merged truoc khi 3 job do doc xong (loi tiem an,
+     khong lien quan ml nhung lo ra khi go bo predict_next_ml). Gio sua
+     lai needs [..., predict_next_app] de cleanup_l1 luon cho TOAN BO
+     chuoi predict xong roi moi don dep.
 
-2. lotto_common.py (MOI)
-   - Gom code dung chung (sinh ve, doc CSV...) truoc day bi copy-paste
-     y het o ca 4 script predict_next_draw*.py.
-   - Them ham luu/doc lich su du doan theo TUNG chien luoc rieng
-     (save_prediction_history/load_prediction_history/known_strategies).
-   - Them ham cham diem trung TUNG PHAN (score_ticket) + moc so sanh
-     ngau nhien (EXPECTED_RANDOM_MATCHES).
-   - Them ham thong ke cho backtest (load_all_actual_results) va cho
-     nguong thang hang L1->L2 (expected_false_positive_count,
-     choose_promotion_threshold - HIEN KHONG duoc check_l1_merged.py su
-     dung de tu dong doi nguong nua, chi de tham khao/du phong sau nay).
+2. lotto_common.py
+   - Cap nhat docstring dau file: danh sach script dung chung gio la
+     predict_next_draw.py / _ai.py / _ai2.py / _app.py (bo _ml.py).
+   - Cap nhat comment o phan luu lich su du doan: chien luoc con lai la
+     base/ai/ai2/app (bo ml). KHONG doi logic - known_strategies() van
+     tu dong glob theo file .txt dang co trong predict/history/, nen tu
+     dong "quen" ml ngay khi cac file *_ml.txt bi xoa (muc A.5), khong
+     can sua them gi o day hay o check_prediction_result.py.
 
-3. predict_next_draw.py / predict_next_draw_ml.py / predict_next_draw_ai.py
-   / predict_next_draw_ai2.py (SUA)
-   - Dung chung lotto_common.py thay vi code trung lap.
-   - BUG DA SUA: truoc day CHI predict_next_draw.py (chien luoc "base")
-     ghi lich su du doan de doi chieu sau nay - 3 chien luoc con lai
-     (ml/ai/ai2) KHONG BAO GIO duoc kiem chung dung/sai. Gio moi chien
-     luoc ghi rieng 1 file predict/history/{ky}_{strategy}.txt.
+3. predict_next_draw.py, predict_next_draw_ai.py, predict_next_draw_ai2.py,
+   predict_next_draw_ai3.py
+   - Chi sua docstring/dong ghi file ket qua (bo nhac predict_next_draw_ml.py
+     trong phan "doc lap voi ..."), KHONG doi logic sinh ve.
 
-4. check_prediction_result.py (VIET LAI)
-   - Tu dong doi chieu CA 4 chien luoc (khong hard-code danh sach).
-   - Them cham diem trung TUNG PHAN (0-5 so + co/khong trung dac biet)
-     thay vi chi DUNG/SAI tuyet doi (qua hiem de tich luy du lieu).
-   - Tich luy thong ke vao predict/strategy_stats.json, so sanh voi moc
-     ngau nhien ly thuyet (~0.714 so/ve) de biet chien luoc nao dang hon
-     - hay chi dang ngang muc ngau nhien.
-   - Van luu j1_535/ nhu cu khi co model doan DUNG TUYET DOI (J1).
-
-5. backtest_predictions.py (MOI)
-   - Backtest WALK-FORWARD (khong nhin truoc tuong lai) chien luoc
-     "base" tren TOAN BO lich su co san trong l1_merged/ - cho ra hang
-     tram diem du lieu ngay lap tuc thay vi phai cho tung ngay 1 mau.
-   - Ket qua da chay thu: model chinh (871 ky backtest) cho trung binh
-     0.719 so/ve, gan nhu y het moc ngau nhien ly thuyet 0.714 - CHUA co
-     bang chung chien luoc nay hon xac suat ngau nhien.
-   - Ghi ra predict/backtest_report.txt + predict/backtest_stats.json.
-
-6. check_l1_merged.py (SUA RUI REVERT LAI THEO YEU CAU)
-   - Nguong thang hang L1->L2 VAN LA SO CO DINH PROMOTION_MIN_WEIGHT
-     (mac dinh 2, giong het ban goc) - KHONG tu dong dieu chinh theo
-     model nhu ban de xuat truoc do (da bi tu choi, giu nguyen hanh vi
-     cu theo yeu cau).
-   - CHI THEM: in ra log so seed KY VONG dat nguong nay THUAN TUY NGAU
-     NHIEN (dung lotto_common.expected_false_positive_count) - CHI DE
-     THAM KHAO, KHONG anh huong ket qua thang hang.
-   - Phat hien dang chu y (chua sua, chi de tham khao): model chinh
-     (682305800400, 872 ky) dang co 58 seed "thang hang" trong khi ly
-     thuyet du kien ~39 seed dat nguong do CHI VI TRUNG HOP NGAU NHIEN -
-     tuc phan lon co the la nhieu thong ke, khong phai tin hieu that.
+C. GHI CHU
+----------
+- predict_next_draw_ai3.py (OpenRouter) hien KHONG nam trong workflow tu
+  dong (khong co job predict_next_ai3 trong scan_v2_auto.yml) - chi sua
+  docstring cho nhat quan, ban tu quyet dinh co them job cho no hay khong.
+- File scan_v2_auto.yml o THU MUC GOC repo (ngoai .github/workflows/) la
+  ban cu/thua tu phien lam viec truoc, KHONG phai file workflow that su
+  duoc GitHub Actions chay - ban nen xoa no di (hoac dong bo lai) de
+  tranh nham lan sau nay, nhung phien nay CHUA dong vao file do.
+- Sau khi ap dung, lan chay Actions tiep theo se chi con 4 chien luoc
+  song song: base / ai / ai2 / app - dung nhu check_prediction_result.py
+  va predict/strategy_stats.json da thiet ke san (tu dong phat hien theo
+  file lich su, khong hard-code danh sach nen khong bi anh huong).

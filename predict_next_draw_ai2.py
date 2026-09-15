@@ -3,7 +3,7 @@
 predict_next_draw_ai2.py - Du doan ky KE TIEP bang cach GOI GROQ API
 (MIEN PHI VINH VIEN, khong can the thanh toan - lay API key tai
 console.groq.com), DOC LAP HOAN TOAN voi predict_next_draw.py,
-predict_next_draw_ml.py va predict_next_draw_ai.py (Gemini) - khong sua,
+predict_next_draw_ai.py (Gemini) - khong sua,
 khong goi, khong dung chung file ket qua voi bat ky script nao khac.
 
 Cung logic nhu predict_next_draw_ai.py (liet ke seed ung vien moi model
@@ -156,7 +156,7 @@ def main():
     predictions = []
     os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
-        f.write(f"DU DOAN KY {next_draw_id:05d} - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)\n")
+        f.write(f"DU DOAN KY {next_draw_id:05d} - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py va predict_next_draw_ai.py)\n")
         f.write(f"Model AI su dung (Groq, mien phi vinh vien): {model_name}\n")
         f.write("Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.\n\n")
 

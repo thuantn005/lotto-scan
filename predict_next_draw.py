@@ -12,12 +12,12 @@ THANG HANG (thanh L2) ngay khi ky moi duoc xac nhan.
 KHONG dung L2 (l2_merged/) lam input - L2 chi la KET QUA thang hang.
 
 Thuat toan sinh ve + cac ham dung chung nam trong lotto_common.py (dung
-chung voi predict_next_draw_ml.py/_ai.py/_ai2.py - xem file do de biet
+chung voi _ai.py/_ai2.py/_app.py - xem file do de biet
 chi tiet cong thuc).
 
 Chien luoc nay duoc danh dau la "base" trong lich su du doan
 (predict/history/{draw_id}_base.txt), de check_prediction_result.py doi
-chieu rieng voi 3 chien luoc con lai (ml/ai/ai2) - truoc day chi chien
+chieu rieng voi 3 chien luoc con lai (ai/ai2/app) - truoc day chi chien
 luoc nay duoc ghi lich su nen 3 ban con lai chua bao gio duoc kiem chung.
 
 ENV:
