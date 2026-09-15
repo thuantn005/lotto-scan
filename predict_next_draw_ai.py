@@ -3,7 +3,7 @@
 predict_next_draw_ai.py - Du doan ky KE TIEP bang cach GOI GOOGLE GEMINI
 API (MIEN PHI, khong can the thanh toan - lay API key tai
 aistudio.google.com), DOC LAP HOAN TOAN voi predict_next_draw.py va
-predict_next_draw_ai2.py/_app.py (khong sua, khong goi, khong dung chung file
+predict_next_draw_ml.py (khong sua, khong goi, khong dung chung file
 ket qua).
 
 Van doc seed tu L1 (l1_merged/*.json), nhung thay vi tu tinh diem, script
@@ -29,18 +29,7 @@ ENV:
     L1_GLOB          - pattern glob cac file L1 (mac dinh l1_merged/merged_seed*.json)
     OUT_PATH         - file .txt ket qua rieng cua AI (mac dinh predict/next_draw_predict_ai.txt)
     HISTORY_DIR      - thu muc luu lich su du doan (mac dinh predict/history)
-    CANDIDATES_PER_MODEL - so seed ung vien THUC SU gui cho Gemini moi
-                        model (mac dinh 200) - anh huong truc tiep kich
-                        thuoc request goi API, KHONG co bang chung tang
-                        so nay giup AI chon dung hon (xem
-                        backtest_predictions.py), chi de AI co nhieu lua
-                        chon da dang hon de so sanh.
-    CANDIDATE_POOL_SIZE - do SAU cua vong quet/khu trung lap NOI BO moi
-                        model (mac dinh 10000, >= CANDIDATES_PER_MODEL).
-                        KHONG anh huong prompt goi AI (chi lay top
-                        CANDIDATES_PER_MODEL tu pool nay) - dung de luu
-                        pool day du ra predict/candidate_pool_ai/ phuc vu
-                        phan tich/backtest sau nay.
+    CANDIDATES_PER_MODEL - so seed ung vien gui cho AI moi model (mac dinh 15)
     GEMINI_MODEL     - model Gemini dung de goi (mac dinh gemini-3.8-flash, moi nhat, mien phi trong han muc)
 """
 
@@ -94,9 +83,7 @@ def main():
     l1_glob = os.environ.get("L1_GLOB", "l1_merged/merged_seed*.json")
     out_path = os.environ.get("OUT_PATH", "predict/next_draw_predict_ai.txt")
     history_dir = os.environ.get("HISTORY_DIR", "predict/history")
-    send_k = int(os.environ.get("CANDIDATES_PER_MODEL", "200"))
-    pool_size = int(os.environ.get("CANDIDATE_POOL_SIZE", "10000"))
-    pool_out_dir = os.environ.get("CANDIDATE_POOL_DIR", "predict/candidate_pool_ai")
+    top_k = int(os.environ.get("CANDIDATES_PER_MODEL", "15"))
     model_name = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
 
     api_key = os.environ.get("GEMINI_API_KEY")
@@ -116,10 +103,7 @@ def main():
 
     models = []
     for fp in files:
-        m = collect_ai_candidates_per_model(
-            fp, next_draw_id, rank_to_mask, send_k,
-            pool_size=pool_size, pool_out_dir=pool_out_dir,
-        )
+        m = collect_ai_candidates_per_model(fp, next_draw_id, rank_to_mask, top_k)
         if m:
             models.append(m)
 
@@ -142,7 +126,7 @@ def main():
     predictions = []
     os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as f:
-        f.write(f"DU DOAN KY {next_draw_id:05d} - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py)\n")
+        f.write(f"DU DOAN KY {next_draw_id:05d} - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py va predict_next_draw_ml.py)\n")
         f.write(f"Model AI su dung: {model_name}\n")
         f.write("Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.\n\n")
 

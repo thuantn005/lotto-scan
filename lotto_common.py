@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
 """
 lotto_common.py - Thu vien DUNG CHUNG cho cac script du doan ky ke tiep
-(predict_next_draw.py, predict_next_draw_ai.py, predict_next_draw_ai2.py,
-predict_next_draw_app.py). Truoc day moi script tu copy-paste y het cung
-1 bo ham (build_binom/build_rank_to_mask/mix64/predict_ticket/
-get_next_draw_id) - gop lai day de sua 1 cho la ap dung cho tat ca, tranh
-lech thuat toan giua cac phien ban theo thoi gian.
+(predict_next_draw.py, predict_next_draw_app.py). Truoc day moi script tu
+copy-paste y het cung 1 bo ham (build_binom/build_rank_to_mask/mix64/
+predict_ticket/get_next_draw_id) - gop lai day de sua 1 cho la ap dung
+cho tat ca, tranh lech thuat toan giua cac phien ban theo thoi gian.
 
 (2026-09: da bo chien luoc "ml" (predict_next_draw_ml.py/ml_scoring.py)
 khoi pipeline - xem README_THAY_DOI.txt. known_strategies() ben duoi tu
 dong glob theo file lich su hien co nen khong can sua gi them o day.)
+
+(2026-09: da bo LUON chien luoc "ai"/"ai2" (Gemini/Groq) - predict_next_
+draw_ai.py, predict_next_draw_ai2.py, predict_next_draw_ai3.py (chua bao
+gio duoc gan vao workflow) DA XOA, kem 2 ham chi phuc vu rieng chung
+(collect_ai_candidates_per_model()/build_ai_prompt()) cung DA XOA khoi
+file nay vi khong con noi nao goi. Pipeline predict gio CHI con 2 chien
+luoc: "base" (predict_next_draw.py) va "app" (predict_next_draw_app.py,
+mo phong co che sinh so cua app Flutter) - khong con phu thuoc API key
+ngoai (GEMINI_API_KEY/GROQ_API_KEY) nao nua. Xem README_THAY_DOI.txt.)
 
 Cong thuc sinh ve (giu NGUYEN 100% tu scan_per_draw.cpp):
     combined = seed*M1 + draw_id*M2   (mod 2^64)
@@ -274,172 +282,6 @@ def known_strategies(history_dir, draw_id):
     for p in sorted(d.glob(f"{prefix}*.txt")):
         out.append(p.stem[len(prefix):])
     return out
-
-
-# ---------------------------------------------------------------------
-# Loc candidate seed gui cho AI chon (dung chung cho predict_next_draw_ai.py
-# /_ai2.py/_ai3.py - truoc day 3 file COPY-PASTE Y HET nhau ham nay, sua 1
-# cho de quen sua 2 cho kia). CAI THIEN so voi ban cu:
-#   - Cu: xep hang CHI theo so lan trung TUYET DOI (weight) - model quet
-#     cua so dai hon luon co weight cao hon du ty le trung thuc te khong
-#     hon, hoa thi chon seed NHO NHAT (khong co y nghia gi).
-#   - Moi: chuan hoa thanh hit_rate = weight / total_draws_in_model de so
-#     sanh CONG BANG giua cac model co cua so quet khac nhau; hoa thi uu
-#     tien seed TRUNG GAN DAY HON (last_hit_draw lon hon) thay vi seed nho
-#     nhat - bam sat huong quan tam "khoang cach giua cac lan trung ngan".
-#   - Them: loai bot candidate GAN TRUNG LAP (ve 5 so trung >= 4/5 so voi
-#     1 candidate DA CHON) de so gui cho AI thuc su da dang, AI co gi
-#     do khac biet de so sanh thay vi nhieu ve gan nhu giong het nhau.
-#   - Them (2026-09): TACH rieng pool_size (do sau quet/khu trung lap noi
-#     bo, co the rat lon vd 10000, luu ra file rieng phuc vu backtest) va
-#     send_k (so candidate THUC SU dua vao prompt AI, giu nho vd 200) -
-#     truoc day dung chung 1 con so top_k nen tang len de "loc ky hon" vo
-#     tinh lam prompt goi AI phinh to theo, du khong co bang chung tang
-#     so luong ung vien AI thay giup AI chon dung hon.
-# ---------------------------------------------------------------------
-
-def collect_ai_candidates_per_model(fp, next_draw_id, rank_to_mask, send_k,
-                                     max_overlap_with_selected=3,
-                                     pool_size=None, pool_out_dir=None):
-    """Doc 1 file L1, tra ve dict mo ta model + candidate DA XEP HANG lai
-    (hit_rate giam dan, hoa thi uu tien trung gan day hon, hoa tiep thi
-    seed nho hon de on dinh ket qua) VA da loc bot trung lap (bo qua
-    candidate co >= max_overlap_with_selected/5 so trung voi 1 candidate
-    DA CHON truoc do). Tra ve None neu file rong/loi.
-
-    2 muc dich TACH BIET (truoc day dung chung 1 tham so top_k gay nham
-    lan giua "quet sau bao nhieu" va "gui AI bao nhieu"):
-      - pool_size: do SAU cua vong quet/khu trung lap noi bo (mac dinh =
-        send_k neu khong truyen, tuc giu dung hanh vi cu). Tang so nay
-        KHONG lam AI thay nhieu ung vien hon - chi de co 1 pool lon hon
-        luu lai phuc vu backtest_predictions.py / phan tich thong ke sau
-        nay (xem pool_out_dir).
-      - send_k: so candidate THUC SU tra ve trong candidates[] de dua
-        vao prompt AI - day la con so anh huong truc tiep kich thuoc
-        request goi API. Da co bang chung (backtest_predictions.py) rang
-        so luong ung vien AI nhin thay KHONG lam AI "doan dung" hon -
-        tang so nay chi ton token/de loi API, khong tang do chinh xac.
-
-    Neu pool_out_dir duoc truyen, GHI toan bo pool (toi da pool_size
-    candidate, sau khu trung lap) ra file JSON rieng
-    {pool_out_dir}/pool_{seed_start}.json de dung cho phan tich/backtest
-    sau nay, DOC LAP voi candidates[] (chi top send_k) dua vao prompt.
-    """
-    try:
-        data = json.loads(Path(fp).read_text(encoding="utf-8"))
-    except Exception as e:
-        print(f"Bo qua {fp}: {e}")
-        return None
-
-    seed_weight = {}
-    seed_last_draw = {}
-    for d in data.get("draws", []):
-        did = d.get("draw_id")
-        for s in d.get("seeds", []):
-            seed_weight[s] = seed_weight.get(s, 0) + 1
-            seed_last_draw[s] = max(seed_last_draw.get(s, 0), did or 0)
-
-    if not seed_weight:
-        return None
-
-    total_draws_in_model = data.get("total_draws") or len(data.get("draws", [])) or 1
-    effective_pool_size = pool_size if pool_size is not None else send_k
-
-    # Xep hang: hit_rate giam dan; hoa thi XAO TRON NGAU NHIEN (thay vi luon
-    # uu tien seed trung gan day nhat) - tranh danh sach gui AI bi don vao
-    # dung 1 huong (vd toan seed cua ky moi nhat) khi nhieu seed dong hang.
-    # rng seed theo next_draw_id de van TAI LAP duoc khi backtest lai 1 ky
-    # cu, nhung thu tu doc lap voi lan chay truoc.
-    rng = random.Random(next_draw_id)
-    seeds_list = list(seed_weight.keys())
-    rng.shuffle(seeds_list)
-    ranked_seeds = sorted(
-        seeds_list,
-        key=lambda s: -(seed_weight[s] / total_draws_in_model),
-    )
-
-    pool = []
-    chosen_number_sets = []
-    for s in ranked_seeds:
-        if len(pool) >= effective_pool_size:
-            break
-        numbers, special = predict_ticket(s, next_draw_id, rank_to_mask)
-        num_set = set(numbers)
-        if any(len(num_set & prev) >= max_overlap_with_selected for prev in chosen_number_sets):
-            continue  # qua giong 1 candidate da chon, bo qua de tang da dang
-        pool.append({
-            "seed": s,
-            "weight": seed_weight[s],
-            "hit_rate": seed_weight[s] / total_draws_in_model,
-            "last_hit_draw": seed_last_draw[s],
-            "numbers": numbers,
-            "special": special,
-        })
-        chosen_number_sets.append(num_set)
-
-    if pool_out_dir:
-        os.makedirs(pool_out_dir, exist_ok=True)
-        pool_path = Path(pool_out_dir) / f"pool_{data.get('seed_start')}.json"
-        pool_path.write_text(
-            json.dumps({
-                "seed_start": data.get("seed_start"),
-                "next_draw_id": next_draw_id,
-                "total_draws_in_model": total_draws_in_model,
-                "pool_size": len(pool),
-                "candidates": pool,
-            }, ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
-
-    return {
-        "file": fp,
-        "seed_start": data.get("seed_start"),
-        "total_draws_in_model": total_draws_in_model,
-        "total_seeds_in_model": len(seed_weight),
-        "pool_size": len(pool),
-        "candidates": pool[:send_k],
-    }
-
-
-def build_ai_prompt(next_draw_id, recent_draws, models):
-    """Dung chung cho ca 3 script AI - sinh prompt gui cho model ngon
-    ngu, kem MOC SO SANH ngau nhien (EXPECTED_RANDOM_MATCHES) de AI hieu
-    hit_rate cao hay thap so voi thuan tuy ngau nhien, tranh AI dua ra ly
-    do nghe co ve chac chan qua muc."""
-    lines = []
-    lines.append(f"Ban dang phan tich du lieu NGHIEN CUU THONG KE cho xo so Lotto 5/35 Viet Nam "
-                 f"(du an mang tinh hoc thuat, KHONG khuyen khich co bac). Ky can du doan la ky {next_draw_id:05d}.")
-    lines.append("")
-    lines.append(f"{len(recent_draws)} ky GAN NHAT (draw_id, 5 so chinh, dac biet):")
-    for draw_id, numbers, special in recent_draws:
-        lines.append(f"  ky {draw_id:05d}: {numbers} + DB {special}")
-    lines.append("")
-    lines.append(f"Moc so sanh: neu HOAN TOAN ngau nhien, ty le 1 seed 'trung' 1 ky bat ky la rat "
-                 f"thap ({MATCH_PROB:.2e}); hit_rate cua cac candidate duoi day CAO HON nhieu chi vi "
-                 f"tieu chi 'trung' o day la mot phan cua ve (khong phai trung tuyet doi ca 5+1), "
-                 f"KHONG co nghia la seed do co kha nang du doan that su.")
-    lines.append("")
-    lines.append("Co nhieu 'model' (dai seed khac nhau) dang duoc quet doc lap. Voi MOI model, "
-                 "duoi day la mot vai seed ung vien DA duoc loc bot trung lap va xep hang theo "
-                 "TY LE trung (hit_rate = so lan trung / tong so ky da quet cua model do, de so "
-                 "sanh CONG BANG giua cac model co cua so quet khac nhau) kem ve du doan cua tung "
-                 "seed NEU dung lai cho ky sap toi:")
-    for i, m in enumerate(models):
-        lines.append(f"\nModel {i} (seed_start={m['seed_start']}, da quet {m['total_draws_in_model']} ky, "
-                     f"tong {m['total_seeds_in_model']} seed trong L1):")
-        for c in m["candidates"]:
-            lines.append(f"  seed={c['seed']} (hit_rate={c['hit_rate']:.3f}, tung trung {c['weight']} lan, "
-                         f"lan gan nhat ky {c['last_hit_draw']:05d}) -> "
-                         f"{c['numbers']} + DB {c['special']}")
-    lines.append("")
-    lines.append("Voi MOI model, hay chon DUNG 1 seed ung vien (trong danh sach da cho, KHONG duoc "
-                 "bia ra seed moi) ma ban cho la 'dang chu y' nhat de theo doi, va giai thich NGAN "
-                 "GON (1-2 cau) tai sao. Luu y ro rang day chi la BAI TAP THONG KE/nghien cuu, ban "
-                 "KHONG the du doan chinh xac ket qua xo so that su.")
-    lines.append("")
-    lines.append("Tra loi CHI DUOI DANG JSON (khong markdown, khong giai thich ngoai JSON), dinh dang:")
-    lines.append('{"picks": [{"model_index": 0, "seed": 123, "reasoning": "..."}]}')
-    return "\n".join(lines)
 
 
 def prune_old_history(history_dir, current_draw_id, keep_last_n):

@@ -106,3 +106,115 @@ E. GHI CHU CHUNG
   - khong dong vao thuat toan sinh ve/seed (predict_ticket, mix64,
     check_j1...) nen KHONG anh huong gi den tinh dung dan cua ket qua da
   co san trong l1_merged/l2_merged/predict/history.
+
+F. BO CHIEN LUOC "AI" (GEMINI/GROQ) - THAY BANG CHI CON "APP" (TINH NANG MOI)
+-------------------------------------------------------------------------
+Theo yeu cau: bo phan du doan dung AI (goi API ngoai), pipeline predict
+gio CHI con 2 chien luoc DOC LAP: "base" (predict_next_draw.py, chon seed
+theo so lan tung trung) va "app" (predict_next_draw_app.py, mo phong DUNG
+co che sinh so cua app Flutter "San Chia Giai 535").
+
+Da xoa:
+  - predict_next_draw_ai.py, predict_next_draw_ai2.py (2 job workflow
+    predict_next_ai / predict_next_ai2 goi Gemini/Groq).
+  - predict_next_draw_ai3.py (file co san trong repo nhung CHUA BAO GIO
+    duoc gan vao workflow - xoa luon cho gon).
+  - 2 ham dung rieng cho AI trong lotto_common.py: collect_ai_candidates_
+    per_model() va build_ai_prompt() (khong con noi nao goi sau khi xoa 3
+    file tren).
+  - File output cu: predict/next_draw_predict_ai.txt,
+    predict/next_draw_predict_ai2.txt, predict/candidate_pool_ai/,
+    predict/candidate_pool_ai2/.
+  - (predict/history/{ky}_ai.txt va {ky}_ai2.txt CU van GIU LAI - la lich
+    su that da xay ra, khong xoa; chi khong con file MOI nao duoc tao nua.)
+
+Da sua trong .github/workflows/scan_v2_auto.yml:
+  - Xoa han 2 job predict_next_ai va predict_next_ai2 (khong con can secret
+    GEMINI_API_KEY / GROQ_API_KEY nua).
+  - Job predict_next_app gio needs truc tiep predict_next (thay vi
+    predict_next_ai2) - chuoi push tuan tu con lai CHI: predict_next ->
+    predict_next_app -> predict_consensus -> cleanup_l1.
+  - Cap nhat lai cac dong comment mo ta chuoi job cho khop thuc te.
+
+KHONG dong vao thuat toan sinh ve/seed (predict_ticket, mix64...) cua ban
+"base"/"app" - 2 chien luoc nay khong doi gi, chi bot di 2 chien luoc AI.
+predict_consensus.py KHONG can sua (da tu dong glob known_strategies() -
+bao cao se tu dong chi con hien "base/app" khi khong con file lich su ai/
+ai2 moi nao duoc tao them).
+
+G. BO LOC "CUA SO UU TIEN" TRONG predict_next_app (TINH NANG MOI)
+-------------------------------------------------------------------------
+Theo yeu cau: predict_next_draw_app.py KHONG con loc seed theo "cua so
+uu tien" (APP_GAP_DRAWS/APP_WINDOW_DRAWS - truoc day chi lay seed cua cac
+ky cach hien tai 200-700 ky) nua. Gio chon ngau nhien deu tu TOAN BO pool
+seed dang co trong l1_merged/ (gop tat ca cac ky lai lam 1 pool duy nhat).
+
+Da xoa ham window_filter() va load_seed_pool_by_draw() (thay bang
+load_seed_pool() tra ve 1 set phang), bo 2 bien env APP_GAP_DRAWS/
+APP_WINDOW_DRAWS (ca trong script lan trong job predict_next_app cua
+scan_v2_auto.yml). APP_LINE_COUNT (so ve moi ky) van giu nguyen.
+
+KHONG anh huong cong thuc sinh ve (predict_ticket/mix64) - chi bot 1
+buoc loc truoc khi chon seed. Vi seed chi anh huong toi CACH sinh ra 5 so
+(khong quyet dinh tap so co san), viec loc theo cua so hay khong deu
+KHONG lam thay doi phan phoi xac suat ket qua cuoi cung mot cach co y
+nghia - van la random, backtest_predictions.py van khong doi.
+
+H. predict_next_app: DU DOAN RIENG TUNG FILE MODEL TRONG l1_merged/ (SUA LAI)
+-------------------------------------------------------------------------
+Theo yeu cau: predict_next_draw_app.py KHONG con gop seed cua TAT CA file
+L1 lai thanh 1 pool chung roi rut ngau nhien N ve (cach lam o muc G) -
+GIO LAM Y HET "base" (predict_next_draw.py) o cho MOI FILE trong
+l1_merged/ (moi model/dai seed rieng) tu sinh ra 1 ve RIENG CUA MODEL DO.
+
+Khac biet DUY NHAT voi base: cach chon seed TRONG TUNG FILE.
+  - base: chon seed MANH NHAT (so lan tung trung cao nhat) trong file do.
+  - app : chon NGAU NHIEN DEU 1 seed trong file do (random.SystemRandom,
+    khong uu tien seed nao) - dung tinh than "random pick" cua app.
+
+-> So ve sinh ra moi ky = so file model L1 co seed (hien tai la 5 file:
+FIXED/ONCE/ONCE2/ONCE3/ONCE4), KHONG con co dinh qua bien APP_LINE_COUNT
+nua (da bo bien env nay, ca trong script lan trong scan_v2_auto.yml).
+
+Da doi ham load_seed_pool() (gop TAT CA file, tinh nang o muc G) thanh
+load_seed_pool_of_file(fp) (chi gop seed CUA RIENG 1 file). predict/
+history/{ky}_app.txt gio co so dong = so file model (giong het cau truc
+lich su cua "base"), thay vi luon co APP_LINE_COUNT dong nhu truoc.
+
+KHONG anh huong cong thuc sinh ve (predict_ticket/mix64). predict_
+consensus.py khong can sua (van tu dong glob theo lich su).
+
+I. THEM MODEL PHU #5 (ONCE5) - SEED NOI TIEP, CHI QUET 1 KY GAN NHAT (MOI)
+-------------------------------------------------------------------------
+Theo yeu cau: them 1 model quet moi (model thu 6 cua workflow). Co che
+GIONG HET Model phu #4 (ONCE4) - seed TU NOI TIEP (khong lap lai dai cu,
+tu doc/ghi state file rieng moi lan chay) - CHI KHAC 1 diem: ONCE5 chi
+quet DUNG 1 ky gan nhat (ONCE5_LAST_N_DRAWS=1) thay vi 500 ky nhu ONCE4.
+
+Env moi (trong scan_v2_auto.yml):
+  ONCE5_INITIAL_SEED_START = "1700477750639" (diem bat dau lan dau tien,
+    sau do tu nhay tiep, khong bao gio quay lai)
+  ONCE5_LAST_N_DRAWS       = "1"
+  ONCE5_STATE_FILE         = "once5_seed_state.json"
+  (dung chung ONCE_BATCH_SIZE voi ONCE4 cho kich thuoc moi chunk)
+
+Job moi:
+  - scan_once5_chunk (20 chunk song song, giong het cau truc
+    scan_once4_chunk, chi doi state file + LAST_N_DRAWS).
+  - merge_once5 (needs: scan_once5_chunk, merge_once4 - xich SAU
+    merge_once4 de giu dung nguyen tac CHI 1 job push l1_merged/l2_merged
+    tai 1 thoi diem): gop 20 chunk -> l1_merged/merged_seed{X}.json (X =
+    seed cua lan nay), thang hang qua check_l1_merged.py, xoa file L1/L2
+    cua lan truoc, ghi vi tri ke tiep vao once5_seed_state.json, commit+push.
+
+Da cap nhat needs cua predict_next/predict_next_app/predict_consensus/
+cleanup_l1 de bao gom merge_once5 (dam bao doi model 6 quet+merge xong
+truoc khi predict, va cleanup_l1 khong xoa nham file cua model 6 vi seed
+noi tiep doi ten file moi lan chay - da them logic doc once5_seed_state.json
+vao buoc don dep, giong het cach lam voi once4_seed_state.json).
+
+KHONG doi thuat toan sinh ve/seed (scan_per_draw.cpp giu nguyen). File
+l1_merged/merged_seed{X}.json cua model 6 se tu dong duoc predict_next
+(base) va predict_next_app (moi file = 1 ve rieng, xem muc H) dua vao
+tinh toan nhu 5 model con lai - khong can sua predict_next_draw.py hay
+predict_next_draw_app.py vi ca 2 deu tu dong glob theo L1_GLOB.
