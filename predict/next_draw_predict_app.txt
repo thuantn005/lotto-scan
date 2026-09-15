@@ -3,10 +3,10 @@ sinh so cua app Flutter 'San Chia Giai 535' - tab Sinh So Tu Seed):
 chon ngau nhien seed trong cua so uu tien [ky 00189, ky 00688]
 (cach 200 ky, rong 500 ky), roi ap dung cong thuc hash
 giong TicketFormula.dart / scan_v2.cpp (khong AI/ML, khong uu tien seed).
-Che do pool: window | Tong so seed trong pool: 9828922
+Che do pool: window | Tong so seed trong pool: 12231629
 
-Ve 1: 03-04-13-24-25 + DAC BIET 02 (seed 2013384018417)
-Ve 2: 05-07-21-24-31 + DAC BIET 02 (seed 2015261132405)
-Ve 3: 06-10-14-24-25 + DAC BIET 06 (seed 930603127520)
-Ve 4: 08-16-18-24-35 + DAC BIET 12 (seed 112347815817)
-Ve 5: 04-13-18-25-34 + DAC BIET 07 (seed 127463859384)
+Ve 1: 06-07-19-22-27 + DAC BIET 06 (seed 2041965493348)
+Ve 2: 16-17-20-26-34 + DAC BIET 09 (seed 1045375970037)
+Ve 3: 09-17-19-22-35 + DAC BIET 02 (seed 2058429810524)
+Ve 4: 02-04-10-18-30 + DAC BIET 05 (seed 112336543885)
+Ve 5: 04-08-13-17-19 + DAC BIET 01 (seed 1020500780369)
