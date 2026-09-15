@@ -1,0 +1,30 @@
+BAO CAO TONG HOP DU DOAN KY 00888 - 3 chien luoc, 11 ve
+(KHONG phai 1 chien luoc moi - chi tong hop cac chien luoc DOC LAP da co de tham khao, xem docstring file nay)
+
+So ve theo tung chien luoc: ai=5, ai2=1, app=5
+
+Moc ngau nhien (NEU 11 ve nay la boc ngau nhien DOC LAP, khong lien quan seed):
+  moi so chinh (1-35) ky vong xuat hien ~1.57 lan; moi so dac biet (1-12) ky vong ~0.92 lan.
+
+TOP 10 so chinh xuat hien NHIEU ve nhat:
+  so 07: xuat hien trong 5/11 ve <-- vuot moc ngau nhien
+  so 19: xuat hien trong 5/11 ve <-- vuot moc ngau nhien
+  so 13: xuat hien trong 4/11 ve <-- vuot moc ngau nhien
+  so 27: xuat hien trong 4/11 ve <-- vuot moc ngau nhien
+  so 17: xuat hien trong 4/11 ve <-- vuot moc ngau nhien
+  so 30: xuat hien trong 3/11 ve <-- vuot moc ngau nhien
+  so 35: xuat hien trong 3/11 ve <-- vuot moc ngau nhien
+  so 18: xuat hien trong 3/11 ve <-- vuot moc ngau nhien
+  so 04: xuat hien trong 3/11 ve <-- vuot moc ngau nhien
+  so 22: xuat hien trong 3/11 ve <-- vuot moc ngau nhien
+
+TOP so dac biet xuat hien NHIEU ve nhat:
+  DB 12: xuat hien trong 3/11 ve <-- vuot moc ngau nhien
+  DB 09: xuat hien trong 2/11 ve <-- vuot moc ngau nhien
+  DB 02: xuat hien trong 2/11 ve <-- vuot moc ngau nhien
+  DB 04: xuat hien trong 1/11 ve <-- vuot moc ngau nhien
+  DB 06: xuat hien trong 1/11 ve <-- vuot moc ngau nhien
+
+Luu y: cac chien luoc KHONG doc lap hoan toan ve nguon seed (deu lay tu cung l1_merged/), nen trung lap CAO HON moc ngau
+nhien mot chut la BINH THUONG (dung nguon du lieu dau vao), KHONG co nghia la so do 'sap ve' - backtest_predictions.py
+da xac nhan chua chien luoc nao hon random mot cach co y nghia thong ke.
