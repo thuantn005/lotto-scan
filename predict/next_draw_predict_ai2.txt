@@ -1,0 +1,10 @@
+DU DOAN KY 00887 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py va predict_next_draw_ai.py)
+Model AI su dung (Groq, mien phi vinh vien): openai/gpt-oss-120b
+Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
+
+--- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
+  seed_start cua model: 682305800400
+  seed AI chon: 682364969236
+  ly do AI dua ra: Có lần trùng gần nhất ở kỳ 00028, sớm hơn các seed khác, nên đây là seed đáng chú ý nhất để theo dõi mặc dù tỷ lệ hit chung thấp.
+  DU DOAN ky 00887: 10-14-16-21-26 + DAC BIET 10
+
