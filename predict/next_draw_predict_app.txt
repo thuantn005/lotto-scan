@@ -1,12 +1,12 @@
-DU DOAN KY 00888 - PHIEN BAN APP (mo phong DUNG co che
+DU DOAN KY 00889 - PHIEN BAN APP (mo phong DUNG co che
 sinh so cua app Flutter 'San Chia Giai 535' - tab Sinh So Tu Seed):
-chon ngau nhien seed trong cua so uu tien [ky 00189, ky 00688]
+chon ngau nhien seed trong cua so uu tien [ky 00190, ky 00689]
 (cach 200 ky, rong 500 ky), roi ap dung cong thuc hash
 giong TicketFormula.dart / scan_v2.cpp (khong AI/ML, khong uu tien seed).
-Che do pool: window | Tong so seed trong pool: 12231629
+Che do pool: window | Tong so seed trong pool: 9827681
 
-Ve 1: 06-07-19-22-27 + DAC BIET 06 (seed 2041965493348)
-Ve 2: 16-17-20-26-34 + DAC BIET 09 (seed 1045375970037)
-Ve 3: 09-17-19-22-35 + DAC BIET 02 (seed 2058429810524)
-Ve 4: 02-04-10-18-30 + DAC BIET 05 (seed 112336543885)
-Ve 5: 04-08-13-17-19 + DAC BIET 01 (seed 1020500780369)
+Ve 1: 05-13-23-28-34 + DAC BIET 03 (seed 136506715614)
+Ve 2: 07-08-18-21-35 + DAC BIET 08 (seed 2084734062800)
+Ve 3: 06-13-14-16-19 + DAC BIET 01 (seed 916778672592)
+Ve 4: 14-17-20-25-32 + DAC BIET 11 (seed 916713000004)
+Ve 5: 01-06-07-15-33 + DAC BIET 10 (seed 127365896049)
