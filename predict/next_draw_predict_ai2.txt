@@ -5,6 +5,6 @@ Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 --- Model (l1_merged file: l1_merged/merged_seed1020032910639.json) ---
   seed_start cua model: 1020032910639
   seed AI chon: 1021643155356
-  ly do AI dua ra: Có lần trúng gần nhất với kỳ hiện tại (draw 00877), là thời gian gần nhất trong toàn bộ các seed được liệt kê, do đó được xem là đáng chú ý nhất để theo dõi.
+  ly do AI dua ra: This seed achieved a hit in the most recent draw (00877) among all candidates with the same hit rate, making it the most noteworthy to monitor.
   DU DOAN ky 00888: 07-13-19-27-30 + DAC BIET 12
 
