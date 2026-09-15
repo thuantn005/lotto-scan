@@ -1,34 +1,34 @@
-DU DOAN KY 00887 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py)
+DU DOAN KY 00888 - PHIEN BAN AI/GEMINI (doc lap voi predict_next_draw.py)
 Model AI su dung: gemini-3-flash-preview
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
+--- Model (l1_merged file: l1_merged/merged_seed1020032910639.json) ---
+  seed_start cua model: 1020032910639
+  seed AI chon: 1021643155356
+  ly do AI dua ra: Seed nay co lan trung gan nhat o ky 00877 va bo so du doan chua cac so 7, 19, 27 dang xuat hien voi tan suat cao trong 15 ky gan day.
+  DU DOAN ky 00888: 07-13-19-27-30 + DAC BIET 12
+
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  seed AI chon: 130853961874
-  ly do AI dua ra: Seed nay tung trung o ky 00836 (tuong doi gan) va tap hop so chua cac con so 4, 32 dang co tan suat xuat hien cao trong 15 ky gan day.
-  DU DOAN ky 00887: 04-18-29-32-35 + DAC BIET 8
+  seed AI chon: 123212645660
+  ly do AI dua ra: Seed trung o ky 00813, bao gom so 7 va so 35 vua xuat hien o ky gan nhat (00887) cung voi so dac biet 4 trung voi ky vua qua.
+  DU DOAN ky 00888: 03-07-18-31-35 + DAC BIET 4
 
---- Model (l1_merged file: l1_merged/merged_seed1966298746639.json) ---
-  seed_start cua model: 1966298746639
-  seed AI chon: 1980587933004
-  ly do AI dua ra: Co lich su hit tai ky 00810 va bao gom day so chua cac so 4, 19, 29 xuat hien on dinh trong cac ky gan nhat.
-  DU DOAN ky 00887: 04-19-26-29-34 + DAC BIET 12
+--- Model (l1_merged file: l1_merged/merged_seed1997454262639.json) ---
+  seed_start cua model: 1997454262639
+  seed AI chon: 2015942574046
+  ly do AI dua ra: Seed trung gan day o ky 00862, bo so chua 27 va 35 la hai so vua moi xuat hien o ky 00887, phu hop voi xu huong lap lai so.
+  DU DOAN ky 00888: 02-16-17-27-35 + DAC BIET 9
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  seed AI chon: 682558561905
-  ly do AI dua ra: Day la ung vien co diem roi gan nhat (ky 00877), thich hop de theo doi tinh chu ky cua cac so 6, 16 va 19.
-  DU DOAN ky 00887: 06-16-19-21-35 + DAC BIET 11
+  seed AI chon: 682481437117
+  ly do AI dua ra: Seed trung ky 00854, tap hop cac so 4, 7, 9 thuong xuyen co mat gan day va so dac biet 2 xuat hien lien tuc trong cac ky gan day.
+  DU DOAN ky 00888: 01-04-07-09-20 + DAC BIET 2
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 911068263653
-  ly do AI dua ra: Tung trung tai ky 00876 va chua so 27, mot trong nhung con so xuat hien voi mat do day dac nhat trong chuoi thong ke.
-  DU DOAN ky 00887: 08-16-25-26-27 + DAC BIET 1
-
---- Model (l1_merged file: l1_merged/merged_seed988877394639.json) ---
-  seed_start cua model: 988877394639
-  seed AI chon: 1001853768112
-  ly do AI dua ra: Lua chon nay trung khop voi so dac biet (DB 5) vua ra va chua cac cap so 'nong' nhu 10, 27 de kiem chung do tre thong ke.
-  DU DOAN ky 00887: 10-16-27-30-33 + DAC BIET 5
+  seed AI chon: 918288854761
+  ly do AI dua ra: Seed co lan trung gan nhat vao ky 00873 (gan nhat trong model), bo so chua 22 va 33 la cac so da xuat hien o cac ky quay moi nhat.
+  DU DOAN ky 00888: 13-14-18-22-33 + DAC BIET 12
 
