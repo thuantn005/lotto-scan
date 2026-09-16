@@ -1,4 +1,4 @@
-BAO CAO TONG HOP DU DOAN KY 00890 - 1 chien luoc, 6 ve
+BAO CAO TONG HOP DU DOAN KY 00891 - 1 chien luoc, 6 ve
 (KHONG phai 1 chien luoc moi - chi tong hop cac chien luoc DOC LAP da co de tham khao, xem docstring file nay)
 
 So ve theo tung chien luoc: app=6
@@ -8,22 +8,22 @@ Moc ngau nhien (NEU 6 ve nay la boc ngau nhien DOC LAP, khong lien quan seed):
 
 TOP 10 so chinh xuat hien NHIEU ve nhat:
   so 05: xuat hien trong 3/6 ve <-- vuot moc ngau nhien
-  so 17: xuat hien trong 3/6 ve <-- vuot moc ngau nhien
-  so 30: xuat hien trong 3/6 ve <-- vuot moc ngau nhien
-  so 07: xuat hien trong 2/6 ve <-- vuot moc ngau nhien
+  so 14: xuat hien trong 3/6 ve <-- vuot moc ngau nhien
   so 32: xuat hien trong 2/6 ve <-- vuot moc ngau nhien
-  so 13: xuat hien trong 2/6 ve <-- vuot moc ngau nhien
-  so 19: xuat hien trong 2/6 ve <-- vuot moc ngau nhien
-  so 08: xuat hien trong 1/6 ve <-- vuot moc ngau nhien
-  so 20: xuat hien trong 1/6 ve <-- vuot moc ngau nhien
-  so 03: xuat hien trong 1/6 ve <-- vuot moc ngau nhien
+  so 24: xuat hien trong 2/6 ve <-- vuot moc ngau nhien
+  so 33: xuat hien trong 2/6 ve <-- vuot moc ngau nhien
+  so 18: xuat hien trong 2/6 ve <-- vuot moc ngau nhien
+  so 20: xuat hien trong 2/6 ve <-- vuot moc ngau nhien
+  so 22: xuat hien trong 2/6 ve <-- vuot moc ngau nhien
+  so 30: xuat hien trong 2/6 ve <-- vuot moc ngau nhien
+  so 01: xuat hien trong 1/6 ve <-- vuot moc ngau nhien
 
 TOP so dac biet xuat hien NHIEU ve nhat:
-  DB 11: xuat hien trong 1/6 ve <-- vuot moc ngau nhien
+  DB 04: xuat hien trong 2/6 ve <-- vuot moc ngau nhien
+  DB 02: xuat hien trong 1/6 ve <-- vuot moc ngau nhien
+  DB 07: xuat hien trong 1/6 ve <-- vuot moc ngau nhien
   DB 09: xuat hien trong 1/6 ve <-- vuot moc ngau nhien
-  DB 06: xuat hien trong 1/6 ve <-- vuot moc ngau nhien
-  DB 01: xuat hien trong 1/6 ve <-- vuot moc ngau nhien
-  DB 12: xuat hien trong 1/6 ve <-- vuot moc ngau nhien
+  DB 03: xuat hien trong 1/6 ve <-- vuot moc ngau nhien
 
 Luu y: cac chien luoc KHONG doc lap hoan toan ve nguon seed (deu lay tu cung l1_merged/), nen trung lap CAO HON moc ngau
 nhien mot chut la BINH THUONG (dung nguon du lieu dau vao), KHONG co nghia la so do 'sap ve' - backtest_predictions.py
