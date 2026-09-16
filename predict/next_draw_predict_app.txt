@@ -1,4 +1,4 @@
-DU DOAN KY 00889 - PHIEN BAN APP (moi model 1 ve, chon
+DU DOAN KY 00890 - PHIEN BAN APP (moi model 1 ve, chon
 NGAU NHIEN DEU 1 seed trong pool cua RIENG model do - mo phong co che
 random pick cua app Flutter 'San Chia Giai 535', khac 'base' o cho
 khong uu tien seed manh nhat) roi ap dung cong thuc hash giong
@@ -6,37 +6,37 @@ TicketFormula.dart / scan_v2.cpp (khong AI/ML).
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  so seed trong L1 cua model nay: 3997364
-  seed duoc chon (ngau nhien deu): 108496573347
-  DU DOAN ky 00889: 02-08-23-26-27 + DAC BIET 10
+  so seed trong L1 cua model nay: 3997299
+  seed duoc chon (ngau nhien deu): 130797930154
+  DU DOAN ky 00890: 06-09-14-25-28 + DAC BIET 6
 
---- Model (l1_merged file: l1_merged/merged_seed1700477750639.json) ---
-  seed_start cua model: 1700477750639
-  so seed trong L1 cua model nay: 8152
-  seed duoc chon (ngau nhien deu): 1724354075430
-  DU DOAN ky 00889: 02-03-09-16-30 + DAC BIET 3
+--- Model (l1_merged file: l1_merged/merged_seed1731633266639.json) ---
+  seed_start cua model: 1731633266639
+  so seed trong L1 cua model nay: 8063
+  seed duoc chon (ngau nhien deu): 1732901638290
+  DU DOAN ky 00890: 02-04-17-30-34 + DAC BIET 7
 
 --- Model (l1_merged file: l1_merged/merged_seed1903987714639.json) ---
   seed_start cua model: 1903987714639
-  so seed trong L1 cua model nay: 3997074
-  seed duoc chon (ngau nhien deu): 1930281809553
-  DU DOAN ky 00889: 13-27-28-33-35 + DAC BIET 12
+  so seed trong L1 cua model nay: 3997194
+  seed duoc chon (ngau nhien deu): 1924692956700
+  DU DOAN ky 00890: 02-16-26-27-31 + DAC BIET 4
 
---- Model (l1_merged file: l1_merged/merged_seed2090920810639.json) ---
-  seed_start cua model: 2090920810639
-  so seed trong L1 cua model nay: 3996739
-  seed duoc chon (ngau nhien deu): 2109355129463
-  DU DOAN ky 00889: 11-21-23-28-30 + DAC BIET 2
+--- Model (l1_merged file: l1_merged/merged_seed2122076326639.json) ---
+  seed_start cua model: 2122076326639
+  so seed trong L1 cua model nay: 4001880
+  seed duoc chon (ngau nhien deu): 2135712633289
+  DU DOAN ky 00890: 05-08-10-19-30 + DAC BIET 12
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  so seed trong L1 cua model nay: 354940
-  seed duoc chon (ngau nhien deu): 682793808813
-  DU DOAN ky 00889: 02-04-05-23-25 + DAC BIET 11
+  so seed trong L1 cua model nay: 355370
+  seed duoc chon (ngau nhien deu): 683530097172
+  DU DOAN ky 00890: 01-05-08-16-17 + DAC BIET 9
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  so seed trong L1 cua model nay: 3999792
-  seed duoc chon (ngau nhien deu): 908461992024
-  DU DOAN ky 00889: 01-04-07-23-27 + DAC BIET 8
+  so seed trong L1 cua model nay: 3999582
+  seed duoc chon (ngau nhien deu): 915595964613
+  DU DOAN ky 00890: 12-13-14-17-22 + DAC BIET 8
 
