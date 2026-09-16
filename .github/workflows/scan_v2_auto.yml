@@ -1491,19 +1491,29 @@ jobs:
             --event-json "j1_535/${{ needs.scan_and_check.outputs.latest_ky }}.json"
 
   predict_next_app:
-    # CHIEN LUOC THU 2 (va la chien luoc AI/ML DUY NHAT bi loai bo hoan
-    # toan - xem README_THAY_DOI.txt) cua pipeline nay: mo phong co che
-    # sinh so cua app Flutter "San Chia Giai 535" (tab "Sinh So Tu Seed" -
-    # RandomPickScreen + GithubSeedSource + TicketFormula). Giong het
-    # "base" (predict_next) o cho MOI FILE trong l1_merged/ (moi model) tu
-    # sinh ra 1 ve RIENG (khong gop seed cac file lai thanh 1 pool chung -
-    # da doi lai theo yeu cau, xem README_THAY_DOI.txt) - chi khac cach
-    # chon seed trong tung file: base chon seed MANH NHAT, app chon NGAU
-    # NHIEN DEU (khong uu tien seed nao). Roi ap dung DUNG cong thuc hash
-    # giong TicketFormula.dart/scan_v2.cpp. DOC LAP HOAN TOAN voi
-    # predict_next (khong dung chung file, khong AI/ML, khong can API key
-    # nao) - CHAY SAU CUNG trong chuoi push tuan tu de dam bao thu tu
-    # commit, va cleanup_l1 se doi job nay xong roi moi don dep l1_merged.
+    # CHIEN LUOC THU 2 cua pipeline nay: mo phong co che sinh so cua app
+    # Flutter "San Chia Giai 535" (tab "Sinh So Tu Seed"). Giong "base"
+    # (predict_next) o cho MOI FILE trong l1_merged/ (moi model) tu sinh
+    # ra 1 ve RIENG, va seed du doan LUON LUON lay TU L1 (khong bao gio
+    # lay truc tiep tu l2_merged) - nhung KHAC cach chon seed trong L1:
+    #   - base: chon seed MANH NHAT (weight/so lan tung trung cao nhat).
+    #   - app : chon THEO 2 BUOC, lay KY (draw_id) LAM DON VI (khong gop
+    #     seed cua nhieu ky lai voi nhau theo bucket - neu gop se co 1 ky
+    #     "dong seed" bat thuong lan at ca vung, thuc te tung thay 1 bucket
+    #     16134 seed dong hang): (1) tinh MAT DO (lam muot cua so 20 ky) tu
+    #     khoang cach (so ky) GIUA 2 LAN TRUNG LIEN TIEP trong l2_merged
+    #     CUA CHINH model do (CHI dung LAM MAU THONG KE, khong bao gio lay
+    #     seed truc tiep tu day), roi CHON 1 KY CU THE theo trong so mat
+    #     do nay; (2) trong ky da chon, CHON NGAU NHIEN DEU 1 seed L1
+    #     thuoc dung ky do. Model chua co L2 rieng (qua moi) thi du phong
+    #     bang mat do gop toan cuc; hoan toan khong co du lieu phu hop thi
+    #     du phong cuoi cung: random deu tren toan bo pool L1. Xem
+    #     README_THAY_DOI.txt.
+    # Roi ap dung DUNG cong thuc hash giong TicketFormula.dart/scan_v2.cpp.
+    # DOC LAP HOAN TOAN voi predict_next (khong dung chung file, khong
+    # AI/ML, khong can API key nao) - CHAY SAU CUNG trong chuoi push tuan
+    # tu de dam bao thu tu commit, va cleanup_l1 se doi job nay xong roi
+    # moi don dep l1_merged.
     needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, merge_once5, predict_next]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
@@ -1519,11 +1529,18 @@ jobs:
       # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
       # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
 
-      - name: Du doan ky ke tiep - phien ban APP (mo phong co che sinh so cua app, khong loc cua so)
+      - name: Du doan ky ke tiep - phien ban APP (uu tien seed TU L1 theo histogram do dao dong cua l2_merged)
         env:
           CSV_PATH: data/all.csv
           L1_GLOB: "l1_merged/merged_seed*.json"
+          L2_DIR: "l2_merged"
           OUT_PATH: "predict/next_draw_predict_app.txt"
+          # De trong = tat ca 6 model tu dong theo histogram L2. Muon
+          # kiem soat TUYET DOI rieng 1/vai model thi dien JSON dang
+          # {"<seed_start>": {"min": X, "max": Y, "target": Z}, ...} - dat
+          # min=max=target de bat buoc dung 1 so ky duy nhat (vd
+          # {"682305800400": {"min": 267, "max": 267, "target": 267}}).
+          APP_MANUAL_OVERRIDE_JSON: ""
         run: python3 predict_next_draw_app.py
 
       - name: Commit ket qua du doan APP
