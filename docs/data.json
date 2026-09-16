@@ -1,0 +1,554 @@
+{
+  "generated_at_utc": "2026-09-16T02:11:42.179258+00:00",
+  "random_baseline": {
+    "avg_matches": 0.714,
+    "special_hit_rate": 0.083
+  },
+  "jackpot_wins": [],
+  "next_draw": {
+    "draw_id": "00889",
+    "actual": null,
+    "strategies": {
+      "ai2": [
+        {
+          "numbers": [
+            11,
+            19,
+            20,
+            23,
+            34
+          ],
+          "special": 6,
+          "seed": "118743901061",
+          "seed_start": "108477750639",
+          "source_file": "l1_merged/merged_seed108477750639.json"
+        }
+      ],
+      "app": [
+        {
+          "numbers": [
+            2,
+            8,
+            23,
+            26,
+            27
+          ],
+          "special": 10,
+          "seed": "108496573347",
+          "seed_start": "108477750639",
+          "source_file": "l1_merged/merged_seed108477750639.json"
+        },
+        {
+          "numbers": [
+            2,
+            3,
+            9,
+            16,
+            30
+          ],
+          "special": 3,
+          "seed": "1724354075430",
+          "seed_start": "1700477750639",
+          "source_file": "l1_merged/merged_seed1700477750639.json"
+        },
+        {
+          "numbers": [
+            13,
+            27,
+            28,
+            33,
+            35
+          ],
+          "special": 12,
+          "seed": "1930281809553",
+          "seed_start": "1903987714639",
+          "source_file": "l1_merged/merged_seed1903987714639.json"
+        },
+        {
+          "numbers": [
+            11,
+            21,
+            23,
+            28,
+            30
+          ],
+          "special": 2,
+          "seed": "2109355129463",
+          "seed_start": "2090920810639",
+          "source_file": "l1_merged/merged_seed2090920810639.json"
+        },
+        {
+          "numbers": [
+            2,
+            4,
+            5,
+            23,
+            25
+          ],
+          "special": 11,
+          "seed": "682793808813",
+          "seed_start": "682305800400",
+          "source_file": "l1_merged/merged_seed682305800400.json"
+        },
+        {
+          "numbers": [
+            1,
+            4,
+            7,
+            23,
+            27
+          ],
+          "special": 8,
+          "seed": "908461992024",
+          "seed_start": "900477750639",
+          "source_file": "l1_merged/merged_seed900477750639.json"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "ai": {
+      "tickets_checked": 10,
+      "checked_draws": 2,
+      "avg_matches": 1.1,
+      "special_hit_rate": 0.0,
+      "j1_hits": 0,
+      "matches_hist": {
+        "0": 2,
+        "1": 5,
+        "2": 3,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "ai2": {
+      "tickets_checked": 2,
+      "checked_draws": 2,
+      "avg_matches": 1.0,
+      "special_hit_rate": 0.0,
+      "j1_hits": 0,
+      "matches_hist": {
+        "0": 1,
+        "1": 0,
+        "2": 1,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      }
+    },
+    "app": {
+      "tickets_checked": 10,
+      "checked_draws": 2,
+      "avg_matches": 0.9,
+      "special_hit_rate": 0.0,
+      "j1_hits": 0,
+      "matches_hist": {
+        "0": 5,
+        "1": 3,
+        "2": 0,
+        "3": 2,
+        "4": 0,
+        "5": 0
+      }
+    }
+  },
+  "draws": [
+    {
+      "draw_id": "00888",
+      "actual": {
+        "numbers": [
+          1,
+          8,
+          13,
+          19,
+          29
+        ],
+        "special": 10,
+        "date": "2026-09-15"
+      },
+      "strategies": {
+        "ai": [
+          {
+            "numbers": [
+              7,
+              13,
+              19,
+              27,
+              30
+            ],
+            "special": 12,
+            "seed": "1021643155356",
+            "seed_start": "1020032910639",
+            "source_file": "l1_merged/merged_seed1020032910639.json",
+            "matches": 2,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              3,
+              7,
+              18,
+              31,
+              35
+            ],
+            "special": 4,
+            "seed": "123212645660",
+            "seed_start": "108477750639",
+            "source_file": "l1_merged/merged_seed108477750639.json",
+            "matches": 0,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              2,
+              16,
+              17,
+              27,
+              35
+            ],
+            "special": 9,
+            "seed": "2015942574046",
+            "seed_start": "1997454262639",
+            "source_file": "l1_merged/merged_seed1997454262639.json",
+            "matches": 0,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              1,
+              4,
+              7,
+              9,
+              20
+            ],
+            "special": 2,
+            "seed": "682481437117",
+            "seed_start": "682305800400",
+            "source_file": "l1_merged/merged_seed682305800400.json",
+            "matches": 1,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              13,
+              14,
+              18,
+              22,
+              33
+            ],
+            "special": 12,
+            "seed": "918288854761",
+            "seed_start": "900477750639",
+            "source_file": "l1_merged/merged_seed900477750639.json",
+            "matches": 1,
+            "special_hit": false,
+            "is_j1": false
+          }
+        ],
+        "ai2": [
+          {
+            "numbers": [
+              7,
+              13,
+              19,
+              27,
+              30
+            ],
+            "special": 12,
+            "seed": "1021643155356",
+            "seed_start": "1020032910639",
+            "source_file": "l1_merged/merged_seed1020032910639.json",
+            "matches": 2,
+            "special_hit": false,
+            "is_j1": false
+          }
+        ],
+        "app": [
+          {
+            "numbers": [
+              6,
+              7,
+              19,
+              22,
+              27
+            ],
+            "special": 6,
+            "seed": "2041965493348",
+            "seed_start": "189",
+            "source_file": "window",
+            "matches": 1,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              16,
+              17,
+              20,
+              26,
+              34
+            ],
+            "special": 9,
+            "seed": "1045375970037",
+            "seed_start": "189",
+            "source_file": "window",
+            "matches": 0,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              9,
+              17,
+              19,
+              22,
+              35
+            ],
+            "special": 2,
+            "seed": "2058429810524",
+            "seed_start": "189",
+            "source_file": "window",
+            "matches": 1,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              2,
+              4,
+              10,
+              18,
+              30
+            ],
+            "special": 5,
+            "seed": "112336543885",
+            "seed_start": "189",
+            "source_file": "window",
+            "matches": 0,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              4,
+              8,
+              13,
+              17,
+              19
+            ],
+            "special": 1,
+            "seed": "1020500780369",
+            "seed_start": "189",
+            "source_file": "window",
+            "matches": 3,
+            "special_hit": false,
+            "is_j1": false
+          }
+        ]
+      }
+    },
+    {
+      "draw_id": "00887",
+      "actual": {
+        "numbers": [
+          15,
+          19,
+          27,
+          33,
+          35
+        ],
+        "special": 4,
+        "date": "2026-09-15"
+      },
+      "strategies": {
+        "ai": [
+          {
+            "numbers": [
+              4,
+              18,
+              29,
+              32,
+              35
+            ],
+            "special": 8,
+            "seed": "130853961874",
+            "seed_start": "108477750639",
+            "source_file": "l1_merged/merged_seed108477750639.json",
+            "matches": 1,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              4,
+              19,
+              26,
+              29,
+              34
+            ],
+            "special": 12,
+            "seed": "1980587933004",
+            "seed_start": "1966298746639",
+            "source_file": "l1_merged/merged_seed1966298746639.json",
+            "matches": 1,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              6,
+              16,
+              19,
+              21,
+              35
+            ],
+            "special": 11,
+            "seed": "682558561905",
+            "seed_start": "682305800400",
+            "source_file": "l1_merged/merged_seed682305800400.json",
+            "matches": 2,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              8,
+              16,
+              25,
+              26,
+              27
+            ],
+            "special": 1,
+            "seed": "911068263653",
+            "seed_start": "900477750639",
+            "source_file": "l1_merged/merged_seed900477750639.json",
+            "matches": 1,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              10,
+              16,
+              27,
+              30,
+              33
+            ],
+            "special": 5,
+            "seed": "1001853768112",
+            "seed_start": "988877394639",
+            "source_file": "l1_merged/merged_seed988877394639.json",
+            "matches": 2,
+            "special_hit": false,
+            "is_j1": false
+          }
+        ],
+        "ai2": [
+          {
+            "numbers": [
+              10,
+              14,
+              16,
+              21,
+              26
+            ],
+            "special": 10,
+            "seed": "682364969236",
+            "seed_start": "682305800400",
+            "source_file": "l1_merged/merged_seed682305800400.json",
+            "matches": 0,
+            "special_hit": false,
+            "is_j1": false
+          }
+        ],
+        "app": [
+          {
+            "numbers": [
+              5,
+              12,
+              17,
+              20,
+              28
+            ],
+            "special": 11,
+            "seed": "1974961807368",
+            "seed_start": "188",
+            "source_file": "window",
+            "matches": 0,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              3,
+              12,
+              17,
+              22,
+              32
+            ],
+            "special": 3,
+            "seed": "921688835352",
+            "seed_start": "188",
+            "source_file": "window",
+            "matches": 0,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              7,
+              10,
+              18,
+              29,
+              30
+            ],
+            "special": 10,
+            "seed": "135654846045",
+            "seed_start": "188",
+            "source_file": "window",
+            "matches": 0,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              3,
+              4,
+              9,
+              32,
+              33
+            ],
+            "special": 7,
+            "seed": "1012419936389",
+            "seed_start": "188",
+            "source_file": "window",
+            "matches": 1,
+            "special_hit": false,
+            "is_j1": false
+          },
+          {
+            "numbers": [
+              17,
+              19,
+              27,
+              30,
+              33
+            ],
+            "special": 6,
+            "seed": "989397664149",
+            "seed_start": "188",
+            "source_file": "window",
+            "matches": 3,
+            "special_hit": false,
+            "is_j1": false
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+name: Dashboard - build + deploy len GitHub Pages
+
+# Chay MOI KHI predict/ hoac data/all.csv thay doi tren nhanh main (tuc la
+# sau khi scan_v2_auto.yml da commit ket qua du doan/ket qua that moi), hoac
+# khi bam Run workflow thu cong. Job build doc predict/history/ + data/all.csv
+# (+ predict/strategy_stats.json neu co) qua generate_dashboard_data.py de ra
+# docs/data.json, roi Pages deploy TOAN BO thu muc docs/ (index.html +
+# data.json) len GitHub Pages - KHONG commit data.json vao git, chi deploy
+# truc tiep qua artifact cua Pages nen khong lam phinh lich su commit.
+#
+# CAI DAT 1 LAN DUY NHAT truoc khi workflow nay chay duoc:
+#   Settings -> Pages -> Build and deployment -> Source: "GitHub Actions"
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'predict/**'
+      - 'data/all.csv'
+      - 'docs/**'
+      - 'generate_dashboard_data.py'
+      - '.github/workflows/dashboard_pages.yml'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Tao docs/data.json tu predict/history + data/all.csv
+        env:
+          CSV_PATH: data/all.csv
+          HISTORY_DIR: predict/history
+          STATS_PATH: predict/strategy_stats.json
+          OUT_PATH: docs/data.json
+          MAX_DRAWS_OUT: "60"
+        run: python3 generate_dashboard_data.py
+
+      - name: Upload thu muc docs/ lam Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy len GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
