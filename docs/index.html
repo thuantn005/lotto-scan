@@ -3,32 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lotto Scan — Dashboard dự đoán vs thực tế</title>
+<title>Vé May Mắn — Dò Số Thần Tài</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root {
-    --bg: #0f1115;
-    --card: #171a21;
-    --card-2: #1d212a;
-    --border: #2a2f3a;
-    --text: #e8eaed;
-    --text-dim: #9aa1ad;
-    --accent: #378ADD;
-    --good: #1D9E75;
-    --bad: #5F5E5A;
-    --warn: #BA7517;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --bg: #1a0f0a;
+    --bg-2: #241209;
+    --card: #2c160d;
+    --card-2: #38190f;
+    --border: #6b3a1f;
+    --border-soft: #4a2814;
+    --gold: #e8b73f;
+    --gold-deep: #b8860b;
+    --gold-pale: #f6d987;
+    --red: #b2231a;
+    --red-bright: #d63d2f;
+    --text: #f6e8d2;
+    --text-dim: #c2a184;
+    --good: #3f9a63;
+    --good-bg: rgba(63,154,99,0.22);
+    font-family: "Be Vietnam Pro", -apple-system, sans-serif;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    background: var(--bg);
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(232,183,63,0.10), transparent 55%),
+      radial-gradient(ellipse at 90% 0%, rgba(178,35,26,0.14), transparent 45%),
+      var(--bg);
     color: var(--text);
-    padding: 24px 16px 64px;
+    padding: 28px 16px 72px;
   }
   .wrap { max-width: 900px; margin: 0 auto; }
-  h1 { font-size: 22px; font-weight: 600; margin: 0 0 4px; }
-  .subtitle { color: var(--text-dim); font-size: 13px; margin: 0 0 24px; }
+
+  .masthead { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .masthead .coin { width: 34px; height: 34px; flex-shrink: 0; }
+  h1 {
+    font-family: "Baloo 2", "Be Vietnam Pro", sans-serif;
+    font-weight: 700; font-size: 24px; letter-spacing: 0.2px;
+    margin: 0; color: var(--gold-pale);
+  }
+  .subtitle { color: var(--text-dim); font-size: 13px; margin: 8px 0 24px; }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -37,77 +56,152 @@
   }
   .card {
     background: var(--card);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-soft);
     border-radius: 10px;
     padding: 14px 16px;
   }
   .card .label { font-size: 12px; color: var(--text-dim); margin: 0 0 6px; }
-  .card .value { font-size: 22px; font-weight: 600; margin: 0; }
+  .card .value { font-family: "Baloo 2", sans-serif; font-size: 22px; font-weight: 600; margin: 0; color: var(--gold-pale); }
   .card .sub { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+
   section { margin-bottom: 32px; }
-  section > h2 { font-size: 16px; font-weight: 600; margin: 0 0 12px; }
-  .chart-wrap { position: relative; height: 220px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
-  .draw-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    margin-bottom: 12px;
-  }
-  .draw-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-  .draw-head .draw-id { font-weight: 600; font-size: 14px; }
-  .draw-head .actual { font-size: 13px; color: var(--text-dim); }
-  .draw-head .actual b { color: var(--text); font-weight: 600; }
-  .pending-badge {
-    font-size: 11px; padding: 2px 8px; border-radius: 6px;
-    background: rgba(186,117,23,0.18); color: #f2b25c;
-  }
-  .strategy-block { padding: 8px 0; border-top: 1px solid var(--border); }
-  .strategy-block:first-of-type { border-top: none; }
-  .strategy-block-head {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 13px; margin-bottom: 6px;
-  }
-  .strategy-name { color: var(--text-dim); }
-  .ticket-line {
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 10px; padding: 3px 0; font-size: 13px;
-  }
-  .ticket-numbers { flex: 1; text-align: left; font-variant-numeric: tabular-nums; }
-  .ticket-seed { color: var(--text-dim); font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .match-badge {
-    font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; white-space: nowrap;
-  }
-  .match-badge.hi { background: rgba(29,158,117,0.18); color: #5fd6ac; }
-  .match-badge.lo { background: rgba(95,94,90,0.25); color: var(--text-dim); }
-  .note { color: var(--text-dim); font-size: 12px; margin-top: 6px; }
+  section > h2 { font-family: "Baloo 2", sans-serif; font-size: 16px; font-weight: 600; margin: 0 0 12px; color: var(--gold-pale); }
+  .chart-wrap { position: relative; height: 220px; background: var(--card); border: 1px solid var(--border-soft); border-radius: 10px; padding: 16px; }
+
+  /* --- Jackpot banner: gilded, glowing --- */
   .jackpot-banner {
-    background: linear-gradient(180deg, rgba(186,117,23,0.16), rgba(186,117,23,0.06));
-    border: 1px solid #BA7517;
-    border-radius: 10px;
-    padding: 14px 16px;
-    margin-bottom: 20px;
+    position: relative;
+    background: linear-gradient(155deg, #4a2308, #2c1408 70%);
+    border: 1px solid var(--gold-deep);
+    box-shadow: 0 0 0 1px rgba(232,183,63,0.15), 0 0 24px rgba(232,183,63,0.12);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 22px;
+    overflow: hidden;
   }
-  .jackpot-banner .title { font-weight: 600; font-size: 14px; color: #f2b25c; margin: 0 0 8px; }
-  .jackpot-entry { font-size: 13px; padding: 6px 0; border-top: 1px solid rgba(186,117,23,0.3); }
+  .jackpot-banner::before {
+    content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(115deg, rgba(232,183,63,0.06) 0 2px, transparent 2px 26px);
+    pointer-events: none;
+  }
+  .jackpot-banner .title {
+    font-family: "Baloo 2", sans-serif; font-weight: 700; font-size: 15px;
+    color: var(--gold-pale); margin: 0 0 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .jackpot-banner .title .coin { width: 20px; height: 20px; }
+  .jackpot-entry { font-size: 13px; padding: 8px 0; border-top: 1px dashed rgba(232,183,63,0.28); position: relative; }
   .jackpot-entry:first-of-type { border-top: none; }
-  .jackpot-entry .models { color: var(--text-dim); font-size: 12px; margin-top: 2px; }
-  .next-draw-section {
-    background: var(--card-2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    margin-bottom: 24px;
+  .jackpot-entry .models { color: var(--text-dim); font-size: 12px; margin-top: 3px; }
+
+  /* --- Next-draw ticket: the hero moment --- */
+  .ticket {
+    position: relative;
+    background: linear-gradient(160deg, var(--red-bright) 0%, var(--red) 55%, #7a170f 100%);
+    border-radius: 16px;
+    padding: 20px 20px 16px;
+    margin-bottom: 26px;
+    box-shadow: 0 10px 30px rgba(178,35,26,0.28), inset 0 0 0 1px rgba(232,183,63,0.35);
   }
-  .next-draw-section > h2 { font-size: 15px; margin: 0 0 4px; }
-  .next-draw-section .sub { font-size: 12px; color: var(--text-dim); margin: 0 0 10px; }
+  .ticket-ribbon {
+    position: absolute; top: 14px; right: -8px;
+    background: var(--gold); color: #3a1f00;
+    font-family: "Baloo 2", sans-serif; font-weight: 700; font-size: 11px;
+    padding: 4px 14px 4px 12px; border-radius: 4px 0 0 4px;
+    box-shadow: -2px 2px 6px rgba(0,0,0,0.25);
+  }
+  .ticket-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .ticket-head .coin { width: 24px; height: 24px; flex-shrink: 0; }
+  .ticket h2 {
+    font-family: "Baloo 2", sans-serif; font-size: 17px; font-weight: 700;
+    color: #fff3d6; margin: 0;
+  }
+  .ticket .sub { font-size: 12px; color: rgba(255,243,214,0.75); margin: 4px 0 14px; }
+  .ticket-tear {
+    border-top: 2px dashed rgba(255,243,214,0.4);
+    margin: 6px 0 14px;
+    position: relative;
+  }
+  .ticket-tear::before, .ticket-tear::after {
+    content: ""; position: absolute; top: -9px; width: 18px; height: 18px;
+    background: var(--bg); border-radius: 50%;
+  }
+  .ticket-tear::before { left: -30px; }
+  .ticket-tear::after { right: -30px; }
+  .strategy-block { padding: 10px 0; border-top: 1px solid rgba(255,243,214,0.16); }
+  .ticket .strategy-block:first-of-type { border-top: none; padding-top: 2px; }
+  .strategy-block-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 8px; }
+  .strategy-name { color: var(--text-dim); }
+  .ticket .strategy-name { color: rgba(255,243,214,0.72); font-weight: 600; }
+  .ticket-line { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 4px 0; font-size: 13px; }
+  .ticket-seed { color: var(--text-dim); font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ticket .ticket-seed { color: rgba(255,243,214,0.55); }
+
+  /* --- Balls --- */
+  .ticket-numbers { flex: 1; text-align: left; font-variant-numeric: tabular-nums; }
+  .balls-row { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .ball {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 27px; height: 27px; border-radius: 50%;
+    background: radial-gradient(circle at 32% 28%, #fff, #e7e2d8 40%, #cfc8b8 100%);
+    border: 1px solid #9c9482;
+    color: #2b1f12; font-size: 11px; font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    box-shadow: inset 0 -2px 2px rgba(0,0,0,0.12);
+  }
+  .ticket .ball { background: radial-gradient(circle at 32% 28%, #fff, #f1e4bf 45%, #e0cd8f 100%); border-color: #b8934a; }
+  .ball.special {
+    background: radial-gradient(circle at 32% 28%, #fff3cf, var(--gold) 55%, var(--gold-deep) 100%);
+    border-color: var(--gold-deep); color: #4a2e00;
+  }
+  .ball.match {
+    background: radial-gradient(circle at 32% 28%, #baf0cf, var(--good) 60%, #1f6b41 100%);
+    border-color: #1f6b41; color: #08251c;
+  }
+  .ball.special.match {
+    background: radial-gradient(circle at 32% 28%, #fff3cf, var(--gold) 55%, var(--gold-deep) 100%);
+    border-color: var(--gold-deep); color: #4a2e00;
+    box-shadow: 0 0 0 2px rgba(232,183,63,0.45);
+  }
+  .ball-sep { color: var(--text-dim); font-size: 13px; margin: 0 1px; }
+  .ticket .ball-sep { color: rgba(255,243,214,0.6); }
+  .match-badge { font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; white-space: nowrap; }
+  .match-badge.hi { background: var(--good-bg); color: #7fd6a3; }
+  .match-badge.lo { background: rgba(194,161,132,0.18); color: var(--text-dim); }
+
+  /* --- Historical draw cards --- */
+  .draw-card { background: var(--card); border: 1px solid var(--border-soft); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
+  .draw-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .draw-head .draw-id { font-family: "Baloo 2", sans-serif; font-weight: 600; font-size: 14px; color: var(--gold-pale); }
+  .draw-head .actual { font-size: 13px; color: var(--text-dim); }
+
+  .note { color: var(--text-dim); font-size: 12px; margin-top: 6px; }
   #loading, #error { color: var(--text-dim); font-size: 14px; padding: 40px 0; text-align: center; }
   #error { color: #e0736e; }
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="icon-coin" viewBox="0 0 32 32">
+    <circle cx="16" cy="16" r="14" fill="#e8b73f" stroke="#b8860b" stroke-width="1.5"/>
+    <circle cx="16" cy="16" r="9.5" fill="none" stroke="#b8860b" stroke-width="1.5"/>
+    <rect x="12" y="12" width="8" height="8" fill="#b8860b"/>
+  </symbol>
+  <symbol id="icon-clover" viewBox="0 0 32 32">
+    <g fill="#3f9a63">
+      <circle cx="12" cy="12" r="6.5"/>
+      <circle cx="20" cy="12" r="6.5"/>
+      <circle cx="12" cy="20" r="6.5"/>
+      <circle cx="20" cy="20" r="6.5"/>
+    </g>
+    <rect x="15" y="18" width="2" height="9" fill="#2f7a4d"/>
+  </symbol>
+</svg>
+
 <div class="wrap">
-  <h1>Dashboard dự đoán vs thực tế</h1>
+  <div class="masthead">
+    <svg class="coin"><use href="#icon-coin"/></svg>
+    <h1>Vé May Mắn — Dò Số Thần Tài</h1>
+  </div>
   <p class="subtitle" id="generated-at">Đang tải…</p>
 
   <div id="loading">Đang tải dữ liệu…</div>
@@ -162,6 +256,17 @@ async function loadDashboard() {
   renderDraws(data);
 }
 
+function ballsHtml(numbers, special, actualNumbers, actualSpecial) {
+  const actualSet = actualNumbers ? new Set(actualNumbers) : null;
+  const nums = numbers.map(n => {
+    const hit = actualSet && actualSet.has(n);
+    return `<span class="ball${hit ? ' match' : ''}">${String(n).padStart(2, '0')}</span>`;
+  }).join('');
+  const specHit = actualSpecial !== undefined && actualSpecial !== null && special === actualSpecial;
+  const specBall = `<span class="ball special${specHit ? ' match' : ''}">${String(special).padStart(2, '0')}</span>`;
+  return `<span class="balls-row">${nums}<span class="ball-sep">+</span>${specBall}</span>`;
+}
+
 function renderJackpotBanner(data) {
   const el = document.getElementById('jackpot-banner');
   const wins = data.jackpot_wins || [];
@@ -181,7 +286,7 @@ function renderJackpotBanner(data) {
 
   el.innerHTML = `
     <div class="jackpot-banner">
-      <p class="title">Đã trúng Jackpot (${wins.length})</p>
+      <p class="title"><svg class="coin"><use href="#icon-coin"/></svg>Đã trúng Jackpot (${wins.length})</p>
       ${entries}
     </div>`;
 }
@@ -194,7 +299,7 @@ function renderNextDraw(data) {
   const strategyBlocks = Object.entries(nd.strategies).map(([strat, tickets]) => {
     const lines = tickets.map(t => `
       <div class="ticket-line">
-        <span class="ticket-numbers">${t.numbers.join('-')} + ĐB ${t.special}</span>
+        <span class="ticket-numbers">${ballsHtml(t.numbers, t.special)}</span>
         <span class="ticket-seed">seed ${t.seed}</span>
       </div>`).join('');
     return `
@@ -205,9 +310,14 @@ function renderNextDraw(data) {
   }).join('');
 
   el.innerHTML = `
-    <div class="next-draw-section">
-      <h2>Dự đoán kỳ tiếp theo — kỳ ${nd.draw_id}</h2>
-      <p class="sub">Chưa có kết quả thật, đang chờ đối chiếu.</p>
+    <div class="ticket">
+      <span class="ticket-ribbon">MAY MẮN</span>
+      <div class="ticket-head">
+        <svg class="coin"><use href="#icon-coin"/></svg>
+        <h2>Kỳ ${nd.draw_id}</h2>
+      </div>
+      <p class="sub">Vé đã ghi nhận, đang chờ đối chiếu kết quả.</p>
+      <div class="ticket-tear"></div>
       ${strategyBlocks}
     </div>`;
 }
@@ -215,7 +325,7 @@ function renderNextDraw(data) {
 function renderSummaryCards(data) {
   const strategies = Object.keys(data.summary);
   const totalDraws = new Set();
-  data.draws.forEach(d => { if (d.actual) totalDraws.add(d.draw_id); });
+  data.draws.forEach(d => totalDraws.add(d.draw_id));
 
   const container = document.getElementById('summary-cards');
   const cards = [];
@@ -258,7 +368,7 @@ function renderAvgChart(data) {
   const strategies = Object.keys(data.summary);
   const labels = [...strategies, 'ngẫu nhiên'];
   const values = [...strategies.map(s => data.summary[s].avg_matches), data.random_baseline.avg_matches];
-  const colors = [...strategies.map(() => '#378ADD'), '#5F5E5A'];
+  const colors = [...strategies.map(() => '#e8b73f'), '#6b3a1f'];
 
   new Chart(document.getElementById('avgChart'), {
     type: 'bar',
@@ -268,8 +378,8 @@ function renderAvgChart(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, ticks: { color: '#9aa1ad' }, grid: { color: '#2a2f3a' } },
-        x: { ticks: { color: '#e8eaed' }, grid: { display: false } }
+        y: { beginAtZero: true, ticks: { color: '#c2a184' }, grid: { color: '#38190f' } },
+        x: { ticks: { color: '#f6e8d2' }, grid: { display: false } }
       }
     }
   });
@@ -283,19 +393,18 @@ function renderDraws(data) {
   }
 
   const html = data.draws.map(draw => {
-    const actualHtml = `<span class="actual">Thực tế: <b>${draw.actual.numbers.join('-')}</b> + ĐB <b>${draw.actual.special}</b></span>`;
+    const actualHtml = `<span class="actual">Thực tế: ${ballsHtml(draw.actual.numbers, draw.actual.special)}</span>`;
 
     const strategyBlocks = Object.entries(draw.strategies).map(([strat, tickets]) => {
       const sorted = [...tickets].sort((a, b) => b.matches - a.matches);
       const avg = (tickets.reduce((a, t) => a + t.matches, 0) / tickets.length).toFixed(1);
       const lines = sorted.map(t => {
         const badgeClass = t.matches >= 2 ? 'hi' : 'lo';
-        const dbTag = t.special_hit ? ' + ĐB' : '';
         return `
           <div class="ticket-line">
-            <span class="ticket-numbers">${t.numbers.join('-')}</span>
+            <span class="ticket-numbers">${ballsHtml(t.numbers, t.special, draw.actual.numbers, draw.actual.special)}</span>
             <span class="ticket-seed">seed ${t.seed}</span>
-            <span class="match-badge ${badgeClass}">${t.matches}/5${dbTag}</span>
+            <span class="match-badge ${badgeClass}">${t.matches}/5</span>
           </div>`;
       }).join('');
       return `
