@@ -52,17 +52,17 @@ env:
   # quet lai DUNG 1 dai seed nay moi lan co ky moi, giong het ONCE2/ONCE3).
   ONCE_BATCH_SIZE: "1557775800"
   ONCE_SEED_START: "1903987714639"
-  ONCE_LAST_N_DRAWS: "500"
+  ONCE_LAST_N_DRAWS: "20"
   ONCE2_SEED_START: "108477750639"
-  ONCE2_LAST_N_DRAWS: "500"
+  ONCE2_LAST_N_DRAWS: "30"
   ONCE3_SEED_START: "900477750639"
-  ONCE3_LAST_N_DRAWS: "500"
+  ONCE3_LAST_N_DRAWS: "40"
   # Model phu #4: SEED TU NOI TIEP (khong co dinh) - moi lan chay se doc
   # ONCE4_STATE_FILE de biet quet tiep tu dau (KHONG quet lai dai cu), quet
   # xong thi tu ghi lai vi tri ke tiep vao chinh file nay. Lan dau chua co
   # file thi dung ONCE4_INITIAL_SEED_START lam diem bat dau.
   ONCE4_INITIAL_SEED_START: "1000477750639"
-  ONCE4_LAST_N_DRAWS: "500"
+  ONCE4_LAST_N_DRAWS: "50"
   ONCE4_STATE_FILE: "once4_seed_state.json"
   # Model phu #5: GIONG HET co che cua Model phu #4 (seed TU NOI TIEP, doc/
   # ghi state file rieng) nhung CHI quet 1 KY GAN NHAT moi lan chay.
