@@ -438,3 +438,48 @@ Co che dung (giu nguyen tu muc O, KHONG doi):
 Da xoa get_l2_seed_gaps_from_file/_dir va pick_seed_by_l2_locality (huong
 "khoang cach gia tri so", sai), khoi phuc lai get_gaps_from_l2_file/_dir
 va pick_seed_by_l2_density (dung tu muc O).
+
+Q. QUET GIA TANG CHO MODEL PHU #1/#2/#3 (ONCE/ONCE2/ONCE3) - TOI UU
+-------------------------------------------------------------------------
+Phat hien: scan_per_draw.cpp da co san co che quet gia tang (doc file cu,
+chi quet ky CHUA CO trong file) nhung co 1 lo hong - khi gop ket qua cu+
+moi, KHONG tu dong loai bo ky da roi ra ngoai cua so LAST_N_DRAWS (cua so
+truot). Vi vay truoc day phai dung FORCE_RESCAN=1 cho ca 3 model ONCE/
+ONCE2/ONCE3 de tranh file phinh to vo han - doi lai phai QUET LAI TOAN BO
+ONCE_LAST_N_DRAWS=500 ky TU DAU moi lan co ky moi (~1.56 ty seed/chunk x
+500 ky = rat ton kem), du that ra chi co 1 ky la MOI.
+
+Da sua scan_per_draw.cpp: sau khi gop existing_results + new_results,
+THEM buoc PRUNE - loai bo moi draw_id KHONG con nam trong cua so hien tai
+(draws_all, da duoc cat theo LAST_N_DRAWS). Da test thuc te 3 lan chay
+lien tiep (them 1 ky moi moi lan, KHONG dung FORCE_RESCAN): xac nhan
+- Lan 1 (khoi tao): quet 500 ky, ra file co draw_id 11..510.
+- Lan 2 (them ky 511): CHI quet 1 ky moi, tu prune bo ky 11, file van
+  dung 500 ky, gio la 12..511.
+- Lan 3 (them ky 512): tuong tu, file thanh 13..512.
+-> Giam ~500 lan khoi luong tinh toan cho 3 model nay.
+
+Van de kien truc phat sinh: cac job scan_once*_chunk chay tren runner
+TAM (fresh checkout, khong luu gi giua cac lan chay khac nhau), nen chi
+bo FORCE_RESCAN la CHUA DU - chunk job se khong co file cu nao de doc
+lai. Da them 3 thu muc PERSIST rieng (moi model 1 thu muc, cam trong
+git): ONCE_CHUNK_DIR=l1_chunks_once, ONCE2_CHUNK_DIR=l1_chunks_once2,
+ONCE3_CHUNK_DIR=l1_chunks_once3. Co che:
+  1. scan_once*_chunk: OUT_DIR = thu muc persist tuong ung (khong con
+     "chunk_out" tam nua), BO FORCE_RESCAN. Vi job nay checkout git truoc
+     (da co san buoc Checkout), file chunk cu (neu merge job lan truoc
+     da commit) se duoc doc lai tu day, quet gia tang thuc su.
+  2. merge_once*: sau khi download 20 chunk artifact nhu cu, THEM buoc
+     copy 20 file do vao thu muc persist tuong ung, roi git add CUNG
+     luc voi l1_merged/l2_merged khi commit - de lan chay SAU co du lieu
+     de doc lai.
+
+Da cap nhat ca 3 cap job (scan_once_chunk/merge_once, scan_once2_chunk/
+merge_once2, scan_once3_chunk/merge_once3) dong bo: them ENV *_CHUNK_DIR,
+sua OUT_DIR/upload-artifact path, them buoc "Luu lai chunk vao thu muc
+PERSIST", sua git add trong buoc Commit, sua lai toan bo comment mo ta.
+Da kiem tra YAML hop le sau moi buoc sua.
+
+KHONG anh huong ket qua cuoi cung (cung 1 seed range, cung LAST_N_DRAWS,
+cung cong thuc check_j1) - CHI thay doi cach dat duoc ket qua do (gia
+tang thay vi quet lai tu dau), nen khong can backtest lai gi ca.

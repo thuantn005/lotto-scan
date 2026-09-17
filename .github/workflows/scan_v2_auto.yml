@@ -23,10 +23,15 @@ name: Scan V2 (2 lan/ngay theo lich Vietlott) - dai seed co dinh, 1 file duy nha
 # NHAT roi tu khoa vinh vien qua file co (once_done.flag/once2_done.flag/
 # once3_done.flag) - vi vay 3 file l1_merged/merged_seed{ONCE*}.json bi dong
 # bang mai o ky luc chung chay lan dau, khong bao gio cap nhat ky moi nua.
-# Da BO co che khoa nay: ca 3 model phu nay gio quet lai TU DAU (FORCE_RESCAN=1)
-# theo dung cua so *_LAST_N_DRAWS ky gan nhat MOI LAN CO KY MOI, giong het
-# model chinh. Cac file once*_done.flag cu (neu con trong repo) khong con
-# duoc doc/ghi boi workflow nay nua, co the xoa thu cong.
+# Da BO co che khoa nay: ca 3 model phu nay gio quet theo dung cua so
+# *_LAST_N_DRAWS ky gan nhat MOI LAN CO KY MOI, giong het model chinh -
+# nhung QUET GIA TANG (chi quet ky MOI, doc lai file cu, tu prune ky da
+# roi ra ngoai cua so) thay vi quet lai TOAN BO cua so tu dau moi lan
+# (FORCE_RESCAN=1 - cach lam TRUOC DAY, ton kem vi quet lai ca vai tram
+# ky da biet ket qua tu lau). scan_per_draw.cpp da duoc sua de prune dung
+# ky ngoai cua so khi khong con FORCE_RESCAN, nen an toan chuyen sang che
+# do gia tang nay. Cac file once*_done.flag cu (neu con trong repo) khong
+# con duoc doc/ghi boi workflow nay nua, co the xoa thu cong.
 #
 # Model phu #1 (ONCE) tung thu doi sang "seed tu noi tiep" (giong model phu
 # #4) nhung da DOI LAI thanh seed CO DINH (ONCE_SEED_START=1903987714639)
@@ -53,10 +58,13 @@ env:
   ONCE_BATCH_SIZE: "1557775800"
   ONCE_SEED_START: "1903987714639"
   ONCE_LAST_N_DRAWS: "500"
+  ONCE_CHUNK_DIR: "l1_chunks_once"
   ONCE2_SEED_START: "108477750639"
   ONCE2_LAST_N_DRAWS: "500"
+  ONCE2_CHUNK_DIR: "l1_chunks_once2"
   ONCE3_SEED_START: "900477750639"
   ONCE3_LAST_N_DRAWS: "500"
+  ONCE3_CHUNK_DIR: "l1_chunks_once3"
   # Model phu #4: SEED TU NOI TIEP (khong co dinh) - moi lan chay se doc
   # ONCE4_STATE_FILE de biet quet tiep tu dau (KHONG quet lai dai cu), quet
   # xong thi tu ghi lai vi tri ke tiep vao chinh file nay. Lan dau chua co
@@ -276,9 +284,14 @@ jobs:
           done
 
   scan_once_chunk:
-    # Model phu #1: quet lai TU DAU (FORCE_RESCAN=1) theo cua so
-    # ONCE_LAST_N_DRAWS ky gan nhat, MOI LAN CO KY MOI, tren DUNG 1 dai
-    # seed CO DINH (ONCE_SEED_START) - khong con noi tiep/dich chuyen nua.
+    # Model phu #1: quet theo cua so ONCE_LAST_N_DRAWS ky gan nhat, MOI
+    # LAN CO KY MOI, tren DUNG 1 dai seed CO DINH (ONCE_SEED_START).
+    # QUET GIA TANG (khong con FORCE_RESCAN=1): moi chunk doc lai file
+    # cu cua CHINH NO tai ONCE_CHUNK_DIR/chunk_{i}.json (duoc merge_once
+    # commit vao git tu lan chay truoc), CHI quet ky MOI (scan_per_draw.cpp
+    # tu prune ky da roi ra ngoai cua so) thay vi quet lai toan bo
+    # ONCE_LAST_N_DRAWS ky tu dau moi lan - giam ~500 lan khoi luong tinh
+    # toan so voi truoc.
     needs: scan_and_check
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
     name: Scan once chunk ${{ matrix.chunk }}
@@ -319,15 +332,14 @@ jobs:
           print(f"CHUNK_SEED_START={chunk_start}")
           PY
 
-      - name: Quet chunk (chi N ky gan nhat)
+      - name: Quet chunk (chi ky MOI - quet gia tang, doc lai chunk cu tu git neu co)
         env:
           CSV_PATH: data/all.csv
-          OUT_DIR: chunk_out
+          OUT_DIR: ${{ env.ONCE_CHUNK_DIR }}
           OUT_NAME: chunk_${{ matrix.chunk }}.json
           SEED_START: ${{ env.CHUNK_SEED_START }}
           SEED_COUNT: ${{ env.ONCE_BATCH_SIZE }}
           LAST_N_DRAWS: ${{ env.ONCE_LAST_N_DRAWS }}
-          FORCE_RESCAN: "1"
         run: ./scan_per_draw
 
       - name: Upload chunk artifact
@@ -335,7 +347,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: v2once-chunk-${{ matrix.chunk }}
-          path: chunk_out/chunk_${{ matrix.chunk }}.json
+          path: ${{ env.ONCE_CHUNK_DIR }}/chunk_${{ matrix.chunk }}.json
           if-no-files-found: error
           retention-days: 14
 
@@ -343,7 +355,9 @@ jobs:
     # Gop 20 chunk cua model phu thanh 1 file, roi thang hang - KHONG prune
     # dung luong (chi model chinh moi gioi han 5MB, model phu gioi han bang
     # so ky co dinh ONCE_LAST_N_DRAWS nen khong can prune). Chay lai MOI LAN
-    # co ky moi (khong con khoa "chi 1 lan" nhu truoc).
+    # co ky moi (khong con khoa "chi 1 lan" nhu truoc). Cung LUU LAI 20
+    # chunk vao ONCE_CHUNK_DIR va commit, de lan sau scan_once_chunk doc
+    # lai duoc va chi quet gia tang (xem comment scan_once_chunk).
     needs: [scan_and_check, scan_once_chunk]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     # QUAN TRONG: merge_once/2/3/4 deu commit+push vao l1_merged/l2_merged
@@ -380,6 +394,17 @@ jobs:
               sys.exit(1)
           print("ALL 20 CHUNKS OK")
           PY
+
+      - name: Luu lai 20 chunk vao thu muc PERSIST (de lan sau doc lai, quet gia tang)
+        env:
+          CHUNK_DIR: ${{ env.ONCE_CHUNK_DIR }}
+        run: |
+          set -e
+          mkdir -p "$CHUNK_DIR"
+          for i in $(seq 0 19); do
+            cp "artifacts/v2once-chunk-${i}/chunk_${i}.json" "$CHUNK_DIR/chunk_${i}.json"
+          done
+          echo "Da luu 20 chunk vao $CHUNK_DIR (se commit cung l1_merged/l2_merged ben duoi)"
 
       - name: Gop 20 chunk thanh l1_merged/merged_seed{X}.json (X = ONCE_SEED_START co dinh, dung format cu)
         env:
@@ -446,6 +471,7 @@ jobs:
           git stash pop || true
           [ -d l1_merged ] && git add l1_merged/ || true
           [ -d l2_merged ] && git add l2_merged/ || true
+          [ -d "${{ env.ONCE_CHUNK_DIR }}" ] && git add "${{ env.ONCE_CHUNK_DIR }}/" || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
@@ -466,7 +492,9 @@ jobs:
           done
 
   scan_once2_chunk:
-    # Model phu (model 3): quet lai TU DAU moi lan co ky moi (FORCE_RESCAN=1).
+    # Model phu (model 3): quet gia tang (khong con FORCE_RESCAN=1) theo
+    # cua so ONCE2_LAST_N_DRAWS ky gan nhat, doc lai chunk cu tai
+    # ONCE2_CHUNK_DIR (merge_once2 commit tu lan truoc), chi quet ky moi.
     needs: scan_and_check
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
     name: Scan once3 (5ky) chunk ${{ matrix.chunk }}
@@ -507,15 +535,14 @@ jobs:
           print(f"CHUNK_SEED_START={chunk_start}")
           PY
 
-      - name: Quet chunk (chi N ky gan nhat)
+      - name: Quet chunk (chi ky MOI - quet gia tang, doc lai chunk cu tu git neu co)
         env:
           CSV_PATH: data/all.csv
-          OUT_DIR: chunk_out
+          OUT_DIR: ${{ env.ONCE2_CHUNK_DIR }}
           OUT_NAME: chunk_${{ matrix.chunk }}.json
           SEED_START: ${{ env.CHUNK_SEED_START }}
           SEED_COUNT: ${{ env.ONCE_BATCH_SIZE }}
           LAST_N_DRAWS: ${{ env.ONCE2_LAST_N_DRAWS }}
-          FORCE_RESCAN: "1"
         run: ./scan_per_draw
 
       - name: Upload chunk artifact
@@ -523,12 +550,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: v2once2-chunk-${{ matrix.chunk }}
-          path: chunk_out/chunk_${{ matrix.chunk }}.json
+          path: ${{ env.ONCE2_CHUNK_DIR }}/chunk_${{ matrix.chunk }}.json
           if-no-files-found: error
           retention-days: 14
 
   merge_once2:
-    # Gop 20 chunk cua model phu (model 3) - chay lai moi lan co ky moi.
+    # Gop 20 chunk cua model phu (model 3) - chay lai moi lan co ky moi. Cung
+    # luu lai 20 chunk vao ONCE2_CHUNK_DIR va commit de lan sau quet gia tang.
     needs: [scan_and_check, scan_once2_chunk, merge_once]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
@@ -559,6 +587,17 @@ jobs:
               sys.exit(1)
           print("ALL 20 CHUNKS OK")
           PY
+
+      - name: Luu lai 20 chunk vao thu muc PERSIST (de lan sau doc lai, quet gia tang)
+        env:
+          CHUNK_DIR: ${{ env.ONCE2_CHUNK_DIR }}
+        run: |
+          set -e
+          mkdir -p "$CHUNK_DIR"
+          for i in $(seq 0 19); do
+            cp "artifacts/v2once2-chunk-${i}/chunk_${i}.json" "$CHUNK_DIR/chunk_${i}.json"
+          done
+          echo "Da luu 20 chunk vao $CHUNK_DIR (se commit cung l1_merged/l2_merged ben duoi)"
 
       - name: Gop 20 chunk thanh l1_merged/merged_seed{X}.json (dung format cu)
         env:
@@ -626,6 +665,7 @@ jobs:
           git stash pop || true
           [ -d l1_merged ] && git add l1_merged/ || true
           [ -d l2_merged ] && git add l2_merged/ || true
+          [ -d "${{ env.ONCE2_CHUNK_DIR }}" ] && git add "${{ env.ONCE2_CHUNK_DIR }}/" || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0
@@ -646,7 +686,9 @@ jobs:
           done
 
   scan_once3_chunk:
-    # Model phu (model 4): quet lai TU DAU moi lan co ky moi (FORCE_RESCAN=1).
+    # Model phu (model 4): quet gia tang (khong con FORCE_RESCAN=1) theo
+    # cua so ONCE3_LAST_N_DRAWS ky gan nhat, doc lai chunk cu tai
+    # ONCE3_CHUNK_DIR (merge_once3 commit tu lan truoc), chi quet ky moi.
     needs: scan_and_check
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
     name: Scan once4 (5ky, AI chon) chunk ${{ matrix.chunk }}
@@ -687,15 +729,14 @@ jobs:
           print(f"CHUNK_SEED_START={chunk_start}")
           PY
 
-      - name: Quet chunk (chi N ky gan nhat)
+      - name: Quet chunk (chi ky MOI - quet gia tang, doc lai chunk cu tu git neu co)
         env:
           CSV_PATH: data/all.csv
-          OUT_DIR: chunk_out
+          OUT_DIR: ${{ env.ONCE3_CHUNK_DIR }}
           OUT_NAME: chunk_${{ matrix.chunk }}.json
           SEED_START: ${{ env.CHUNK_SEED_START }}
           SEED_COUNT: ${{ env.ONCE_BATCH_SIZE }}
           LAST_N_DRAWS: ${{ env.ONCE3_LAST_N_DRAWS }}
-          FORCE_RESCAN: "1"
         run: ./scan_per_draw
 
       - name: Upload chunk artifact
@@ -703,12 +744,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: v2once3-chunk-${{ matrix.chunk }}
-          path: chunk_out/chunk_${{ matrix.chunk }}.json
+          path: ${{ env.ONCE3_CHUNK_DIR }}/chunk_${{ matrix.chunk }}.json
           if-no-files-found: error
           retention-days: 14
 
   merge_once3:
-    # Gop 20 chunk cua model phu (model 4) - chay lai moi lan co ky moi.
+    # Gop 20 chunk cua model phu (model 4) - chay lai moi lan co ky moi. Cung
+    # luu lai 20 chunk vao ONCE3_CHUNK_DIR va commit de lan sau quet gia tang.
     needs: [scan_and_check, scan_once3_chunk, merge_once2]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
@@ -739,6 +781,17 @@ jobs:
               sys.exit(1)
           print("ALL 20 CHUNKS OK")
           PY
+
+      - name: Luu lai 20 chunk vao thu muc PERSIST (de lan sau doc lai, quet gia tang)
+        env:
+          CHUNK_DIR: ${{ env.ONCE3_CHUNK_DIR }}
+        run: |
+          set -e
+          mkdir -p "$CHUNK_DIR"
+          for i in $(seq 0 19); do
+            cp "artifacts/v2once3-chunk-${i}/chunk_${i}.json" "$CHUNK_DIR/chunk_${i}.json"
+          done
+          echo "Da luu 20 chunk vao $CHUNK_DIR (se commit cung l1_merged/l2_merged ben duoi)"
 
       - name: Gop 20 chunk thanh l1_merged/merged_seed{X}.json (dung format cu)
         env:
@@ -806,6 +859,7 @@ jobs:
           git stash pop || true
           [ -d l1_merged ] && git add l1_merged/ || true
           [ -d l2_merged ] && git add l2_merged/ || true
+          [ -d "${{ env.ONCE3_CHUNK_DIR }}" ] && git add "${{ env.ONCE3_CHUNK_DIR }}/" || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0

@@ -503,6 +503,32 @@ int main() {
     // Gop existing + new, sap xep theo draw_id
     std::vector<DrawResult> all_results = existing_results;
     for (auto& dr : new_results) all_results.push_back(std::move(dr));
+
+    // QUAN TRONG - PRUNE ky cu ra khoi cua so: neu dang dung LAST_N_DRAWS
+    // (cua so truot), existing_results co the con giu lai nhung ky DA
+    // ROI RA NGOAI cua so hien tai (vd LAST_N_DRAWS=500, ky moi toi thi
+    // ky cach day 501+ ky phai bi loai). Truoc day thieu buoc nay nen
+    // phai dung FORCE_RESCAN=1 de tranh file phinh to vo han; gio prune
+    // dung thi co the AN TOAN bo FORCE_RESCAN, chi quet ky MOI moi lan.
+    if (last_n_draws > 0) {
+        size_t before = all_results.size();
+        std::unordered_set<u64> window_draw_ids;
+        window_draw_ids.reserve(draws_all.size());
+        for (auto& d : draws_all) window_draw_ids.insert(d.draw_id);
+
+        std::vector<DrawResult> pruned;
+        pruned.reserve(window_draw_ids.size());
+        for (auto& dr : all_results) {
+            if (window_draw_ids.count(dr.draw_id)) pruned.push_back(std::move(dr));
+        }
+        if (pruned.size() != before) {
+            fprintf(stderr, "Prune cua so: bo %zu ky da roi ra ngoai LAST_N_DRAWS=%llu "
+                             "(con lai %zu ky trong cua so)\n",
+                    before - pruned.size(), (unsigned long long)last_n_draws, pruned.size());
+        }
+        all_results = std::move(pruned);
+    }
+
     std::sort(all_results.begin(), all_results.end(),
               [](const DrawResult&a, const DrawResult&b){ return a.draw_id < b.draw_id; });
 
