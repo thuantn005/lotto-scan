@@ -483,3 +483,36 @@ Da kiem tra YAML hop le sau moi buoc sua.
 KHONG anh huong ket qua cuoi cung (cung 1 seed range, cung LAST_N_DRAWS,
 cung cong thuc check_j1) - CHI thay doi cach dat duoc ket qua do (gia
 tang thay vi quet lai tu dau), nen khong can backtest lai gi ca.
+
+R. DASHBOARD (docs/index.html): SUA HIEN THI VE - BAO GOM SO DAC BIET + LOI LAYOUT
+-------------------------------------------------------------------------
+Theo yeu cau tu https://thuantn005.github.io/lotto-scan/ :
+
+1. So sanh CA so dac biet: badge "X/5" truoc day CHI tinh 5 so chinh, bo
+   qua so dac biet du du lieu (score_ticket() trong lotto_common.py) da
+   co san field special_hit/is_j1 cho tung ve (generate_dashboard_data.py
+   da dua field nay vao docs/data.json tu truoc, chi la frontend chua
+   dung). Da sua renderDraws(): them tag "+ĐB" canh badge khi special_hit
+   true, va doi badge thanh mau vang rieng (class "j1") khi trung DU CA
+   6/6 (is_j1 true) de de phan biet voi trung 5/5 nhung sai dac biet.
+
+2. Loi layout "ve bi lech man hinh, chi hien 1 hang 1 day": .ticket-line
+   truoc day KHONG dat flex-wrap (mac dinh nowrap) trong khi .ticket-numbers
+   dung flex:1 - tren man hinh hep, ticket-numbers bi BOP NHO lai de nhuong
+   cho .ticket-seed/.match-badge, khien .balls-row (dang flex-wrap:wrap)
+   phai xuong DONG THU 2 giua chinh 1 ve, vo bo cuc.
+   Sua lai:
+     - .balls-row: wrap -> nowrap (5 so + dac biet LUON tren CUNG 1 dong,
+       khong bao gio tach doi).
+     - .ticket-line: them flex-wrap:wrap (neu khong du cho, CA KHOI
+       seed/badge se roi xuong dong MOI, khong lam vo hang so).
+     - Them @media (max-width:420px): thu nho vien bi (27px -> 22px) va
+       AN han .ticket-seed (chi la thong tin ky thuat/debug, khong can
+       thiet xem tren dien thoai) - giai phong khong gian de 1 ve gon
+       trong 1 dong duy nhat.
+   Da test bang wkhtmltoimage (render CSS thuc te + html mau) o 2 do rong
+   320px va 360px (dien thoai hep nhat pho bien) - xac nhan moi ve hien
+   dung 1 dong, khong con vo bo cuc.
+
+KHONG dong vao generate_dashboard_data.py/data.json (du lieu da du field
+can thiet tu truoc) - CHI sua docs/index.html (CSS + JS render).

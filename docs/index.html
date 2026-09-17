@@ -132,16 +132,16 @@
   .strategy-block-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-bottom: 8px; }
   .strategy-name { color: var(--text-dim); }
   .ticket .strategy-name { color: rgba(255,243,214,0.72); font-weight: 600; }
-  .ticket-line { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 4px 0; font-size: 13px; }
+  .ticket-line { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 10px; padding: 4px 0; font-size: 13px; }
   .ticket-seed { color: var(--text-dim); font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .ticket .ticket-seed { color: rgba(255,243,214,0.55); }
 
   /* --- Balls --- */
-  .ticket-numbers { flex: 1; text-align: left; font-variant-numeric: tabular-nums; }
-  .balls-row { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+  .ticket-numbers { flex: 1 1 auto; min-width: 0; text-align: left; font-variant-numeric: tabular-nums; }
+  .balls-row { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; }
   .ball {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 27px; height: 27px; border-radius: 50%;
+    width: 27px; height: 27px; border-radius: 50%; flex-shrink: 0;
     background: radial-gradient(circle at 32% 28%, #fff, #e7e2d8 40%, #cfc8b8 100%);
     border: 1px solid #9c9482;
     color: #2b1f12; font-size: 11px; font-weight: 700;
@@ -162,11 +162,21 @@
     border-color: var(--gold-deep); color: #4a2e00;
     box-shadow: 0 0 0 2px rgba(232,183,63,0.45);
   }
-  .ball-sep { color: var(--text-dim); font-size: 13px; margin: 0 1px; }
+  .ball-sep { color: var(--text-dim); font-size: 13px; margin: 0 1px; flex-shrink: 0; }
   .ticket .ball-sep { color: rgba(255,243,214,0.6); }
   .match-badge { font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; white-space: nowrap; }
   .match-badge.hi { background: var(--good-bg); color: #7fd6a3; }
   .match-badge.lo { background: rgba(194,161,132,0.18); color: var(--text-dim); }
+  .match-badge.j1 { background: var(--gold); color: #3a1f00; }
+  .spec-tag { font-weight: 700; }
+
+  /* --- Man hinh hep (dien thoai): thu nho bi + an seed de tranh vo bo cuc --- */
+  @media (max-width: 420px) {
+    .ball { width: 22px; height: 22px; font-size: 10px; }
+    .balls-row { gap: 3px; }
+    .ball-sep { font-size: 11px; }
+    .ticket-seed { display: none; }
+  }
 
   /* --- Historical draw cards --- */
   .draw-card { background: var(--card); border: 1px solid var(--border-soft); border-radius: 10px; padding: 14px 16px; margin-bottom: 12px; }
@@ -399,12 +409,13 @@ function renderDraws(data) {
       const sorted = [...tickets].sort((a, b) => b.matches - a.matches);
       const avg = (tickets.reduce((a, t) => a + t.matches, 0) / tickets.length).toFixed(1);
       const lines = sorted.map(t => {
-        const badgeClass = t.matches >= 2 ? 'hi' : 'lo';
+        const badgeClass = t.is_j1 ? 'j1' : (t.matches >= 2 ? 'hi' : 'lo');
+        const specTag = t.special_hit ? ' <span class="spec-tag">+ĐB</span>' : '';
         return `
           <div class="ticket-line">
             <span class="ticket-numbers">${ballsHtml(t.numbers, t.special, draw.actual.numbers, draw.actual.special)}</span>
             <span class="ticket-seed">seed ${t.seed}</span>
-            <span class="match-badge ${badgeClass}">${t.matches}/5</span>
+            <span class="match-badge ${badgeClass}">${t.matches}/5${specTag}</span>
           </div>`;
       }).join('');
       return `
