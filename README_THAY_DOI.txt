@@ -218,3 +218,223 @@ l1_merged/merged_seed{X}.json cua model 6 se tu dong duoc predict_next
 (base) va predict_next_app (moi file = 1 ve rieng, xem muc H) dua vao
 tinh toan nhu 5 model con lai - khong can sua predict_next_draw.py hay
 predict_next_draw_app.py vi ca 2 deu tu dong glob theo L1_GLOB.
+
+J. predict_next_app: TINH DO DAO DONG TU l2_merged, LUON CHON SEED TU L1 (MOI)
+-------------------------------------------------------------------------
+Sua lai theo yeu cau: l2_merged CHI dung LAM MAU THONG KE - seed du doan
+LUON LUON lay TU L1, KHONG BAO GIO lay truc tiep 1 seed tu l2_merged.
+
+Co che moi:
+  1. Gop TOAN BO seed da thang hang (>=2 lan trung J1) tu MOI file
+     l2_merged/*.json lai lam 1 mau chung (khong phan biet model nao),
+     tinh khoang cach (so ky) GIUA 2 LAN TRUNG LIEN TIEP cua tung seed.
+     Tu mau nay TU DONG tinh ra trung vi + [min, max] - KHONG con hardcode
+     con so nao (228/14/494) trong code hay workflow nua, tu tinh lai moi
+     lan chay dua tren du lieu l2_merged hien co (cang nhieu du lieu qua
+     thoi gian, thong ke cang chinh xac hon).
+  2. Voi TUNG model, ap dung thong ke o buoc 1 LEN POOL L1 CUA CHINH model
+     do: moi seed con trong L1 (chua thang hang) co 1 moc "lan gan nhat no
+     xuat hien" (draw_id). Tinh "so ky da trui qua" ke tu moc do toi ky
+     sap toi, loc con lai seed co so ky nay trong [min, max], CHON seed
+     gan trung vi NHAT.
+  3. Model khong co ung vien phu hop (vd qua moi, chua du du lieu) -> DU
+     PHONG: random deu tren pool L1 cua model do (nhu ban cu).
+
+3 bien env APP_GAP_TARGET_MEDIAN/APP_GAP_MIN/APP_GAP_MAX VAN con (de
+trong = tu tinh, mac dinh cua workflow), dat gia tri neu muon GHI DE thu
+cong thay vi tu tinh.
+
+Da doi ham chinh: load_seed_pool_of_file() (chi tra ve set seed) -> 
+load_seed_hits_of_file() (tra ve dict seed -> lan xuat hien gan nhat, de
+tinh gap tren CHINH seed L1 do). Them compute_gap_stats_from_l2() va
+pick_due_seed_from_l1(). Da bo load_l2_candidates()/pick_l2_due_seed() (2
+ham cua ban truoc, chon seed truc tiep tu L2 - khong con dung nua).
+
+Da chay thu tren du lieu that (ky 00890, 6 model): mau 1095 khoang cach
+tu l2_merged -> trung vi 153 ky, khoang [1, 751] ky (tu tinh, khac voi
+mau lon hon tung dua ra truoc do vi day la mau nho hon, dang scan trong
+tien trinh) - ca 6/6 model tim duoc seed L1 "den han" phu hop, khong
+model nao phai du phong random.
+
+KHONG doi predict/history/{ky}_app.txt (van dinh dang seed_start|seed|
+numbers|special|file) nen khong anh huong check_prediction_result.py/
+predict_consensus.py. Van la gia thuyet thong ke, khong bao dam - xem
+canh bao o dau file predict_next_draw_app.py.
+
+K. SUA LOI: TINH DO DAO DONG RIENG TUNG MODEL, KHONG GOP CHUNG (SUA LAI)
+-------------------------------------------------------------------------
+Phat hien loi: muc J tinh do dao dong bang cach GOP TOAN BO l2_merged cua
+MOI model lai lam 1 mau chung, roi ap dung DUNG 1 con so (vd trung vi 153
+ky) cho TAT CA model. Tren du lieu that, trung vi TUNG model lai khac
+nhau ro ret:
+  seed_start 108477750639  -> trung vi 129.5 ky (mau 252)
+  seed_start 1903987714639 -> trung vi 161   ky (mau 285)
+  seed_start 2090920810639 -> trung vi 136.5 ky (mau 232)
+  seed_start 682305800400  -> trung vi 267   ky (mau 59)
+  seed_start 900477750639  -> trung vi 156   ky (mau 267)
+-> gop chung se keo cac model co chu ky ngan (129-161 ky) va model co chu
+ky dai (267 ky) ve CUNG 1 muc tieu sai lech, lam du doan cua tung model
+KHONG con phan anh dung dac tinh rieng cua no.
+
+Sua lai: predict_next_draw_app.py gio tinh do dao dong RIENG cho TUNG
+MODEL, tu DUNG file l2_merged/promoted_seed{seed_start cua CHINH model
+do}.json (ham compute_gap_stats()). Chi khi model do CHUA co du lieu L2
+rieng (qua moi, chua seed nao thang hang - vd ONCE5 vua chay lan dau) moi
+DU PHONG tam bang mau gop toan cuc (compute_gap_stats_global(), giu de
+tranh model moi phai roi thang ve random ngay tu dau). Khi model do da co
+du lieu L2 rieng, KHONG con dung mau gop nua.
+
+predict/next_draw_predict_app.txt gio in ro moi model dang dung nguon
+thong ke nao ("tu tinh RIENG cua model" hay "du phong bang mau GOP TOAN
+CUC") de de kiem tra. 3 bien env APP_GAP_TARGET_MEDIAN/MIN/MAX (ghi de
+thu cong) van hoat dong nhu cu, ap dung DONG LOAT cho moi model neu duoc
+dat (dung khi muon ep 1 gia tri chung co chu dich).
+
+L. SUA LOI: CHON NGAU NHIEN TRONG NHOM SEED DONG HANG (SUA LAI)
+-------------------------------------------------------------------------
+Phat hien loi: sau khi loc theo do dao dong (muc K), buoc "chon seed gan
+trung vi nhat" dang chon CO DINH theo seed nho nhat khi hoa (tie-break).
+Van de: vi TAT CA seed cung trung 1 draw_id se co CUNG 1 gia tri gap, nen
+1 draw_id co the co HANG NGHIN seed dong hang o muc gan trung vi nhat -
+tren du lieu that: 1 model co toi 16134 seed dong hang, model khac (vua
+chay lan dau, dang du phong toan bo pool) co 8152 seed dong hang. Chon co
+dinh theo seed nho nhat nghia la MOI LAN CHAY DEU RA CUNG 1 SEED (mat het
+y nghia "random pick" cua app, chi con "chon deterministic theo gap").
+
+Sua lai: pick_due_seed_from_l1() gio tim khoang cach gan trung vi nhat
+(best_diff), gom TOAN BO seed dong hang o muc do vao 1 nhom, roi CHON
+NGAU NHIEN 1 seed trong nhom (dung random.SystemRandom, dung tinh than
+"random pick" cua app - giong cach chon o nhanh du phong l1_random_
+fallback). predict/next_draw_predict_app.txt gio in them so seed dong
+hang de de kiem tra ("chon ngau nhien trong nhom N seed dong hang gan
+nhat").
+
+M. DUNG HISTOGRAM (KHONG CHI 1 TRUNG VI) - SUA LAI THEO PHAN PHOI THUC L2
+-------------------------------------------------------------------------
+Van de con lai cua muc K/L: ep tat ca ve "gan trung vi nhat" tao ra nhom
+"dong hang" QUA LON (thuc te toi 16134 seed cung dong hang) - vi TAT CA
+seed cung 1 draw_id thi cung 1 gap, va vi trung vi la 1 diem duy nhat nen
+CA VUNG rong xung quanh no deu bi coi la "ngang nhau", bo phi het HINH
+DANG thuc su cua phan phoi L2 (co the lech, co nhieu dinh, co vung thua/
+day khac nhau).
+
+Sua lai theo yeu cau "tinh lai theo l2" - dung TOAN BO HISTOGRAM cua L2
+(khong rut gon con 1 con so):
+  1. Chia khoang cach thanh cac BUCKET rong APP_GAP_BUCKET_WIDTH=20 ky
+     (vd 0-19, 20-39, 40-59, ...).
+  2. Voi TUNG model, dem so khoang cach l2_merged CUA CHINH model do roi
+     vao TUNG bucket -> ra 1 histogram RIENG (vi trung vi tung model da
+     khac nhau ro ret - xem muc K).
+  3. Gom seed L1 cua model do theo CUNG bucket (dua tren "so ky da trui
+     qua" ke tu lan xuat hien gan nhat).
+  4. CHON 1 bucket theo TRONG SO cua histogram L2 (random.choices co
+     trong so - bucket L2 quan sat nhieu hon thi de duoc chon hon, KHONG
+     phai luon chon bucket dinh cao nhat mot cach co dinh).
+  5. Trong bucket da chon, CHON NGAU NHIEN DEU 1 seed L1 (co the tu vai
+     chuc den vai nghin seed, tuy do rong bucket).
+  6. Model chua co L2 rieng (qua moi) -> du phong bang histogram GOP
+     TOAN CUC. Hoan toan khong co bucket L1 nao trung voi bucket L2 nao
+     (hiem) -> du phong cuoi cung: random deu tren toan bo pool L1.
+
+Ket qua chay thu tren du lieu that (ky 00890): 6/6 model ra bucket KHAC
+NHAU (40-59, 0-19, 100-119, 160-179, 220-239, 280-299 ky) - phan anh
+dung dang phan phoi rieng cua tung model, khong con dong cung 1 diem.
+
+Da doi ham chinh: bo pick_due_seed_from_l1()/compute_gap_stats() (logic
+"1 trung vi") -> them get_gaps_from_l2_file()/get_gaps_from_l2_dir() (lay
+RAW list gap, khong rut gon) va pick_seed_by_l2_histogram() (chon bucket
+co trong so + chon seed ngau nhien trong bucket). Them ENV moi
+APP_GAP_BUCKET_WIDTH (mac dinh 20 ky/bucket). 3 bien APP_GAP_TARGET_
+MEDIAN/MIN/MAX van giu lai nhung DOI Y NGHIA: gio la che do GHI DE THU
+CONG hoan toan (bo qua histogram, ep ve logic "1 diem" cu) - chi dung khi
+muon kiem soat thu cong tuyet doi, mac dinh KHONG dat (de trong) de dung
+histogram tu dong.
+
+N. GHI DE THU CONG TUYET DOI, RIENG TUNG MODEL (MOI)
+-------------------------------------------------------------------------
+Theo yeu cau "kiem soat tuyet doi theo tung ky": thay 3 bien
+APP_GAP_TARGET_MEDIAN/MIN/MAX (ap dung CHUNG cho CA 6 model) bang 1 bien
+JSON APP_MANUAL_OVERRIDE_JSON, cho phep ghi de TUYET DOI RIENG TUNG
+MODEL (theo seed_start):
+
+  {"<seed_start>": {"min": X, "max": Y, "target": Z}, ...}
+
+Model nao co seed_start xuat hien trong JSON nay se BO QUA histogram
+hoan toan, chi xet seed L1 co "so ky da trui qua" trong [min, max], chon
+seed GAN target nhat (random deu neu nhieu seed dong hang). Dat
+min=max=target de bat buoc TUYET DOI dung 1 so ky duy nhat (khong con
+vung "gan dung"). Model KHONG co trong JSON van tu dong theo histogram
+L2 nhu binh thuong (muc M) - co the ghi de 1, vai, hoac tat ca model tuy
+y, khong bat buoc tat-ca-hoac-khong-gi nhu truoc.
+
+Vi du: chi ep model 682305800400 dung chinh xac 267 ky, con lai tu dong:
+  APP_MANUAL_OVERRIDE_JSON: '{"682305800400": {"min": 267, "max": 267, "target": 267}}'
+
+Da test: model duoc ghi de chon dung seed cach chinh xac 267 ky (408 seed
+dong hang, chon ngau nhien 1 trong so do); 5 model con lai van tu dong
+theo histogram rieng cua tung model, khong bi anh huong.
+
+Da xoa 3 bien APP_GAP_TARGET_MEDIAN/MIN/MAX (thay hoan toan boi
+APP_MANUAL_OVERRIDE_JSON) - can cap nhat lai secret/variable workflow
+neu ban da tung dat 3 bien cu nay thu cong.
+
+O. SUA LOI LOGIC: CHON THEO KY (KHONG GOP BUCKET) - SUA LAI
+-------------------------------------------------------------------------
+Phat hien loi logic that su trong muc M: gop CA 1 BUCKET (rong 20 ky,
+tuc 20 ky khac nhau) lai thanh 1 nhom, roi chon ngau nhien tren TOAN BO
+seed cua ca 20 ky do gop chung. Van de: 1 trong 20 ky do co the TINH CO
+co RAT NHIEU seed hon 19 ky con lai (thuc te bien thien tu nhien giua
+cac ky), khi do ky "dong seed" nay se GAN NHU LUON THANG trong buoc chon
+ngau nhien (vi no chiem da so trong tong so seed cua ca bucket) - hoan
+toan sai lech y nghia "ky nao dang den han", vi don vi thong ke phai la
+KY (moi ky = 1 don vi), KHONG PHAI SEED (1 ky co the co tu vai chuc den
+hang chuc nghin seed).
+
+Sua lai: tach RO 2 buoc doc lap, lay KY lam don vi xuyen suot:
+  1. TINH MAT DO (khong con la histogram theo bucket) tu l2_merged: voi
+     TUNG ky cu the ma pool L1 co seed roi vao, uoc luong trong so bang
+     cach dem so khoang cach L2 nam trong 1 CUA SO LAM MUOT quanh ky do
+     (rong APP_GAP_SMOOTH_WINDOW=20 ky, thay APP_GAP_BUCKET_WIDTH cu) -
+     lam muot CHI de co du liieu (vi L2 thua, dem dung 1 diem se toan so
+     0), KHONG gop seed cua cac ky lai voi nhau.
+  2. CHON 1 KY CU THE (khong phai 1 khoang) theo trong so mat do do -
+     moi ky la 1 don vi ung cu rieng biet, KHONG bi anh huong boi so
+     luong seed cua chinh ky do.
+  3. Trong ky da chon, CHON NGAU NHIEN DEU 1 seed thuoc DUNG ky do.
+
+Da doi ham chinh: pick_seed_by_l2_histogram() (gop bucket) -> 
+pick_seed_by_l2_density() (chon ky truoc, chon seed sau, dung
+bisect de tra cuu mat do hieu qua tren mau L2 da sap xep). Doi ENV
+APP_GAP_BUCKET_WIDTH -> APP_GAP_SMOOTH_WINDOW (van mac dinh 20 ky, y
+nghia gio la "do rong cua so lam muot" chu khong con la "do rong
+bucket").
+
+Da chay thu tren du lieu that (ky 00890): 6/6 model ra 1 KY RIENG BIET
+(cach 300, 2, 199, 400, 259, 136 ky) - so seed trong dung ky do dao dong
+tu nhien (398 den 8152 seed, khong con bi 1 ky "dong seed" nao lan at ca
+vung 20-ky nhu truoc).
+
+P. LAM RO LAI: "KHOANG CACH" LA SO KY, KHONG PHAI GIA TRI SO SEED (REVERT)
+-------------------------------------------------------------------------
+Da thu 1 huong sai: hieu nham "khoang cach" la khoang cach GIA TRI SO
+giua cac seed (dung seed da thang hang L2 lam "diem neo", chon L1 seed
+GAN NHAT ve gia tri so) - DA REVERT lai, vi khong dung y.
+
+Chot lai dinh nghia DUY NHAT cho ca file predict_next_draw_app.py: "khoang
+cach" LUON LA SO KY (draw_id) GIUA 2 LAN TRUNG LIEN TIEP cua 1 seed da
+thang hang trong l2_merged - KHONG lien quan gi den gia tri so cua seed.
+
+Co che dung (giu nguyen tu muc O, KHONG doi):
+  1. L2 cho biet "khoang cach trung binh" (mat do, lam muot) GIUA 2 LAN
+     TRUNG cua cac seed da tung lap lai - dung de tinh TRONG SO cho TUNG
+     KY cu the ma L1 co seed.
+  2. CHON 1 KY CU THE theo trong so mat do do.
+  3. Trong DUNG ky da chon (vd 1 ky co 8000 seed L1), CHON NGAU NHIEN DEU
+     1 seed - vi ca 8000 seed nay hoan toan giong nhau ve mat du lieu
+     (deu chi trung dung 1 lan, dung vao ky do), KHONG co tieu chi nao
+     khac (kem gia tri so seed) de phan biet chung mot cach co y nghia
+     thong ke, nen xac suat deu nhau moi la lua chon dung.
+
+Da xoa get_l2_seed_gaps_from_file/_dir va pick_seed_by_l2_locality (huong
+"khoang cach gia tri so", sai), khoi phuc lai get_gaps_from_l2_file/_dir
+va pick_seed_by_l2_density (dung tu muc O).

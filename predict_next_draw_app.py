@@ -114,23 +114,22 @@ def get_gaps_from_l2_dir(l2_dir):
 
 
 def pick_seed_by_l2_density(seed_last_hit, next_draw_id, l2_gaps, window_width):
-    """SUA LOI: buoc cu gop CA 1 BUCKET (vd 20 ky) lai roi chon ngau nhien
-    tren TOAN BO seed cua ca bucket - neu 1 trong 20 ky do tinh co co qua
-    nhieu seed (thuc te tung thay 1 ky rieng le co toi ~8000 seed) thi ky
-    do gan nhu LUON THANG, sai lech het y nghia "ky nao dang den han" (don
-    vi phai la KY, khong phai SEED).
-
-    Sua lai: chon theo 2 BUOC RO RANG, lay KY (draw_id) lam don vi:
-      1. Voi TUNG KY CU THE (khong phai bucket) ma L1 co seed roi vao (tuc
-         "so ky da trui qua" = 1 gia tri nguyen cu the), tinh TRONG SO =
-         MAT DO L2 lam muot quanh ky do (dem so gap trong l2_gaps roi vao
-         cua so [ky - window_width/2, ky + window_width/2] - lam muot vi
-         mau L2 thua, dem dung 1 diem se qua nhieu 0). Lam muot CHI de
-         UOC LUONG trong so cho TUNG KY, khong gop seed cua nhieu ky lai.
+    """Chon THEO 2 BUOC, lay KY (draw_id) lam don vi ca 2 buoc - "khoang
+    cach" o day LUON LA SO KY giua 2 lan trung (khong phai khoang cach
+    gia tri so cua seed):
+      1. Voi TUNG KY CU THE ma L1 co seed roi vao (tuc "so ky da trui
+         qua" = 1 gia tri nguyen cu the), tinh TRONG SO = MAT DO L2 lam
+         muot quanh ky do (dem so khoang cach - giua 2 lan trung cua cac
+         seed da thang hang - roi vao cua so [ky - window_width/2, ky +
+         window_width/2]; lam muot vi mau L2 thua, dem dung 1 diem se qua
+         nhieu 0).
       2. CHON 1 KY CU THE theo trong so do (random.choices) - moi ky la 1
          don vi ung cu, KHONG ke seed cua ky do nhieu hay it.
-      3. Trong ky da chon, CHON NGAU NHIEN DEU 1 seed trong so cac seed L1
-         thuoc DUNG ky do (khong con lay tu ca 1 khoang 20 ky).
+      3. Trong DUNG ky da chon, CHON NGAU NHIEN DEU 1 seed trong so cac
+         seed L1 thuoc ky do (vd 8000 seed) - vi CA 8000 seed nay deu
+         "giong het nhau" ve mat du lieu (deu chi trung dung 1 lan, dung
+         vao ky nay), KHONG co thong tin nao khac de phan biet chung, nen
+         xac suat deu nhau la lua chon dung.
 
     Tra ve ((seed, last_hit, gap), n_seed_trong_ky_do, meta) hoac
     (None, 0, {}) neu khong the chon."""
