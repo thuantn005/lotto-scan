@@ -1,4 +1,4 @@
-DU DOAN KY 00894 - PHIEN BAN APP (moi model 1 ve).
+DU DOAN KY 00895 - PHIEN BAN APP (moi model 1 ve).
 Seed LUON lay tu L1; l2_merged CHI dung tinh MAT DO (lam muot) khoang
 cach RIENG cho TUNG MODEL. Chon THEO 2 BUOC, lay KY (draw_id) lam don
 vi (khong gop seed cua nhieu ky lai voi nhau, tranh 1 ky co qua nhieu
@@ -9,61 +9,61 @@ giong TicketFormula.dart / scan_v2.cpp (khong AI/ML).
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  so seed con trong L1 cua model nay: 3997265
+  so seed con trong L1 cua model nay: 3997150
   (UU TIEN - mat do L2 rieng cua model)
-    ky duoc chon: cach 14 ky (trong so mat do L2 tai ky nay: 21, trong so 500 ky co seed L1)
-    chon ngau nhien trong 8064 seed cung dung ky nay
-  seed duoc chon: 135777361269
-    lan xuat hien gan nhat trong L1: ky 00880, cach ky sap toi 14 ky
-  DU DOAN ky 00894: 04-07-08-20-28 + DAC BIET 2
+    ky duoc chon: cach 180 ky (trong so mat do L2 tai ky nay: 17, trong so 500 ky co seed L1)
+    chon ngau nhien trong 8012 seed cung dung ky nay
+  seed duoc chon: 129875591899
+    lan xuat hien gan nhat trong L1: ky 00715, cach ky sap toi 180 ky
+  DU DOAN ky 00895: 06-13-16-28-29 + DAC BIET 1
 
---- Model (l1_merged file: l1_merged/merged_seed1793944298639.json) ---
-  seed_start cua model: 1793944298639
-  so seed con trong L1 cua model nay: 8089
+--- Model (l1_merged file: l1_merged/merged_seed1825099814639.json) ---
+  seed_start cua model: 1825099814639
+  so seed con trong L1 cua model nay: 8015
   (UU TIEN - mat do L2 gop toan cuc (model chua co L2 rieng))
-    ky duoc chon: cach 1 ky (trong so mat do L2 tai ky nay: 39, trong so 1 ky co seed L1)
-    chon ngau nhien trong 8089 seed cung dung ky nay
-  seed duoc chon: 1823108248273
-    lan xuat hien gan nhat trong L1: ky 00893, cach ky sap toi 1 ky
-  DU DOAN ky 00894: 04-06-14-18-34 + DAC BIET 5
+    ky duoc chon: cach 1 ky (trong so mat do L2 tai ky nay: 42, trong so 1 ky co seed L1)
+    chon ngau nhien trong 8015 seed cung dung ky nay
+  seed duoc chon: 1840702602832
+    lan xuat hien gan nhat trong L1: ky 00894, cach ky sap toi 1 ky
+  DU DOAN ky 00895: 04-06-12-23-25 + DAC BIET 8
 
 --- Model (l1_merged file: l1_merged/merged_seed1903987714639.json) ---
   seed_start cua model: 1903987714639
-  so seed con trong L1 cua model nay: 3997328
+  so seed con trong L1 cua model nay: 3997131
   (UU TIEN - mat do L2 rieng cua model)
-    ky duoc chon: cach 41 ky (trong so mat do L2 tai ky nay: 17, trong so 500 ky co seed L1)
-    chon ngau nhien trong 7945 seed cung dung ky nay
-  seed duoc chon: 1925643112916
-    lan xuat hien gan nhat trong L1: ky 00853, cach ky sap toi 41 ky
-  DU DOAN ky 00894: 08-12-23-34-35 + DAC BIET 7
+    ky duoc chon: cach 232 ky (trong so mat do L2 tai ky nay: 15, trong so 500 ky co seed L1)
+    chon ngau nhien trong 8032 seed cung dung ky nay
+  seed duoc chon: 1916510808286
+    lan xuat hien gan nhat trong L1: ky 00663, cach ky sap toi 232 ky
+  DU DOAN ky 00895: 12-16-22-27-30 + DAC BIET 2
 
---- Model (l1_merged file: l1_merged/merged_seed2184387358639.json) ---
-  seed_start cua model: 2184387358639
-  so seed con trong L1 cua model nay: 3999052
+--- Model (l1_merged file: l1_merged/merged_seed2215542874639.json) ---
+  seed_start cua model: 2215542874639
+  so seed con trong L1 cua model nay: 3995151
   (UU TIEN - mat do L2 rieng cua model)
-    ky duoc chon: cach 46 ky (trong so mat do L2 tai ky nay: 26, trong so 500 ky co seed L1)
-    chon ngau nhien trong 7980 seed cung dung ky nay
-  seed duoc chon: 2189833521500
-    lan xuat hien gan nhat trong L1: ky 00848, cach ky sap toi 46 ky
-  DU DOAN ky 00894: 14-17-25-27-35 + DAC BIET 12
+    ky duoc chon: cach 41 ky (trong so mat do L2 tai ky nay: 14, trong so 500 ky co seed L1)
+    chon ngau nhien trong 8147 seed cung dung ky nay
+  seed duoc chon: 2236916966096
+    lan xuat hien gan nhat trong L1: ky 00854, cach ky sap toi 41 ky
+  DU DOAN ky 00895: 03-10-24-27-28 + DAC BIET 1
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  so seed con trong L1 cua model nay: 356986
+  so seed con trong L1 cua model nay: 357373
   (UU TIEN - mat do L2 rieng cua model)
-    ky duoc chon: cach 463 ky (trong so mat do L2 tai ky nay: 2, trong so 893 ky co seed L1)
-    chon ngau nhien trong 404 seed cung dung ky nay
-  seed duoc chon: 682481325616
-    lan xuat hien gan nhat trong L1: ky 00431, cach ky sap toi 463 ky
-  DU DOAN ky 00894: 12-13-17-21-30 + DAC BIET 4
+    ky duoc chon: cach 466 ky (trong so mat do L2 tai ky nay: 2, trong so 894 ky co seed L1)
+    chon ngau nhien trong 398 seed cung dung ky nay
+  seed duoc chon: 683661526101
+    lan xuat hien gan nhat trong L1: ky 00429, cach ky sap toi 466 ky
+  DU DOAN ky 00895: 05-12-19-20-28 + DAC BIET 2
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  so seed con trong L1 cua model nay: 3999670
+  so seed con trong L1 cua model nay: 3999745
   (UU TIEN - mat do L2 rieng cua model)
-    ky duoc chon: cach 33 ky (trong so mat do L2 tai ky nay: 17, trong so 500 ky co seed L1)
-    chon ngau nhien trong 7999 seed cung dung ky nay
-  seed duoc chon: 927104226395
-    lan xuat hien gan nhat trong L1: ky 00861, cach ky sap toi 33 ky
-  DU DOAN ky 00894: 01-09-20-24-31 + DAC BIET 3
+    ky duoc chon: cach 165 ky (trong so mat do L2 tai ky nay: 12, trong so 500 ky co seed L1)
+    chon ngau nhien trong 7940 seed cung dung ky nay
+  seed duoc chon: 918786786552
+    lan xuat hien gan nhat trong L1: ky 00730, cach ky sap toi 165 ky
+  DU DOAN ky 00895: 07-09-12-20-29 + DAC BIET 2
 
