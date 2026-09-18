@@ -1625,15 +1625,246 @@ jobs:
             fi
           done
 
+  predict_next_ai:
+    # CHIEN LUOC THU 3: goi GOOGLE GEMINI API (mien phi) de AI chon 1 seed/
+    # model, ung vien dua cho AI chon la TOP seed theo co che "khoang cach
+    # trung binh giua cac lan trung" (avg_gap - xem
+    # collect_avggap_candidates_per_model()/build_ai_prompt() trong
+    # lotto_common.py). Can secret GEMINI_API_KEY (Settings > Secrets and
+    # variables > Actions). Chay SAU predict_next_app trong chuoi push tuan
+    # tu (tranh 2 job cung push 1 luc).
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, merge_once5, predict_next_app]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged/l2_merged moi nhat)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          ref: main
+
+      - name: Cai thu vien requests
+        run: pip install --quiet requests
+
+      - name: Du doan ky ke tiep - phien ban AI/GEMINI (khoang cach trung binh)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          L2_DIR: "l2_merged"
+          OUT_PATH: "predict/next_draw_predict_ai.txt"
+          HISTORY_DIR: "predict/history"
+          CANDIDATES_PER_MODEL: "15"
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python3 predict_next_draw_ai.py
+
+      - name: Commit ket qua du doan AI/GEMINI
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict ai truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban AI/Gemini (khoang cach trung binh) $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  predict_next_ai2:
+    # CHIEN LUOC THU 4: giong predict_next_ai nhung goi GROQ API (mien phi
+    # vinh vien) thay vi Gemini - 1 "y kien" AI thu 2, doc lap hoan toan
+    # (file ket qua/lich su rieng). Can secret GROQ_API_KEY.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, merge_once5, predict_next_ai]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged/l2_merged moi nhat)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          ref: main
+
+      - name: Cai thu vien requests
+        run: pip install --quiet requests
+
+      - name: Du doan ky ke tiep - phien ban AI2/GROQ (khoang cach trung binh)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          L2_DIR: "l2_merged"
+          OUT_PATH: "predict/next_draw_predict_ai2.txt"
+          HISTORY_DIR: "predict/history"
+          CANDIDATES_PER_MODEL: "15"
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python3 predict_next_draw_ai2.py
+
+      - name: Commit ket qua du doan AI2/GROQ
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict ai2 truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban AI2/Groq (khoang cach trung binh) $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  predict_next_ai3:
+    # CHIEN LUOC THU 5: giong predict_next_ai nhung goi OPENROUTER API (mien
+    # phi, router "openrouter/free") - "y kien" AI thu 3, doc lap hoan toan.
+    # Can secret OPENROUTER_API_KEY. Chay SAU CUNG trong nhanh AI truoc khi
+    # den predict_next_consensus, giu dung thu tu push tuan tu.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, merge_once5, predict_next_ai2]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged/l2_merged moi nhat)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          ref: main
+
+      - name: Cai thu vien requests
+        run: pip install --quiet requests
+
+      - name: Du doan ky ke tiep - phien ban AI3/OPENROUTER (khoang cach trung binh)
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          L2_DIR: "l2_merged"
+          OUT_PATH: "predict/next_draw_predict_ai3.txt"
+          HISTORY_DIR: "predict/history"
+          CANDIDATES_PER_MODEL: "15"
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: python3 predict_next_draw_ai3.py
+
+      - name: Commit ket qua du doan AI3/OPENROUTER
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict ai3 truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban AI3/OpenRouter (khoang cach trung binh) $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
+  predict_next_consensus:
+    # CHIEN LUOC THU 6: "consensus" - voi MOI model, tim ve ma NHIEU seed
+    # DOC LAP (khac gia tri, tung trung THAT o cac ky KHAC NHAU, tu L1+L2)
+    # cung du doan ra GIONG NHAU nhat, o dung MUC DO DAC TRUNG cua model do
+    # (xem predict_next_draw_consensus.py). CANH BAO: backtest_consensus_batch.py
+    # da chung minh chien luoc nay KHONG tot hon ngau nhien tren 846 ky lich
+    # su - van chay de doi chieu song song, KHONG phai vi da hieu qua. Khong
+    # can secret nao (khong goi API ngoai).
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, merge_once5, predict_next_ai3]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (da co du l1_merged/l2_merged moi nhat)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          ref: main
+
+      - name: Cai thu vien numpy
+        run: pip install --quiet numpy
+
+      - name: Du doan ky ke tiep - phien ban consensus
+        env:
+          CSV_PATH: data/all.csv
+          L1_GLOB: "l1_merged/merged_seed*.json"
+          L2_GLOB: "l2_merged/promoted_seed*.json"
+          OUT_PATH: "predict/next_draw_predict_consensus.txt"
+          HISTORY_DIR: "predict/history"
+        run: python3 predict_next_draw_consensus.py
+
+      - name: Commit ket qua du doan consensus
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "predict consensus truoc rebase" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -d predict ] && git add predict/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - ban consensus $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+
   predict_consensus:
     # BAO CAO THAM KHAO (KHONG phai 1 chien luoc moi): tong hop du doan cua
-    # TAT CA chien luoc dang co (base/app - da bo ai/ai2, xem
-    # README_THAY_DOI.txt) cho CUNG 1 ky sap toi, xem so nao dang duoc nhieu
-    # ve chon nhat + moc so sanh ngau nhien - xem docstring
-    # predict_consensus.py. Chay SAU CUNG trong chuoi predict (sau khi
-    # predict_next_app - chien luoc cuoi - da ghi xong lich su cua no) de
-    # bao cao thay du duoc ca 2 chien luoc, tranh doc lich su dang do dang.
-    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, merge_once5, predict_next_app]
+    # TAT CA chien luoc dang co (base/app/ai/ai2/ai3/consensus) cho CUNG 1
+    # ky sap toi, xem so nao dang duoc nhieu ve chon nhat + moc so sanh
+    # ngau nhien - xem docstring predict_consensus.py. Chay SAU CUNG trong
+    # chuoi predict (sau khi predict_next_consensus - chien luoc cuoi - da
+    # ghi xong lich su cua no) de bao cao thay du duoc tat ca chien luoc,
+    # tranh doc lich su dang do dang.
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, merge_once5, predict_next_consensus]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:

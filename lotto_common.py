@@ -44,7 +44,9 @@ Ngoai ra file nay con them 2 phan MOI (cai thien chuc nang du doan):
    phai cho 1 lan trung tuyet doi ca 5+1 (xac suat ~1/324632 moi ve).
 """
 
+import bisect
 import csv
+import glob
 import json
 import os
 import math
@@ -368,6 +370,221 @@ def expected_false_positive_count(seed_count, num_draws, weight, p=MATCH_PROB):
     if weight > num_draws:
         return 0.0
     return seed_count * math.comb(num_draws, weight) * (p ** weight)
+
+
+# ---------------------------------------------------------------------
+# Khoi phuc lai cho predict_next_draw_ai.py / ai2.py / ai3.py (goi Gemini/
+# Groq/OpenRouter) - 2 ham nay TRUOC DAY bi xoa (xem docstring dau file)
+# vi 3 chien luoc AI chua bao gio duoc gan vao workflow, nhung ban than
+# file *_ai*.py van con nguyen va van import 2 ham nay, nen phai co lai
+# thi 3 script do moi chay duoc.
+# ---------------------------------------------------------------------
+
+def get_gaps_from_l2_file(l2_path):
+    """Doc 1 file l2_merged, tra ve list SO NGUYEN cac khoang cach (so ky)
+    GIUA 2 LAN TRUNG LIEN TIEP cua tung seed da thang hang trong file do.
+    Tra ve [] neu file khong ton tai/rong/loi. (Chuyen tu
+    predict_next_draw_app.py vao day de collect_density_candidates_per_model
+    dung chung duoc.)"""
+    l2_path = Path(l2_path)
+    if not l2_path.exists():
+        return []
+    try:
+        data = json.loads(l2_path.read_text(encoding="utf-8"))
+    except Exception as e:
+        print(f"Bo qua {l2_path}: {e}")
+        return []
+
+    gaps = []
+    for p in data.get("promoted", []):
+        hits = sorted(h["draw_id"] for h in (p.get("hits") or []))
+        for a, b in zip(hits, hits[1:]):
+            if b > a:
+                gaps.append(b - a)
+    return gaps
+
+
+def get_gaps_from_l2_dir(l2_dir):
+    """Gop gap tu MOI file l2_merged/*.json lai - dung lam mau du phong
+    (mat do TOAN CUC) cho model nao chua co/chua du L2 rieng."""
+    gaps = []
+    for fp in sorted(glob.glob(os.path.join(str(l2_dir), "promoted_seed*.json"))):
+        gaps.extend(get_gaps_from_l2_file(fp))
+    return gaps
+
+
+def collect_avggap_candidates_per_model(fp, next_draw_id, rank_to_mask,
+                                         l2_dir, global_gaps, top_k):
+    """THAY THE cho collect_density_candidates_per_model() (histogram mat
+    do lam muot theo cua so) bang 1 co che DON GIAN HON: tinh 1 con so
+    KHOANG CACH TRUNG BINH (mean) tu TOAN BO cac gap (so ky giua 2 lan
+    trung lien tiep) da tung xay ra trong L2 - uu tien L2 RIENG cua model
+    (l2_dir/promoted_seed{seed_start}.json), model nao chua co thi dung
+    global_gaps (gop tu toan bo l2_dir) lam du phong.
+
+    Voi tung seed con dang cho trong L1, tinh gap = kỳ_sap_toi -
+    kỳ_trung_gan_nhat, roi xep hang cac gap KHAC NHAU theo do LECH TUYET
+    DOI so voi trung binh (|gap - avg_gap| CANG NHO cang uu tien) - tuc
+    uu tien seed nao "dang o dung do tuoi trung binh" ma cac seed manh
+    cua model nay thuong hay trung, thay vi ca 1 histogram day du.
+
+    Tra ve top_k UNG VIEN (moi ung vien 1 gap khac nhau, gan trung binh
+    nhat truoc) de AI chon giua chung + giai thich. Neu model KHONG co
+    du lieu gap nao (ca rieng lan gop toan cuc deu rong - model qua moi,
+    chua co seed nao thang hang trong toan he thong), xep hang du phong
+    theo gap NHO NHAT (thay vi bo qua het model) va avg_gap_l2 tra ve
+    None de biet la khong co co so thong ke that su.
+
+    Tra ve None neu file L1 rong/loi hoac khong co gap > 0 nao."""
+    try:
+        data = json.loads(Path(fp).read_text(encoding="utf-8"))
+    except Exception as e:
+        print(f"Bo qua {fp}: {e}")
+        return None
+
+    seed_last_hit = {}
+    for d in data.get("draws", []):
+        did = d.get("draw_id")
+        for s in d.get("seeds") or []:
+            prev = seed_last_hit.get(s)
+            if prev is None or did > prev:
+                seed_last_hit[s] = did
+    if not seed_last_hit:
+        return None
+
+    seed_start = data.get("seed_start")
+    model_gaps = get_gaps_from_l2_file(Path(l2_dir) / f"promoted_seed{seed_start}.json") if l2_dir else []
+    l2_gaps = model_gaps if model_gaps else (global_gaps or [])
+    l2_gap_source = "own" if model_gaps else ("global_fallback" if global_gaps else "none")
+    avg_gap = (sum(l2_gaps) / len(l2_gaps)) if l2_gaps else None
+
+    l1_by_gap = {}
+    for seed, last_hit in seed_last_hit.items():
+        gap = next_draw_id - last_hit
+        if gap <= 0:
+            continue
+        l1_by_gap.setdefault(gap, []).append((seed, last_hit))
+    if not l1_by_gap:
+        return None
+
+    if avg_gap is not None:
+        # Gan trung binh nhat truoc; hoa thi gap nho hon xep truoc (on dinh).
+        distinct_gaps = sorted(l1_by_gap.keys(), key=lambda g: (abs(g - avg_gap), g))
+    else:
+        # Khong co du lieu gap nao lam co so - du phong: gap nho nhat truoc.
+        distinct_gaps = sorted(l1_by_gap.keys())
+    top_gaps = distinct_gaps[:top_k]
+
+    rng = random.Random(f"{next_draw_id}:{seed_start}:avg")
+    candidates = []
+    for g in top_gaps:
+        seed, last_hit = rng.choice(l1_by_gap[g])
+        numbers, special = predict_ticket(seed, next_draw_id, rank_to_mask)
+        candidates.append({
+            "seed": seed,
+            "gap_since_hit": g,
+            "diff_to_avg": (round(abs(g - avg_gap), 1) if avg_gap is not None else None),
+            "last_hit_draw": last_hit,
+            "n_seed_cung_gap": len(l1_by_gap[g]),
+            "numbers": numbers,
+            "special": special,
+        })
+
+    return {
+        "file": str(fp),
+        "seed_start": seed_start,
+        "total_draws_in_model": data.get("total_draws"),
+        "total_seeds_in_model": len(seed_last_hit),
+        "candidates": candidates,
+        "avg_gap_l2": (round(avg_gap, 1) if avg_gap is not None else None),
+        "n_gap_samples": len(l2_gaps),
+        "l2_gap_source": l2_gap_source,
+    }
+
+
+def build_ai_prompt(next_draw_id, recent_draws, models):
+    """Dung ket qua cua collect_avggap_candidates_per_model() (1 phan
+    tu/model) de dung 1 prompt van ban, yeu cau AI tra ve JSON
+    {"picks": [{"model_index", "seed", "reasoning"}, ...]}, moi model
+    DUNG 1 pick, seed PHAI nam trong danh sach ung vien cua chinh model
+    do (khong duoc bia seed moi). Cung tuong thich nguoc voi candidate
+    kieu density/weight-tho (khong co key diff_to_avg) neu sau nay can
+    dung lai."""
+    lines = [
+        "Ban dang tham gia 1 bai tap THONG KE/NGHIEN CUU ve du lieu xo so "
+        "da cong bo cong khai - day la du lieu NGAU NHIEN THAT SU, khong "
+        "co cach nao du doan chinh xac, KHONG phai loi khuyen tai chinh "
+        "hay danh bac.",
+        f"Ky ke tiep can du doan: {next_draw_id:05d} (5 so tu 01-35 + 1 so dac biet tu 01-12).",
+        "",
+        f"Ket qua {len(recent_draws)} ky GAN NHAT (cu truoc -> moi sau):",
+    ]
+    for draw_id, numbers, special in recent_draws:
+        nums_str = "-".join(f"{n:02d}" for n in numbers)
+        lines.append(f"  Ky {draw_id:05d}: {nums_str} + DB {special:02d}")
+
+    lines += [
+        "",
+        f"Co {len(models)} 'model' doc lap (danh so tu 0), moi model la 1 tap "
+        "seed rieng sinh boi cong thuc hash mix64 co dinh, da duoc quet doi "
+        "chieu voi lich su that. Voi moi model, tinh 1 con so KHOANG CACH "
+        "TRUNG BINH (avg_gap) = trung binh cong cua tat ca cac khoang cach "
+        "(so ky) giua 2 lan trung lien tiep ma cac seed DA TUNG thang hang "
+        "cua CHINH model do tung co (uu tien du lieu rieng cua model, du "
+        "phong bang du lieu gop toan cuc neu model chua co du lieu rieng). "
+        "Voi tung seed con dang cho trong pool, tinh gap = so ky da troi "
+        "qua ke tu lan trung gan nhat. Danh sach ung vien duoi day da sap "
+        "theo do LECH TUYET DOI so voi avg_gap TANG DAN (gap cang GAN trung "
+        "binh lich su cang xep truoc) - day la 1 gia thuyet thong ke thuan "
+        "tuy ('seed dang o dung do tuoi hay trung nhat'), KHONG phai quy "
+        "luat vat ly:",
+        "",
+    ]
+    for i, m in enumerate(models):
+        avg_txt = (f"avg_gap L2 = {m['avg_gap_l2']} ky (tu {m.get('n_gap_samples', '?')} mau, "
+                   f"nguon: {m.get('l2_gap_source', '?')})") if m.get("avg_gap_l2") is not None \
+            else "CHUA co du lieu L2 nao de tinh avg_gap (model con qua moi) - xep theo gap nho nhat"
+        lines.append(
+            f"--- Model {i} (seed_start={m['seed_start']}, "
+            f"{m['total_seeds_in_model']} seed con lai trong pool, {avg_txt}) ---"
+        )
+        for c in m["candidates"]:
+            nums_str = "-".join(f"{n:02d}" for n in c["numbers"])
+            if "diff_to_avg" in c:
+                diff_txt = f"lech {c['diff_to_avg']} ky so voi trung binh" if c["diff_to_avg"] is not None else "khong co avg de so sanh"
+                lines.append(
+                    f"  seed={c['seed']} | cach ky gan nhat {c['gap_since_hit']} ky | {diff_txt} "
+                    f"({c.get('n_seed_cung_gap', '?')} seed khac cung dung khoang cach nay) | "
+                    f"neu chon, du doan ky {next_draw_id:05d} = {nums_str} + DB {c['special']:02d}"
+                )
+            elif "gap_since_hit" in c:
+                lines.append(
+                    f"  seed={c['seed']} | cach ky gan nhat {c['gap_since_hit']} ky | "
+                    f"trong so mat do L2 tai khoang cach nay: {c.get('weight', '?')} "
+                    f"({c.get('n_seed_cung_gap', '?')} seed khac cung dung khoang cach nay) | "
+                    f"neu chon, du doan ky {next_draw_id:05d} = {nums_str} + DB {c['special']:02d}"
+                )
+            else:
+                lines.append(
+                    f"  seed={c['seed']} | weight={c.get('weight', '?')} | "
+                    f"lan trung gan nhat: ky {c['last_hit_draw']:05d} | "
+                    f"neu chon, du doan ky {next_draw_id:05d} = {nums_str} + DB {c['special']:02d}"
+                )
+        lines.append("")
+
+    lines += [
+        "YEU CAU: voi MOI model o tren, chon DUNG 1 seed trong danh sach ung "
+        "vien CUA CHINH model do (KHONG duoc bia seed khac, khong duoc bo "
+        "qua model nao) ma ban thay 'hop ly nhat' dua tren do lech so voi "
+        "avg_gap, va bat ky quy luat nao ban quan sat duoc tu lich su gan "
+        "day (chi mang tinh tham khao thong ke, khong co co so khoa hoc de "
+        "du doan chinh xac 1 RNG that).",
+        "CHI tra loi DUNG 1 JSON object, KHONG markdown, KHONG chu thich gi "
+        "them ngoai JSON, dung dinh dang:",
+        '{"picks": [{"model_index": 0, "seed": 123456, "reasoning": "..."}, ...]}',
+        "reasoning viet ngan gon (1-2 cau), bang tieng Viet.",
+    ]
+    return "\n".join(lines)
 
 
 def choose_promotion_threshold(seed_count, num_draws, budget=0.05, min_weight=2, max_weight=10):

@@ -69,7 +69,7 @@ def pick_strongest_seed_per_model(fp, next_draw_id):
 
     max_weight = max(seed_weight.values())
     top_seeds = sorted(s for s, w in seed_weight.items() if w == max_weight)
-    rng = random.Random((next_draw_id, data.get("seed_start")))
+    rng = random.Random(f"{next_draw_id}:{data.get('seed_start')}")
     best_seed = rng.choice(top_seeds)
     return {
         "seed": best_seed,

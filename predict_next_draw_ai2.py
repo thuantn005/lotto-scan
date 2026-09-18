@@ -45,7 +45,8 @@ from lotto_common import (
     get_next_draw_id,
     load_recent_draws_summary,
     save_prediction_history,
-    collect_ai_candidates_per_model,
+    get_gaps_from_l2_dir,
+    collect_avggap_candidates_per_model,
     build_ai_prompt,
 )
 
@@ -95,6 +96,7 @@ def call_groq(prompt, api_key, model, max_retries=3):
 def main():
     csv_path = os.environ.get("CSV_PATH", "data/all.csv")
     l1_glob = os.environ.get("L1_GLOB", "l1_merged/merged_seed*.json")
+    l2_dir = os.environ.get("L2_DIR", "l2_merged")
     out_path = os.environ.get("OUT_PATH", "predict/next_draw_predict_ai2.txt")
     history_dir = os.environ.get("HISTORY_DIR", "predict/history")
     top_k = int(os.environ.get("CANDIDATES_PER_MODEL", "15"))
@@ -115,9 +117,12 @@ def main():
     binom = build_binom()
     rank_to_mask = build_rank_to_mask(binom)
 
+    global_gaps = get_gaps_from_l2_dir(l2_dir)
+
     models = []
     for fp in files:
-        m = collect_ai_candidates_per_model(fp, next_draw_id, rank_to_mask, top_k)
+        m = collect_avggap_candidates_per_model(
+            fp, next_draw_id, rank_to_mask, l2_dir, global_gaps, top_k)
         if m:
             models.append(m)
 
