@@ -1,0 +1,40 @@
+DU DOAN KY 00896 - PHIEN BAN AI3/OPENROUTER (doc lap voi predict_next_draw.py, predict_next_draw_ml.py, predict_next_draw_ai.py va predict_next_draw_ai2.py)
+Model AI su dung (OpenRouter, mien phi): openrouter/free
+Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
+
+--- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
+  seed_start cua model: 108477750639
+  seed AI chon: 121716715644
+  ly do AI dua ra: Lech 0.0 ky so voi avg_gap, nam ngay o trung binh hien cua model, chon nhat ve mat thong ke.
+  DU DOAN ky 00896: 03-05-10-22-32 + DAC BIET 9
+
+--- Model (l1_merged file: l1_merged/merged_seed1903987714639.json) ---
+  seed_start cua model: 1903987714639
+  seed AI chon: 1914289294711
+  ly do AI dua ra: Lech 0.2 ky, gan trung binh nhat cua model 1, xap xỉ lech it nhat co the.
+  DU DOAN ky 00896: 02-17-20-24-29 + DAC BIET 12
+
+--- Model (l1_merged file: l1_merged/merged_seed1918566362639.json) ---
+  seed_start cua model: 1918566362639
+  seed AI chon: 1939307102609
+  ly do AI dua ra: Chi co 1 seed trong pool, gap chi 1 ky (rat gan day), trung binh cong gap = 177.2.
+  DU DOAN ky 00896: 10-13-15-20-27 + DAC BIET 5
+
+--- Model (l1_merged file: l1_merged/merged_seed2309009422639.json) ---
+  seed_start cua model: 2309009422639
+  seed AI chon: 2312407414801
+  ly do AI dua ra: Lech 0.3 ky, o ngay trong trung binh model 3, ung vien dau tien va hop ly nhat.
+  DU DOAN ky 00896: 01-04-19-25-34 + DAC BIET 10
+
+--- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
+  seed_start cua model: 682305800400
+  seed AI chon: 683094536631
+  ly do AI dua ra: Lech 0.3 ky, gan trung binh nhat cua model 4 (avg_gap cao 314.3, gap gan du doan hop ly).
+  DU DOAN ky 00896: 15-16-17-20-28 + DAC BIET 8
+
+--- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
+  seed_start cua model: 900477750639
+  seed AI chon: 927555510092
+  ly do AI dua ra: Lech 0.0 ky, nam chinh xac o trung binh model 5, chon luaon thong ke tot nhat.
+  DU DOAN ky 00896: 16-17-23-25-27 + DAC BIET 8
+
