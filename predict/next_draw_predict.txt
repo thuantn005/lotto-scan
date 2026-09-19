@@ -1,0 +1,46 @@
+DU DOAN KY 00895 - MOI MODEL 1 SEED (khong gop phieu bau, khong dung L2)
+Seed manh nhat cua tung model = seed co so lan trung (trong L1 cua model do) cao nhat.
+Neu seed nay du doan dung ky 00895, no se THANG HANG (thanh L2) ngay ky nay.
+
+--- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
+  seed_start cua model: 108477750639
+  so seed con lai trong L1 cua model nay: 3997150
+  seed duoc chon (manh nhat): 124239078977
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00659)
+  DU DOAN ky 00895: 07-08-09-17-21 + DAC BIET 3
+
+--- Model (l1_merged file: l1_merged/merged_seed1856255330639.json) ---
+  seed_start cua model: 1856255330639
+  so seed con lai trong L1 cua model nay: 7839
+  seed duoc chon (manh nhat): 1874216043314
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00894)
+  DU DOAN ky 00895: 20-21-22-24-29 + DAC BIET 6
+
+--- Model (l1_merged file: l1_merged/merged_seed1903987714639.json) ---
+  seed_start cua model: 1903987714639
+  so seed con lai trong L1 cua model nay: 3997131
+  seed duoc chon (manh nhat): 1906505585678
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00645)
+  DU DOAN ky 00895: 10-12-13-27-35 + DAC BIET 3
+
+--- Model (l1_merged file: l1_merged/merged_seed2246698390639.json) ---
+  seed_start cua model: 2246698390639
+  so seed con lai trong L1 cua model nay: 3995615
+  seed duoc chon (manh nhat): 2264094095092
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00425)
+  DU DOAN ky 00895: 07-17-27-28-29 + DAC BIET 10
+
+--- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
+  seed_start cua model: 682305800400
+  so seed con lai trong L1 cua model nay: 357373
+  seed duoc chon (manh nhat): 683596366100
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00724)
+  DU DOAN ky 00895: 11-17-19-22-28 + DAC BIET 10
+
+--- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
+  seed_start cua model: 900477750639
+  so seed con lai trong L1 cua model nay: 3999745
+  seed duoc chon (manh nhat): 911671817606
+  seed nay da tung trung: 1 lan (lan gan nhat: ky 00743)
+  DU DOAN ky 00895: 07-15-24-34-35 + DAC BIET 12
+
