@@ -1,29 +1,29 @@
-BAO CAO TONG HOP DU DOAN KY 00896 - 5 chien luoc, 46 ve
+BAO CAO TONG HOP DU DOAN KY 00897 - 6 chien luoc, 53 ve
 (KHONG phai 1 chien luoc moi - chi tong hop cac chien luoc DOC LAP da co de tham khao, xem docstring file nay)
 
-So ve theo tung chien luoc: ai2=6, ai3=6, app=6, base=6, consensus=22
+So ve theo tung chien luoc: ai=6, ai2=6, ai3=6, app=6, base=6, consensus=23
 
-Moc ngau nhien (NEU 46 ve nay la boc ngau nhien DOC LAP, khong lien quan seed):
-  moi so chinh (1-35) ky vong xuat hien ~6.57 lan; moi so dac biet (1-12) ky vong ~3.83 lan.
+Moc ngau nhien (NEU 53 ve nay la boc ngau nhien DOC LAP, khong lien quan seed):
+  moi so chinh (1-35) ky vong xuat hien ~7.57 lan; moi so dac biet (1-12) ky vong ~4.42 lan.
 
 TOP 10 so chinh xuat hien NHIEU ve nhat:
-  so 13: xuat hien trong 11/46 ve <-- vuot moc ngau nhien
-  so 10: xuat hien trong 10/46 ve <-- vuot moc ngau nhien
-  so 17: xuat hien trong 10/46 ve <-- vuot moc ngau nhien
-  so 29: xuat hien trong 10/46 ve <-- vuot moc ngau nhien
-  so 16: xuat hien trong 10/46 ve <-- vuot moc ngau nhien
-  so 20: xuat hien trong 9/46 ve <-- vuot moc ngau nhien
-  so 04: xuat hien trong 9/46 ve <-- vuot moc ngau nhien
-  so 28: xuat hien trong 9/46 ve <-- vuot moc ngau nhien
-  so 31: xuat hien trong 9/46 ve <-- vuot moc ngau nhien
-  so 27: xuat hien trong 8/46 ve <-- vuot moc ngau nhien
+  so 04: xuat hien trong 15/53 ve <-- vuot moc ngau nhien
+  so 16: xuat hien trong 14/53 ve <-- vuot moc ngau nhien
+  so 29: xuat hien trong 13/53 ve <-- vuot moc ngau nhien
+  so 13: xuat hien trong 12/53 ve <-- vuot moc ngau nhien
+  so 23: xuat hien trong 12/53 ve <-- vuot moc ngau nhien
+  so 03: xuat hien trong 11/53 ve <-- vuot moc ngau nhien
+  so 30: xuat hien trong 11/53 ve <-- vuot moc ngau nhien
+  so 14: xuat hien trong 10/53 ve <-- vuot moc ngau nhien
+  so 33: xuat hien trong 9/53 ve <-- vuot moc ngau nhien
+  so 07: xuat hien trong 9/53 ve <-- vuot moc ngau nhien
 
 TOP so dac biet xuat hien NHIEU ve nhat:
-  DB 12: xuat hien trong 7/46 ve <-- vuot moc ngau nhien
-  DB 08: xuat hien trong 7/46 ve <-- vuot moc ngau nhien
-  DB 05: xuat hien trong 6/46 ve <-- vuot moc ngau nhien
-  DB 04: xuat hien trong 5/46 ve <-- vuot moc ngau nhien
-  DB 10: xuat hien trong 4/46 ve <-- vuot moc ngau nhien
+  DB 10: xuat hien trong 9/53 ve <-- vuot moc ngau nhien
+  DB 12: xuat hien trong 7/53 ve <-- vuot moc ngau nhien
+  DB 03: xuat hien trong 6/53 ve <-- vuot moc ngau nhien
+  DB 07: xuat hien trong 6/53 ve <-- vuot moc ngau nhien
+  DB 09: xuat hien trong 5/53 ve <-- vuot moc ngau nhien
 
 Luu y: cac chien luoc KHONG doc lap hoan toan ve nguon seed (deu lay tu cung l1_merged/), nen trung lap CAO HON moc ngau
 nhien mot chut la BINH THUONG (dung nguon du lieu dau vao), KHONG co nghia la so do 'sap ve' - backtest_predictions.py
