@@ -174,15 +174,27 @@ def find_ticket_at_level(seed_arr, hit_arr, next_draw_id, rank_to_mask, target_l
     next_draw_id+seed_start de tai lap duoc giua cac lan chay) - THAY
     VI luon lay ve nho nhat (se gay trung lap "01-02-03-04-05" o nhieu
     model, vi do la vé/rank dau tien theo thu tu, khong mang y nghia
-    gi hon cac ve khac cung muc). Tra ve (numbers, special,
-    so_seed_thuc_te, seed_dai_dien, dung_dung_muc_hay_khong,
-    chi_tiet_seed) - chi_tiet_seed la list [(seed, [ky_trung_truoc,...]), ...]
-    cho TAT CA seed trong nhom da chon, sap theo seed tang dan."""
+    gi hon cac ve khac cung muc).
+
+    QUAN TRONG: dem theo SEED DOC LAP (da khu trung), KHONG dem theo
+    tung LUOT trung - vi 1 seed L2 co the co 2+ lan trung (2+ dong
+    trong hit_arr voi CUNG 1 seed), nhung no VAN CHI LA 1 seed, khong
+    phai 2 "phieu" khac nhau. Neu dem tho theo so dong (nhu ban truoc),
+    seed L2 co nhieu lan trung se bi dem THUA, lam sai muc dong thuan
+    that (vi du 3 seed doc lap nhung 1 trong so co 2 lan trung se bi
+    dem thanh "4 seed" thay vi dung 3).
+
+    Tra ve (numbers, special, so_seed_thuc_te, seed_dai_dien,
+    dung_dung_muc_hay_khong, chi_tiet_seed) - chi_tiet_seed la list
+    [(seed, [ky_trung_truoc,...]), ...] cho TAT CA seed trong nhom da
+    chon, sap theo seed tang dan."""
     if seed_arr.size == 0:
         return None
 
+    unique_seeds = np.unique(seed_arr)  # KHU TRUNG truoc khi tinh hash/dem
+
     m1, m2, mask64 = np.uint64(M1), np.uint64(M2), np.uint64(MASK64)
-    combined = (seed_arr * m1 + np.uint64(next_draw_id) * m2) & mask64
+    combined = (unique_seeds * m1 + np.uint64(next_draw_id) * m2) & mask64
     mixed = mix64_vec(combined) & mask64
     rank = (mixed % np.uint64(C)).astype(np.int64)
     mixed2 = mix64_vec(mixed) & mask64
@@ -213,17 +225,16 @@ def find_ticket_at_level(seed_arr, hit_arr, next_draw_id, rank_to_mask, target_l
 
     top_rank, top_sp_idx = divmod(chosen_key, 12)
     top_special = top_sp_idx + 1
-    n_actual = int(counts[chosen_key])
+    n_actual = int(counts[chosen_key])  # gio DA la so seed DOC LAP that, khong con dem thua
 
-    group_mask = (key == chosen_key)
-    group_seeds = seed_arr[group_mask]
-    group_hits = hit_arr[group_mask]
-    distinct_seeds = np.unique(group_seeds)
+    distinct_seeds = unique_seeds[key == chosen_key]
     seed_dai_dien = int(distinct_seeds[0])
 
     chi_tiet_seed = []
     for s in distinct_seeds.tolist():
-        ky_trung = sorted(set(int(h) for h in group_hits[group_seeds == s].tolist()))
+        # Lay lai TAT CA ky trung that cua seed nay tu mang GOC (chua khu
+        # trung) - 1 seed co the co nhieu ky trung, muon liet ke DAY DU.
+        ky_trung = sorted(set(int(h) for h in hit_arr[seed_arr == s].tolist()))
         chi_tiet_seed.append((int(s), ky_trung))
 
     mask_bits = rank_to_mask[top_rank]
@@ -309,6 +320,7 @@ def main():
         else:
             level_source = "chi dinh thu cong"
 
+        seen_fallback_tickets = set()  # (numbers_tuple, special) da tung fallback cho model nay
         for tag_i, level in enumerate(groups, start=1):
             result, target_level = find_ticket_for_group(
                 combined_seeds, combined_hits, next_draw_id, rank_to_mask, level, seed_start, tag_i)
@@ -316,8 +328,20 @@ def main():
                 continue
             numbers, special, n_actual, seed_dai_dien, matched_exact, chi_tiet_seed = result
 
+            if not matched_exact:
+                # Model nay KHONG dat duoc muc yeu cau -> dang fallback ve
+                # muc THUC TE cao nhat co. Neu da in 1 ve fallback GIONG HET
+                # (cung so + dac biet) cho muc khac cua CHINH model nay roi,
+                # BO QUA lan nay - tranh hien thi 2+ "ve" trung lap y het
+                # nhau (chi khac nhan "muc X" tren nhan) gay hieu lam la co
+                # nhieu tin hieu doc lap trong khi thuc chat chi la 1.
+                ticket_key = (tuple(numbers), special)
+                if ticket_key in seen_fallback_tickets:
+                    continue
+                seen_fallback_tickets.add(ticket_key)
+
             nums_str = "-".join(f"{n:02d}" for n in numbers)
-            match_note = "dung muc" if matched_exact else f"KHONG co ve nao dung {target_level}, lay gan nhat"
+            match_note = "dung muc" if matched_exact else f"KHONG co ve nao dung {target_level}, lay gan nhat (thuc te cao nhat model nay dat duoc = {n_actual})"
             ve_label = f"ve {tag_i}/{len(groups)}" if len(groups) > 1 else "ve"
             line = (f"Model {seed_start} ({ve_label}): {nums_str} + DB {special:02d} "
                     f"(muc {target_level} seed [{level_source}], thuc te ve nay dat {n_actual} seed - {match_note})")
