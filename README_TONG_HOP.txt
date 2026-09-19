@@ -50,25 +50,31 @@ dong cham gi den du lieu (data/, l1_*, l2_*, once*_seed_state.json...).
      NHIEN.
 
 6. predict_next_draw_consensus.py (chien luoc SAN XUAT "consensus")
-   - Voi MOI model, TU TINH muc do dong thuan DAC TRUNG cua model do
-     (mode cua phan bo "so seed L2 cung trung 1 ky", tinh tu >=2), roi
-     tim ve L1 dat DUNG (hoac gan nhat) muc do do cho ky sap toi.
-   - MODEL_LEVELS (env, JSON) cho phep CHI DINH THU CONG muc do (hoac
-     1 danh sach nhieu "nhom muc" -> ra nhieu ve/model) cho tung
-     model theo seed_start. Mac dinh:
-       {"682305800400": [2], "1903987714639": [2, [3,4,5,6,7]]}
-     (model 1903987714639 se ra 2 ve: 1 o muc 2 - pho bien nhat that
-     su trong lich su L2 cua no -, 1 o muc CAO NHAT thuc su ton tai
-     trong khoang 3-7 cho ky dang du doan).
+   - Voi MOI model, sinh 1 VE RIENG cho MOI muc dong thuan trong danh
+     sach muc cua model do (KHONG con "chon 1 ve tot nhat trong
+     khoang" nhu ban truoc - moi muc = 1 vé doc lap).
+   - MODEL_LEVELS (env, JSON) cho phep CHI DINH THU CONG danh sach muc
+     cho tung model theo seed_start. Mac dinh:
+       {"682305800400": [2], "1903987714639": [2,3,4,5,6,7]}
+     (model 1903987714639 se ra 6 ve, moi ve 1 muc tu 2 den 7).
+   - Model KHONG co trong MODEL_LEVELS se dung PREFERRED_LEVELS (env,
+     mac dinh "4,5,6,7") lam danh sach muc mac dinh - vi du 4 muc mac
+     dinh se ra 4 ve/model (mot ve moi muc).
+   - Neu 1 muc nao do KHONG co ve nao dat DUNG (thuong xay ra voi
+     model con it du lieu), tu dong lay ve co muc GAN NHAT thuc te ton
+     tai thay the, va ghi ro trong log/file la "lay gan nhat" (khong
+     am tham thay the).
    - Ghi vao predict/next_draw_predict_consensus.txt +
      predict/history/{ky}_consensus.txt (DUNG CHUAN de
      check_prediction_result.py/dashboard TU NHAN DIEN, khong can sua
      gi them o cac script do).
    - **CANH BAO**: day la chien luoc MOI, CHUA duoc backtest rieng
      (backtest_consensus_batch.py hien dang test kieu "lay top/argmax"
-     don gian, KHONG PHAI kieu "lay dung muc dac trung" nay). Dung de
-     doi chieu song song voi cac chien luoc khac, KHONG phai vi da
-     duoc chung minh hieu qua.
+     don gian, KHONG PHAI kieu "sinh nhieu ve theo tung muc" nay). Dung
+     de doi chieu song song voi cac chien luoc khac, KHONG phai vi da
+     duoc chung minh hieu qua - cang nhieu ve/ky thi cang de "trung
+     ngau nhien" 1 vai so o 1 vai ve, KHONG co nghia la chien luoc tot
+     hon.
 
 7. .github/workflows/scan_v2_auto.yml
    - Them 4 job moi, noi DUNG vao giua chuoi push tuan tu (tranh 2 job
@@ -89,8 +95,10 @@ DA KIEM TRA TRUOC KHI GIAO (tren dung du lieu ban vua upload - ky
   - Cu phap Python ca 8 file .py: OK (ast.parse).
   - Cu phap + thu tu "needs" trong .yml: OK (PyYAML, 20 job).
   - predict_next_draw.py: chay lai KHONG CON crash, ra du 6 du doan.
-  - predict_next_draw_consensus.py: chay ra 7 du doan (6 model, rieng
-    model 1903987714639 ra 2 ve nhu cau hinh), ghi dung file/history.
+  - predict_next_draw_consensus.py: chay ra 23 du doan (6 model, moi
+    model 1-6 ve tuy so muc cau hinh: model 1903987714639 ra 6 ve,
+    4 model tu dong ra 4 ve/model, model 682305800400 ra 1 ve), ghi
+    dung file/history.
   - collect_avggap_candidates_per_model() + find_consensus_tickets.py:
     chay dung tren ca 6 model L1 (~16,4 trieu seed) cua bo du lieu
     moi nhat.
