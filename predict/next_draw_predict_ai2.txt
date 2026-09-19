@@ -1,0 +1,40 @@
+DU DOAN KY 00896 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
+Model AI su dung (Groq, mien phi vinh vien): openai/gpt-oss-120b
+Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
+
+--- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
+  seed_start cua model: 108477750639
+  seed AI chon: 121716715644
+  ly do AI dua ra: Độ lệch 0.0 so với avg_gap, gần nhất trong Model 0.
+  DU DOAN ky 00896: 03-05-10-22-32 + DAC BIET 9
+
+--- Model (l1_merged file: l1_merged/merged_seed1903987714639.json) ---
+  seed_start cua model: 1903987714639
+  seed AI chon: 1914289294711
+  ly do AI dua ra: Độ lệch 0.2 là nhỏ nhất trong Model 1.
+  DU DOAN ky 00896: 02-17-20-24-29 + DAC BIET 12
+
+--- Model (l1_merged file: l1_merged/merged_seed1918566362639.json) ---
+  seed_start cua model: 1918566362639
+  seed AI chon: 1939307102609
+  ly do AI dua ra: Chỉ có một seed trong Model 2, nên là lựa chọn duy nhất.
+  DU DOAN ky 00896: 10-13-15-20-27 + DAC BIET 5
+
+--- Model (l1_merged file: l1_merged/merged_seed2309009422639.json) ---
+  seed_start cua model: 2309009422639
+  seed AI chon: 2312407414801
+  ly do AI dua ra: Độ lệch 0.3 là nhỏ nhất trong Model 3.
+  DU DOAN ky 00896: 01-04-19-25-34 + DAC BIET 10
+
+--- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
+  seed_start cua model: 682305800400
+  seed AI chon: 683094536631
+  ly do AI dua ra: Độ lệch 0.3 là nhỏ nhất trong Model 4.
+  DU DOAN ky 00896: 15-16-17-20-28 + DAC BIET 8
+
+--- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
+  seed_start cua model: 900477750639
+  seed AI chon: 927555510092
+  ly do AI dua ra: Độ lệch 0.0 so với avg_gap, là lựa chọn tốt nhất trong Model 5.
+  DU DOAN ky 00896: 16-17-23-25-27 + DAC BIET 8
+
