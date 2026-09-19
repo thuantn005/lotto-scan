@@ -1,0 +1,40 @@
+DU DOAN KY 00895 - PHIEN BAN AI3/OPENROUTER (doc lap voi predict_next_draw.py, predict_next_draw_ml.py, predict_next_draw_ai.py va predict_next_draw_ai2.py)
+Model AI su dung (OpenRouter, mien phi): openrouter/free
+Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
+
+--- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
+  seed_start cua model: 108477750639
+  seed AI chon: 119603704496
+  ly do AI dua ra: Chọn seed có khoảng cách đến trung bình nhỏ nhất (0 ky), phù hợp nhất với độ tuổi trung bình của mẫu.
+  DU DOAN ky 00895: 15-27-29-33-35 + DAC BIET 5
+
+--- Model (l1_merged file: l1_merged/merged_seed1856255330639.json) ---
+  seed_start cua model: 1856255330639
+  seed AI chon: 1877544268028
+  ly do AI dua ra: Chỉ có một seed còn lại, nên phải chọn dù khoảng cách lệch lớn.
+  DU DOAN ky 00895: 01-13-22-25-27 + DAC BIET 2
+
+--- Model (l1_merged file: l1_merged/merged_seed1903987714639.json) ---
+  seed_start cua model: 1903987714639
+  seed AI chon: 1921306041595
+  ly do AI dua ra: Khoảng cách lệch nhỏ nhất (0.3 ky), gần với độ tuổi trung bình dự kiến.
+  DU DOAN ky 00895: 05-14-16-21-34 + DAC BIET 4
+
+--- Model (l1_merged file: l1_merged/merged_seed2246698390639.json) ---
+  seed_start cua model: 2246698390639
+  seed AI chon: 2276098557809
+  ly do AI dua ra: Khoảng cách lệch nhỏ nhất (0.1 ky), trùng gần nhất với độ tuổi trung bình của mẫu.
+  DU DOAN ky 00895: 03-05-17-21-34 + DAC BIET 8
+
+--- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
+  seed_start cua model: 682305800400
+  seed AI chon: 683766800920
+  ly do AI dua ra: Khoảng cách lệch nhỏ nhất (0.3 ky), gần với độ tuổi trung bình dự kiến.
+  DU DOAN ky 00895: 06-08-14-15-26 + DAC BIET 10
+
+--- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
+  seed_start cua model: 900477750639
+  seed AI chon: 926578217935
+  ly do AI dua ra: Khoảng cách lệch nhỏ nhất (0 ky), trùng EXACT với độ tuổi trung bình của mẫu.
+  DU DOAN ky 00895: 09-10-17-20-27 + DAC BIET 8
+
