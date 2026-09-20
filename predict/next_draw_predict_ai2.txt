@@ -1,40 +1,40 @@
-DU DOAN KY 00898 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
+DU DOAN KY 00899 - PHIEN BAN AI2/GROQ (doc lap voi predict_next_draw.py, predict_next_draw_ml.py va predict_next_draw_ai.py)
 Model AI su dung (Groq, mien phi vinh vien): openai/gpt-oss-120b
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  seed AI chon: 122118584186
-  ly do AI dua ra: Khoảng cách 156 gần trung bình 156.5, lệch 0.5 là nhỏ nhất trong model 0.
-  DU DOAN ky 00898: 12-14-22-30-33 + DAC BIET 8
+  seed AI chon: 125931300712
+  ly do AI dua ra: Lệch 0.3 ky so với avg_gap, gần nhất với trung bình lịch sử.
+  DU DOAN ky 00899: 04-06-09-13-23 + DAC BIET 3
 
 --- Model (l1_merged file: l1_merged/merged_seed1903987714639.json) ---
   seed_start cua model: 1903987714639
-  seed AI chon: 1919022641854
-  ly do AI dua ra: Khoảng cách 174 gần trung bình 174.4, lệch 0.4 là nhỏ nhất trong model 1.
-  DU DOAN ky 00898: 04-07-21-25-26 + DAC BIET 6
+  seed AI chon: 1932103989103
+  ly do AI dua ra: Lệch 0.4 ky so với avg_gap, gần nhất với trung bình lịch sử.
+  DU DOAN ky 00899: 11-13-15-27-32 + DAC BIET 7
 
---- Model (l1_merged file: l1_merged/merged_seed1980877394639.json) ---
-  seed_start cua model: 1980877394639
-  seed AI chon: 1997402483178
-  ly do AI dua ra: Khoảng cách 1 là gần nhất với trung bình 179.5, lệch 178.5 là duy nhất cho model 2.
-  DU DOAN ky 00898: 01-07-11-15-19 + DAC BIET 8
+--- Model (l1_merged file: l1_merged/merged_seed2012032910639.json) ---
+  seed_start cua model: 2012032910639
+  seed AI chon: 2040829591064
+  ly do AI dua ra: Lệch 177.3 ky so với avg_gap, là giá trị duy nhất khả dụng.
+  DU DOAN ky 00899: 05-13-16-26-30 + DAC BIET 11
 
---- Model (l1_merged file: l1_merged/merged_seed2371320454639.json) ---
-  seed_start cua model: 2371320454639
-  seed AI chon: 2386443856632
-  ly do AI dua ra: Khoảng cách 179 gần trung bình 179.4, lệch 0.4 là nhỏ nhất trong model 3.
-  DU DOAN ky 00898: 14-21-22-24-33 + DAC BIET 5
+--- Model (l1_merged file: l1_merged/merged_seed2402475970639.json) ---
+  seed_start cua model: 2402475970639
+  seed AI chon: 2431021939630
+  ly do AI dua ra: Lệch 0.2 ky so với avg_gap, gần nhất với trung bình lịch sử.
+  DU DOAN ky 00899: 11-16-19-24-35 + DAC BIET 10
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  seed AI chon: 683659208088
-  ly do AI dua ra: Khoảng cách 314 gần trung bình 314.3, lệch 0.3 là nhỏ nhất trong model 4.
-  DU DOAN ky 00898: 01-03-06-24-25 + DAC BIET 5
+  seed AI chon: 682426778201
+  ly do AI dua ra: Lệch 0.3 ky so với avg_gap, gần nhất với trung bình lịch sử.
+  DU DOAN ky 00899: 01-02-26-27-32 + DAC BIET 1
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 919507517084
-  ly do AI dua ra: Khoảng cách 178 gần trung bình 177.7, lệch 0.3 là nhỏ nhất trong model 5.
-  DU DOAN ky 00898: 01-12-26-28-34 + DAC BIET 7
+  seed AI chon: 908471144516
+  ly do AI dua ra: Lệch 0.4 ky so với avg_gap, gần nhất với trung bình lịch sử.
+  DU DOAN ky 00899: 01-04-22-23-33 + DAC BIET 10
 
