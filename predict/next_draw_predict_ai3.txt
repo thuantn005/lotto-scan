@@ -1,40 +1,40 @@
-DU DOAN KY 00897 - PHIEN BAN AI3/OPENROUTER (doc lap voi predict_next_draw.py, predict_next_draw_ml.py, predict_next_draw_ai.py va predict_next_draw_ai2.py)
+DU DOAN KY 00898 - PHIEN BAN AI3/OPENROUTER (doc lap voi predict_next_draw.py, predict_next_draw_ml.py, predict_next_draw_ai.py va predict_next_draw_ai2.py)
 Model AI su dung (OpenRouter, mien phi): openrouter/free
 Luu y: day la bai tap thong ke/nghien cuu, KHONG co gia tri du doan chinh xac.
 
 --- Model (l1_merged file: l1_merged/merged_seed108477750639.json) ---
   seed_start cua model: 108477750639
-  seed AI chon: 134941135308
-  ly do AI dua ra: Lệch nhỏ nhất (0.2 ky) so với avg_gap, tuân thủ tiêu chí ưu tiên độ lệch.
-  DU DOAN ky 00897: 03-13-23-30-33 + DAC BIET 9
+  seed AI chon: 122118584186
+  ly do AI dua ra: Lech chi 0.5 ky so voi avg_gap cua model (gap 156), nho nhat trong danh sach ung vien.
+  DU DOAN ky 00898: 12-14-22-30-33 + DAC BIET 8
 
 --- Model (l1_merged file: l1_merged/merged_seed1903987714639.json) ---
   seed_start cua model: 1903987714639
-  seed AI chon: 1919565962667
-  ly do AI dua ra: Lệch 0.2 ky so với avg_gap, là lựa chọn tối ưu nhất trong model.
-  DU DOAN ky 00897: 09-22-29-33-34 + DAC BIET 4
+  seed AI chon: 1919022641854
+  ly do AI dua ra: Lech chi 0.4 ky so voi avg_gap cua model (gap 174), nho nhat trong danh sach ung vien.
+  DU DOAN ky 00898: 04-07-21-25-26 + DAC BIET 6
 
---- Model (l1_merged file: l1_merged/merged_seed1949721878639.json) ---
-  seed_start cua model: 1949721878639
-  seed AI chon: 1974027255261
-  ly do AI dua ra: Là seed duy nhất trong model fallback, không có lựa chọn thay thế.
-  DU DOAN ky 00897: 07-10-13-14-16 + DAC BIET 3
+--- Model (l1_merged file: l1_merged/merged_seed1980877394639.json) ---
+  seed_start cua model: 1980877394639
+  seed AI chon: 1997402483178
+  ly do AI dua ra: Chi co mot seed duy nhat trong pool, bat buoc chon la de don chi.
+  DU DOAN ky 00898: 01-07-11-15-19 + DAC BIET 8
 
---- Model (l1_merged file: l1_merged/merged_seed2340164938639.json) ---
-  seed_start cua model: 2340164938639
-  seed AI chon: 2362612639561
-  ly do AI dua ra: Lệch 0.0 ky so với avg_gap, đạt chuẩn lý tưởng.
-  DU DOAN ky 00897: 04-11-17-24-35 + DAC BIET 7
+--- Model (l1_merged file: l1_merged/merged_seed2371320454639.json) ---
+  seed_start cua model: 2371320454639
+  seed AI chon: 2386443856632
+  ly do AI dua ra: Lech chi 0.4 ky so voi avg_gap cua model (gap 179), nho nhat trong danh sach ung vien.
+  DU DOAN ky 00898: 14-21-22-24-33 + DAC BIET 5
 
 --- Model (l1_merged file: l1_merged/merged_seed682305800400.json) ---
   seed_start cua model: 682305800400
-  seed AI chon: 683434758841
-  ly do AI dua ra: Lệch 0.3 ky nhỏ nhất trong model có quy mẫu nhỏ.
-  DU DOAN ky 00897: 04-16-21-23-32 + DAC BIET 12
+  seed AI chon: 683659208088
+  ly do AI dua ra: Lech chi 0.3 ky so voi avg_gap cua model (gap 314), nho nhat trong danh sach ung vien.
+  DU DOAN ky 00898: 01-03-06-24-25 + DAC BIET 5
 
 --- Model (l1_merged file: l1_merged/merged_seed900477750639.json) ---
   seed_start cua model: 900477750639
-  seed AI chon: 927309081496
-  ly do AI dua ra: Lệch 0.0 ky, trùng khớp tuyệt đối với trung bình model.
-  DU DOAN ky 00897: 05-07-12-28-30 + DAC BIET 12
+  seed AI chon: 919507517084
+  ly do AI dua ra: Lech chi 0.3 ky so voi avg_gap cua model (gap 178), nho nhat trong danh sach ung vien.
+  DU DOAN ky 00898: 01-12-26-28-34 + DAC BIET 7
 
