@@ -49,16 +49,19 @@ from lotto_common import (
     get_next_draw_id,
     load_recent_draws_summary,
     save_prediction_history,
-    get_gaps_from_l2_dir,
-    collect_avggap_candidates_per_model,
-    build_ai_prompt,
+)
+from predict_next_draw_consensus import (
+    load_l1_file,
+    load_l2_file,
+    collect_candidates_for_ai,
+    build_ai_prompt_levels,
 )
 
 STRATEGY = "ai"
 
 
 def build_prompt(next_draw_id, recent_draws, models):
-    return build_ai_prompt(next_draw_id, recent_draws, models)
+    return build_ai_prompt_levels(next_draw_id, recent_draws, models)
 
 
 def call_gemini(prompt, api_key, model):
@@ -85,7 +88,8 @@ def main():
     l2_dir = os.environ.get("L2_DIR", "l2_merged")
     out_path = os.environ.get("OUT_PATH", "predict/next_draw_predict_ai.txt")
     history_dir = os.environ.get("HISTORY_DIR", "predict/history")
-    top_k = int(os.environ.get("CANDIDATES_PER_MODEL", "15"))
+    levels = [int(x) for x in os.environ.get("LEVELS", "5,6,7").split(",") if x.strip()]
+    tickets_per_level = int(os.environ.get("TICKETS_PER_LEVEL_AI", "3"))
     model_name = os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
 
     api_key = os.environ.get("GEMINI_API_KEY")
@@ -102,13 +106,19 @@ def main():
 
     binom = build_binom()
     rank_to_mask = build_rank_to_mask(binom)
-    global_gaps = get_gaps_from_l2_dir(l2_dir)
 
     models = []
     for fp in files:
-        m = collect_avggap_candidates_per_model(
-            fp, next_draw_id, rank_to_mask, l2_dir, global_gaps, top_k)
-        if m:
+        seed_start = None
+        try:
+            seed_start = int(Path(fp).stem.replace("merged_seed", ""))
+        except ValueError:
+            pass
+        l2_fp = os.path.join(l2_dir, f"promoted_seed{seed_start}.json") if seed_start else None
+        if l2_fp and not os.path.isfile(l2_fp):
+            l2_fp = None
+        m = collect_candidates_for_ai(fp, l2_fp, seed_start, next_draw_id, rank_to_mask, levels, tickets_per_level)
+        if m and m["candidates"]:
             models.append(m)
 
     if not models:
@@ -141,7 +151,7 @@ def main():
             if idx is None or idx >= len(models):
                 continue
             m = models[idx]
-            cand = next((c for c in m["candidates"] if c["seed"] == seed), None)
+            cand = next((c for c in m["candidates"] if any(s == seed for s, ks in c["seeds"])), None)
             if cand is None:
                 continue
             nums_str = "-".join(f"{n:02d}" for n in cand["numbers"])

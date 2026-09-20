@@ -1404,73 +1404,6 @@ jobs:
             fi
           done
 
-  predict_next:
-    # Du doan ky KE TIEP dua tren TAT CA seed dang co trong L1 (l1_merged/
-    # cua ca 6 model - CHECKOUT o day se lay dung ban moi nhat vi job nay
-    # needs toan bo cac job merge da push xong). KHONG dung L2 lam input -
-    # L2 (l2_merged/) chi la KET QUA thang hang, khong phai nguon du doan.
-    # QUAN TRONG: predict_next/predict_next_app deu commit+push vao predict/
-    # tren cung nhanh main - neu chay SONG SONG se dua nhau push (git pull
-    # --rebase lien tuc that bai sau 5 lan retry -> mat ket qua du doan cua
-    # job do, khien predict/*.txt bi LECH 1 KY so voi data/all.csv +
-    # data/full_results.json da duoc scan_and_check commit xong). Da xich
-    # predict_next_app needs predict_next (xem job ben duoi) de dam bao CHI
-    # 1 job push tai 1 thoi diem. (Da bo chien luoc "ml" va CA "ai"/"ai2"
-    # (Gemini/Groq) khoi chuoi nay - xem README_THAY_DOI.txt. Pipeline gio
-    # chi con 2 chien luoc: predict_next (base, "weight") va predict_next_app
-    # (mo phong co che sinh so cua app Flutter) - khong con phu thuoc API
-    # key ngoai (GEMINI_API_KEY/GROQ_API_KEY) nao nua.)
-    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, merge_once5]
-    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout (da co du l1_merged moi nhat vi cac job merge da push xong)
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
-          ref: main
-
-      # data/all.csv da co san tu buoc Checkout (job scan_and_check da
-      # cao + fallback + commit ban moi nhat truoc do, job nay needs no
-      # nen checkout ra la du fresh) - KHONG can tai lai tu nguon ngoai
-      # (NhanAZ-Data) nua, tranh cham vao nguon cham/khong on dinh.
-
-      - name: Du doan ky ke tiep (chi dung seed L1, khong dung L2)
-        env:
-          CSV_PATH: data/all.csv
-          L1_GLOB: "l1_merged/merged_seed*.json"
-          OUT_PATH: "predict/next_draw_predict.txt"
-          HISTORY_DIR: "predict/history"
-        run: python3 predict_next_draw.py
-
-      - name: Commit ket qua du doan
-        run: |
-          set -e
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash push -u -m "predict truoc rebase" || true
-          git pull --rebase origin main
-          git stash pop || true
-          [ -d predict ] && git add predict/ || true
-          if git diff --cached --quiet; then
-            echo "Khong co gi de commit"
-            exit 0
-          fi
-          git commit -m "du doan ky ke tiep (tu seed L1) $(date -u +%Y-%m-%d\ %H:%M) UTC"
-          for i in 1 2 3 4 5; do
-            if git push origin main; then
-              echo "Push thanh cong (lan thu $i)"
-              break
-            fi
-            echo "Push bi tu choi (co the do job khac vua push truoc), thu pull --rebase roi push lai... (lan $i/5)"
-            git pull --rebase origin main
-            sleep $((i * 5))
-            if [ "$i" = "5" ]; then
-              echo "Push that bai sau 5 lan thu, dung lai"
-              exit 1
-            fi
-          done
-
   check_prediction:
     # Sau khi ky moi duoc XAC NHAN (should_run=true), doi chieu voi du doan
     # DA LUU TU LAN CHAY TRUOC (predict/history/{ky}.txt - luc do ky nay
@@ -1568,7 +1501,7 @@ jobs:
     # AI/ML, khong can API key nao) - CHAY SAU CUNG trong chuoi push tuan
     # tu de dam bao thu tu commit, va cleanup_l1 se doi job nay xong roi
     # moi don dep l1_merged.
-    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, merge_once5, predict_next]
+    needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, merge_once5]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest
     steps:
@@ -1802,10 +1735,9 @@ jobs:
     # CHIEN LUOC THU 6: "consensus" - voi MOI model, tim ve ma NHIEU seed
     # DOC LAP (khac gia tri, tung trung THAT o cac ky KHAC NHAU, tu L1+L2)
     # cung du doan ra GIONG NHAU nhat, o dung MUC DO DAC TRUNG cua model do
-    # (xem predict_next_draw_consensus.py). CANH BAO: backtest_consensus_batch.py
-    # da chung minh chien luoc nay KHONG tot hon ngau nhien tren 846 ky lich
-    # su - van chay de doi chieu song song, KHONG phai vi da hieu qua. Khong
-    # can secret nao (khong goi API ngoai).
+    # (xem predict_next_draw_consensus.py). CANH BAO: backtest da chung
+    # minh chien luoc nay KHONG tot hon ngau nhien - van chay de doi chieu
+    # song song, KHONG phai vi da hieu qua. Khong can secret nao.
     needs: [scan_and_check, merge_once, merge_once2, merge_once3, merge_once4, merge_once5, predict_next_ai3]
     if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
     runs-on: ubuntu-latest

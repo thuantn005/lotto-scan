@@ -67,7 +67,7 @@ ENV:
 
 DEFAULT_MODEL_LEVELS = {
     "682305800400": [2],
-    "1903987714639": [2, 3, 4, 5, 6, 7],
+    "1903987714639": [2, 3, 4],
 }
 
 import glob
@@ -165,16 +165,16 @@ def compute_model_target_level(l2_hits, default_level, preferred_level=4):
     return min(available_levels, key=lambda lvl: (abs(lvl - preferred_level), -lvl))
 
 
-def find_ticket_at_level(seed_arr, hit_arr, next_draw_id, rank_to_mask, target_level, seed_start):
-    """Tim 1 ve dat DUNG target_level seed doc lap dong thuan cho
-    next_draw_id. Neu khong co ve nao dat DUNG muc do, lay ve co muc
-    dong thuan GAN target_level NHAT (uu tien cao hon neu hoa khoang
-    cach). Khi co NHIEU ve cung dat muc do da chon (rat pho bien o muc
-    thap nhu 2), CHON NGAU NHIEN 1 trong so do (hat giong co dinh theo
-    next_draw_id+seed_start de tai lap duoc giua cac lan chay) - THAY
-    VI luon lay ve nho nhat (se gay trung lap "01-02-03-04-05" o nhieu
-    model, vi do la vé/rank dau tien theo thu tu, khong mang y nghia
-    gi hon cac ve khac cung muc).
+def find_ticket_at_level(seed_arr, hit_arr, next_draw_id, rank_to_mask, target_level, seed_start, n_tickets=2):
+    """Tim toi da n_tickets VE PHAN BIET dat DUNG target_level seed doc
+    lap dong thuan cho next_draw_id (mac dinh 2 ve/muc - neu muc do co
+    >=2 ve khac nhau cung dat dung, lay 2 ve KHAC NHAU thay vi chi 1;
+    neu muc do chi co 1 ve du dieu kien, chi tra ve 1). Neu KHONG co ve
+    nao dat DUNG muc do, lay (toi da n_tickets) ve co muc dong thuan
+    GAN target_level NHAT (uu tien cao hon neu hoa khoang cach). Chon
+    ngau nhien co hat giong co dinh (tai lap duoc giua cac lan chay) -
+    THAY VI luon lay ve nho nhat (se gay trung lap "01-02-03-04-05" o
+    nhieu model, khong mang y nghia gi hon cac ve khac cung muc).
 
     QUAN TRONG: dem theo SEED DOC LAP (da khu trung), KHONG dem theo
     tung LUOT trung - vi 1 seed L2 co the co 2+ lan trung (2+ dong
@@ -184,12 +184,13 @@ def find_ticket_at_level(seed_arr, hit_arr, next_draw_id, rank_to_mask, target_l
     that (vi du 3 seed doc lap nhung 1 trong so co 2 lan trung se bi
     dem thanh "4 seed" thay vi dung 3).
 
-    Tra ve (numbers, special, so_seed_thuc_te, seed_dai_dien,
-    dung_dung_muc_hay_khong, chi_tiet_seed) - chi_tiet_seed la list
-    [(seed, [ky_trung_truoc,...]), ...] cho TAT CA seed trong nhom da
-    chon, sap theo seed tang dan."""
+    Tra ve list cac tuple (numbers, special, so_seed_thuc_te,
+    seed_dai_dien, dung_dung_muc_hay_khong, chi_tiet_seed) - toi da
+    n_tickets phan tu, sap theo thu tu chon (khong sap theo bat ky tieu
+    chi "chat luong" nao khac ngoai ngau nhien). List rong neu khong co
+    du lieu."""
     if seed_arr.size == 0:
-        return None
+        return []
 
     unique_seeds = np.unique(seed_arr)  # KHU TRUNG truoc khi tinh hash/dem
 
@@ -205,13 +206,13 @@ def find_ticket_at_level(seed_arr, hit_arr, next_draw_id, rank_to_mask, target_l
     counts = np.bincount(key, minlength=total_possible)
     nonzero_keys = np.where(counts > 0)[0]
     if nonzero_keys.size == 0:
-        return None
+        return []
 
     nonzero_counts = counts[nonzero_keys]
     exact = nonzero_keys[nonzero_counts == target_level]
     rng = random.Random(f"{next_draw_id}:{seed_start}:consensus")
     if exact.size > 0:
-        chosen_key = int(rng.choice(sorted(exact.tolist())))
+        candidates = sorted(exact.tolist())
         matched_exact = True
     else:
         diffs = np.abs(nonzero_counts.astype(np.int64) - target_level)
@@ -219,37 +220,45 @@ def find_ticket_at_level(seed_arr, hit_arr, next_draw_id, rank_to_mask, target_l
         best = nonzero_keys[diffs == min_diff]
         best_counts = counts[best]
         top_available = int(best_counts.max())
-        tied = sorted(best[best_counts == top_available].tolist())
-        chosen_key = int(rng.choice(tied))
+        candidates = sorted(best[best_counts == top_available].tolist())
         matched_exact = False
 
-    top_rank, top_sp_idx = divmod(chosen_key, 12)
-    top_special = top_sp_idx + 1
-    n_actual = int(counts[chosen_key])  # gio DA la so seed DOC LAP that, khong con dem thua
+    n_pick = min(n_tickets, len(candidates))
+    chosen_keys = rng.sample(candidates, n_pick)
 
-    distinct_seeds = unique_seeds[key == chosen_key]
-    seed_dai_dien = int(distinct_seeds[0])
+    results = []
+    for chosen_key in chosen_keys:
+        top_rank, top_sp_idx = divmod(chosen_key, 12)
+        top_special = top_sp_idx + 1
+        n_actual = int(counts[chosen_key])  # so seed DOC LAP that, khong con dem thua
 
-    chi_tiet_seed = []
-    for s in distinct_seeds.tolist():
-        # Lay lai TAT CA ky trung that cua seed nay tu mang GOC (chua khu
-        # trung) - 1 seed co the co nhieu ky trung, muon liet ke DAY DU.
-        ky_trung = sorted(set(int(h) for h in hit_arr[seed_arr == s].tolist()))
-        chi_tiet_seed.append((int(s), ky_trung))
+        distinct_seeds = unique_seeds[key == chosen_key]
+        seed_dai_dien = int(distinct_seeds[0])
 
-    mask_bits = rank_to_mask[top_rank]
-    numbers = [i + 1 for i in range(35) if mask_bits & (1 << i)]
+        chi_tiet_seed = []
+        for s in distinct_seeds.tolist():
+            # Lay lai TAT CA ky trung that cua seed nay tu mang GOC (chua
+            # khu trung) - 1 seed co the co nhieu ky trung, muon liet ke
+            # DAY DU.
+            ky_trung = sorted(set(int(h) for h in hit_arr[seed_arr == s].tolist()))
+            chi_tiet_seed.append((int(s), ky_trung))
 
-    return numbers, top_special, n_actual, seed_dai_dien, matched_exact, chi_tiet_seed
+        mask_bits = rank_to_mask[top_rank]
+        numbers = [i + 1 for i in range(35) if mask_bits & (1 << i)]
+
+        results.append((numbers, top_special, n_actual, seed_dai_dien, matched_exact, chi_tiet_seed))
+
+    return results
 
 
-def find_ticket_for_group(seed_arr, hit_arr, next_draw_id, rank_to_mask, level, seed_start, tag):
+def find_ticket_for_group(seed_arr, hit_arr, next_draw_id, rank_to_mask, level, seed_start, tag, n_tickets=2):
     """level LUON la 1 so nguyen - MOI muc trong danh sach cua 1 model se
-    sinh ra 1 VE RIENG (KHONG con gop nhieu muc lai chi lay 1 ve 'tot
-    nhat trong khoang' nhu ban truoc). Tra ve (result_tuple_hoac_None,
-    target_level)."""
-    result = find_ticket_at_level(seed_arr, hit_arr, next_draw_id, rank_to_mask, level, f"{seed_start}:{tag}")
-    return result, level
+    sinh ra toi da n_tickets VE RIENG (mac dinh 2). Tra ve
+    (list_ket_qua, target_level) - list co the rong neu khong co du
+    lieu."""
+    results = find_ticket_at_level(seed_arr, hit_arr, next_draw_id, rank_to_mask, level,
+                                    f"{seed_start}:{tag}", n_tickets=n_tickets)
+    return results, level
 
 
 def main():
@@ -257,8 +266,10 @@ def main():
     l1_glob = os.environ.get("L1_GLOB", "l1_merged/merged_seed*.json")
     l2_glob = os.environ.get("L2_GLOB", "l2_merged/promoted_seed*.json")
     default_level = int(os.environ.get("DEFAULT_LEVEL", "2"))
-    preferred_levels_raw = os.environ.get("PREFERRED_LEVELS", "4,5,6,7")
+    preferred_levels_raw = os.environ.get("PREFERRED_LEVELS", "4")
     preferred_levels = [int(x) for x in preferred_levels_raw.split(",") if x.strip()]
+    tickets_per_level = int(os.environ.get("TICKETS_PER_LEVEL", "2"))
+    min_model_seeds = int(os.environ.get("MIN_MODEL_SEEDS", "100000"))
     model_levels_raw = os.environ.get("MODEL_LEVELS")
     if model_levels_raw:
         model_levels = {str(k): v for k, v in json.loads(model_levels_raw).items()}
@@ -313,6 +324,11 @@ def main():
         combined_seeds = np.concatenate(seed_parts) if len(seed_parts) > 1 else seed_parts[0]
         combined_hits = np.concatenate(hit_parts) if len(hit_parts) > 1 else hit_parts[0]
 
+        if combined_seeds.size < min_model_seeds:
+            print(f"Model {seed_start}: BO QUA (chi co {combined_seeds.size:,} ban ghi, duoi nguong MIN_MODEL_SEEDS={min_model_seeds:,} - du lieu qua it de dang tin cay)")
+            lines_out.append(f"Model {seed_start}: BO QUA (du lieu qua it: {combined_seeds.size:,} < {min_model_seeds:,})")
+            continue
+
         groups = model_levels.get(str(seed_start))
         if groups is None:
             groups = list(preferred_levels)  # moi muc trong danh sach = 1 ve rieng
@@ -322,44 +338,48 @@ def main():
 
         seen_fallback_tickets = set()  # (numbers_tuple, special) da tung fallback cho model nay
         for tag_i, level in enumerate(groups, start=1):
-            result, target_level = find_ticket_for_group(
-                combined_seeds, combined_hits, next_draw_id, rank_to_mask, level, seed_start, tag_i)
-            if result is None:
+            results, target_level = find_ticket_for_group(
+                combined_seeds, combined_hits, next_draw_id, rank_to_mask, level, seed_start, tag_i,
+                n_tickets=tickets_per_level)
+            if not results:
                 continue
-            numbers, special, n_actual, seed_dai_dien, matched_exact, chi_tiet_seed = result
 
-            if not matched_exact:
-                # Model nay KHONG dat duoc muc yeu cau -> dang fallback ve
-                # muc THUC TE cao nhat co. Neu da in 1 ve fallback GIONG HET
-                # (cung so + dac biet) cho muc khac cua CHINH model nay roi,
-                # BO QUA lan nay - tranh hien thi 2+ "ve" trung lap y het
-                # nhau (chi khac nhan "muc X" tren nhan) gay hieu lam la co
-                # nhieu tin hieu doc lap trong khi thuc chat chi la 1.
-                ticket_key = (tuple(numbers), special)
-                if ticket_key in seen_fallback_tickets:
-                    continue
-                seen_fallback_tickets.add(ticket_key)
+            for sub_i, result in enumerate(results, start=1):
+                numbers, special, n_actual, seed_dai_dien, matched_exact, chi_tiet_seed = result
 
-            nums_str = "-".join(f"{n:02d}" for n in numbers)
-            match_note = "dung muc" if matched_exact else f"KHONG co ve nao dung {target_level}, lay gan nhat (thuc te cao nhat model nay dat duoc = {n_actual})"
-            ve_label = f"ve {tag_i}/{len(groups)}" if len(groups) > 1 else "ve"
-            line = (f"Model {seed_start} ({ve_label}): {nums_str} + DB {special:02d} "
-                    f"(muc {target_level} seed [{level_source}], thuc te ve nay dat {n_actual} seed - {match_note})")
-            print(line)
-            lines_out.append(line)
-            for s, ky_list in chi_tiet_seed:
-                ky_str = ", ".join(f"ky {k:05d}" for k in ky_list)
-                detail = f"    seed={s} - da tung trung THAT o: {ky_str}"
-                print(detail)
-                lines_out.append(detail)
+                if not matched_exact:
+                    # Model nay KHONG dat duoc muc yeu cau -> dang fallback ve
+                    # muc THUC TE cao nhat co. Neu da in 1 ve fallback GIONG HET
+                    # (cung so + dac biet) cho muc khac cua CHINH model nay roi,
+                    # BO QUA lan nay - tranh hien thi 2+ "ve" trung lap y het
+                    # nhau (chi khac nhan "muc X" tren nhan) gay hieu lam la co
+                    # nhieu tin hieu doc lap trong khi thuc chat chi la 1.
+                    ticket_key = (tuple(numbers), special)
+                    if ticket_key in seen_fallback_tickets:
+                        continue
+                    seen_fallback_tickets.add(ticket_key)
 
-            predictions.append({
-                "seed_start": seed_start,
-                "seed": seed_dai_dien,
-                "numbers": numbers,
-                "special": special,
-                "file": ";".join(fps),
-            })
+                nums_str = "-".join(f"{n:02d}" for n in numbers)
+                match_note = "dung muc" if matched_exact else f"KHONG co ve nao dung {target_level}, lay gan nhat (thuc te cao nhat model nay dat duoc = {n_actual})"
+                ve_label = f"muc {target_level} - ve {sub_i}/{len(results)}" if len(results) > 1 else f"muc {target_level}"
+                line = (f"Model {seed_start} ({ve_label}): {nums_str} + DB {special:02d} "
+                        f"([{level_source}], thuc te ve nay dat {n_actual} seed - {match_note})")
+                print(line)
+                lines_out.append(line)
+                lines_out.append(line)
+                for s, ky_list in chi_tiet_seed:
+                    ky_str = ", ".join(f"ky {k:05d}" for k in ky_list)
+                    detail = f"    seed={s} - da tung trung THAT o: {ky_str}"
+                    print(detail)
+                    lines_out.append(detail)
+
+                predictions.append({
+                    "seed_start": seed_start,
+                    "seed": seed_dai_dien,
+                    "numbers": numbers,
+                    "special": special,
+                    "file": ";".join(fps),
+                })
 
     out_dir = os.path.dirname(out_path)
     if out_dir:
@@ -373,6 +393,125 @@ def main():
 
     print(f"NEXT_DRAW_ID={next_draw_id}")
     print(f"TOTAL_MODELS={len(predictions)}")
+
+
+def collect_candidates_for_ai(l1_fp, l2_fp, seed_start, next_draw_id, rank_to_mask, levels, tickets_per_level=3):
+    """Doc L1(+L2) cho 1 model, dung LAI find_ticket_at_level() cho tung
+    muc trong `levels` (vi du [5,6,7]) de lam UNG VIEN cho AI chon -
+    THAY VI script tu dong chon ngau nhien nhu chien luoc "consensus".
+    Loai trung cac ve giong het nhau (cung so + dac biet) neu nhieu muc
+    cung tra ve 1 ve (thuong xay ra khi model khong dat duoc muc cao,
+    fallback ve cung 1 ve cho nhieu muc).
+
+    Tra ve dict {seed_start, total_seeds, candidates: [...]} - moi phan
+    tu candidates la {requested_level, achieved_level, matched_exact,
+    numbers, special, seeds: [(seed,[ky_trung,...]), ...]}. Tra ve None
+    neu khong doc duoc du lieu nao."""
+    seed_parts, hit_parts = [], []
+    if l1_fp:
+        _, seeds, hits = load_l1_file(l1_fp)
+        seed_parts.append(seeds)
+        hit_parts.append(hits)
+    if l2_fp:
+        _, seeds, hits = load_l2_file(l2_fp)
+        seed_parts.append(seeds)
+        hit_parts.append(hits)
+    if not seed_parts:
+        return None
+    combined_seeds = np.concatenate(seed_parts) if len(seed_parts) > 1 else seed_parts[0]
+    combined_hits = np.concatenate(hit_parts) if len(hit_parts) > 1 else hit_parts[0]
+
+    raw_candidates = []
+    for level in levels:
+        results = find_ticket_at_level(combined_seeds, combined_hits, next_draw_id, rank_to_mask, level,
+                                        f"{seed_start}:ai:{level}", n_tickets=tickets_per_level)
+        for numbers, special, n_actual, seed_dai_dien, matched_exact, chi_tiet_seed in results:
+            raw_candidates.append({
+                "requested_level": level,
+                "achieved_level": n_actual,
+                "matched_exact": matched_exact,
+                "numbers": numbers,
+                "special": special,
+                "seeds": chi_tiet_seed,
+            })
+
+    seen = set()
+    candidates = []
+    for c in raw_candidates:
+        key = (tuple(c["numbers"]), c["special"])
+        if key in seen:
+            continue
+        seen.add(key)
+        candidates.append(c)
+
+    return {
+        "seed_start": seed_start,
+        "total_seeds": int(np.unique(combined_seeds).size),
+        "candidates": candidates,
+        "file": ";".join(x for x in [l1_fp, l2_fp] if x),
+    }
+
+
+def build_ai_prompt_levels(next_draw_id, recent_draws, models):
+    """Dung ket qua cua collect_candidates_for_ai() (1 phan tu/model)
+    de dung 1 prompt van ban, yeu cau AI tra ve JSON
+    {"picks": [{"model_index", "seed", "reasoning"}, ...]} - moi model
+    DUNG 1 pick, seed PHAI la 1 trong cac "seed dai dien" cua 1 ung
+    vien CUA CHINH model do (khong duoc bia seed moi)."""
+    lines = [
+        "Ban dang tham gia 1 bai tap THONG KE/NGHIEN CUU ve du lieu xo so "
+        "da cong bo cong khai - day la du lieu NGAU NHIEN THAT SU, khong "
+        "co cach nao du doan chinh xac, KHONG phai loi khuyen tai chinh "
+        "hay danh bac.",
+        f"Ky ke tiep can du doan: {next_draw_id:05d} (5 so tu 01-35 + 1 so dac biet tu 01-12).",
+        "",
+        f"Ket qua {len(recent_draws)} ky GAN NHAT (cu truoc -> moi sau):",
+    ]
+    for draw_id, numbers, special in recent_draws:
+        nums_str = "-".join(f"{n:02d}" for n in numbers)
+        lines.append(f"  Ky {draw_id:05d}: {nums_str} + DB {special:02d}")
+
+    lines += [
+        "",
+        f"Co {len(models)} 'model' doc lap (danh so tu 0), moi model la 1 tap "
+        "seed rieng sinh boi cong thuc hash mix64 co dinh. Voi moi model, "
+        "cac ve ung vien la nhung ve ma NHIEU seed DOC LAP (khac gia tri "
+        "seed, tung trung THAT o cac ky KHAC NHAU trong qua khu) CUNG cho "
+        "ra GIONG NHAU khi ap cong thuc cho ky sap toi - 'achieved_level' "
+        "cang cao nghia la cang NHIEU seed doc lap cung dong y (hiem hon ve "
+        "mat thong ke thuan tuy, KHONG phai bang chung du doan duoc). Danh "
+        "sach duoi day da loai trung, sap theo achieved_level giam dan:",
+        "",
+    ]
+    for i, m in enumerate(models):
+        lines.append(f"--- Model {i} (seed_start={m['seed_start']}, {m['total_seeds']} seed kha dung) ---")
+        for c in sorted(m["candidates"], key=lambda x: -x["achieved_level"]):
+            nums_str = "-".join(f"{n:02d}" for n in c["numbers"])
+            seeds_str = "; ".join(
+                f"seed={s} (tung trung: {', '.join(f'ky {k:05d}' for k in ks)})"
+                for s, ks in c["seeds"]
+            )
+            lines.append(
+                f"  Ve {nums_str} + DB {c['special']:02d} | yeu cau muc {c['requested_level']}, "
+                f"THUC TE dat {c['achieved_level']} seed doc lap{'​ (dung muc)' if c['matched_exact'] else ' (KHONG dung muc yeu cau, day la muc gan nhat thuc co)'} "
+                f"| {seeds_str}"
+            )
+        lines.append("")
+
+    lines += [
+        "YEU CAU: voi MOI model o tren, chon DUNG 1 ve trong danh sach ung "
+        "vien CUA CHINH model do (KHONG duoc bia ve khac, khong duoc bo qua "
+        "model nao) ma ban thay 'hop ly nhat' dua tren achieved_level va "
+        "bat ky quy luat nao ban quan sat duoc tu lich su gan day (chi mang "
+        "tinh tham khao thong ke, khong co co so khoa hoc de du doan chinh "
+        "xac 1 RNG that). Tra ve seed la 1 trong cac seed lien quan den ve "
+        "ban chon (bat ky seed nao trong danh sach 'seeds' cua ve do).",
+        "CHI tra loi DUNG 1 JSON object, KHONG markdown, KHONG chu thich gi "
+        "them ngoai JSON, dung dinh dang:",
+        '{"picks": [{"model_index": 0, "seed": 123456, "reasoning": "..."}, ...]}',
+        "reasoning viet ngan gon (1-2 cau), bang tieng Viet.",
+    ]
+    return "\n".join(lines)
 
 
 if __name__ == "__main__":

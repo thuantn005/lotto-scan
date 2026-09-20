@@ -52,17 +52,19 @@ def load_actual_results(csv_path):
     return out
 
 
-def extract_ticket_at_level(counts, key, unique_seeds, target_level, rng):
+def extract_ticket_at_level(counts, key, unique_seeds, target_level, rng, n_tickets=2):
     """Giong find_ticket_at_level() nhung dung LAI counts/key da tinh
     san TREN SEED DA KHU TRUNG (khong tinh lai hash) - de tai su dung
-    cho NHIEU muc/model/ky ma chi phai tinh hash 1 LAN DUY NHAT."""
+    cho NHIEU muc/model/ky ma chi phai tinh hash 1 LAN DUY NHAT. Tra ve
+    toi da n_tickets ve PHAN BIET (khop voi
+    predict_next_draw_consensus.py hien tai: 2 ve/muc mac dinh)."""
     nonzero_keys = np.where(counts > 0)[0]
     if nonzero_keys.size == 0:
-        return None
+        return []
     nonzero_counts = counts[nonzero_keys]
     exact = nonzero_keys[nonzero_counts == target_level]
     if exact.size > 0:
-        chosen_key = int(rng.choice(sorted(exact.tolist())))
+        candidates = sorted(exact.tolist())
         matched_exact = True
     else:
         diffs = np.abs(nonzero_counts.astype(np.int64) - target_level)
@@ -70,14 +72,18 @@ def extract_ticket_at_level(counts, key, unique_seeds, target_level, rng):
         best = nonzero_keys[diffs == min_diff]
         best_counts = counts[best]
         top_available = int(best_counts.max())
-        tied = sorted(best[best_counts == top_available].tolist())
-        chosen_key = int(rng.choice(tied))
+        candidates = sorted(best[best_counts == top_available].tolist())
         matched_exact = False
 
-    top_rank, top_sp_idx = divmod(chosen_key, 12)
-    top_special = top_sp_idx + 1
-    n_actual = int(counts[chosen_key])  # so seed DOC LAP that (da khu trung)
-    return top_rank, top_special, n_actual, matched_exact
+    n_pick = min(n_tickets, len(candidates))
+    chosen_keys = rng.sample(candidates, n_pick)
+    results = []
+    for chosen_key in chosen_keys:
+        top_rank, top_sp_idx = divmod(chosen_key, 12)
+        top_special = top_sp_idx + 1
+        n_actual = int(counts[chosen_key])
+        results.append((top_rank, top_special, n_actual, matched_exact))
+    return results
 
 
 def dedupe_seed_hits(seed_arr, hit_arr):
@@ -114,6 +120,7 @@ def main():
     default_level = int(os.environ.get("DEFAULT_LEVEL", "2"))
     preferred_levels_raw = os.environ.get("PREFERRED_LEVELS", "4,5,6,7")
     preferred_levels = [int(x) for x in preferred_levels_raw.split(",") if x.strip()]
+    tickets_per_level = int(os.environ.get("TICKETS_PER_LEVEL", "2"))
     model_levels_raw = os.environ.get("MODEL_LEVELS")
     if model_levels_raw:
         model_levels = {str(k): v for k, v in json.loads(model_levels_raw).items()}
@@ -192,38 +199,43 @@ def main():
             key = rank * 12 + special_idx
             counts = np.bincount(key, minlength=C * 12)
 
+            seen_fallback = set()
             for tag_i, level in enumerate(groups, start=1):
                 rng = random.Random(f"{d}:{seed_start}:{tag_i}:consensus")
-                extracted = extract_ticket_at_level(counts, key, unique_seeds, level, rng)
-                if extracted is None:
-                    continue
-                top_rank, special, n_actual, matched_exact = extracted
-                mask_bits = rank_to_mask[top_rank]
-                numbers = [k + 1 for k in range(35) if mask_bits & (1 << k)]
+                extracted_list = extract_ticket_at_level(counts, key, unique_seeds, level, rng, n_tickets=tickets_per_level)
+                for top_rank, special, n_actual, matched_exact in extracted_list:
+                    mask_bits = rank_to_mask[top_rank]
+                    numbers = [k + 1 for k in range(35) if mask_bits & (1 << k)]
 
-                n_match = len(actual_set & set(numbers))
-                special_hit = (special == actual_special)
-                is_j1 = (n_match == 5 and special_hit)
+                    if not matched_exact:
+                        tk = (tuple(numbers), special)
+                        if tk in seen_fallback:
+                            continue
+                        seen_fallback.add(tk)
 
-                total_tickets += 1
-                total_matches_sum += n_match
-                n_special_hit += int(special_hit)
-                n_j1 += int(is_j1)
+                    n_match = len(actual_set & set(numbers))
+                    special_hit = (special == actual_special)
+                    is_j1 = (n_match == 5 and special_hit)
 
-                if n_match >= 3:
-                    best_matches.append({
+                    total_tickets += 1
+                    total_matches_sum += n_match
+                    n_special_hit += int(special_hit)
+                    n_j1 += int(is_j1)
+
+                    if n_match >= 3:
+                        best_matches.append({
+                            "draw_id": d, "seed_start": seed_start, "target_level": level,
+                            "ticket": "-".join(f"{x:02d}" for x in numbers), "special": special,
+                            "n_match": n_match, "special_hit": special_hit, "is_j1": is_j1,
+                            "actual": "-".join(f"{x:02d}" for x in actual_numbers) + f"+{actual_special}",
+                        })
+
+                    rows_out.append({
                         "draw_id": d, "seed_start": seed_start, "target_level": level,
+                        "matched_exact": matched_exact, "n_seed_actual": n_actual,
                         "ticket": "-".join(f"{x:02d}" for x in numbers), "special": special,
                         "n_match": n_match, "special_hit": special_hit, "is_j1": is_j1,
-                        "actual": "-".join(f"{x:02d}" for x in actual_numbers) + f"+{actual_special}",
                     })
-
-                rows_out.append({
-                    "draw_id": d, "seed_start": seed_start, "target_level": level,
-                    "matched_exact": matched_exact, "n_seed_actual": n_actual,
-                    "ticket": "-".join(f"{x:02d}" for x in numbers), "special": special,
-                    "n_match": n_match, "special_hit": special_hit, "is_j1": is_j1,
-                })
 
         if (i + 1) % 50 == 0:
             avg_so_far = total_matches_sum / total_tickets if total_tickets else 0
