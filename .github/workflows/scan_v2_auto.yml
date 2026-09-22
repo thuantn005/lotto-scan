@@ -57,20 +57,20 @@ env:
   # quet lai DUNG 1 dai seed nay moi lan co ky moi, giong het ONCE2/ONCE3).
   ONCE_BATCH_SIZE: "1557775800"
   ONCE_SEED_START: "1903987714639"
-  ONCE_LAST_N_DRAWS: "500"
+  ONCE_LAST_N_DRAWS: "60"
   ONCE_CHUNK_DIR: "l1_chunks_once"
   ONCE2_SEED_START: "108477750639"
-  ONCE2_LAST_N_DRAWS: "500"
+  ONCE2_LAST_N_DRAWS: "60"
   ONCE2_CHUNK_DIR: "l1_chunks_once2"
   ONCE3_SEED_START: "900477750639"
-  ONCE3_LAST_N_DRAWS: "500"
+  ONCE3_LAST_N_DRAWS: "60"
   ONCE3_CHUNK_DIR: "l1_chunks_once3"
   # Model phu #4: SEED TU NOI TIEP (khong co dinh) - moi lan chay se doc
   # ONCE4_STATE_FILE de biet quet tiep tu dau (KHONG quet lai dai cu), quet
   # xong thi tu ghi lai vi tri ke tiep vao chinh file nay. Lan dau chua co
   # file thi dung ONCE4_INITIAL_SEED_START lam diem bat dau.
   ONCE4_INITIAL_SEED_START: "1000477750639"
-  ONCE4_LAST_N_DRAWS: "500"
+  ONCE4_LAST_N_DRAWS: "60"
   ONCE4_STATE_FILE: "once4_seed_state.json"
   # Model phu #5: GIONG HET co che cua Model phu #4 (seed TU NOI TIEP, doc/
   # ghi state file rieng) nhung CHI quet 1 KY GAN NHAT moi lan chay.
@@ -231,13 +231,6 @@ jobs:
           SEED_START: ${{ env.FIXED_SEED_START }}
           SEED_COUNT: ${{ env.FIXED_SEED_COUNT }}
         run: ./scan_per_draw
-
-      - name: Thang hang seed J1>=2 tu l1_merged sang l2_merged (van 1 file duy nhat)
-        if: steps.check_ky.outputs.should_run == 'true'
-        env:
-          L1_MERGED_FILE: l1_merged/merged_seed${{ env.FIXED_SEED_START }}.json
-          L2_MERGED_DIR: l2_merged
-        run: python3 check_l1_merged.py
 
       # File nay app doc THANG qua CDN, khong phan trang - phai chan dung
       # khong cho phinh to vo han (moi ky quay them ~5-6KB). Tia bot cac ky
@@ -455,12 +448,6 @@ jobs:
           print(f"Da gop {len(draws)} ky, tong {total_found} luot trung J1, ghi vao {out_path}")
           PY
 
-      - name: Thang hang (promote) seed trung >=2 ky sang l2_merged/promoted_seed{X}.json
-        env:
-          L1_MERGED_FILE: l1_merged/merged_seed${{ env.ONCE_SEED_START }}.json
-          L2_MERGED_DIR: l2_merged
-        run: python3 check_l1_merged.py
-
       - name: Commit ket qua
         run: |
           set -e
@@ -649,12 +636,6 @@ jobs:
           print(f"Da gop {len(draws)} ky, tong {total_found} luot trung J1, ghi vao {out_path}")
           PY
 
-      - name: Thang hang (promote) seed trung >=2 ky sang l2_merged/promoted_seed{X}.json
-        env:
-          L1_MERGED_FILE: l1_merged/merged_seed${{ env.ONCE2_SEED_START }}.json
-          L2_MERGED_DIR: l2_merged
-        run: python3 check_l1_merged.py
-
       - name: Commit ket qua
         run: |
           set -e
@@ -842,12 +823,6 @@ jobs:
           out_path.write_text(json.dumps(out, separators=(",", ":")), encoding="utf-8")
           print(f"Da gop {len(draws)} ky, tong {total_found} luot trung J1, ghi vao {out_path}")
           PY
-
-      - name: Thang hang (promote) seed trung >=2 ky sang l2_merged/promoted_seed{X}.json
-        env:
-          L1_MERGED_FILE: l1_merged/merged_seed${{ env.ONCE3_SEED_START }}.json
-          L2_MERGED_DIR: l2_merged
-        run: python3 check_l1_merged.py
 
       - name: Commit ket qua
         run: |
@@ -1074,12 +1049,6 @@ jobs:
           out_path.write_text(json.dumps(out, separators=(",", ":")), encoding="utf-8")
           print(f"Da gop {len(draws)} ky, tong {total_found} luot trung J1, ghi vao {out_path}")
           PY
-
-      - name: Thang hang (promote) seed trung >=2 ky sang l2_merged/promoted_seed{X}.json
-        env:
-          L1_MERGED_FILE: l1_merged/merged_seed${{ env.CURRENT_SEED_START }}.json
-          L2_MERGED_DIR: l2_merged
-        run: python3 check_l1_merged.py
 
       - name: Ghi vi tri KE TIEP vao state file (de lan sau quet tiep, khong quet lai)
         env:
@@ -1338,12 +1307,6 @@ jobs:
           out_path.write_text(json.dumps(out, separators=(",", ":")), encoding="utf-8")
           print(f"Da gop {len(draws)} ky, tong {total_found} luot trung J1, ghi vao {out_path}")
           PY
-
-      - name: Thang hang (promote) seed trung >=2 ky sang l2_merged/promoted_seed{X}.json
-        env:
-          L1_MERGED_FILE: l1_merged/merged_seed${{ env.CURRENT_SEED_START }}.json
-          L2_MERGED_DIR: l2_merged
-        run: python3 check_l1_merged.py
 
       - name: Ghi vi tri KE TIEP vao state file (de lan sau quet tiep, khong quet lai)
         env:
