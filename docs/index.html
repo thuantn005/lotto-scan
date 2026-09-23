@@ -241,7 +241,13 @@
 async function loadDashboard() {
   let data;
   try {
-    const res = await fetch('./data.json', { cache: 'no-store' });
+    // QUAN TRONG: 'cache: no-store' chi chan cache cua TRINH DUYET, KHONG
+    // chan duoc CDN cua GitHub Pages (Fastly) - CDN co the phuc vu ban
+    // data.json CU trong vai phut sau khi deploy moi vi URL khong doi. Them
+    // query param cache-busting (timestamp) de ep CDN coi day la 1 URL
+    // KHAC, buoc phai lay ban moi nhat - sua trieu chung "du lieu cu, phai
+    // tai lai trang" o lan tai dau tien.
+    const res = await fetch('./data.json?v=' + Date.now(), { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     data = await res.json();
   } catch (err) {

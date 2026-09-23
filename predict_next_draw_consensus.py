@@ -59,7 +59,9 @@ ENV:
                       trong lich su L2 cua no) va 1 ve o muc cao nhat co
                       that trong khoang 3-7. Model KHONG co trong danh
                       sach nay se tu tinh mode tu L2 rieng va CHI ra 1 ve.
-    OUT_PATH        - file ghi du doan (mac dinh predict/next_draw_predict_consensus.txt)
+    OUT_DIR         - thu muc ghi du doan, MOI MODEL 1 FILE RIENG (mac dinh
+                      predict/consensus) - ten file:
+                      next_draw_predict_{seed_start}.txt
     HISTORY_DIR     - thu muc luu lich su (mac dinh predict/history) - CUNG
                       dinh dang voi cac chien luoc khac de
                       check_prediction_result.py/dashboard tu nhan dien.
@@ -67,7 +69,7 @@ ENV:
 
 DEFAULT_MODEL_LEVELS = {
     "682305800400": [2],
-    "1903987714639": [2, 3, 4],
+    "1903987714639": [2, 3, 4, 5, 6, 7],
 }
 
 import glob
@@ -266,7 +268,7 @@ def main():
     l1_glob = os.environ.get("L1_GLOB", "l1_merged/merged_seed*.json")
     l2_glob = os.environ.get("L2_GLOB", "l2_merged/promoted_seed*.json")
     default_level = int(os.environ.get("DEFAULT_LEVEL", "2"))
-    preferred_levels_raw = os.environ.get("PREFERRED_LEVELS", "4")
+    preferred_levels_raw = os.environ.get("PREFERRED_LEVELS", "2,3,4,5,6,7")
     preferred_levels = [int(x) for x in preferred_levels_raw.split(",") if x.strip()]
     tickets_per_level = int(os.environ.get("TICKETS_PER_LEVEL", "2"))
     min_model_seeds = int(os.environ.get("MIN_MODEL_SEEDS", "100000"))
@@ -275,7 +277,7 @@ def main():
         model_levels = {str(k): v for k, v in json.loads(model_levels_raw).items()}
     else:
         model_levels = dict(DEFAULT_MODEL_LEVELS)
-    out_path = os.environ.get("OUT_PATH", "predict/next_draw_predict_consensus.txt")
+    out_dir_base = os.environ.get("OUT_DIR", "predict/consensus")
     history_dir = os.environ.get("HISTORY_DIR", "predict/history")
 
     next_draw_id = get_next_draw_id(csv_path)
@@ -297,10 +299,7 @@ def main():
     print(f"So model tim thay: {len(all_seed_starts)}\n")
 
     predictions = []
-    lines_out = [
-        f"KY MUC TIEU: {next_draw_id:05d} (chien luoc 'consensus' - xem CANH BAO trong docstring script)",
-        "",
-    ]
+    lines_out_per_model = {}  # seed_start -> list dong text (file rieng cho model do)
 
     for seed_start in all_seed_starts:
         seed_parts, hit_parts = [], []
@@ -324,9 +323,17 @@ def main():
         combined_seeds = np.concatenate(seed_parts) if len(seed_parts) > 1 else seed_parts[0]
         combined_hits = np.concatenate(hit_parts) if len(hit_parts) > 1 else hit_parts[0]
 
+        model_lines = [
+            f"KY MUC TIEU: {next_draw_id:05d} (chien luoc 'consensus' - xem CANH BAO trong docstring script)",
+            f"MODEL: {seed_start}",
+            "",
+        ]
+        lines_out_per_model[seed_start] = model_lines
+
         if combined_seeds.size < min_model_seeds:
-            print(f"Model {seed_start}: BO QUA (chi co {combined_seeds.size:,} ban ghi, duoi nguong MIN_MODEL_SEEDS={min_model_seeds:,} - du lieu qua it de dang tin cay)")
-            lines_out.append(f"Model {seed_start}: BO QUA (du lieu qua it: {combined_seeds.size:,} < {min_model_seeds:,})")
+            msg = f"Model {seed_start}: BO QUA (du lieu qua it: {combined_seeds.size:,} < {min_model_seeds:,})"
+            print(msg)
+            model_lines.append(msg)
             continue
 
         groups = model_levels.get(str(seed_start))
@@ -343,6 +350,11 @@ def main():
                 n_tickets=tickets_per_level)
             if not results:
                 continue
+
+            # CHI GIU LAI ve CUOI CUNG trong so cac ve da boc (mac dinh
+            # boc 2, chi giu ve thu 2 - bo ve thu 1). Neu chi boc duoc 1
+            # ve (khong du 2 ung vien khac nhau), van giu ve duy nhat do.
+            results = results[-1:]
 
             for sub_i, result in enumerate(results, start=1):
                 numbers, special, n_actual, seed_dai_dien, matched_exact, chi_tiet_seed = result
@@ -365,13 +377,12 @@ def main():
                 line = (f"Model {seed_start} ({ve_label}): {nums_str} + DB {special:02d} "
                         f"([{level_source}], thuc te ve nay dat {n_actual} seed - {match_note})")
                 print(line)
-                lines_out.append(line)
-                lines_out.append(line)
+                model_lines.append(line)
                 for s, ky_list in chi_tiet_seed:
                     ky_str = ", ".join(f"ky {k:05d}" for k in ky_list)
                     detail = f"    seed={s} - da tung trung THAT o: {ky_str}"
                     print(detail)
-                    lines_out.append(detail)
+                    model_lines.append(detail)
 
                 predictions.append({
                     "seed_start": seed_start,
@@ -381,11 +392,13 @@ def main():
                     "file": ";".join(fps),
                 })
 
-    out_dir = os.path.dirname(out_path)
-    if out_dir:
-        os.makedirs(out_dir, exist_ok=True)
-    Path(out_path).write_text("\n".join(lines_out) + "\n", encoding="utf-8")
-    print(f"\nDa ghi {len(predictions)} du doan vao {out_path}")
+    os.makedirs(out_dir_base, exist_ok=True)
+    written_files = []
+    for seed_start, model_lines in lines_out_per_model.items():
+        fp = os.path.join(out_dir_base, f"next_draw_predict_{seed_start}.txt")
+        Path(fp).write_text("\n".join(model_lines) + "\n", encoding="utf-8")
+        written_files.append(fp)
+    print(f"\nDa ghi {len(predictions)} du doan vao {len(written_files)} file (1 file/model) trong {out_dir_base}/")
 
     if predictions:
         hist_path = save_prediction_history(history_dir, next_draw_id, STRATEGY, predictions)
