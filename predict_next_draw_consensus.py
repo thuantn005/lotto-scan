@@ -67,10 +67,12 @@ ENV:
                       check_prediction_result.py/dashboard tu nhan dien.
 """
 
-DEFAULT_MODEL_LEVELS = {
-    "682305800400": [2],
-    "1903987714639": [2, 3, 4, 5, 6, 7],
-}
+DEFAULT_MODEL_LEVELS = {}
+# Truoc day co cau hinh rieng cho 682305800400 (chi muc 2) va
+# 1903987714639 (2-7) - GIO BO HET, de TAT CA model deu dung chung
+# PREFERRED_LEVELS (mac dinh 2,3,4,5,6,7 - moi muc 1 ve rieng), dung
+# CHINH XAC nhu cach da phan tich cho ky 00392 (khong con truong hop
+# ngoai le nao).
 
 import glob
 import json
