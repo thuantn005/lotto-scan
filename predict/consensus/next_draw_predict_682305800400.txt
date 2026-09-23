@@ -1,0 +1,6 @@
+KY MUC TIEU: 00904 (chien luoc 'consensus' - xem CANH BAO trong docstring script)
+MODEL: 682305800400
+
+Model 682305800400 (muc 2): 02-12-21-30-34 + DB 09 ([chi dinh thu cong], thuc te ve nay dat 2 seed - dung muc)
+    seed=682865372911 - da tung trung THAT o: ky 00777
+    seed=683374935793 - da tung trung THAT o: ky 00373
