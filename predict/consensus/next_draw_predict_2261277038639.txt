@@ -1,0 +1,4 @@
+KY MUC TIEU: 00905 (chien luoc 'consensus' - xem CANH BAO trong docstring script)
+MODEL: 2261277038639
+
+Model 2261277038639: BO QUA (du lieu qua it: 7,910 < 100,000)

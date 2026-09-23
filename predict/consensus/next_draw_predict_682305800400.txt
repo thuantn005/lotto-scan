@@ -1,6 +1,25 @@
-KY MUC TIEU: 00904 (chien luoc 'consensus' - xem CANH BAO trong docstring script)
+KY MUC TIEU: 00905 (chien luoc 'consensus' - xem CANH BAO trong docstring script)
 MODEL: 682305800400
 
-Model 682305800400 (muc 2): 02-12-21-30-34 + DB 09 ([chi dinh thu cong], thuc te ve nay dat 2 seed - dung muc)
-    seed=682865372911 - da tung trung THAT o: ky 00777
-    seed=683374935793 - da tung trung THAT o: ky 00373
+Model 682305800400 (muc 2): 13-19-27-31-35 + DB 04 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 2 seed - dung muc)
+    seed=682326624955 - da tung trung THAT o: ky 00036
+    seed=683320650156 - da tung trung THAT o: ky 00431
+Model 682305800400 (muc 3): 02-04-15-25-32 + DB 06 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 3 seed - dung muc)
+    seed=682386253667 - da tung trung THAT o: ky 00545
+    seed=682716373322 - da tung trung THAT o: ky 00419
+    seed=682751405342 - da tung trung THAT o: ky 00440
+Model 682305800400 (muc 4): 01-02-11-20-26 + DB 12 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 4 seed - dung muc)
+    seed=682664825942 - da tung trung THAT o: ky 00850
+    seed=683039920110 - da tung trung THAT o: ky 00410
+    seed=683270550408 - da tung trung THAT o: ky 00085
+    seed=683620992797 - da tung trung THAT o: ky 00741
+Model 682305800400 (muc 5): 02-13-27-30-34 + DB 11 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 4 seed - KHONG co ve nao dung 5, lay gan nhat (thuc te cao nhat model nay dat duoc = 4))
+    seed=682456231439 - da tung trung THAT o: ky 00459
+    seed=682779231969 - da tung trung THAT o: ky 00566
+    seed=683574921700 - da tung trung THAT o: ky 00672
+    seed=683806855867 - da tung trung THAT o: ky 00414
+Model 682305800400 (muc 6): 07-14-27-28-30 + DB 04 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 4 seed - KHONG co ve nao dung 6, lay gan nhat (thuc te cao nhat model nay dat duoc = 4))
+    seed=683261118862 - da tung trung THAT o: ky 00292
+    seed=683430540023 - da tung trung THAT o: ky 00340
+    seed=683677599613 - da tung trung THAT o: ky 00659
+    seed=683836728587 - da tung trung THAT o: ky 00852
