@@ -1,0 +1,12 @@
+KY MUC TIEU: 00907 (chien luoc 'consensus' - xem CANH BAO trong docstring script)
+MODEL: 2745186646639
+
+Model 2745186646639 (muc 3): 02-05-13-18-23 + DB 06 ([tu dong (moi muc trong [3, 4] ra 1 ve rieng)], thuc te ve nay dat 3 seed - dung muc)
+    seed=2749196368522 - da tung trung THAT o: ky 00769
+    seed=2762203320701 - da tung trung THAT o: ky 00345
+    seed=2763953063775 - da tung trung THAT o: ky 00073
+Model 2745186646639 (muc 4): 01-03-08-30-32 + DB 08 ([tu dong (moi muc trong [3, 4] ra 1 ve rieng)], thuc te ve nay dat 4 seed - dung muc)
+    seed=2755885811498 - da tung trung THAT o: ky 00268
+    seed=2758550762413 - da tung trung THAT o: ky 00350
+    seed=2759853412386 - da tung trung THAT o: ky 00872
+    seed=2762034219507 - da tung trung THAT o: ky 00319
