@@ -1,27 +1,27 @@
-KY MUC TIEU: 00905 (chien luoc 'consensus' - xem CANH BAO trong docstring script)
+KY MUC TIEU: 00906 (chien luoc 'consensus' - xem CANH BAO trong docstring script)
 MODEL: 900477750639
 
-Model 900477750639 (muc 2): 02-13-27-29-35 + DB 02 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 2 seed - dung muc)
-    seed=916668886382 - da tung trung THAT o: ky 00881
-    seed=928953688119 - da tung trung THAT o: ky 00875
-Model 900477750639 (muc 3): 15-23-31-33-34 + DB 07 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 3 seed - dung muc)
-    seed=912467386971 - da tung trung THAT o: ky 00852
-    seed=914882478474 - da tung trung THAT o: ky 00866
-    seed=917557731234 - da tung trung THAT o: ky 00849
-Model 900477750639 (muc 4): 08-23-32-33-35 + DB 06 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 4 seed - dung muc)
-    seed=901914562232 - da tung trung THAT o: ky 00885
-    seed=912102958057 - da tung trung THAT o: ky 00885
-    seed=927530105854 - da tung trung THAT o: ky 00870
-    seed=930849310427 - da tung trung THAT o: ky 00904
-Model 900477750639 (muc 5): 06-10-24-26-31 + DB 10 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 5 seed - dung muc)
-    seed=905857159385 - da tung trung THAT o: ky 00869
-    seed=906065036831 - da tung trung THAT o: ky 00871
-    seed=907791616004 - da tung trung THAT o: ky 00895
-    seed=908547635729 - da tung trung THAT o: ky 00898
-    seed=916909100233 - da tung trung THAT o: ky 00849
-Model 900477750639 (muc 6): 06-10-24-26-31 + DB 10 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 5 seed - KHONG co ve nao dung 6, lay gan nhat (thuc te cao nhat model nay dat duoc = 5))
-    seed=905857159385 - da tung trung THAT o: ky 00869
-    seed=906065036831 - da tung trung THAT o: ky 00871
-    seed=907791616004 - da tung trung THAT o: ky 00895
-    seed=908547635729 - da tung trung THAT o: ky 00898
-    seed=916909100233 - da tung trung THAT o: ky 00849
+Model 900477750639 (muc 2): 07-08-14-24-34 + DB 11 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 2 seed - dung muc)
+    seed=915374984308 - da tung trung THAT o: ky 00848
+    seed=923866468322 - da tung trung THAT o: ky 00869
+Model 900477750639 (muc 3): 02-11-30-33-35 + DB 10 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 3 seed - dung muc)
+    seed=908138666403 - da tung trung THAT o: ky 00853
+    seed=916402923196 - da tung trung THAT o: ky 00879
+    seed=928927456964 - da tung trung THAT o: ky 00854
+Model 900477750639 (muc 4): 01-09-20-24-33 + DB 11 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 4 seed - dung muc)
+    seed=907627008867 - da tung trung THAT o: ky 00904
+    seed=911370560696 - da tung trung THAT o: ky 00882
+    seed=913629272778 - da tung trung THAT o: ky 00858
+    seed=928769024163 - da tung trung THAT o: ky 00889
+Model 900477750639 (muc 5): 04-06-12-28-35 + DB 01 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 5 seed - dung muc)
+    seed=913437309867 - da tung trung THAT o: ky 00902
+    seed=913746562916 - da tung trung THAT o: ky 00876
+    seed=916858249911 - da tung trung THAT o: ky 00891
+    seed=918992706070 - da tung trung THAT o: ky 00868
+    seed=931106451354 - da tung trung THAT o: ky 00879
+Model 900477750639 (muc 6): 04-06-12-28-35 + DB 01 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 5 seed - KHONG co ve nao dung 6, lay gan nhat (thuc te cao nhat model nay dat duoc = 5))
+    seed=913437309867 - da tung trung THAT o: ky 00902
+    seed=913746562916 - da tung trung THAT o: ky 00876
+    seed=916858249911 - da tung trung THAT o: ky 00891
+    seed=918992706070 - da tung trung THAT o: ky 00868
+    seed=931106451354 - da tung trung THAT o: ky 00879
