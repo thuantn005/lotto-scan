@@ -133,8 +133,19 @@
   .strategy-name { color: var(--text-dim); }
   .ticket .strategy-name { color: rgba(255,243,214,0.72); font-weight: 600; }
   .ticket-line { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 10px; padding: 4px 0; font-size: 13px; }
-  .ticket-seed { color: var(--text-dim); font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .ticket .ticket-seed { color: rgba(255,243,214,0.55); }
+  /* Dong thong tin moi ve: Model (seed_start) - muc dong thuan - seed dai dien (+ danh sach seed dong thuan) */
+  .ticket-meta { flex: 1 0 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font-size: 11px; font-variant-numeric: tabular-nums; }
+  .ticket-meta .tag { padding: 1px 7px; border-radius: 5px; background: rgba(194,161,132,0.16); color: var(--text-dim); white-space: nowrap; }
+  .ticket-meta .tag.model { background: rgba(232,183,63,0.18); color: var(--gold-pale); font-weight: 600; }
+  .ticket-meta .tag.level { background: var(--good-bg); color: #7fd6a3; font-weight: 600; }
+  .ticket .ticket-meta .tag { background: rgba(255,243,214,0.14); color: rgba(255,243,214,0.75); }
+  .ticket .ticket-meta .tag.model { background: rgba(255,243,214,0.24); color: #fff3d6; }
+  .ticket .ticket-meta .tag.level { background: rgba(127,214,163,0.22); color: #c8f2d8; }
+  .seed-detail { flex: 1 0 100%; font-size: 11px; color: var(--text-dim); }
+  .seed-detail summary { cursor: pointer; }
+  .seed-detail ul { margin: 4px 0 2px; padding-left: 18px; }
+  .seed-detail li { margin: 1px 0; word-break: break-all; }
+  .ticket .seed-detail { color: rgba(255,243,214,0.7); }
 
   /* --- Balls --- */
   .ticket-numbers { flex: 1 1 auto; min-width: 0; text-align: left; font-variant-numeric: tabular-nums; }
@@ -170,12 +181,11 @@
   .match-badge.j1 { background: var(--gold); color: #3a1f00; }
   .spec-tag { font-weight: 700; }
 
-  /* --- Man hinh hep (dien thoai): thu nho bi + an seed de tranh vo bo cuc --- */
+  /* --- Man hinh hep (dien thoai): thu nho bi (model/seed van hien, xuong dong duoi bi) --- */
   @media (max-width: 420px) {
     .ball { width: 22px; height: 22px; font-size: 10px; }
     .balls-row { gap: 3px; }
     .ball-sep { font-size: 11px; }
-    .ticket-seed { display: none; }
   }
 
   /* --- Historical draw cards --- */
@@ -272,6 +282,20 @@ async function loadDashboard() {
   renderDraws(data);
 }
 
+function ticketMetaHtml(t) {
+  // Model = seed_start (moi model 1 dai seed rieng); muc = so seed doc lap cung sinh ra ve nay (chi co o chien luoc consensus)
+  const tags = [];
+  if (t.seed_start) tags.push(`<span class="tag model">Model ${t.seed_start}</span>`);
+  if (t.level) tags.push(`<span class="tag level">mức ${t.level}</span>`);
+  tags.push(`<span class="tag">seed ${t.seed}</span>`);
+  let detail = '';
+  if (Array.isArray(t.seeds) && t.seeds.length) {
+    const items = t.seeds.map(x => `<li>${x.seed}${x.draws && x.draws.length ? ' — trúng kỳ ' + x.draws.join(', ') : ''}</li>`).join('');
+    detail = `<details class="seed-detail"><summary>${t.seeds.length} seed đồng thuận</summary><ul>${items}</ul></details>`;
+  }
+  return `<div class="ticket-meta">${tags.join('')}</div>${detail}`;
+}
+
 function ballsHtml(numbers, special, actualNumbers, actualSpecial) {
   const actualSet = actualNumbers ? new Set(actualNumbers) : null;
   const nums = numbers.map(n => {
@@ -316,7 +340,7 @@ function renderNextDraw(data) {
     const lines = tickets.map(t => `
       <div class="ticket-line">
         <span class="ticket-numbers">${ballsHtml(t.numbers, t.special)}</span>
-        <span class="ticket-seed">seed ${t.seed}</span>
+        ${ticketMetaHtml(t)}
       </div>`).join('');
     return `
       <div class="strategy-block">
@@ -420,8 +444,8 @@ function renderDraws(data) {
         return `
           <div class="ticket-line">
             <span class="ticket-numbers">${ballsHtml(t.numbers, t.special, draw.actual.numbers, draw.actual.special)}</span>
-            <span class="ticket-seed">seed ${t.seed}</span>
             <span class="match-badge ${badgeClass}">${t.matches}/5${specTag}</span>
+            ${ticketMetaHtml(t)}
           </div>`;
       }).join('');
       return `

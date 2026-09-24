@@ -1,0 +1,131 @@
+HUONG DAN: "VE DONG THUAN" (consensus) LA GI VA HOAT DONG THE NAO
+=================================================================
+Doc file nay truoc khi sua/chay bat ky gi lien quan den predict_next_draw_consensus.py,
+predict/consensus/, predict/history/*_consensus.txt hoac dashboard (docs/).
+
+0. TOM TAT 5 DONG
+-----------------
+- Moi "model" = 1 dai seed lien tiep (bat dau tu seed_start). Moi (seed, ky) cho ra DUNG 1 ve bang 1 ham hash
+  co dinh (muc 2). Khong co "AI" hay hoc may nao trong cong thuc nay.
+- Seed "trung" 1 ky = seed do cho ra dung ve trung that (5 so + so dac biet) cua ky do. Cac seed trung duoc luu o l1_merged/.
+- VE DONG THUAN cho 1 ky dang xet: nhieu seed KHAC NHAU, moi seed tung trung o 1 ky KHAC, khi cung ap len ky dang xet
+  thi cho ra CUNG 1 ve. MUC DONG THUAN cua ve = so seed doc lap cung ra ve do (muc 3 = 3 seed, muc 4 = 4 seed...).
+- Ban zip nay chi giu 3 model (682305800400, 108477750639, 1903987714639) va chi xuat du doan MUC 3 va MUC 4.
+- QUAN TRONG: cac backtest da chay CHUA CHUNG MINH ve dong thuan tot hon boc so ngau nhien (xem muc 7). Day la co che
+  dang thu nghiem/doi chieu, khong phai tin hieu du doan da duoc kiem chung.
+
+1. THUAT NGU
+------------
+ky / draw_id     So thu tu ky quay (vi du 905). Ket qua that nam o data/all.csv (cot draw_id, result_json).
+ve               5 so chinh trong 1..35 (khong lap, khong quan tam thu tu) + 1 so dac biet 1..12.
+                 So ve co the co = C(35,5) x 12 = 324.632 x 12 = 3.895.584. Xac suat 1 ve ngau nhien trung ~ 1/3.895.584.
+seed             So nguyen 64-bit dung lam dau vao cua ham hash. Cung 1 seed o ky khac nhau cho ve khac nhau.
+model            Dai seed [seed_start, seed_end]. Dinh danh model = seed_start (vd 682305800400). Moi model co 1 file
+                 l1_merged/merged_seed{seed_start}.json. CAU HINH HIEN TAI (workflow): 682305800400 quet 10 ty seed
+                 (~2.570 seed trung/ky); 108477750639 va 1903987714639 quet ~31 ty seed (20 chunk, ~8.000 seed trung/ky).
+                 DU LIEU l1_merged TRONG ZIP NAY CON LA BAN QUET CU (682305800400: ~1,56 ty seed, ~400 seed/ky; cac model
+                 khac 60 ky) cho toi khi workflow chay lai - cac con so "~400 seed/ky" o muc 7 la cua ban quet cu.
+J1               "Jackpot 1" = seed cho ra DUNG ve trung that (5 so + dac biet) o 1 ky cu the.
+L1               Tap seed J1: l1_merged/merged_seed*.json -> draws[].seeds la cac seed trung ky draws[].draw_id.
+L2               l2_merged/promoted_seed{seed_start}.json (do check_l1_merged.py tao; ban zip nay khong kem file L2 nao):
+                 seed trung >= 2 ky, duoc "thang hang" khoi L1. L2 LUU SEED TRUNG THEO KY o 2 chieu:
+                   "promoted": [{"seed","j1_count","hits":[{"draw_id","draw_date"},...]}]   seed -> cac ky no trung
+                   "draws":    [{"draw_id","draw_date","found","seeds":[...]}]              ky -> cac seed L2 trung ky do
+                 Khi tinh dong thuan, L1 + L2 duoc gop va KHU TRUNG theo seed (seed L2 da bi xoa khoi L1 nen PHAI gop).
+ky nguon         Ky ma seed da tung trung (o l1_merged). "Khac ky" o dinh nghia dong thuan nghia la ky nguon != ky dang xet.
+pool             Tap seed dua vao de tinh dong thuan = cac seed da tung trung (o bat ky ky nao) cua model, da khu trung.
+
+2. CACH SINH VE TU (seed, ky)  -- lotto_common.predict_ticket()
+----------------------------------------------------------------
+    M1 = 0x9E3779B97F4A7C15   M2 = 0xD1B54A32D192ED03   M3 = 0xBF58476D1CE4E5B9   M4 = 0x94D049BB133111EB
+    combined = (seed * M1 + draw_id * M2) mod 2^64
+    mixed    = mix64(combined)                    # splitmix64: x^=x>>30; x*=M3; x^=x>>27; x*=M4; x^=x>>31
+    rank     = mixed mod 324632                   # chi so to hop C(35,5) -> tap 5 so (build_rank_to_mask)
+    special  = (mix64(mixed) mod 12) + 1
+Cong thuc giong scan_v2.cpp / scan_per_draw.cpp / TicketFormula.dart. Vector hoa bang numpy o predict_next_draw_consensus.py
+(mix64_vec). "Khoa ve" dung trong code: key = rank*12 + (special-1)  (0 .. 3.895.583).
+Dac tinh: (seed, ky) -> ve la ham xac dinh, phan bo gan deu tren 3.895.584 ve. Vi vay cac seed "roi" vao 1 ve nao do
+o 1 ky la ngau nhien; so seed cung roi vao 1 ve tuan theo phan phoi gan Poisson.
+
+3. VE DONG THUAN - DINH NGHIA CHINH XAC
+---------------------------------------
+Voi model M va ky dang xet D (D co the la ky SAP TOI chua co ket qua, hoac 1 ky da qua de kiem chung):
+  1) pool(M, D) = tat ca seed thuoc M da tung trung o BAT KY ky nao KHAC D (o du doan that: moi ky da co ket qua).
+     Khu trung: 1 seed trung nhieu ky van chi la 1 seed.
+  2) Voi moi seed trong pool tinh ve(seed, D) theo muc 2.
+  3) Gom theo ve. MUC DONG THUAN cua 1 ve = so seed DOC LAP (khac nhau) cho ra ve do. Ve co muc >= 2 goi la "ve dong thuan".
+  4) Neu 1 seed L2 trung 2 ky thi van chi tinh 1 seed (khong phai 2 phieu). Code dem theo seed da khu trung, KHONG dem
+     theo so dong (xem docstring find_ticket_at_level()).
+Y nghia: cac seed nay den tu cac ky nguon khac nhau, moi seed la 1 "ung vien" da tung dung o 1 ky khac; neu chung cung
+chi vao 1 ve o ky D thi noi la "dong thuan". Muc cang cao thi ve cang hiem trong 3,9 trieu ve.
+
+Vi du that (ky 905, model 682305800400, muc 3), co the tu kiem chung:
+    ve 02-04-15-25-32 + DB 06
+      seed 682386253667 (da trung ky 545), seed 682716373322 (ky 419), seed 682751405342 (ky 440)
+    -> ve(682386253667, 905) = ve(682716373322, 905) = ve(682751405342, 905) = 02-04-15-25-32 + DB 06.
+Kiem chung: python3 explain_consensus_ticket.py 682305800400 905 --levels 3,4
+
+Ve TRUNG va KHONG TRUNG deu co the dong thuan: "trung" chi nghia la ve do trung khop voi ket qua that cua ky D
+(khi ky D da co ket qua). Muc dong thuan cua ve trung = so seed tu ky khac cung sinh ra ve trung do (thuong 0, 1 hoac 2).
+Chay them: python3 explain_consensus_ticket.py 682305800400 514 --levels 2 --show-actual
+
+4. CACH CHON VE DU DOAN  -- predict_next_draw_consensus.py
+----------------------------------------------------------
+  - Ky muc tieu = ky sap toi (get_next_draw_id tren data/all.csv). Doc L1 (+L2 neu co) cua tung model.
+  - Model co < MIN_MODEL_SEEDS (mac dinh 100.000) seed thi BO QUA.
+  - Moi muc trong PREFERRED_LEVELS (ban nay mac dinh "3,4"; ban goc "2,3,4,5,6,7") ra 1 ve RIENG cho model do.
+  - Voi moi muc: lay cac ve co DUNG muc do; boc ngau nhien co hat co dinh random.Random(f"{ky}:{seed_start}:consensus")
+    toi da TICKETS_PER_LEVEL (mac dinh 2) ve khac nhau, CHI GIU ve cuoi cung. Neu khong co ve nao dung muc thi lay ve co
+    muc GAN nhat (uu tien cao hon) va ghi ro "KHONG co ve nao dung ...".
+  - seed dai dien cua ve = seed nho nhat trong nhom seed dong thuan cua ve do.
+  - Ket qua: predict/consensus/next_draw_predict_{seed_start}.txt (1 file/model, kem danh sach seed + ky da trung),
+    predict/next_draw_predict_consensus.txt (tong hop), predict/history/{ky:05d}_consensus.txt (de doi chieu / dashboard).
+
+5. DINH DANG FILE
+-----------------
+l1_merged/merged_seed{seed_start}.json : {"seed_start","seed_end",...,"draws":[{"draw_id","draw_date","seeds":[...]}]}
+    Cau hinh moi: cua so 1000 ky (*_LAST_N_DRAWS=1000; model chinh quet toan bo CSV). prune_merged_seed.py chi tia ky cu nhat
+    neu file vuot 90MB (gioi han GitHub 100MB). Du lieu trong zip nay van la ban cu: ~60 ky (108477750639, 1903987714639), ~904 ky (682305800400).
+predict/history/{ky:05d}_consensus.txt : 1 dong / ve, cac truong cach nhau dau "|":
+    seed_start | seed_dai_dien | n1,n2,n3,n4,n5 | dac_biet | file_l1_nguon | muc_dong_thuan | seed@ky+ky;seed@ky+ky;...
+    (2 truong cuoi chi co o chien luoc consensus; file 5 truong cua cac chien luoc khac van doc duoc -
+     lotto_common.load_prediction_history nhan ca 5 lan 7 truong.)
+    Vi du: 682305800400|682386253667|2,4,15,25,32|6|l1_merged/merged_seed682305800400.json|3|682386253667@545;682716373322@419;682751405342@440
+docs/index.html + docs/data.json : dashboard. data.json do generate_dashboard_data.py sinh ra tu predict/history + data/all.csv.
+    Moi ve du doan hien: bi so, "Model {seed_start}", "muc N", "seed {dai dien}" va (bam vao "N seed dong thuan")
+    danh sach day du cac seed dong thuan kem ky ma tung seed da trung.
+
+6. PHAN BIET 2 CACH TINH (de khoi nham khi doc ket qua phan tich)
+-----------------------------------------------------------------
+  a) Du doan that (san xuat): pool = seed cua cac ky DA CO (truoc ky sap toi). Khong nhin thay tuong lai.
+  b) Phan tich "ky khac" (leave-one-out): voi ky D da qua, pool = seed cua MOI ky khac D (ca truoc lan sau D), de xem ve trung
+     that co muc dong thuan ra sao. Chi la phan tich mo ta, khong dung de du doan. explain_consensus_ticket.py dung cach (b);
+     voi ky sap toi (chua co ket qua) hai cach trung nhau.
+  c) Cach walk-forward (pool chi gom seed cua ky < D) cung da duoc thu - cho ket luan tuong tu.
+
+7. KET QUA DA DO (model 682305800400, 904 ky, cach b) - DOC KY TRUOC KHI KY VONG
+-------------------------------------------------------------------------------
+  - Muc dong thuan cua VE TRUNG THAT moi ky: 0 seed o 793 ky, 1 seed o 104 ky, 2 seed o 7 ky (ky 310, 364, 438, 514, 603, 654, 659).
+    Ky vong ngau nhien ~0,093 seed/ky (361.460 luot trung / 3.895.584 ve).
+  - Moi ky co ~15.700 ve dong thuan KHONG trung (~31.900 seed); muc cao nhat moi ky la 4 (728 ky), 5 (174 ky), 6 (2 ky).
+    KHONG co ky nao ve muc cao nhat lai la ve trung that (0/904).
+  - So seed trung dung 2 ky: 59 (ky vong ngau nhien ~42, lech ~2,6 sigma, chua hieu chinh da phep thu -> khong ket luan duoc).
+  - Cac model 108477750639 / 1903987714639 (cua so 60 ky): ve trung khong bao gio dat muc >= 4; 1903987714639 co ky 883 dat muc 2.
+  - backtest_consensus_batch.py / backtest_predictions.py (846 ky): trung binh so trung cua ve dong thuan cao nhat ~0,70/5,
+    khong cao hon moc ngau nhien 0,7143/5; khong chien luoc nao co y nghia thong ke sau hieu chinh Bonferroni.
+  KET LUAN THAN TRONG: muc dong thuan khong (chua) phan biet duoc ve trung voi ve khong trung. Xem nhu so lieu doi chieu.
+
+8. LUU Y KHI SUA / DUNG LAI
+---------------------------
+  - Muc dong thuan dem SEED DOC LAP; dung dem theo luot trung. Khu trung truoc khi hash/dem.
+  - Ky nguon != ky dang xet: khi phan tich ky da qua, LOAI seed cua chinh ky D khoi pool (hoac dung explain_consensus_ticket.py).
+  - Cung 1 ve co the duoc nhieu model cung sinh ra - moi model tinh rieng, khong gop seed giua cac model (dai seed khac nhau).
+  - Kich thuoc pool anh huong muc: model ~480k seed (cua so 60 ky) co nhieu ve muc 2-4 hon model ~360k seed. Khong so sanh
+    muc tuyet doi giua model co pool khac nhau.
+  - File nay khong thay the docstring trong predict_next_draw_consensus.py (moi chi tiet, kem canh bao backtest).
+
+9. BAN NAY DA BI RUT GON SO VOI ZIP GOC
+---------------------------------------
+  Cau hinh quet: L1 len 1000 ky, model 682305800400 len 10 ty seed (xem README_CHINH_SUA_MUC34_3MODEL.txt).
+  Chi giu model 682305800400, 108477750639, 1903987714639; chi muc 3 va 4; da xoa du doan cac chien luoc khac (app, tong hop),
+  lich su du doan cu (predict/history chi con ky 905 - consensus), va l1_merged cua cac model khac. Chi tiet: README_CHINH_SUA_MUC34_3MODEL.txt.

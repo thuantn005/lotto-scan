@@ -14,7 +14,8 @@
 //   OUT_DIR      - thu muc chua file ket qua (mac dinh l1_merged)
 //   OUT_NAME     - ten file ket qua (mac dinh: merged_seed{SEED_START}.json)
 //   SEED_START   - diem bat dau dai seed (mac dinh 682305800400)
-//   SEED_COUNT   - so seed can quet (mac dinh 1557775799)
+//   SEED_COUNT   - so seed can quet (mac dinh 1557775799; workflow model chinh dung 10000000000)
+//                  DOI SEED_START/SEED_COUNT so voi file cu => tu dong quet lai TAT CA ky (khong tron dai)
 //   NUM_THREADS  - so luong thread (mac dinh = so core)
 //   FORCE_RESCAN - "1" = bo qua file cu, quet lai TAT CA tu dau (mac dinh "0")
 //   LAST_N_DRAWS - > 0: chi quet N ky MOI NHAT theo draw_id, bo qua cac ky con lai
@@ -348,6 +349,15 @@ int main() {
     if (!force_rescan) {
         u64 old_start=0, old_end=0;
         existing_results = load_existing_merged(out_path, old_start, old_end);
+        // DAI SEED DOI (vd tang SEED_COUNT 1,56 ty -> 10 ty): cac ky cu chi duoc quet tren dai CU,
+        // khong the "quet tiep chi ky moi" - phai quet lai TAT CA ky tren dai moi (an toan, khong tron dai).
+        if (!existing_results.empty() && (old_start != seed_start || old_end != seed_end)) {
+            fprintf(stderr, "Dai seed trong file cu (%llu..%llu) KHAC dai hien tai (%llu..%llu) -> "
+                            "BO file cu, quet lai TAT CA ky tren dai moi\n",
+                    (unsigned long long)old_start, (unsigned long long)old_end,
+                    (unsigned long long)seed_start, (unsigned long long)seed_end);
+            existing_results.clear();
+        }
         if (!existing_results.empty()) {
             fprintf(stderr, "Doc duoc file cu %s: %zu ky da co san\n", out_path.c_str(), existing_results.size());
         }

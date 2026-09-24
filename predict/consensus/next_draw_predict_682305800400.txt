@@ -1,25 +1,12 @@
-KY MUC TIEU: 00906 (chien luoc 'consensus' - xem CANH BAO trong docstring script)
+KY MUC TIEU: 00905 (chien luoc 'consensus' - xem CANH BAO trong docstring script)
 MODEL: 682305800400
 
-Model 682305800400 (muc 2): 03-19-22-23-24 + DB 04 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 2 seed - dung muc)
-    seed=683235305216 - da tung trung THAT o: ky 00394
-    seed=683570236507 - da tung trung THAT o: ky 00723
-Model 682305800400 (muc 3): 08-20-25-26-33 + DB 08 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 3 seed - dung muc)
-    seed=683037404317 - da tung trung THAT o: ky 00260
-    seed=683116441291 - da tung trung THAT o: ky 00233
-    seed=683747743940 - da tung trung THAT o: ky 00610
-Model 682305800400 (muc 4): 06-15-27-30-34 + DB 09 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 4 seed - dung muc)
-    seed=682498623916 - da tung trung THAT o: ky 00317
-    seed=682923490897 - da tung trung THAT o: ky 00028
-    seed=683162440574 - da tung trung THAT o: ky 00869
-    seed=683414550960 - da tung trung THAT o: ky 00623
-Model 682305800400 (muc 5): 09-12-13-16-21 + DB 05 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 4 seed - KHONG co ve nao dung 5, lay gan nhat (thuc te cao nhat model nay dat duoc = 4))
-    seed=682623769750 - da tung trung THAT o: ky 00192
-    seed=682771283823 - da tung trung THAT o: ky 00500
-    seed=682811196865 - da tung trung THAT o: ky 00701
-    seed=683106277639 - da tung trung THAT o: ky 00892
-Model 682305800400 (muc 7): 04-05-06-09-30 + DB 06 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 4 seed - KHONG co ve nao dung 7, lay gan nhat (thuc te cao nhat model nay dat duoc = 4))
-    seed=682898296840 - da tung trung THAT o: ky 00231
-    seed=682972284208 - da tung trung THAT o: ky 00881
-    seed=682992471245 - da tung trung THAT o: ky 00561
-    seed=683079421839 - da tung trung THAT o: ky 00388
+Model 682305800400 (muc 3): 02-04-15-25-32 + DB 06 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 3 seed - dung muc)
+    seed=682386253667 - da tung trung THAT o: ky 00545
+    seed=682716373322 - da tung trung THAT o: ky 00419
+    seed=682751405342 - da tung trung THAT o: ky 00440
+Model 682305800400 (muc 4): 01-02-11-20-26 + DB 12 ([tu dong (moi muc trong [2, 3, 4, 5, 6, 7] ra 1 ve rieng)], thuc te ve nay dat 4 seed - dung muc)
+    seed=682664825942 - da tung trung THAT o: ky 00850
+    seed=683039920110 - da tung trung THAT o: ky 00410
+    seed=683270550408 - da tung trung THAT o: ky 00085
+    seed=683620992797 - da tung trung THAT o: ky 00741

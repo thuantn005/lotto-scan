@@ -5,7 +5,7 @@ on:
 
 env:
   FIXED_SEED_START: "682305800400"
-  FIXED_SEED_COUNT: "1557775799"
+  FIXED_SEED_COUNT: "10000000000"
 
 permissions:
   contents: write
@@ -13,7 +13,7 @@ permissions:
 jobs:
   scan_per_draw:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 350
     steps:
       - name: Checkout
         uses: actions/checkout@v4

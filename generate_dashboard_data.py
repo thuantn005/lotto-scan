@@ -101,6 +101,8 @@ def build_draw_entry(csv_path, history_dir, draw_id):
                 "seed": e.get("seed"),
                 "seed_start": e.get("seed_start"),
                 "source_file": e.get("source_file"),
+                "level": e.get("level"),      # chi co o chien luoc consensus
+                "seeds": e.get("seeds"),      # [{seed, draws:[ky,...]}] cac seed dong thuan cua ve
             }
             if actual_numbers is not None:
                 t.update(score_ticket(e["numbers"], e["special"], actual_numbers, actual_special))

@@ -28,6 +28,10 @@ Hanh dong:
          giu nguyen cac seed khac va giu nguyen file, khong xoa ca ky)
   4. Ghi lai l1_merged (da loai seed thang hang) va l2_merged (da cap nhat)
 
+L2 (l2_merged/promoted_seed{X}.json) LUU SEED TRUNG THEO KY o CA 2 CHIEU:
+  - "promoted": [{"seed","j1_count","hits":[{"draw_id","draw_date"},...]}]  (seed -> cac ky no trung)
+  - "draws":    [{"draw_id","draw_date","found","seeds":[...]}]             (ky -> cac seed L2 trung ky do)
+
 ENV:
     L1_MERGED_FILE       - duong dan file l1_merged (bat buoc phai ton tai)
     L2_MERGED_DIR        - thu muc ghi file l2_merged (mac dinh: l2_merged)
@@ -101,6 +105,22 @@ def main():
     for s, hits in promoted.items():
         existing_promoted[s] = [{"draw_id": did, "draw_date": dt} for did, dt in hits]
 
+    # Chi muc THEO KY: draw_id -> cac seed (L2) da trung ky do. "promoted[].hits" tra loi "seed nay
+    # trung nhung ky nao"; "draws[]" tra loi nguoc lai "ky nay co nhung seed L2 nao trung" (cung du
+    # lieu, 2 chieu tra cuu). Chi tao lai tu existing_promoted nen luon dong bo voi "promoted".
+    by_draw = {}
+    for s, hits in existing_promoted.items():
+        for h in hits:
+            entry = by_draw.setdefault(h["draw_id"], {"draw_id": h["draw_id"],
+                                                      "draw_date": h.get("draw_date"), "seeds": []})
+            entry["seeds"].append(s)
+    draws_index = []
+    for did in sorted(by_draw):
+        e = by_draw[did]
+        e["seeds"].sort()
+        e["found"] = len(e["seeds"])
+        draws_index.append(e)
+
     merged_promoted = {
         "seed_start": seed_start,
         "total_promoted": len(existing_promoted),
@@ -108,6 +128,7 @@ def main():
             {"seed": s, "j1_count": len(hits), "hits": hits}
             for s, hits in sorted(existing_promoted.items())
         ],
+        "draws": draws_index,
     }
     with open(l2_file, "w", encoding="utf-8") as f:
         json.dump(merged_promoted, f, separators=(",", ":"))

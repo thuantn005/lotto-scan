@@ -242,10 +242,21 @@ def save_prediction_history(history_dir, draw_id, strategy, predictions):
     with path.open("w", encoding="utf-8") as f:
         for info in predictions:
             nums_str = ",".join(str(n) for n in info["numbers"])
-            f.write(
+            line = (
                 f"{info.get('seed_start')}|{info.get('seed')}|"
-                f"{nums_str}|{info['special']}|{info.get('file', '')}\n"
+                f"{nums_str}|{info['special']}|{info.get('file', '')}"
             )
+            # TUY CHON (chi chien luoc "consensus" ghi): 2 truong them o cuoi
+            #   level      = so seed DOC LAP thuc te cung sinh ra ve nay (muc dong thuan)
+            #   seeds_detail = list (seed, [ky_trung,...]) - moi seed dong thuan + cac ky no tung trung
+            # File cu (5 truong) van doc duoc binh thuong.
+            if info.get("level") is not None:
+                detail = ";".join(
+                    f"{s}@{'+'.join(str(k) for k in kys)}"
+                    for s, kys in (info.get("seeds_detail") or [])
+                )
+                line += f"|{info['level']}|{detail}"
+            f.write(line + "\n")
     return path
 
 
@@ -259,16 +270,29 @@ def load_prediction_history(history_dir, draw_id, strategy):
         if not line:
             continue
         parts = line.split("|")
-        if len(parts) != 5:
+        if len(parts) not in (5, 7):  # 5 = dinh dang cu; 7 = them level + seeds_detail (consensus)
             continue
-        seed_start, seed, nums_str, special, src_file = parts
-        entries.append({
+        seed_start, seed, nums_str, special, src_file = parts[:5]
+        entry = {
             "seed_start": seed_start,
             "seed": seed,
             "numbers": frozenset(int(x) for x in nums_str.split(",")),
             "special": int(special),
             "source_file": src_file,
-        })
+        }
+        if len(parts) == 7:
+            try:
+                entry["level"] = int(parts[5])
+            except ValueError:
+                entry["level"] = None
+            seeds = []
+            for item in parts[6].split(";"):
+                if not item:
+                    continue
+                sd, _, kys = item.partition("@")
+                seeds.append({"seed": sd, "draws": [k for k in kys.split("+") if k]})
+            entry["seeds"] = seeds
+        entries.append(entry)
     return entries, path
 
 

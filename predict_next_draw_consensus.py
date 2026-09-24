@@ -38,7 +38,7 @@ ENV:
                       rieng VA khong co trong MODEL_LEVELS (mac dinh 2)
     PREFERRED_LEVELS - khoang muc dong thuan MAC DINH cho MOI model KHONG
                       co trong MODEL_LEVELS (danh sach cach nhau dau phay,
-                      mac dinh "4,5,6,7,8" - gop 5 muc lai, tim muc CAO
+                      mac dinh "3,4" (ban rut gon chi muc 3 va 4) - moi muc 1 ve; ban goc la "2..7"; gop cac muc lai, tim muc CAO
                       NHAT trong do THUC SU CO ve cho ky dang du doan; neu
                       khong muc nao trong khoang co ve, fallback ve muc
                       GAN 8 NHAT thuc te co)
@@ -270,7 +270,7 @@ def main():
     l1_glob = os.environ.get("L1_GLOB", "l1_merged/merged_seed*.json")
     l2_glob = os.environ.get("L2_GLOB", "l2_merged/promoted_seed*.json")
     default_level = int(os.environ.get("DEFAULT_LEVEL", "2"))
-    preferred_levels_raw = os.environ.get("PREFERRED_LEVELS", "2,3,4,5,6,7")
+    preferred_levels_raw = os.environ.get("PREFERRED_LEVELS", "3,4")
     preferred_levels = [int(x) for x in preferred_levels_raw.split(",") if x.strip()]
     tickets_per_level = int(os.environ.get("TICKETS_PER_LEVEL", "2"))
     min_model_seeds = int(os.environ.get("MIN_MODEL_SEEDS", "100000"))
@@ -392,6 +392,8 @@ def main():
                     "numbers": numbers,
                     "special": special,
                     "file": ";".join(fps),
+                    "level": n_actual,               # so seed doc lap thuc te cung sinh ra ve nay
+                    "seeds_detail": chi_tiet_seed,   # [(seed, [ky da trung that]), ...]
                 })
 
     os.makedirs(out_dir_base, exist_ok=True)
