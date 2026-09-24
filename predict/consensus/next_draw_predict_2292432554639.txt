@@ -1,4 +1,12 @@
 KY MUC TIEU: 00906 (chien luoc 'consensus' - xem CANH BAO trong docstring script)
 MODEL: 2292432554639
 
-Model 2292432554639: BO QUA (du lieu qua it: 8,000 < 100,000)
+Model 2292432554639 (muc 3): 16-19-22-25-29 + DB 09 ([tu dong (moi muc trong [3, 4] ra 1 ve rieng)], thuc te ve nay dat 3 seed - dung muc)
+    seed=2298476583464 - da tung trung THAT o: ky 00603
+    seed=2300991273527 - da tung trung THAT o: ky 00889
+    seed=2307772216250 - da tung trung THAT o: ky 00495
+Model 2292432554639 (muc 4): 02-05-15-20-28 + DB 01 ([tu dong (moi muc trong [3, 4] ra 1 ve rieng)], thuc te ve nay dat 4 seed - dung muc)
+    seed=2296550878031 - da tung trung THAT o: ky 00339
+    seed=2301757996628 - da tung trung THAT o: ky 00196
+    seed=2311756941047 - da tung trung THAT o: ky 00718
+    seed=2321384370707 - da tung trung THAT o: ky 00862
