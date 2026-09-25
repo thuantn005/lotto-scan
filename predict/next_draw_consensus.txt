@@ -7,23 +7,23 @@ Moc ngau nhien (NEU 18 ve nay la boc ngau nhien DOC LAP, khong lien quan seed):
   moi so chinh (1-35) ky vong xuat hien ~2.57 lan; moi so dac biet (1-12) ky vong ~1.50 lan.
 
 TOP 10 so chinh xuat hien NHIEU ve nhat:
-  so 08: xuat hien trong 5/18 ve <-- vuot moc ngau nhien
-  so 19: xuat hien trong 5/18 ve <-- vuot moc ngau nhien
-  so 25: xuat hien trong 5/18 ve <-- vuot moc ngau nhien
-  so 02: xuat hien trong 5/18 ve <-- vuot moc ngau nhien
-  so 26: xuat hien trong 5/18 ve <-- vuot moc ngau nhien
-  so 09: xuat hien trong 4/18 ve <-- vuot moc ngau nhien
+  so 26: xuat hien trong 7/18 ve <-- vuot moc ngau nhien
+  so 24: xuat hien trong 5/18 ve <-- vuot moc ngau nhien
+  so 08: xuat hien trong 4/18 ve <-- vuot moc ngau nhien
   so 11: xuat hien trong 4/18 ve <-- vuot moc ngau nhien
-  so 13: xuat hien trong 4/18 ve <-- vuot moc ngau nhien
-  so 18: xuat hien trong 4/18 ve <-- vuot moc ngau nhien
-  so 03: xuat hien trong 4/18 ve <-- vuot moc ngau nhien
+  so 22: xuat hien trong 4/18 ve <-- vuot moc ngau nhien
+  so 35: xuat hien trong 3/18 ve <-- vuot moc ngau nhien
+  so 07: xuat hien trong 3/18 ve <-- vuot moc ngau nhien
+  so 29: xuat hien trong 3/18 ve <-- vuot moc ngau nhien
+  so 19: xuat hien trong 3/18 ve <-- vuot moc ngau nhien
+  so 34: xuat hien trong 3/18 ve <-- vuot moc ngau nhien
 
 TOP so dac biet xuat hien NHIEU ve nhat:
-  DB 01: xuat hien trong 5/18 ve <-- vuot moc ngau nhien
-  DB 02: xuat hien trong 3/18 ve <-- vuot moc ngau nhien
-  DB 08: xuat hien trong 3/18 ve <-- vuot moc ngau nhien
-  DB 06: xuat hien trong 2/18 ve <-- vuot moc ngau nhien
-  DB 12: xuat hien trong 2/18 ve <-- vuot moc ngau nhien
+  DB 08: xuat hien trong 4/18 ve <-- vuot moc ngau nhien
+  DB 02: xuat hien trong 4/18 ve <-- vuot moc ngau nhien
+  DB 11: xuat hien trong 3/18 ve <-- vuot moc ngau nhien
+  DB 03: xuat hien trong 2/18 ve <-- vuot moc ngau nhien
+  DB 01: xuat hien trong 2/18 ve <-- vuot moc ngau nhien
 
 Luu y: cac chien luoc KHONG doc lap hoan toan ve nguon seed (deu lay tu cung l1_merged/), nen trung lap CAO HON moc ngau
 nhien mot chut la BINH THUONG (dung nguon du lieu dau vao), KHONG co nghia la so do 'sap ve' - backtest_predictions.py
