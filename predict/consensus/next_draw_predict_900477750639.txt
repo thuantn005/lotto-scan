@@ -1,12 +1,12 @@
-KY MUC TIEU: 00908 (chien luoc 'consensus' - xem CANH BAO trong docstring script)
+KY MUC TIEU: 00909 (chien luoc 'consensus' - xem CANH BAO trong docstring script)
 MODEL: 900477750639
 
-Model 900477750639 (muc 3): 03-04-08-23-33 + DB 09 ([tu dong (moi muc trong [3, 4] ra 1 ve rieng)], thuc te ve nay dat 3 seed - dung muc)
-    seed=910689053972 - da tung trung THAT o: ky 00728
-    seed=929454382318 - da tung trung THAT o: ky 00075
-    seed=930230365868 - da tung trung THAT o: ky 00095
-Model 900477750639 (muc 4): 05-15-16-25-34 + DB 08 ([tu dong (moi muc trong [3, 4] ra 1 ve rieng)], thuc te ve nay dat 4 seed - dung muc)
-    seed=903837325272 - da tung trung THAT o: ky 00266
-    seed=909392764380 - da tung trung THAT o: ky 00078
-    seed=917078877219 - da tung trung THAT o: ky 00881
-    seed=923480819078 - da tung trung THAT o: ky 00897
+Model 900477750639 (muc 3): 08-13-19-24-32 + DB 01 ([tu dong (moi muc trong [3, 4] ra 1 ve rieng)], thuc te ve nay dat 3 seed - dung muc)
+    seed=911203097894 - da tung trung THAT o: ky 00177
+    seed=915749819760 - da tung trung THAT o: ky 00868
+    seed=931143414691 - da tung trung THAT o: ky 00067
+Model 900477750639 (muc 4): 11-13-16-27-28 + DB 10 ([tu dong (moi muc trong [3, 4] ra 1 ve rieng)], thuc te ve nay dat 4 seed - dung muc)
+    seed=910108721922 - da tung trung THAT o: ky 00891
+    seed=911338358886 - da tung trung THAT o: ky 00063
+    seed=915935009396 - da tung trung THAT o: ky 00896
+    seed=921570542143 - da tung trung THAT o: ky 00548
