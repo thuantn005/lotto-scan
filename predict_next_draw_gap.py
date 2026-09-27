@@ -172,7 +172,7 @@ def main():
 
     binom = build_binom()
     rank_to_mask = build_rank_to_mask(binom)
-    next_draw_id = get_next_draw_id(csv_path) + 1
+    next_draw_id = get_next_draw_id(csv_path)
 
     predictions = []
     for l1_dir in l1_dirs:
