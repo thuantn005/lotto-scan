@@ -526,6 +526,55 @@ def collect_avggap_candidates_per_model(fp, next_draw_id, rank_to_mask,
     }
 
 
+# ---------------------------------------------------------------------
+# (2026-09: kien truc moi - "l1-1"/"l1-2" MOI KY 1 FILE RIENG (khong con
+# 1 file JSON gop nhu l1_merged/merged_seed*.json). 2 ham duoi day thay
+# the cho viec doc thang 1 file merged - dung chung cho
+# split_l1_per_draw.py / check_l1_per_draw.py / predict_next_draw_gap.py.)
+# ---------------------------------------------------------------------
+
+def load_l1_dir(l1_dir):
+    """Doc THU MUC l1-*/ (moi ky 1 file rieng, KHONG gop) - dinh dang tung
+    file giong batch_ky{draw_id}.json cu:
+        {"draw_id":N,"draw_date":"...","seed_start":S,"seed_end":E,
+         "found":F,"seeds":[...]}
+    Tra ve (seed_start, seed_end, list draws da sap xep theo draw_id).
+    Bo qua file loi/sai dinh dang (in canh bao ra stderr qua print)."""
+    seed_start = seed_end = None
+    draws = []
+    for fp in sorted(glob.glob(os.path.join(str(l1_dir), "*.json"))):
+        try:
+            d = json.loads(Path(fp).read_text(encoding="utf-8"))
+        except Exception as e:
+            print(f"Bo qua file loi: {fp} ({e})")
+            continue
+        if "draw_id" not in d or "seeds" not in d:
+            continue
+        d["_file"] = fp
+        draws.append(d)
+        if seed_start is None:
+            seed_start = d.get("seed_start")
+            seed_end = d.get("seed_end")
+    draws.sort(key=lambda x: x["draw_id"])
+    return seed_start, seed_end, draws
+
+
+def get_seed_values_from_l2_file(l2_path):
+    """Doc 1 file l2_merged, tra ve list GIA TRI SEED da thang hang (sap
+    xep tang dan). Dung de tinh 'khoang cach GIUA CAC GIA TRI SEED' (khac
+    voi get_gaps_from_l2_file - khoang cach GIUA CAC KY) - ap dung CUNG 1
+    nguyen tac (uu tien do lech nho nhat so voi trung binh) sang truc
+    seed, phuc vu buoc chon seed TRONG 1 ky (thay vi chon ngau nhien deu)."""
+    l2_path = Path(l2_path)
+    if not l2_path.exists():
+        return []
+    try:
+        data = json.loads(l2_path.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    return sorted(int(p["seed"]) for p in data.get("promoted", []))
+
+
 def build_ai_prompt(next_draw_id, recent_draws, models):
     """Dung ket qua cua collect_avggap_candidates_per_model() (1 phan
     tu/model) de dung 1 prompt van ban, yeu cau AI tra ve JSON
