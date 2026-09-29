@@ -1,64 +1,64 @@
 [
   {
     "product": "lotto535",
-    "draw_id": "00915",
+    "draw_id": "00916",
     "draw_date": "2026-09-29",
-    "draw_time": "13:00",
+    "draw_time": "21:00",
     "numbers": [
-      5,
-      8,
-      22,
-      28,
-      30
+      11,
+      13,
+      14,
+      20,
+      25
     ],
-    "special_number": 10,
-    "jackpot_value": 6805077500,
+    "special_number": 12,
+    "jackpot_value": 6942450000,
     "prizes": [
       {
         "tier": "Giải Độc Đắc",
         "match": "5 số & ĐB",
         "count": 0,
-        "value": 6805077500
+        "value": 6942450000
       },
       {
         "tier": "Giải Nhất",
         "match": "5 số",
-        "count": 1,
+        "count": 0,
         "value": 10000000
       },
       {
         "tier": "Giải Nhì",
         "match": "4 số & ĐB",
-        "count": 4,
+        "count": 13,
         "value": 5000000
       },
       {
         "tier": "Giải Ba",
         "match": "4 số",
-        "count": 58,
+        "count": 111,
         "value": 500000
       },
       {
         "tier": "Giải Tư",
         "match": "3 số & ĐB",
-        "count": 191,
+        "count": 199,
         "value": 100000
       },
       {
         "tier": "Giải Năm",
         "match": "3 số",
-        "count": 1923,
+        "count": 2659,
         "value": 30000
       },
       {
         "tier": "Giải Khuyến Khích",
         "match": "ĐB",
-        "count": 13194,
+        "count": 16220,
         "value": 10000
       }
     ],
-    "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-29-09-2026",
-    "fetched_at": "2026-09-29T06:16:23+00:00",
+    "source_url": "https://www.minhchinh.com/xs-lotto-535-ket-qua-lotto-535-ngay-29-09-2026.html",
+    "fetched_at": "2026-09-29T14:31:31+00:00",
     "share_state": {
       "pending": false,
       "share_date": null,
