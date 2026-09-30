@@ -1,10 +1,10 @@
 {
   "gap": {
-    "checked_draws": 4,
-    "tickets_checked": 8,
+    "checked_draws": 5,
+    "tickets_checked": 10,
     "matches_hist": {
-      "0": 4,
-      "1": 4,
+      "0": 5,
+      "1": 5,
       "2": 0,
       "3": 0,
       "4": 0,
@@ -12,6 +12,6 @@
     },
     "special_hits": 0,
     "j1_hits": 0,
-    "sum_matches": 4
+    "sum_matches": 5
   }
 }
