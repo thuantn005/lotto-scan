@@ -1,8 +1,8 @@
 DU DOAN MEGA 6/45 - KY 01571
-Nguon: seed trung >=1 trong 20 ky gan nhat (ky 1551..1570); so seed: 262
+Nguon: seed trung >=1 trong 20 ky gan nhat (ky 1551..1570); so seed: 753
 LUU Y: moi ky doc lap; seed 'trung' qua khu khong co gia tri du doan. File nay chi de thu nghiem.
 
-VE DONG THUAN (6 so duoc nhieu seed chon nhat): 03-06-10-12-34-43
+VE DONG THUAN (6 so duoc nhieu seed chon nhat): 10-15-19-25-34-37
 
 10 VE SEED DAU TIEN:
   seed 10000437283: 22-27-41-42-43-45
