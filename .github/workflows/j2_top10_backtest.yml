@@ -1,0 +1,33 @@
+name: J2 Top-10 Walkforward Backtest
+
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: "First target draw"
+        required: true
+        default: "724"
+      end:
+        description: "Last target draw"
+        required: true
+        default: "921"
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run strict J2 Top-10 backtest
+        run: |
+          python3 backtest_j2_top10.py \
+            --data . \
+            --start "${{ inputs.start }}" \
+            --end "${{ inputs.end }}" \
+            --window 200 \
+            --top 10 \
+            --out j2_top10_results
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: j2-top10-results
+          path: j2_top10_results/
