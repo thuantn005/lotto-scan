@@ -1,0 +1,57 @@
+name: Mega 6/45 - quet seed va du doan
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "So seed quet (mac dinh 300 trieu)"
+        default: "300000000"
+      seed_start:
+        description: "Seed bat dau"
+        default: "10000000000"
+      window:
+        description: "So ky gan nhat dua vao quet (>= recent + k)"
+        default: "60"
+      recent:
+        description: "Cua so (ky) lay seed trung de du doan"
+        default: "20"
+  schedule:
+    # Mega 6/45 quay thu 4, 6, CN luc 18:00 (gio VN = 11:00 UTC) -> chay luc 11:45 UTC
+    - cron: "45 11 * * 0,3,5"
+permissions:
+  contents: write
+concurrency:
+  group: mega-scan
+  cancel-in-progress: false
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Cap nhat du lieu (giu ban cu neu tai loi)
+        run: |
+          curl -fsSL "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/mega645/all.csv" -o /tmp/all.new \
+            && [ "$(wc -l < /tmp/all.new)" -gt 1000 ] && mv /tmp/all.new data/all.txt || echo "Giu data/all.txt hien co"
+          tail -n 1 data/all.txt | cut -c1-60
+      - name: Bien dich
+        run: g++ -O3 -march=native -fopenmp -o scan_mega scan_mega.cpp
+      - name: Chuan bi + quet seed
+        run: |
+          python3 mega_scan.py prepare --window "${{ inputs.window || '60' }}"
+          ./scan_mega --count "${{ inputs.count || '300000000' }}" --seed-start "${{ inputs.seed_start || '10000000000' }}"
+      - name: Du doan, backtest, doi chieu
+        run: |
+          R="${{ inputs.recent || '20' }}"
+          python3 mega_scan.py check
+          python3 mega_scan.py predict --recent "$R"
+          python3 mega_scan.py backtest --recent "$R" --k 40
+      - name: Commit ket qua (.txt)
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/all.txt predict results backtest
+          git diff --cached --quiet || git commit -m "mega scan $(date -u +%F)"
+          git push
