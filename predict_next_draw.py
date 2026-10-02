@@ -6,10 +6,10 @@ gop phieu bau tat ca seed lai thanh 1 bo so chung.
 
 Seed duoc chon trong tung model = seed dang co trong L1 cua model do voi
 so lan tung trung (weight) CAO NHAT (seed "manh" nhat, gan voi nguong
-thang hang L2 nhat). Neu seed nay du doan dung cho ky ke tiep, no se
-THANG HANG (thanh L2) ngay khi ky moi duoc xac nhan.
+ghi L2 nhat). Neu seed nay du doan dung cho ky ke tiep, ky do se duoc GHI
+vao L2 khi ky moi duoc xac nhan (seed VAN O L1, khong thang hang).
 
-KHONG dung L2 (l2_merged/) lam input - L2 chi la KET QUA thang hang.
+KHONG dung L2 (l2_merged/) lam input - L2 chi la CHI MUC KY TRUNG.
 
 Thuat toan sinh ve + cac ham dung chung nam trong lotto_common.py (dung
 chung voi _ai.py/_ai2.py/_app.py - xem file do de biet
@@ -110,7 +110,7 @@ def main():
     with open(out_path, "w", encoding="utf-8") as f:
         f.write(f"DU DOAN KY {next_draw_id:05d} - MOI MODEL 1 SEED (khong gop phieu bau, khong dung L2)\n")
         f.write(f"Seed manh nhat cua tung model = seed co so lan trung (trong L1 cua model do) cao nhat.\n")
-        f.write(f"Neu seed nay du doan dung ky {next_draw_id:05d}, no se THANG HANG (thanh L2) ngay ky nay.\n\n")
+        f.write(f"Neu seed nay du doan dung ky {next_draw_id:05d}, ky nay se duoc GHI vao L2 (seed van o L1).\n\n")
 
         for info in predictions:
             nums_str = "-".join(f"{n:02d}" for n in info["numbers"])

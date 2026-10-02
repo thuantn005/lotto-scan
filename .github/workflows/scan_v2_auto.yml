@@ -53,7 +53,7 @@ env:
   L1_1_CACHE: "l1_cache/merged_seed900477750639.json"
   L1_1_CHUNK_DIR: "l1-1_chunks"
   L1_1_BATCH_SIZE: "1557775800"
-  # --- Thang hang L1 -> L2 (dung chung cho ca 2 model) ---
+  # --- Ghi ky trung vao L2 (KHONG thang hang, seed van o L1) ---
   PROMOTION_MIN_WEIGHT: "2"
   # --- Gioi han dung luong cache noi bo (byte) - GitHub gioi han file 100MB ---
   CACHE_CAP_BYTES: "94371840"
@@ -205,7 +205,7 @@ jobs:
           OUT_DIR: ${{ env.L1_2_DIR }}
         run: python3 split_l1_per_draw.py
 
-      - name: "[Model chinh] Thang hang L1 -> L2 (seed quet trung >= nguong)"
+      - name: "[Model chinh] Ghi ky trung vao L2 (seed van o L1)"
         if: steps.check_ky.outputs.should_run == 'true'
         env:
           L1_DIR: ${{ env.L1_2_DIR }}
@@ -404,7 +404,7 @@ jobs:
           OUT_DIR: ${{ env.L1_1_DIR }}
         run: python3 split_l1_per_draw.py
 
-      - name: Thang hang L1 -> L2 (seed quet trung >= nguong)
+      - name: Ghi ky trung vao L2 (seed van o L1)
         env:
           L1_DIR: ${{ env.L1_1_DIR }}
           L2_MERGED_DIR: "l2_merged"

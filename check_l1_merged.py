@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-check_l1_merged.py - Thay the buoc "check_l1" cu, lam viec truc tiep tren
+check_l1_merged.py - (KHONG con thang hang: L2 chi ghi ky trung, seed van o L1) Thay the buoc "check_l1" cu, lam viec truc tiep tren
 1 file l1_merged/merged_seed{X}.json thay vi thu muc l1/ nhieu file.
 
 Y tuong: vi file l1_merged da quet FULL moi seed trong dai qua TAT CA cac ky,
@@ -103,7 +103,10 @@ def main():
     # Gop: uu tien du lieu moi nhat vua tinh duoc (day du hon vi file l1_merged
     # cang ngay cang co nhieu ky hon)
     for s, hits in promoted.items():
-        existing_promoted[s] = [{"draw_id": did, "draw_date": dt} for did, dt in hits]
+        by_id = {h["draw_id"]: h for h in existing_promoted.get(s, [])}
+        for did, dt in hits:
+            by_id[did] = {"draw_id": did, "draw_date": dt}
+        existing_promoted[s] = [by_id[k] for k in sorted(by_id)]
 
     # Chi muc THEO KY: draw_id -> cac seed (L2) da trung ky do. "promoted[].hits" tra loi "seed nay
     # trung nhung ky nao"; "draws[]" tra loi nguoc lai "ky nay co nhung seed L2 nao trung" (cung du
@@ -133,21 +136,7 @@ def main():
     with open(l2_file, "w", encoding="utf-8") as f:
         json.dump(merged_promoted, f, separators=(",", ":"))
 
-    # Buoc 3: xoa cac seed thang hang khoi tung mang "seeds" trong l1_merged
-    promoted_set = set(promoted.keys())
-    total_removed = 0
-    for d in draws:
-        before = len(d["seeds"])
-        d["seeds"] = [s for s in d["seeds"] if s not in promoted_set]
-        d["found"] = len(d["seeds"])
-        total_removed += before - len(d["seeds"])
-
-    data["total_found"] = sum(d["found"] for d in draws)
-
-    with open(l1_file, "w", encoding="utf-8") as f:
-        json.dump(data, f, separators=(",", ":"))
-
-    print(f"Da xoa {total_removed} luot xuat hien (cua {len(promoted)} seed) khoi l1_merged", file=sys.stderr)
+    # KHONG xoa seed khoi l1_merged: L2 chi la chi muc ghi nhan ky trung.
     print(f"Da cap nhat {l2_file} (tong {len(existing_promoted)} seed da thang hang tu truoc den nay)", file=sys.stderr)
     print(f"PROMOTED_COUNT={len(promoted)}")
 

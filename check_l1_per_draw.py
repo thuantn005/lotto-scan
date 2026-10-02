@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-check_l1_per_draw.py - Ban thay the cho check_l1_merged.py, lam viec tren
+check_l1_per_draw.py - GHI NHAN KY TRUNG vao L2 (KHONG con thang hang L1 -> L2).
+Ban thay the cho check_l1_merged.py, lam viec tren
 THU MUC per-draw (l1-1/ hoac l1-2/, moi ky 1 file - xem split_l1_per_draw.py)
 thay vi 1 file l1_merged/merged_seed{X}.json gop.
 
@@ -14,12 +15,12 @@ NGUONG THANG HANG LA SO CO DINH (PROMOTION_MIN_WEIGHT, mac dinh 2).
 Hanh dong:
   1. Doc TAT CA file *.json trong L1_DIR (moi file = 1 ky)
   2. Dem so lan xuat hien cua tung seed tren toan bo cac ky
-  3. Seed nao xuat hien >= PROMOTION_MIN_WEIGHT -> "thang hang":
-       - Ghi vao l2_merged/promoted_seed{X}.json (gop voi du lieu cu neu
-         co, khong ghi de mat lich su) - DAY LA NOI LUU "KY MA SEED QUET
-         TRUNG" (khong lien quan gi den du doan).
-       - XOA seed do khoi tung file ky trong L1_DIR (chi ghi lai NHUNG
-         file ky co thay doi, khong dong vao file khong lien quan)
+  3. Seed nao xuat hien >= PROMOTION_MIN_WEIGHT:
+       - Ghi vao l2_merged/promoted_seed{X}.json (HOP NHAT cac ky da biet,
+         khong ghi de mat lich su) - L2 CHI LA NOI LUU "KY MA SEED QUET
+         TRUNG" (seed -> ky va ky -> seed).
+       - KHONG CO CO CHE THANG HANG: seed VAN O NGUYEN trong L1, KHONG bi
+         xoa khoi file ky nao. Ket qua van nam o L1.
 
 ENV:
     L1_DIR               - thu muc per-draw (bat buoc, vd l1-1 hoac l1-2)
@@ -54,7 +55,6 @@ def main():
             continue
         if "draw_id" not in d or "seeds" not in d:
             continue
-        d["_file"] = fp
         draws.append(d)
         if seed_start is None:
             seed_start = d.get("seed_start")
@@ -75,10 +75,10 @@ def main():
     promoted = {s: hits for s, hits in seed_hits.items() if len(hits) >= threshold}
 
     print(f"Tong so seed duy nhat trong {l1_dir}: {len(seed_hits)}", file=sys.stderr)
-    print(f"So seed thang hang (weight>={threshold}): {len(promoted)}", file=sys.stderr)
+    print(f"So seed trung >= {threshold} ky (ghi vao L2, van o L1): {len(promoted)}", file=sys.stderr)
 
     if not promoted:
-        print("Khong co seed nao thang hang lan nay.", file=sys.stderr)
+        print("Khong co seed nao dat nguong ghi L2 lan nay.", file=sys.stderr)
         print("PROMOTED_COUNT=0")
         return
 
@@ -92,8 +92,13 @@ def main():
         for entry in old.get("promoted", []):
             existing_promoted[entry["seed"]] = entry["hits"]
 
+    # HOP NHAT theo draw_id (khong ghi de): L1 chi giu cua so gan nhat nen
+    # hits moi co the thieu cac ky cu da ghi truoc do trong L2.
     for s, hits in promoted.items():
-        existing_promoted[s] = [{"draw_id": did, "draw_date": dt} for did, dt in hits]
+        by_id = {h["draw_id"]: h for h in existing_promoted.get(s, [])}
+        for did, dt in hits:
+            by_id[did] = {"draw_id": did, "draw_date": dt}
+        existing_promoted[s] = [by_id[k] for k in sorted(by_id)]
 
     by_draw = {}
     for s, hits in existing_promoted.items():
@@ -119,27 +124,8 @@ def main():
     }
     Path(l2_file).write_text(json.dumps(merged_promoted, separators=(",", ":")), encoding="utf-8")
 
-    # Buoc 3: xoa cac seed thang hang khoi TUNG FILE KY (chi ghi lai file
-    # co thay doi thuc su, khong dong vao file khong lien quan).
-    promoted_set = set(promoted.keys())
-    total_removed = 0
-    files_rewritten = 0
-    for d in draws:
-        before = len(d["seeds"])
-        new_seeds = [s for s in d["seeds"] if s not in promoted_set]
-        if len(new_seeds) == before:
-            continue
-        d["seeds"] = new_seeds
-        d["found"] = len(new_seeds)
-        total_removed += before - len(new_seeds)
-        fp = d.pop("_file")
-        payload = {k: v for k, v in d.items() if k != "_file"}
-        Path(fp).write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
-        files_rewritten += 1
-
-    print(f"Da xoa {total_removed} luot xuat hien (cua {len(promoted)} seed) khoi {files_rewritten} file ky",
-          file=sys.stderr)
-    print(f"Da cap nhat {l2_file} (tong {len(existing_promoted)} seed da thang hang tu truoc den nay)",
+    # KHONG xoa seed khoi L1: L2 chi la chi muc ghi nhan ky trung.
+    print(f"Da cap nhat {l2_file} (tong {len(existing_promoted)} seed co trong L2)",
           file=sys.stderr)
     print(f"PROMOTED_COUNT={len(promoted)}")
 
