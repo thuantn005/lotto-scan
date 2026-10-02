@@ -1,195 +1,142 @@
 #!/usr/bin/env python3
 """
-Leakage-safe walk-forward backtest for L1-1 exact consensus-2 tickets.
+Walk-forward backtest (strict no-leakage) cho consensus-2 cua L1-1.
 
-Target range: 724..921
-Window: dynamic, capped at 200 completed draws before target
-Consensus key: exact 5 main numbers + special
-Consensus level: exactly 2 distinct seeds
-J2: 5/5 main numbers correct, special number wrong
+DU LIEU DAU VAO (da sua loi doc du lieu):
+  - Seed L1-1      : <data>/l1-1/*.json      (moi file {draw_id, seeds:[...]} )
+  - Ket qua thuc te: <data>/data/all.csv     (cot draw_id, result_json)
+  Khong con tim CSV ben trong l1-1/.
+
+Quy tac:
+  - Target T chi dung seed cua cac ky < T (cua so toi da --window ky hoan tat truoc T).
+  - Seed xuat hien o ky ngay truoc (T-1) van duoc tinh. Moi seed chi tinh 1 lan trong pool.
+  - Consensus-2 = DUNG 2 seed tao cung 5 so + so dac biet tai ky T.
+  - J1 = 5/5 + dac biet dung ; J2 = 5/5 so chinh nhung dac biet sai.
+  - Xep hang Top-N chi dung thong tin truoc T (tuoi seed, tuoi/khoang cach cua so dac biet).
+  - Moi dau ra la .txt (tab-separated), khong tao .csv.
 """
-
-from __future__ import annotations
-import argparse, csv, json, math
-from collections import defaultdict
+import argparse, json, csv, math, sys
 from pathlib import Path
+import numpy as np
 
-M1=0x9E3779B97F4A7C15
-M2=0xD1B54A32D192ED03
-M3=0xBF58476D1CE4E5B9
-M4=0x94D049BB133111EB
-MASK64=0xFFFFFFFFFFFFFFFF
-C=324632
+M1, M2, M3, M4 = 0x9E3779B97F4A7C15, 0xD1B54A32D192ED03, 0xBF58476D1CE4E5B9, 0x94D049BB133111EB
+C = math.comb(35, 5)
+U = np.uint64
 
-def mix64(x):
-    x &= MASK64
-    x ^= x >> 30
-    x = (x * M3) & MASK64
-    x ^= x >> 27
-    x = (x * M4) & MASK64
-    x ^= x >> 31
-    return x & MASK64
+def mixv(x):
+    x = x ^ (x >> U(30)); x = x * U(M3); x = x ^ (x >> U(27)); x = x * U(M4)
+    return x ^ (x >> U(31))
 
-def unrank_colex(rank, n=35, k=5):
-    out=[]
-    r=rank
-    x=n
-    for i in range(k,0,-1):
-        while math.comb(x,i) > r:
-            x-=1
-        out.append(x)
-        r-=math.comb(x,i)
-        x-=1
-    return tuple(sorted(out))
+def unrank(rank):                      # colex, tra ve 5 so 1..35
+    out, x, r = [], 35, rank
+    for i in range(5, 0, -1):
+        while math.comb(x, i) > r: x -= 1
+        out.append(x); r -= math.comb(x, i); x -= 1
+    return tuple(sorted(v + 1 for v in out))
 
-def ticket(seed, draw_id):
-    mixed=mix64((seed*M1 + draw_id*M2) & MASK64)
-    rank=mixed % C
-    nums=unrank_colex(rank)
-    special=mix64(mixed) % 12 + 1
-    return nums, special
+def rank_of(nums):                     # nghich dao cua unrank
+    return sum(math.comb(n - 1, i + 1) for i, n in enumerate(sorted(nums)))
 
-def read_rows(path):
-    rows=[]
-    with open(path, newline="", encoding="utf-8") as f:
+def keys_at(seeds, draw):              # key = rank*12 + (special-1)
+    with np.errstate(over="ignore"):
+        m = mixv(seeds * U(M1) + U((draw * M2) & 0xFFFFFFFFFFFFFFFF))
+        return (m % U(C)).astype(np.int64) * 12 + (mixv(m) % U(12)).astype(np.int64)
+
+def load_l1(root):
+    files = sorted((Path(root) / "l1-1").glob("*.json"))
+    if not files: sys.exit(f"Khong tim thay {root}/l1-1/*.json")
+    L = {}
+    for f in files:
+        j = json.loads(f.read_text(encoding="utf-8"))
+        L[int(j["draw_id"])] = np.array(j["seeds"], dtype=np.uint64)
+    return L
+
+def load_actual(root):
+    p = Path(root) / "data" / "all.csv"
+    if not p.exists(): sys.exit(f"Khong tim thay {p}")
+    res = {}
+    with open(p, newline="", encoding="utf-8") as f:
         for r in csv.DictReader(f):
-            d=int(r.get("draw_id") or r.get("draw") or r.get("id"))
-            seed=int(r["seed"])
-            nums=tuple(sorted(int(x) for x in (r.get("numbers") or r.get("main_numbers")).replace(","," ").split()))
-            sp=int(r.get("special") or r.get("special_number"))
-            rows.append((d,seed,nums,sp))
-    return rows
-
-def discover_rows(root):
-    candidates=list(Path(root).rglob("*.csv"))
-    rows=[]
-    for p in candidates:
-        try:
-            rr=read_rows(p)
-            if rr and any(700 <= x[0] <= 1000 for x in rr):
-                rows.extend(rr)
-        except Exception:
-            pass
-    if not rows:
-        raise SystemExit("Không tìm thấy CSV L1-1. Hãy đặt dữ liệu CSV vào data/ hoặc l1-1/.")
-    return rows
-
-def build_seed_history(rows):
-    # seed -> sorted draws where it appears
-    h=defaultdict(list)
-    for d,s,_,_ in rows:
-        h[s].append(d)
-    for s in h:
-        h[s]=sorted(set(h[s]))
-    return h
-
-def available_seeds(rows, target, window=200):
-    draws=sorted({d for d,_,_,_ in rows if d < target})
-    draws=draws[-window:]
-    return draws
-
-def consensus2(rows, target, window=200):
-    draws=available_seeds(rows,target,window)
-    seed_rows=[x for x in rows if x[0] in set(draws)]
-    # Each seed counts once in the consensus pool.
-    by_seed={}
-    for d,s,_,_ in seed_rows:
-        by_seed.setdefault(s,d)
-    groups=defaultdict(list)
-    for s in by_seed:
-        nums,sp=ticket(s,target)
-        groups[(nums,sp)].append(s)
-    out=[]
-    for key,seeds in groups.items():
-        if len(seeds)==2:
-            ages=sorted([target-max(build_seed_history(rows)[s]) for s in seeds])
-            out.append((key,seeds,ages))
-    return out
+            try:
+                j = json.loads(r["result_json"])
+                res[int(r["draw_id"])] = (tuple(sorted(j["numbers"])), int(j["special_numbers"][0]))
+            except Exception:
+                continue
+    return res
 
 def main():
-    ap=argparse.ArgumentParser()
-    ap.add_argument("--data",default=".")
-    ap.add_argument("--start",type=int,default=724)
-    ap.add_argument("--end",type=int,default=921)
-    ap.add_argument("--window",type=int,default=200)
-    ap.add_argument("--top",type=int,default=10)
-    ap.add_argument("--out",default="j2_top10_results")
-    args=ap.parse_args()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--data", default="."); ap.add_argument("--start", type=int, default=724)
+    ap.add_argument("--end", type=int, default=921); ap.add_argument("--window", type=int, default=200)
+    ap.add_argument("--top", type=int, default=10); ap.add_argument("--out", default="j2_top10_results")
+    a = ap.parse_args()
+    L, actual = load_l1(a.data), load_actual(a.data)
+    l1_draws = sorted(L)
+    print(f"L1-1: {len(L)} ky ({l1_draws[0]}..{l1_draws[-1]}) | all.csv: {len(actual)} ky")
 
-    rows=discover_rows(args.data)
-    actual={d:(nums,sp) for d,_,nums,sp in rows if args.start<=d<=args.end}
-    hist=build_seed_history(rows)
+    # Tu kiem tra: seed trong l1-1/D.json phai tai tao dung ket qua that cua ky D
+    d0 = next(d for d in l1_draws if d in actual); n0, s0 = actual[d0]
+    k = keys_at(L[d0][:50], d0)
+    assert all(int(x) // 12 == rank_of(n0) and int(x) % 12 + 1 == s0 for x in k), "Du lieu/thuat toan khong khop!"
+    assert unrank(rank_of(n0)) == n0
 
-    # The ranking below is intentionally deterministic and uses only pre-target
-    # information. It prioritizes recent seed recurrence and special recurrence.
-    # It is a filter to be backtested, not trained on the target J2 label.
-    results=[]
-    ticket_rows=[]
+    sp_hist = {}                                    # dac biet theo ky (chi dung ky < T)
+    per_draw, tickets = [], []
+    for T in range(a.start, a.end + 1):
+        if T not in actual: continue
+        wd = [d for d in l1_draws if d < T][-a.window:]
+        if not wd: continue
+        seeds = np.concatenate([L[d] for d in wd])
+        draws = np.concatenate([np.full(len(L[d]), d, dtype=np.int64) for d in wd])
+        # moi seed 1 lan, lay ky xuat hien GAN NHAT truoc T
+        rs, rd = seeds[::-1], draws[::-1]
+        useed, idx = np.unique(rs, return_index=True)
+        age = T - rd[idx]
+        key = keys_at(useed, T)
+        order = np.argsort(key, kind="stable")
+        ks, ag = key[order], age[order]
+        u, st, cnt = np.unique(ks, return_index=True, return_counts=True)
+        pair = np.nonzero(cnt == 2)[0]                          # consensus-2 dung 2 seed
+        pk, a1, a2 = u[pair], ag[st[pair]], ag[st[pair] + 1]
+        # dac biet: tuoi & khoang cach dua tren ket qua cac ky < T
+        past = sorted(d for d in actual if d < T)
+        last, gap = {}, {}
+        for d in past:
+            s = actual[d][1]
+            gap[s] = d - last[s] if s in last else 0
+            last[s] = d
+        sp = pk % 12 + 1
+        sage = np.array([T - last[s] if s in last else 10**9 for s in sp])
+        sgap = np.array([gap.get(s, 0) for s in sp])
+        # score (nho = xep truoc): tong tuoi, tuoi lon nhat, tuoi dac biet, khoang cach dac biet, rank, dac biet
+        o = np.lexsort((sp, pk // 12, sgap, sage, np.maximum(a1, a2), a1 + a2))[: a.top]
+        an, asp = actual[T]; arank = rank_of(an)
+        j1 = j2 = False; j2r = []
+        for r, i in enumerate(o, 1):
+            rk, s = divmod(int(pk[i]), 12); s += 1
+            main_hit = rk == arank
+            h1, h2 = main_hit and s == asp, main_hit and s != asp
+            j1 |= h1; j2 |= h2
+            if h2: j2r.append(r)
+            tickets.append((T, r, "-".join(f"{x:02d}" for x in unrank(rk)), s, int(a1[i]), int(a2[i]),
+                            int(sage[i]), int(sgap[i]), int(h1), int(h2)))
+        per_draw.append((T, len(wd), len(useed), len(pair), ",".join(map(str, j2r)), int(j2), int(j1)))
+        if len(per_draw) % 20 == 0: print(f"  ...da xong ky {T}", flush=True)
 
-    for target in range(args.start,args.end+1):
-        if target not in actual:
-            continue
-        pool=consensus2(rows,target,args.window)
-        ranked=[]
-        for (nums,sp),seeds,ages in pool:
-            last_special_draw=max(
-                [d for d,_,_,s in rows if d < target and s == sp] or [0]
-            )
-            special_age=target-last_special_draw if last_special_draw else 10**9
-            special_gap=0
-            prev=[d for d,_,_,s in rows if d < target and s == sp]
-            if len(prev)>=2:
-                special_gap=prev[-1]-prev[-2]
-            age_sum=sum(ages)
-            # Deterministic, pre-target score. Lower is earlier in ranking.
-            score=(age_sum, max(ages), special_age, special_gap, nums, sp)
-            ranked.append((score,nums,sp,seeds,ages,special_age,special_gap))
-        ranked.sort(key=lambda x:x[0])
-        top=ranked[:args.top]
-        an,asp=actual[target]
-        j2hits=[]
-        for rank,(score,nums,sp,seeds,ages,sage,sgap) in enumerate(top,1):
-            main_hit=(nums==an)
-            j1=main_hit and sp==asp
-            j2=main_hit and sp!=asp
-            if j2:
-                j2hits.append(rank)
-            ticket_rows.append({
-                "draw":target,"rank":rank,
-                "numbers":"-".join(f"{x:02d}" for x in nums),
-                "special":sp,
-                "seed1":seeds[0],"seed2":seeds[1],
-                "age1":ages[0],"age2":ages[1],
-                "special_age":sage,"special_gap":sgap,
-                "j1":int(j1),"j2":int(j2)
-            })
-        results.append({
-            "draw":target,
-            "actual_numbers":"-".join(f"{x:02d}" for x in an),
-            "actual_special":asp,
-            "consensus2_count":len(pool),
-            "top10_j2_ranks":",".join(map(str,j2hits)),
-            "j2_hit":int(bool(j2hits)),
-            "j1_hit":int(any(r["j1"] for r in ticket_rows if r["draw"]==target))
-        })
+    out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
+    with open(out / "per_draw.txt", "w", encoding="utf-8") as f:
+        f.write("draw\twindow_draws\tpool_seeds\tconsensus2_count\ttop_j2_ranks\tj2_hit\tj1_hit\n")
+        for r in per_draw: f.write("\t".join(map(str, r)) + "\n")
+    with open(out / "top_tickets.txt", "w", encoding="utf-8") as f:
+        f.write("draw\trank\tnumbers\tspecial\tage1\tage2\tspecial_age\tspecial_gap\tj1\tj2\n")
+        for r in tickets: f.write("\t".join(map(str, r)) + "\n")
+    n = len(per_draw); h2 = sum(r[5] for r in per_draw); h1 = sum(r[6] for r in per_draw)
+    exp = len(tickets) / C
+    s = (f"J2 TOP-{a.top} WALK-FORWARD | ky {a.start}..{a.end} | window<= {a.window}\n"
+         f"ky da test: {n} | tong ve top: {len(tickets)}\n"
+         f"J2 (5/5 chinh, DB sai): {h2} ky ({h2/max(n,1):.4%}) | J1 (5/5 + DB): {h1} ky\n"
+         f"Ky vong ngau nhien cho {len(tickets)} ve: ~{exp:.5f} lan trung 5/5 chinh\n")
+    (out / "summary.txt").write_text(s, encoding="utf-8"); print(s)
 
-    out=Path(args.out); out.mkdir(parents=True,exist_ok=True)
-    with open(out/"per_draw.csv","w",newline="",encoding="utf-8") as f:
-        w=csv.DictWriter(f,fieldnames=results[0].keys()); w.writeheader(); w.writerows(results)
-    with open(out/"top10_tickets.csv","w",newline="",encoding="utf-8") as f:
-        w=csv.DictWriter(f,fieldnames=ticket_rows[0].keys()); w.writeheader(); w.writerows(ticket_rows)
-    summary={
-        "draws_tested":len(results),
-        "j2_draws_hit":sum(x["j2_hit"] for x in results),
-        "j2_hit_rate":sum(x["j2_hit"] for x in results)/len(results) if results else 0,
-        "j1_draws_hit":sum(x["j1_hit"] for x in results),
-        "range":[args.start,args.end],
-        "window":args.window,
-        "consensus_level":2,
-        "special_in_key":True
-    }
-    (out/"summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding="utf-8")
-    print(json.dumps(summary,ensure_ascii=False,indent=2))
-
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

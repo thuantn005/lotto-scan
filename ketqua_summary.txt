@@ -1,0 +1,4 @@
+J2 TOP-10 WALK-FORWARD | ky 724..921 | window<= 200
+ky da test: 198 | tong ve top: 1979
+J2 (5/5 chinh, DB sai): 0 ky (0.0000%) | J1 (5/5 + DB): 0 ky
+Ky vong ngau nhien cho 1979 ve: ~0.00610 lan trung 5/5 chinh
