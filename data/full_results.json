@@ -1,24 +1,24 @@
 [
   {
     "product": "lotto535",
-    "draw_id": "00923",
+    "draw_id": "00924",
     "draw_date": "2026-10-03",
-    "draw_time": "13:00",
+    "draw_time": "21:00",
     "numbers": [
-      1,
       10,
-      13,
-      15,
-      17
+      12,
+      29,
+      33,
+      35
     ],
-    "special_number": 5,
-    "jackpot_value": 7911320000,
+    "special_number": 7,
+    "jackpot_value": 8077910000,
     "prizes": [
       {
         "tier": "Giải Độc Đắc",
         "match": "5 số & ĐB",
         "count": 0,
-        "value": 7911320000
+        "value": 8077910000
       },
       {
         "tier": "Giải Nhất",
@@ -29,36 +29,36 @@
       {
         "tier": "Giải Nhì",
         "match": "4 số & ĐB",
-        "count": 7,
+        "count": 6,
         "value": 5000000
       },
       {
         "tier": "Giải Ba",
         "match": "4 số",
-        "count": 49,
+        "count": 68,
         "value": 500000
       },
       {
         "tier": "Giải Tư",
         "match": "3 số & ĐB",
-        "count": 183,
+        "count": 273,
         "value": 100000
       },
       {
         "tier": "Giải Năm",
         "match": "3 số",
-        "count": 1876,
+        "count": 2555,
         "value": 30000
       },
       {
         "tier": "Giải Khuyến Khích",
         "match": "ĐB",
-        "count": 16235,
+        "count": 25128,
         "value": 10000
       }
     ],
     "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-03-10-2026",
-    "fetched_at": "2026-10-03T06:16:32+00:00",
+    "fetched_at": "2026-10-03T14:31:33+00:00",
     "share_state": {
       "pending": false,
       "share_date": null,
