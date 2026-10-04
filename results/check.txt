@@ -1,1 +1,1 @@
-chua co ky nao de doi chieu
+ky 01571: du doan [10, 15, 19, 25, 34, 37] | ket qua [15, 20, 29, 37, 40, 45] | trung 2/6
