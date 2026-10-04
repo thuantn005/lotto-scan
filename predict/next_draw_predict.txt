@@ -1,22 +1,22 @@
-DU DOAN KY 00926 - CHIEN LUOC GAP (khoang cach).
+DU DOAN KY 00927 - CHIEN LUOC GAP (khoang cach).
 Buoc 1: chon KY theo khoang cach GIUA CAC KY TRUNG (so voi trung binh
 cua model). Buoc 2: trong ky do, chon SEED theo khoang cach GIUA CAC
 GIA TRI SEED da thang hang (so voi trung binh) - khong con buoc nao
 chon ngau nhien. Cong thuc hash giong TicketFormula.dart/scan_v2.cpp.
 
 --- Model (L1: l1-1, seed_start=900477750639) ---
-  so seed con trong L1: 1600927
+  so seed con trong L1: 1600876
   avg_draw_gap (nguon: own): 74.09
-  ky duoc chon: cach 74 ky (7760 seed cung nhom gap nay)
+  ky duoc chon: cach 74 ky (8142 seed cung nhom gap nay)
   avg_seed_gap (nguon: own): 573546289.23
-  seed duoc chon: 923165188339 (lan xuat hien gan nhat: ky 00852)
-  DU DOAN ky 00926: 15-19-20-21-28 + DAC BIET 8
+  seed duoc chon: 901803394604 (lan xuat hien gan nhat: ky 00853)
+  DU DOAN ky 00927: 06-08-25-26-28 + DAC BIET 2
 
 --- Model (L1: l1-2, seed_start=682305800400) ---
-  so seed con trong L1: 356188
-  avg_draw_gap (nguon: own): 323.85
-  ky duoc chon: cach 324 ky (367 seed cung nhom gap nay)
-  avg_seed_gap (nguon: own): 25521540.67
-  seed duoc chon: 683167458306 (lan xuat hien gan nhat: ky 00602)
-  DU DOAN ky 00926: 01-05-18-28-32 + DAC BIET 2
+  so seed con trong L1: 356578
+  avg_draw_gap (nguon: own): 330.4
+  ky duoc chon: cach 330 ky (389 seed cung nhom gap nay)
+  avg_seed_gap (nguon: own): 25088972.19
+  seed duoc chon: 682574730410 (lan xuat hien gan nhat: ky 00597)
+  DU DOAN ky 00927: 03-09-11-16-24 + DAC BIET 1
 
