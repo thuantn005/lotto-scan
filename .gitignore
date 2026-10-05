@@ -1,3 +1,5 @@
 scan_mega
 work/
 __pycache__/
+
+data/seed_history.csv

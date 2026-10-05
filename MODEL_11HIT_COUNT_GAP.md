@@ -35,3 +35,15 @@ python backtest_count_gap.py --start 2
 
 Output dự đoán:
 `predict/next_draw_predict_count_gap.csv`
+
+## Tu dong (GitHub Actions)
+
+`.github/workflows/predict_count_gap.yml` tu chay sau moi lan "Scan V2" xong,
+khi `data/all.csv` doi, hoac bam Run workflow. Workflow tu dung history tu
+`l1-2/` (`--build-from` / bien `L1_DIRS`), du doan ky ke tiep, luu:
+
+- `predict/next_draw_predict_count_gap.csv` (ban moi nhat)
+- `predict/count_gap_history/{ky}_count_gap.csv` (luu tung ky de doi chieu)
+
+`data/seed_history.csv` chi dung tam, khong commit (da them vao .gitignore).
+Luu y: nguon `l1-2` khong phai candidate history goc cua ban 11-hit.

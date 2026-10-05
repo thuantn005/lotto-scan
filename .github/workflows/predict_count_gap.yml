@@ -1,0 +1,80 @@
+name: Du doan ky ke tiep - model Count+GAP (tu dong)
+
+# Tu dong chay:
+#   - sau khi workflow "Scan V2 ..." chay xong (co l1-2/ moi nhat)
+#   - khi data/all.csv thay doi (co ky moi)
+#   - hoac bam Run workflow thu cong
+# Buoc: dung data/seed_history.csv tu l1-2/*.json -> xep hang
+# COUNT DESC, GAP ASC, SEED ASC -> sinh ve ky t+1 -> commit predict/.
+# data/seed_history.csv (~6MB) chi dung tam trong runner, KHONG commit.
+
+on:
+  workflow_run:
+    workflows: ["Scan V2 (2 lan/ngay theo lich Vietlott) - 2 model, moi ky 1 file, 1 chien luoc du doan (gap)"]
+    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - 'data/all.csv'
+      - 'predict_next_draw_count_gap.py'
+      - '.github/workflows/predict_count_gap.yml'
+  workflow_dispatch:
+    inputs:
+      top:
+        description: "So seed Top-K"
+        required: false
+        default: "10"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: predict-count-gap
+  cancel-in-progress: true
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN || github.token }}
+          ref: main
+
+      - name: Du doan ky ke tiep - Count+GAP
+        env:
+          L1_DIRS: "l1-2"
+          HISTORY_DIR: "predict/count_gap_history"
+        run: |
+          set -e
+          python3 predict_next_draw_count_gap.py \
+            --history data/seed_history.csv \
+            --top "${{ github.event.inputs.top || '10' }}" \
+            --out predict/next_draw_predict_count_gap.csv
+
+      - name: Commit ket qua du doan
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add predict/next_draw_predict_count_gap.csv predict/count_gap_history/ || true
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"
+            exit 0
+          fi
+          git commit -m "du doan ky ke tiep - Count+GAP $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi, pull --rebase roi thu lai ($i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan"
+              exit 1
+            fi
+          done
