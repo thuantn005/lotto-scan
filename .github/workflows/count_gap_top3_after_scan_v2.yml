@@ -1,0 +1,71 @@
+name: Count-Gap Top3 (sau Scan V2)
+
+# Chay sau khi workflow Scan V2 hoan tat, khi CSV candidate doi, hoac chay tay.
+# Ten workflow trong `workflows:` PHAI trung khop `name:` cua scan_v2_auto.yml.
+on:
+  workflow_run:
+    workflows: ["Scan V2 (2 lan/ngay theo lich Vietlott) - 2 model, moi ky 1 file, 1 chien luoc du doan (gap)"]
+    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - 'data/candidate_scores_and_tickets.csv'
+      - 'predict_count_gap_top3.py'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: count-gap-top3
+  cancel-in-progress: true
+
+jobs:
+  predict:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN || github.token }}
+          ref: main
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Count-Gap Top-3
+        id: run
+        env:
+          STRICT_FRESH: "1"   # CSV cu hon data/all.csv -> khong commit du doan cu
+        run: |
+          set +e
+          python predict_count_gap_top3.py
+          code=$?
+          if [ "$code" = "3" ]; then
+            echo "stale=1" >> "$GITHUB_OUTPUT"
+            echo "::warning::candidate_scores_and_tickets.csv cu hon data/all.csv - bo qua commit."
+            exit 0
+          fi
+          exit $code
+
+      - name: Commit Top-3
+        if: steps.run.outputs.stale != '1'
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add predict/next_top3.csv
+          if git diff --cached --quiet; then
+            echo "Khong co gi de commit"; exit 0
+          fi
+          git commit -m "Auto: Count-Gap Top-3 prediction"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then break; fi
+            git pull --rebase origin main
+            sleep $((i * 5))
+            [ "$i" = "5" ] && exit 1
+          done

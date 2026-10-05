@@ -1,0 +1,4 @@
+1. Giai nen DE LEN thu muc goc repo lotto-scan (khong ghi de lotto_common.py / scan_v2_auto.yml).
+2. Commit + push. Workflow tu chay sau Scan V2 (hoac Run workflow thu cong).
+3. Chay thu local: python predict_count_gap_top3.py
+4. Khi co CSV candidate moi (den ky moi nhat), ghi de data/candidate_scores_and_tickets.csv va push -> workflow tu chay.
