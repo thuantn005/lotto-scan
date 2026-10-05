@@ -1,17 +1,22 @@
-DU DOAN MEGA 6/45 - KY 01572
-Nguon: seed trung >=1 trong 20 ky gan nhat (ky 1552..1571); so seed: 757
-LUU Y: moi ky doc lap; seed 'trung' qua khu khong co gia tri du doan. File nay chi de thu nghiem.
+DU DOAN KY 00927 - CHIEN LUOC GAP (khoang cach).
+Buoc 1: chon KY theo khoang cach GIUA CAC KY TRUNG (so voi trung binh
+cua model). Buoc 2: trong ky do, chon SEED theo khoang cach GIUA CAC
+GIA TRI SEED da thang hang (so voi trung binh) - khong con buoc nao
+chon ngau nhien. Cong thuc hash giong TicketFormula.dart/scan_v2.cpp.
 
-VE DONG THUAN (6 so duoc nhieu seed chon nhat): 01-15-18-20-22-35
+--- Model (L1: l1-1, seed_start=900477750639) ---
+  so seed con trong L1: 1600876
+  avg_draw_gap (nguon: own): 74.09
+  ky duoc chon: cach 74 ky (8142 seed cung nhom gap nay)
+  avg_seed_gap (nguon: own): 573546289.23
+  seed duoc chon: 901803394604 (lan xuat hien gan nhat: ky 00853)
+  DU DOAN ky 00927: 06-08-25-26-28 + DAC BIET 2
 
-10 VE SEED DAU TIEN:
-  seed 10000437283: 11-21-22-33-36-37
-  seed 10000475166: 03-08-28-31-38-44
-  seed 10000486996: 05-09-12-34-41-44
-  seed 10000490316: 03-09-38-39-43-45
-  seed 10001181021: 01-05-21-30-31-37
-  seed 10001569458: 07-23-28-37-39-42
-  seed 10001623529: 21-26-30-31-39-42
-  seed 10001649711: 11-12-13-14-35-43
-  seed 10001827094: 03-05-10-15-24-27
-  seed 10002780319: 06-08-18-28-36-42
+--- Model (L1: l1-2, seed_start=682305800400) ---
+  so seed con trong L1: 356578
+  avg_draw_gap (nguon: own): 330.4
+  ky duoc chon: cach 330 ky (389 seed cung nhom gap nay)
+  avg_seed_gap (nguon: own): 25088972.19
+  seed duoc chon: 682574730410 (lan xuat hien gan nhat: ky 00597)
+  DU DOAN ky 00927: 03-09-11-16-24 + DAC BIET 1
+
