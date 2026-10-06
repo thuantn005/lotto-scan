@@ -1,70 +1,78 @@
 [
   {
     "product": "lotto535",
-    "draw_id": "00929",
+    "draw_id": "00930",
     "draw_date": "2026-10-06",
-    "draw_time": "13:00",
+    "draw_time": "21:00",
     "numbers": [
-      21,
+      15,
       22,
-      23,
-      24,
-      27
+      27,
+      28,
+      29
     ],
-    "special_number": 1,
-    "jackpot_value": 11370475000,
+    "special_number": 3,
+    "jackpot_value": 12817231500,
     "prizes": [
       {
         "tier": "Giải Độc Đắc",
         "match": "5 số & ĐB",
         "count": 0,
-        "value": 11370475000
+        "value": 12817231500
       },
       {
         "tier": "Giải Nhất",
         "match": "5 số",
-        "count": 0,
+        "count": 1,
         "value": 10000000
       },
       {
         "tier": "Giải Nhì",
         "match": "4 số & ĐB",
-        "count": 5,
+        "count": 25,
         "value": 5000000
       },
       {
         "tier": "Giải Ba",
         "match": "4 số",
-        "count": 100,
+        "count": 154,
         "value": 500000
       },
       {
         "tier": "Giải Tư",
         "match": "3 số & ĐB",
-        "count": 151,
+        "count": 460,
         "value": 100000
       },
       {
         "tier": "Giải Năm",
         "match": "3 số",
-        "count": 2853,
+        "count": 4674,
         "value": 30000
       },
       {
         "tier": "Giải Khuyến Khích",
         "match": "ĐB",
-        "count": 15628,
+        "count": 32875,
         "value": 10000
       }
     ],
-    "source_url": "https://www.minhchinh.com/xs-lotto-535-ket-qua-lotto-535-ngay-06-10-2026.html",
-    "fetched_at": "2026-10-06T06:16:51+00:00",
+    "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-06-10-2026",
+    "fetched_at": "2026-10-06T14:32:17+00:00",
     "share_state": {
-      "pending": false,
-      "share_date": null,
-      "peak_jackpot": 11370475000,
-      "trigger_draw_id": null,
-      "last_event": null
+      "pending": true,
+      "share_date": "2026-10-07",
+      "peak_jackpot": 12817231500,
+      "trigger_draw_id": "00930",
+      "last_event": {
+        "id": "scheduled-2026-10-07-00930",
+        "kind": "scheduled",
+        "title_vi": "📅 Đã xác định kỳ CHIA GIẢI Lotto 5/35",
+        "title_en": "📅 Lotto 5/35 SHARE DRAW confirmed",
+        "message_vi": "Độc Đắc 12.817.231.500 (~12.8 tỷ) đã vượt 12 tỷ sau kỳ #00930. Kỳ quay 21:00 ngày 07/10/2026 là kỳ CHIA GIẢI.",
+        "message_en": "The jackpot (12.817.231.500 (~12.8 tỷ)) passed 12 billion VND after draw #00930. The 21:00 draw on 07/10/2026 is the SHARE draw.",
+        "urgent": true
+      }
     }
   }
 ]
