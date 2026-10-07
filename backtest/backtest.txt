@@ -1,47 +1,47 @@
 BACKTEST QUET SEED MEGA 6/45 (walk-forward, 40 ky, cua so 20 ky)
 Ky vong ngau nhien: 0.800 so trung / ve
 Ve dong thuan   : TB 0.750 | co >=3 so: 1 ky
-TB moi seed     : 0.802
-Ngau nhien (mo phong): 0.781
+TB moi seed     : 0.803
+Ngau nhien (mo phong): 0.810
 Neu 3 so tren xap xi nhau -> khong co loi the so voi ngau nhien.
 
-ky 01532 2026-07-05: seed= 707 | dong thuan 0/6 | TB moi seed 0.75 | ngau nhien 0.87
-ky 01533 2026-07-08: seed= 716 | dong thuan 1/6 | TB moi seed 0.82 | ngau nhien 0.79
+ky 01533 2026-07-08: seed= 716 | dong thuan 1/6 | TB moi seed 0.82 | ngau nhien 0.82
 ky 01534 2026-07-10: seed= 723 | dong thuan 1/6 | TB moi seed 0.82 | ngau nhien 0.78
-ky 01535 2026-07-12: seed= 715 | dong thuan 1/6 | TB moi seed 0.80 | ngau nhien 0.80
-ky 01536 2026-07-15: seed= 716 | dong thuan 0/6 | TB moi seed 0.75 | ngau nhien 0.72
-ky 01537 2026-07-17: seed= 721 | dong thuan 0/6 | TB moi seed 0.79 | ngau nhien 0.76
-ky 01538 2026-07-19: seed= 721 | dong thuan 1/6 | TB moi seed 0.80 | ngau nhien 0.72
-ky 01539 2026-07-22: seed= 717 | dong thuan 3/6 | TB moi seed 0.85 | ngau nhien 0.86
-ky 01540 2026-07-24: seed= 713 | dong thuan 0/6 | TB moi seed 0.80 | ngau nhien 0.89
-ky 01541 2026-07-26: seed= 709 | dong thuan 1/6 | TB moi seed 0.86 | ngau nhien 0.71
-ky 01542 2026-07-29: seed= 719 | dong thuan 0/6 | TB moi seed 0.82 | ngau nhien 0.80
-ky 01543 2026-07-31: seed= 726 | dong thuan 2/6 | TB moi seed 0.83 | ngau nhien 0.79
-ky 01544 2026-08-02: seed= 724 | dong thuan 1/6 | TB moi seed 0.81 | ngau nhien 0.79
-ky 01545 2026-08-05: seed= 731 | dong thuan 0/6 | TB moi seed 0.80 | ngau nhien 0.77
-ky 01546 2026-08-07: seed= 737 | dong thuan 0/6 | TB moi seed 0.81 | ngau nhien 0.74
-ky 01547 2026-08-09: seed= 739 | dong thuan 0/6 | TB moi seed 0.79 | ngau nhien 0.83
-ky 01548 2026-08-12: seed= 738 | dong thuan 1/6 | TB moi seed 0.79 | ngau nhien 0.78
-ky 01549 2026-08-14: seed= 727 | dong thuan 0/6 | TB moi seed 0.77 | ngau nhien 0.82
-ky 01550 2026-08-16: seed= 720 | dong thuan 1/6 | TB moi seed 0.78 | ngau nhien 0.83
-ky 01551 2026-08-19: seed= 719 | dong thuan 1/6 | TB moi seed 0.79 | ngau nhien 0.82
-ky 01552 2026-08-21: seed= 718 | dong thuan 1/6 | TB moi seed 0.74 | ngau nhien 0.79
-ky 01553 2026-08-23: seed= 708 | dong thuan 1/6 | TB moi seed 0.81 | ngau nhien 0.77
-ky 01554 2026-08-26: seed= 711 | dong thuan 1/6 | TB moi seed 0.82 | ngau nhien 0.77
-ky 01555 2026-08-28: seed= 717 | dong thuan 2/6 | TB moi seed 0.82 | ngau nhien 0.75
-ky 01556 2026-08-30: seed= 715 | dong thuan 0/6 | TB moi seed 0.77 | ngau nhien 0.80
-ky 01557 2026-09-02: seed= 717 | dong thuan 0/6 | TB moi seed 0.79 | ngau nhien 0.72
-ky 01558 2026-09-04: seed= 722 | dong thuan 0/6 | TB moi seed 0.77 | ngau nhien 0.76
-ky 01559 2026-09-06: seed= 717 | dong thuan 1/6 | TB moi seed 0.81 | ngau nhien 0.75
-ky 01560 2026-09-09: seed= 714 | dong thuan 0/6 | TB moi seed 0.77 | ngau nhien 0.73
-ky 01561 2026-09-11: seed= 731 | dong thuan 1/6 | TB moi seed 0.84 | ngau nhien 0.86
-ky 01562 2026-09-13: seed= 719 | dong thuan 1/6 | TB moi seed 0.81 | ngau nhien 0.73
-ky 01563 2026-09-16: seed= 713 | dong thuan 0/6 | TB moi seed 0.80 | ngau nhien 0.82
+ky 01535 2026-07-12: seed= 715 | dong thuan 1/6 | TB moi seed 0.80 | ngau nhien 0.81
+ky 01536 2026-07-15: seed= 716 | dong thuan 0/6 | TB moi seed 0.75 | ngau nhien 0.88
+ky 01537 2026-07-17: seed= 721 | dong thuan 0/6 | TB moi seed 0.79 | ngau nhien 0.81
+ky 01538 2026-07-19: seed= 721 | dong thuan 1/6 | TB moi seed 0.80 | ngau nhien 0.79
+ky 01539 2026-07-22: seed= 717 | dong thuan 3/6 | TB moi seed 0.85 | ngau nhien 0.85
+ky 01540 2026-07-24: seed= 713 | dong thuan 0/6 | TB moi seed 0.80 | ngau nhien 0.82
+ky 01541 2026-07-26: seed= 709 | dong thuan 1/6 | TB moi seed 0.86 | ngau nhien 0.82
+ky 01542 2026-07-29: seed= 719 | dong thuan 0/6 | TB moi seed 0.82 | ngau nhien 0.74
+ky 01543 2026-07-31: seed= 726 | dong thuan 2/6 | TB moi seed 0.83 | ngau nhien 0.82
+ky 01544 2026-08-02: seed= 724 | dong thuan 1/6 | TB moi seed 0.81 | ngau nhien 0.77
+ky 01545 2026-08-05: seed= 731 | dong thuan 0/6 | TB moi seed 0.80 | ngau nhien 0.71
+ky 01546 2026-08-07: seed= 737 | dong thuan 0/6 | TB moi seed 0.81 | ngau nhien 0.78
+ky 01547 2026-08-09: seed= 739 | dong thuan 0/6 | TB moi seed 0.79 | ngau nhien 0.80
+ky 01548 2026-08-12: seed= 738 | dong thuan 1/6 | TB moi seed 0.79 | ngau nhien 0.73
+ky 01549 2026-08-14: seed= 727 | dong thuan 0/6 | TB moi seed 0.77 | ngau nhien 0.83
+ky 01550 2026-08-16: seed= 720 | dong thuan 1/6 | TB moi seed 0.78 | ngau nhien 0.88
+ky 01551 2026-08-19: seed= 719 | dong thuan 1/6 | TB moi seed 0.79 | ngau nhien 0.80
+ky 01552 2026-08-21: seed= 718 | dong thuan 1/6 | TB moi seed 0.74 | ngau nhien 0.77
+ky 01553 2026-08-23: seed= 708 | dong thuan 1/6 | TB moi seed 0.81 | ngau nhien 0.93
+ky 01554 2026-08-26: seed= 711 | dong thuan 1/6 | TB moi seed 0.82 | ngau nhien 0.90
+ky 01555 2026-08-28: seed= 717 | dong thuan 2/6 | TB moi seed 0.82 | ngau nhien 0.78
+ky 01556 2026-08-30: seed= 715 | dong thuan 0/6 | TB moi seed 0.77 | ngau nhien 0.83
+ky 01557 2026-09-02: seed= 717 | dong thuan 0/6 | TB moi seed 0.79 | ngau nhien 0.81
+ky 01558 2026-09-04: seed= 722 | dong thuan 0/6 | TB moi seed 0.77 | ngau nhien 0.83
+ky 01559 2026-09-06: seed= 717 | dong thuan 1/6 | TB moi seed 0.81 | ngau nhien 0.85
+ky 01560 2026-09-09: seed= 714 | dong thuan 0/6 | TB moi seed 0.77 | ngau nhien 0.84
+ky 01561 2026-09-11: seed= 731 | dong thuan 1/6 | TB moi seed 0.84 | ngau nhien 0.88
+ky 01562 2026-09-13: seed= 719 | dong thuan 1/6 | TB moi seed 0.81 | ngau nhien 0.70
+ky 01563 2026-09-16: seed= 713 | dong thuan 0/6 | TB moi seed 0.80 | ngau nhien 0.89
 ky 01564 2026-09-18: seed= 724 | dong thuan 1/6 | TB moi seed 0.81 | ngau nhien 0.81
-ky 01565 2026-09-20: seed= 711 | dong thuan 2/6 | TB moi seed 0.84 | ngau nhien 0.69
-ky 01566 2026-09-23: seed= 705 | dong thuan 0/6 | TB moi seed 0.79 | ngau nhien 0.71
-ky 01567 2026-09-25: seed= 719 | dong thuan 0/6 | TB moi seed 0.79 | ngau nhien 0.86
+ky 01565 2026-09-20: seed= 711 | dong thuan 2/6 | TB moi seed 0.84 | ngau nhien 0.90
+ky 01566 2026-09-23: seed= 705 | dong thuan 0/6 | TB moi seed 0.79 | ngau nhien 0.76
+ky 01567 2026-09-25: seed= 719 | dong thuan 0/6 | TB moi seed 0.79 | ngau nhien 0.76
 ky 01568 2026-09-27: seed= 717 | dong thuan 2/6 | TB moi seed 0.84 | ngau nhien 0.70
-ky 01569 2026-09-30: seed= 732 | dong thuan 0/6 | TB moi seed 0.79 | ngau nhien 0.79
+ky 01569 2026-09-30: seed= 732 | dong thuan 0/6 | TB moi seed 0.79 | ngau nhien 0.83
 ky 01570 2026-10-02: seed= 745 | dong thuan 1/6 | TB moi seed 0.83 | ngau nhien 0.79
-ky 01571 2026-10-04: seed= 753 | dong thuan 2/6 | TB moi seed 0.83 | ngau nhien 0.79
+ky 01571 2026-10-04: seed= 753 | dong thuan 2/6 | TB moi seed 0.83 | ngau nhien 0.78
+ky 01572 2026-10-07: seed= 757 | dong thuan 0/6 | TB moi seed 0.80 | ngau nhien 0.82
