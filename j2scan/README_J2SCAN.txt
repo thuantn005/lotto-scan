@@ -21,6 +21,16 @@ CAI DAT
      Moi dai commit 1 file j2scan/out/j2_b<N>_<N>.txt (moi dong: "seed so_ky_trung").
      Loi giua chung: chain dung; xem j2scan/out/j2_missing_*.txt; chay lai voi first_band = N.
 
+DUNG FILE 100 KY (j2scan/data_last100.csv = 100 ky gan nhat #835..#934)
+  Chay Actions voi: data_file = j2scan/data_last100.csv, max_job_seeds = 150000000000.
+  Moi seed quet nhanh ~9-10 lan (it ky hon), nhung seed trung >=2 ky chi con ~ 11.800 / dai 249,2 ty (giam ~87 lan)
+  -> de loai 99% to hop can ~126 dai, 100% ~369 dai (last_band tuong ung). Tong thoi gian de loai cung muc ~9 lan LAU hon file 932 ky.
+
+DUNG FILE 200 KY (j2scan/data_last200.csv = 200 ky gan nhat #735..#934)
+  Chay Actions voi: data_file = j2scan/data_last200.csv, max_job_seeds = 60000000000.
+  Moi dai 249,2 ty ~ 47.300 seed trung >=2 ky; loai 50% = 5 dai | 90% = 16 | 99% = 32 | 100% = 92 (last_band = so dai - 1).
+  Moi job ~ 30 phut (uoc tinh), ~34 phut/dai ke ca khoi dong + gop.
+
 SO LIEU (ly thuyet, kiem chung 40 trieu seed dau: 164 seed so voi 165 ky vong)
   Dai 249,2 ty ~ 1.025.000 seed trung >= 2 ky 5/5 so chinh; moi job ~ 160 phut (uoc tinh, chua do tren runner that).
   Muc loai (324.632 to hop 5 so): 50% = 1 dai | 90% = 1 | 99% = 2 (last_band=1) | 100% = 5 (last_band=4) ; 5 dai noi tiep ~ 14 gio.

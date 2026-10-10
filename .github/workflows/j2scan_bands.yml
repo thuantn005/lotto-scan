@@ -31,6 +31,10 @@ on:
         description: "Dai cuoi cung khi auto_next (voi band_size 249,2 ty: 99% = 1, 100% = 4)"
         required: true
         default: "4"
+      max_job_seeds:
+        description: "Tran seed/job (mac dinh 19 ty cho file ~932 ky ~ 4-5 gio). File 100 ky nhanh ~9 lan: dat 150000000000"
+        required: true
+        default: "19000000000"
       data_file:
         description: "File du lieu da dong bang"
         required: true
@@ -64,6 +68,7 @@ jobs:
           FIRST: ${{ github.event.inputs.first_band }}
           BANDS: ${{ github.event.inputs.bands }}
           BAND_SIZE: ${{ github.event.inputs.band_size }}
+          MAXJ: ${{ github.event.inputs.max_job_seeds }}
           IDX: ${{ matrix.idx }}
         run: |
           python3 - <<"PY" >> "$GITHUB_ENV"
@@ -73,7 +78,7 @@ jobs:
           first = int(os.environ["FIRST"]); bands = max(1, min(12, int(os.environ["BANDS"]))); idx = int(os.environ["IDX"])
           s0 = first * B + 1; total = bands * B
           sl = total // 20                      # B chia het cho 20 nen chia deu
-          assert sl <= 19_000_000_000, f"{sl} seed/job qua lon (>19 ty ~ gan 6 gio): giam bands hoac band_size"
+          assert sl <= int(os.environ["MAXJ"]), f"{sl} seed/job vuot tran max_job_seeds ({os.environ['MAXJ']}): giam bands/band_size hoac tang tran neu file du lieu it ky"
           start = s0 + idx * sl; end = start + sl - 1
           print(f"SCAN_START={start}"); print(f"SCAN_END={end}")
           PY
@@ -154,7 +159,7 @@ jobs:
             REM=$(( LAST - NEXT + 1 )); N=$(( REM < B ? REM : B ))
             gh workflow run j2scan_bands.yml --ref "${{ github.ref_name }}" \
               -f first_band=$NEXT -f bands=$N -f band_size="${{ github.event.inputs.band_size }}" -f min_hits="${{ github.event.inputs.min_hits }}" \
-              -f auto_next=true -f last_band=$LAST -f data_file="${{ github.event.inputs.data_file }}"
+              -f auto_next=true -f last_band=$LAST -f max_job_seeds="${{ github.event.inputs.max_job_seeds }}" -f data_file="${{ github.event.inputs.data_file }}"
             echo "Da kich hoat lan ke tiep: dai $NEXT (+$N)"
           else
             echo "Hoan tat den dai $LAST"
