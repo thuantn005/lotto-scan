@@ -1,0 +1,161 @@
+name: J2SCAN - Scan J2 (5 so chinh, 2 lan) - 20 job
+
+# Quet seed trung >= MIN_HITS ky 5/5 SO CHINH. 20 job song song, moi job = 1/20 tong khoang seed cua lan chay.
+# Ket qua gop vao j2scan/out/j2_b<dau>_<cuoi>.txt (moi dong: "seed so_ky_trung") va commit lai repo.
+# YEU CAU: repo CONG KHAI (runner mien phi 4 vCPU); du lieu dong bang da kem san: j2scan/data_frozen.csv
+
+on:
+  workflow_dispatch:
+    inputs:
+      first_band:
+        description: "Dai bat dau (0 = seed 1..band_size)"
+        required: true
+        default: "0"
+      band_size:
+        description: "So seed moi dai (mac dinh 249244128000 = 249,2 ty = 8 x 31,16 ty). Phai chia het cho 20"
+        required: true
+        default: "249244128000"
+      bands:
+        description: "So dai moi lan chay. 1 = chay NOI TIEP tung dai (moi job ~20 phut, xa gioi han 6 gio). Toi da 12 (12 dai ~ 4-5 gio/job)"
+        required: true
+        default: "1"
+      min_hits:
+        description: "So ky 5/5 so chinh toi thieu (2 = tieu chi 2 lan)"
+        required: true
+        default: "2"
+      auto_next:
+        description: "Tu chay lan ke tiep den last_band (chi khi 20 job deu xong)"
+        required: true
+        default: "true"
+      last_band:
+        description: "Dai cuoi cung khi auto_next (voi band_size 249,2 ty: 99% = 1, 100% = 4)"
+        required: true
+        default: "4"
+      data_file:
+        description: "File du lieu da dong bang"
+        required: true
+        default: "j2scan/data_frozen.csv"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: j2scan-commit
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        idx: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile
+        run: g++ -O3 -march=native -funroll-loops -fopenmp -o j2scan_bin j2scan/scan_j2.cpp
+
+      - name: Calculate seed range
+        env:
+          FIRST: ${{ github.event.inputs.first_band }}
+          BANDS: ${{ github.event.inputs.bands }}
+          BAND_SIZE: ${{ github.event.inputs.band_size }}
+          IDX: ${{ matrix.idx }}
+        run: |
+          python3 - <<"PY" >> "$GITHUB_ENV"
+          import os
+          B = int(os.environ["BAND_SIZE"])
+          assert B % 20 == 0, "band_size phai chia het cho 20"
+          first = int(os.environ["FIRST"]); bands = max(1, min(12, int(os.environ["BANDS"]))); idx = int(os.environ["IDX"])
+          s0 = first * B + 1; total = bands * B
+          sl = total // 20                      # B chia het cho 20 nen chia deu
+          assert sl <= 19_000_000_000, f"{sl} seed/job qua lon (>19 ty ~ gan 6 gio): giam bands hoac band_size"
+          start = s0 + idx * sl; end = start + sl - 1
+          print(f"SCAN_START={start}"); print(f"SCAN_END={end}")
+          PY
+
+      - name: Scan
+        env:
+          CSV_PATH: ${{ github.event.inputs.data_file }}
+          OUT_PATH: out/c.json
+          MIN_HITS: ${{ github.event.inputs.min_hits }}
+        run: |
+          mkdir -p out
+          ./j2scan_bin
+          cp out/c_m5_list.txt seeds_${{ matrix.idx }}.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: j2scan-${{ matrix.idx }}
+          path: seeds_${{ matrix.idx }}.txt
+          retention-days: 30
+
+  merge:
+    needs: scan
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: j2scan-*
+          path: parts
+          merge-multiple: true
+
+      - name: Merge
+        id: merge
+        env:
+          FIRST: ${{ github.event.inputs.first_band }}
+          BANDS: ${{ github.event.inputs.bands }}
+        run: |
+          python3 - <<"PY"
+          import glob, os, re
+          first = int(os.environ["FIRST"]); bands = max(1, min(12, int(os.environ["BANDS"]))); last = first + bands - 1
+          rows, done = {}, set()
+          for f in glob.glob("parts/seeds_*.txt"):
+              done.add(int(re.search(r"seeds_(\d+)\.txt", f).group(1)))
+              for l in open(f):
+                  p = l.split()
+                  if p: rows[int(p[0])] = p[1]
+          missing = sorted(set(range(20)) - done)
+          os.makedirs("j2scan/out", exist_ok=True)
+          open(f"j2scan/out/j2_b{first}_{last}.txt", "w").write("".join(f"{s} {rows[s]}\n" for s in sorted(rows)))
+          open(f"j2scan/out/j2_missing_b{first}_{last}.txt", "w").write("job chua xong: " + " ".join(map(str, missing)) + "\n")
+          open(os.environ["GITHUB_OUTPUT"], "a").write(f"missing={len(missing)}\n")
+          print(f"{len(done)}/20 job xong, {len(rows)} seed, thieu {len(missing)}")
+          PY
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add j2scan/out/
+          git commit -m "J2 bands ${{ github.event.inputs.first_band }} (+${{ github.event.inputs.bands }})" || exit 0
+          for i in 1 2 3 4 5; do
+            git pull --rebase && git push && exit 0
+            sleep 5
+          done
+          exit 1
+
+      - name: Chain next run
+        if: ${{ github.event.inputs.auto_next == 'true' && steps.merge.outputs.missing == '0' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          B=$(( ${{ github.event.inputs.bands }} > 12 ? 12 : ${{ github.event.inputs.bands }} ))
+          NEXT=$(( ${{ github.event.inputs.first_band }} + B ))
+          LAST=${{ github.event.inputs.last_band }}
+          if [ "$NEXT" -le "$LAST" ]; then
+            REM=$(( LAST - NEXT + 1 )); N=$(( REM < B ? REM : B ))
+            gh workflow run j2scan_bands.yml --ref "${{ github.ref_name }}" \
+              -f first_band=$NEXT -f bands=$N -f band_size="${{ github.event.inputs.band_size }}" -f min_hits="${{ github.event.inputs.min_hits }}" \
+              -f auto_next=true -f last_band=$LAST -f data_file="${{ github.event.inputs.data_file }}"
+            echo "Da kich hoat lan ke tiep: dai $NEXT (+$N)"
+          else
+            echo "Hoan tat den dai $LAST"
+          fi
