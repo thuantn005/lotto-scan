@@ -1,0 +1,171 @@
+name: M3DSCAN - Max 3D Pro J1 (2 lan) - 20 job
+
+# Quet seed trung >= MIN_HITS ky J1 Max 3D Pro. 20 job song song, moi job = 1/20 tong khoang seed cua lan chay.
+# Ket qua gop vao m3dscan/out/m3d_b<dau>_<cuoi>.txt (moi dong: "seed so_ky_trung") va commit lai repo.
+# YEU CAU: repo CONG KHAI (runner mien phi 4 vCPU); du lieu dong bang da kem san: m3dscan/data_special.txt
+
+on:
+  workflow_dispatch:
+    inputs:
+      first_band:
+        description: "Dai bat dau (0 = seed 1..band_size)"
+        required: true
+        default: "0"
+      band_size:
+        description: "So seed moi dai (mac dinh 249244128000 = 249,2 ty = 8 x 31,16 ty). Phai chia het cho 20"
+        required: true
+        default: "249244128000"
+      bands:
+        description: "So dai moi lan chay. 1 = chay NOI TIEP tung dai (moi job ~20 phut, xa gioi han 6 gio). Toi da 12 (12 dai ~ 4-5 gio/job)"
+        required: true
+        default: "1"
+      min_hits:
+        description: "So ky J1 toi thieu (2 = tieu chi 2 lan)"
+        required: true
+        default: "2"
+      auto_next:
+        description: "Tu chay lan ke tiep den last_band (chi khi 20 job deu xong)"
+        required: true
+        default: "true"
+      last_band:
+        description: "Dai cuoi cung khi auto_next (755 ky: either = 50 -> phu het ~51 dai; ordered = 203 -> ~204 dai)"
+        required: true
+        default: "50"
+      mode:
+        description: "ordered = chi Dac biet (a,b)=(s1,s2); either = them dao thu tu (s2,s1)"
+        required: true
+        default: "either"
+      max_job_seeds:
+        description: "Tran seed/job (mac dinh 19 ty cho file ~932 ky ~ 4-5 gio). File 100 ky nhanh ~9 lan: dat 150000000000"
+        required: true
+        default: "19000000000"
+      data_file:
+        description: "File du lieu da dong bang"
+        required: true
+        default: "m3dscan/data_special.txt"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: m3dscan-commit
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        idx: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile
+        run: g++ -O3 -march=native -funroll-loops -fopenmp -o m3dscan_bin m3dscan/scan_m3d.cpp
+
+      - name: Calculate seed range
+        env:
+          FIRST: ${{ github.event.inputs.first_band }}
+          BANDS: ${{ github.event.inputs.bands }}
+          BAND_SIZE: ${{ github.event.inputs.band_size }}
+          MAXJ: ${{ github.event.inputs.max_job_seeds }}
+          IDX: ${{ matrix.idx }}
+        run: |
+          python3 - <<"PY" >> "$GITHUB_ENV"
+          import os
+          B = int(os.environ["BAND_SIZE"])
+          assert B % 20 == 0, "band_size phai chia het cho 20"
+          first = int(os.environ["FIRST"]); bands = max(1, min(12, int(os.environ["BANDS"]))); idx = int(os.environ["IDX"])
+          s0 = first * B + 1; total = bands * B
+          sl = total // 20                      # B chia het cho 20 nen chia deu
+          assert sl <= int(os.environ["MAXJ"]), f"{sl} seed/job vuot tran max_job_seeds ({os.environ['MAXJ']}): giam bands/band_size hoac tang tran neu file du lieu it ky"
+          start = s0 + idx * sl; end = start + sl - 1
+          print(f"SCAN_START={start}"); print(f"SCAN_END={end}")
+          PY
+
+      - name: Scan
+        env:
+          DATA_PATH: ${{ github.event.inputs.data_file }}
+          MODE: ${{ github.event.inputs.mode }}
+          OUT_PATH: out/c.txt
+          MIN_HITS: ${{ github.event.inputs.min_hits }}
+        run: |
+          mkdir -p out
+          ./m3dscan_bin
+          cp out/c.txt seeds_${{ matrix.idx }}.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m3dscan-${{ matrix.idx }}
+          path: seeds_${{ matrix.idx }}.txt
+          retention-days: 30
+
+  merge:
+    needs: scan
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: m3dscan-*
+          path: parts
+          merge-multiple: true
+
+      - name: Merge
+        id: merge
+        env:
+          FIRST: ${{ github.event.inputs.first_band }}
+          BANDS: ${{ github.event.inputs.bands }}
+        run: |
+          python3 - <<"PY"
+          import glob, os, re
+          first = int(os.environ["FIRST"]); bands = max(1, min(12, int(os.environ["BANDS"]))); last = first + bands - 1
+          rows, done = {}, set()
+          for f in glob.glob("parts/seeds_*.txt"):
+              done.add(int(re.search(r"seeds_(\d+)\.txt", f).group(1)))
+              for l in open(f):
+                  p = l.split()
+                  if p: rows[int(p[0])] = p[1]
+          missing = sorted(set(range(20)) - done)
+          os.makedirs("m3dscan/out", exist_ok=True)
+          open(f"m3dscan/out/m3d_b{first}_{last}.txt", "w").write("".join(f"{s} {rows[s]}\n" for s in sorted(rows)))
+          open(f"m3dscan/out/m3d_missing_b{first}_{last}.txt", "w").write("job chua xong: " + " ".join(map(str, missing)) + "\n")
+          open(os.environ["GITHUB_OUTPUT"], "a").write(f"missing={len(missing)}\n")
+          print(f"{len(done)}/20 job xong, {len(rows)} seed, thieu {len(missing)}")
+          PY
+
+      - name: Commit
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add m3dscan/out/
+          git commit -m "M3D bands ${{ github.event.inputs.first_band }} (+${{ github.event.inputs.bands }})" || exit 0
+          for i in 1 2 3 4 5; do
+            git pull --rebase && git push && exit 0
+            sleep 5
+          done
+          exit 1
+
+      - name: Chain next run
+        if: ${{ github.event.inputs.auto_next == 'true' && steps.merge.outputs.missing == '0' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          B=$(( ${{ github.event.inputs.bands }} > 12 ? 12 : ${{ github.event.inputs.bands }} ))
+          NEXT=$(( ${{ github.event.inputs.first_band }} + B ))
+          LAST=${{ github.event.inputs.last_band }}
+          if [ "$NEXT" -le "$LAST" ]; then
+            REM=$(( LAST - NEXT + 1 )); N=$(( REM < B ? REM : B ))
+            gh workflow run m3dscan_bands.yml --ref "${{ github.ref_name }}" \
+              -f first_band=$NEXT -f bands=$N -f band_size="${{ github.event.inputs.band_size }}" -f min_hits="${{ github.event.inputs.min_hits }}" \
+              -f auto_next=true -f last_band=$LAST -f max_job_seeds="${{ github.event.inputs.max_job_seeds }}" -f mode="${{ github.event.inputs.mode }}" -f data_file="${{ github.event.inputs.data_file }}"
+            echo "Da kich hoat lan ke tiep: dai $NEXT (+$N)"
+          else
+            echo "Hoan tat den dai $LAST"
+          fi
