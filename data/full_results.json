@@ -1,70 +1,78 @@
 [
   {
     "product": "lotto535",
-    "draw_id": "00932",
-    "draw_date": "2026-10-07",
-    "draw_time": "21:00",
+    "draw_id": "00947",
+    "draw_date": "2026-10-15",
+    "draw_time": "13:00",
     "numbers": [
-      4,
+      5,
       7,
       10,
-      14,
-      17
+      20,
+      25
     ],
-    "special_number": 7,
-    "jackpot_value": 26081265500,
+    "special_number": 10,
+    "jackpot_value": 14453529500,
     "prizes": [
       {
         "tier": "Giải Độc Đắc",
         "match": "5 số & ĐB",
-        "count": 2,
-        "value": 13040632750
+        "count": 0,
+        "value": 14453529500
       },
       {
         "tier": "Giải Nhất",
         "match": "5 số",
-        "count": 11,
+        "count": 1,
         "value": 10000000
       },
       {
         "tier": "Giải Nhì",
         "match": "4 số & ĐB",
-        "count": 159,
+        "count": 41,
         "value": 5000000
       },
       {
         "tier": "Giải Ba",
         "match": "4 số",
-        "count": 1697,
+        "count": 356,
         "value": 500000
       },
       {
         "tier": "Giải Tư",
         "match": "3 số & ĐB",
-        "count": 3708,
+        "count": 813,
         "value": 100000
       },
       {
         "tier": "Giải Năm",
         "match": "3 số",
-        "count": 43515,
+        "count": 7008,
         "value": 30000
       },
       {
         "tier": "Giải Khuyến Khích",
         "match": "ĐB",
-        "count": 247684,
+        "count": 45370,
         "value": 10000
       }
     ],
-    "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-07-10-2026",
-    "fetched_at": "2026-10-07T14:31:40+00:00",
+    "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-15-10-2026",
+    "fetched_at": "2026-10-15T12:49:03+00:00",
     "share_state": {
-      "pending": true,
-      "share_date": "2026-10-07",
-      "peak_jackpot": 26081265500,
-      "trigger_draw_id": "00930",
-      "last_event": null
+      "pending": false,
+      "share_date": null,
+      "peak_jackpot": 14453529500,
+      "trigger_draw_id": null,
+      "last_event": {
+        "id": "completed-2026-10-07-00930",
+        "kind": "completed",
+        "title_vi": "✅ Kỳ chia giải Lotto 5/35 đã diễn ra",
+        "title_en": "✅ Lotto 5/35 share draw has taken place",
+        "message_vi": "Kỳ chia giải ngày 07/10/2026 đã xong (pot trước chia ~26.081.265.500 (~26.1 tỷ)). Pot hiện tại: 14.453.529.500 (~14.5 tỷ).",
+        "message_en": "The 07/10/2026 share draw is complete (pot before sharing was ~26.081.265.500 (~26.1 tỷ)). Current pot: 14.453.529.500 (~14.5 tỷ).",
+        "urgent": false
+      }
     }
   }
 ]
