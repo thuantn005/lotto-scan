@@ -1,22 +1,22 @@
-DU DOAN KY 00948 - CHIEN LUOC GAP (khoang cach).
+DU DOAN KY 00949 - CHIEN LUOC GAP (khoang cach).
 Buoc 1: chon KY theo khoang cach GIUA CAC KY TRUNG (so voi trung binh
 cua model). Buoc 2: trong ky do, chon SEED theo khoang cach GIUA CAC
 GIA TRI SEED da thang hang (so voi trung binh) - khong con buoc nao
 chon ngau nhien. Cong thuc hash giong TicketFormula.dart/scan_v2.cpp.
 
 --- Model (L1: l1-1, seed_start=900477750639) ---
-  so seed con trong L1: 1599854
+  so seed con trong L1: 1599874
   avg_draw_gap (nguon: own): 81.82
-  ky duoc chon: cach 82 ky (8024 seed cung nhom gap nay)
+  ky duoc chon: cach 82 ky (8088 seed cung nhom gap nay)
   avg_seed_gap (nguon: own): 467660820.45
-  seed duoc chon: 901790507138 (lan xuat hien gan nhat: ky 00866)
-  DU DOAN ky 00948: 09-15-26-27-31 + DAC BIET 9
+  seed duoc chon: 917137693017 (lan xuat hien gan nhat: ky 00867)
+  DU DOAN ky 00949: 06-11-14-23-29 + DAC BIET 8
 
 --- Model (L1: l1-2, seed_start=682305800400) ---
-  so seed con trong L1: 364545
+  so seed con trong L1: 364932
   avg_draw_gap (nguon: own): 330.7
-  ky duoc chon: cach 331 ky (379 seed cung nhom gap nay)
+  ky duoc chon: cach 331 ky (372 seed cung nhom gap nay)
   avg_seed_gap (nguon: own): 23874989.66
-  seed duoc chon: 683708267805 (lan xuat hien gan nhat: ky 00617)
-  DU DOAN ky 00948: 09-16-21-22-26 + DAC BIET 9
+  seed duoc chon: 682666436501 (lan xuat hien gan nhat: ky 00618)
+  DU DOAN ky 00949: 13-14-22-28-31 + DAC BIET 12
 
