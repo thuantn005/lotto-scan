@@ -1,77 +1,77 @@
 [
   {
     "product": "lotto535",
-    "draw_id": "00948",
-    "draw_date": "2026-10-15",
-    "draw_time": "21:00",
+    "draw_id": "00949",
+    "draw_date": "2026-10-16",
+    "draw_time": "13:00",
     "numbers": [
-      1,
-      5,
-      6,
-      10,
-      27
+      3,
+      8,
+      12,
+      22,
+      24
     ],
-    "special_number": 12,
-    "jackpot_value": 25634220500,
+    "special_number": 9,
+    "jackpot_value": 6139472500,
     "prizes": [
       {
         "tier": "Giải Độc Đắc",
         "match": "5 số & ĐB",
         "count": 1,
-        "value": 25634220500
+        "value": 6139472500
       },
       {
         "tier": "Giải Nhất",
         "match": "5 số",
-        "count": 6,
+        "count": 0,
         "value": 10000000
       },
       {
         "tier": "Giải Nhì",
         "match": "4 số & ĐB",
-        "count": 104,
+        "count": 5,
         "value": 5000000
       },
       {
         "tier": "Giải Ba",
         "match": "4 số",
-        "count": 1120,
+        "count": 95,
         "value": 500000
       },
       {
         "tier": "Giải Tư",
         "match": "3 số & ĐB",
-        "count": 3425,
+        "count": 275,
         "value": 100000
       },
       {
         "tier": "Giải Năm",
         "match": "3 số",
-        "count": 35626,
+        "count": 2771,
         "value": 30000
       },
       {
         "tier": "Giải Khuyến Khích",
         "match": "ĐB",
-        "count": 244189,
+        "count": 18143,
         "value": 10000
       }
     ],
-    "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-15-10-2026",
-    "fetched_at": "2026-10-15T14:31:26+00:00",
+    "source_url": "https://xosominhngoc.net.vn/kqxs-lotto-535-ngay-16-10-2026",
+    "fetched_at": "2026-10-16T06:16:26+00:00",
     "share_state": {
-      "pending": true,
-      "share_date": "2026-10-16",
-      "peak_jackpot": 25634220500,
-      "trigger_draw_id": "00948",
+      "pending": false,
+      "share_date": null,
+      "peak_jackpot": 6139472500,
+      "trigger_draw_id": null,
       "last_event": {
-        "id": "reminder-2026-10-16-00948",
-        "kind": "reminder",
-        "title_vi": "🔔 TỐI NAY: kỳ CHIA GIẢI Độc Đắc Lotto 5/35!",
-        "title_en": "🔔 TONIGHT: Lotto 5/35 jackpot SHARE DRAW!",
-        "message_vi": "Kỳ quay 21:00 hôm nay (16/10/2026) là kỳ CHIA GIẢI. Độc Đắc ~25.634.220.500 (~25.6 tỷ) sẽ chia cho Giải Nhất (2/6) và Nhì/Ba/Tư/Năm (mỗi giải 1/6) nếu không ai trúng trực tiếp. Nhớ mua vé trước giờ quay!",
-        "message_en": "Tonight's 21:00 draw (16/10/2026) is the SHARE draw. The ~25.634.220.500 (~25.6 tỷ) jackpot will be split among 1st prize (2/6 shares) and 2nd/3rd/4th/5th (1/6 each) if nobody wins outright. Get your ticket before the draw!",
-        "urgent": true
+        "id": "cancelled-2026-10-16-00948",
+        "kind": "cancelled",
+        "title_vi": "🚫 Huỷ kỳ chia giải Lotto 5/35",
+        "title_en": "🚫 Lotto 5/35 share draw cancelled",
+        "message_vi": "Đã có người trúng Độc Đắc (~25.634.220.500 (~25.6 tỷ)) trước kỳ chia giải 16/10. Pot quay về ~6 tỷ.",
+        "message_en": "Someone already won the jackpot (~25.634.220.500 (~25.6 tỷ)) before the 16/10 share draw. Pot resets to ~6 billion VND.",
+        "urgent": false
       }
     }
   }
