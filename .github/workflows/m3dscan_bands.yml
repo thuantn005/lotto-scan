@@ -144,10 +144,35 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@users.noreply.github.com"
-          git add m3dscan/out/
-          git commit -m "M3D bands ${{ github.event.inputs.first_band }} (+${{ github.event.inputs.bands }})" || exit 0
+          BR="${GITHUB_REF_NAME}"
+          rm -rf /tmp/new_out && mkdir -p /tmp/new_out && cp m3dscan/out/m3d_*.txt /tmp/new_out/
           for i in 1 2 3 4 5; do
-            git pull --rebase && git push && exit 0
+            git fetch origin "$BR"
+            git reset --hard "origin/$BR"
+            python3 - <<"PY"
+          import glob, os
+          os.makedirs("m3dscan/out", exist_ok=True)
+          for nf in sorted(glob.glob("/tmp/new_out/m3d_*.txt")):
+              name = os.path.basename(nf); tgt = "m3dscan/out/" + name
+              if "missing" in name:
+                  def miss(path):
+                      t = open(path).read().split(":", 1)[1].split()
+                      return set(int(x) for x in t)
+                  m = miss(nf)
+                  if os.path.exists(tgt): m &= miss(tgt)   # job xong o 1 trong 2 lan -> coi la xong
+                  open(tgt, "w").write("job chua xong: " + " ".join(map(str, sorted(m))) + "\n")
+              else:
+                  rows = {}
+                  for path in ([tgt] if os.path.exists(tgt) else []) + [nf]:
+                      for l in open(path):
+                          p = l.split()
+                          if p: rows[int(p[0])] = p[1]
+                  open(tgt, "w").write("".join(f"{s} {rows[s]}\n" for s in sorted(rows)))
+                  print(name, len(rows), "seed (gop voi ban cu neu co)")
+          PY
+            git add m3dscan/out/
+            git diff --cached --quiet && exit 0
+            git commit -m "M3D bands ${{ github.event.inputs.first_band }} (+${{ github.event.inputs.bands }})" && git push origin "HEAD:$BR" && exit 0
             sleep 5
           done
           exit 1

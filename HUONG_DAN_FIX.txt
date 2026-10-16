@@ -1,0 +1,17 @@
+FIX: M3DSCAN commit bi xung dot (add/add) khi 2 lan chay cung ghi 1 dai
+
+CACH AP DUNG: giai nen de len .github/workflows/m3dscan_bands.yml, commit + push.
+
+DA SUA: buoc "Commit" cua job merge.
+ - Truoc: git pull --rebase (xung dot m3d_bX_X.txt / m3d_missing_bX_X.txt -> lap 5 lan roi loi).
+ - Nay: fetch + reset ve origin, GOP ban moi voi ban cu (hop seed, bo trung), roi commit + push.
+   File m3d_b*.txt : hop theo seed (moi dong "seed so_ky" la ket qua xac dinh).
+   File m3d_missing_*.txt: lay giao cac job chua xong (job xong o 1 trong 2 lan thi coi la xong).
+
+LUU Y: chi gop dung khi 2 lan chay cung MODE (either/ordered) va cung data_file.
+Neu 2 lan chay khac mode thi KHONG nen gop - dung ten dai khac nhau.
+
+XU LY RIENG xung dot dai 22 dang ket (chay trong repo dang rebase):
+  git rebase --abort
+  git fetch origin && git reset --hard origin/main      # bo commit xung dot cu
+  roi chay lai workflow dai 22, hoac gop tay (sort -n -u) hai file b22.
