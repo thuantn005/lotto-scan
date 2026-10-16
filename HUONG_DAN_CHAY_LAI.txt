@@ -1,0 +1,14 @@
+CHAY LAI TOAN BO M3DSCAN VOI 792 KY (den #792, 15/10/2026)
+
+1) Giai nen de len repo (ghi de m3dscan/data_special.txt va .github/workflows/m3dscan_bands.yml).
+2) XOA KET QUA CU (bat buoc, vi data doi 755 -> 792 ky; neu de lai se bi gop lan voi ket qua cu):
+     git rm m3dscan/out/m3d_b*.txt m3dscan/out/m3d_missing_b*.txt
+     git add -A && git commit -m "M3D: du lieu 792 ky, xoa ket qua cu" && git push
+   (neu dang ket rebase: git rebase --abort; git fetch origin; git reset --hard origin/main roi lam lai tu buoc 1)
+3) Actions -> "M3DSCAN" -> Run workflow:
+     first_band=0, bands=1, min_hits=2, auto_next=true, mode=either,
+     last_band=50 (either, ~51 dai) hoac mode=ordered, last_band=203 (~204 dai)
+     data_file=m3dscan/data_special.txt, band_size=249244128000, max_job_seeds=19000000000
+4) Uoc tinh: ~93-100 phut/dai (20 job x 4 vCPU) -> either ~3,5 ngay, ordered ~14 ngay.
+   Moi dai (792 ky, either): ~312.000 seed trung >= 2 ky.
+Chi chay 1 workflow tai 1 thoi diem (tranh 2 lan chay cung dai).
