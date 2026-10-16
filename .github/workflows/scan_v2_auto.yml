@@ -1,11 +1,15 @@
 name: Scan V2 (2 lan/ngay theo lich Vietlott) - 2 model, moi ky 1 file, 1 chien luoc du doan (gap)
 
 # (2026-09: DON GIAN HOA LON - xem README_2026_SIMPLIFY.txt)
-# Workflow nay CHI con quet 2 "MODEL" seed:
+# Workflow nay quet 3 "MODEL" seed (l1-3 THEM MOI: 100 trieu seed, 309.440.000.001 - 309.540.000.000):
 #   1. Model chinh   (FIXED_SEED_START=682305800400) - quet TOAN BO CSV,
 #      gioi han dung luong CACHE noi bo (khong phai deliverable).
 #   2. Model phu     (L1_1_SEED_START=900477750639)  - quet L1_1_LAST_N_DRAWS
 #      ky gan nhat, seed CO DINH, quet song song 20 chunk.
+#   3. Model l1-3    (L1_3_SEED_START=309440000001) - quet TOAN BO CSV nhu model chinh,
+#      dai nho 100.000.000 seed (309.440.000.001 -> 309.540.000.000), chay trong
+#      job scan_and_check, ghi l1-3/{draw_id}.json.
+#      Du doan: CHI model l1-3 (job predict_l1_3), theo khoang cach seed trung J1 2 lan.
 # Da BO HAN 4 model con lai (ONCE/ONCE2/ONCE4/ONCE5 truoc day) va TAT CA
 # cac chien luoc du doan AI/consensus/app/base - chi con DUY NHAT 1 chien
 # luoc "gap" (predict_next_draw_gap.py, chon ca KY lan SEED theo khoang
@@ -46,6 +50,11 @@ env:
   FIXED_SEED_COUNT: "1500000000"
   L1_2_DIR: "l1-2"
   L1_2_CACHE: "l1_cache/merged_seed682305800400.json"
+  # --- Model l1-3 (100 trieu seed: 309.440.000.001 -> 309.540.000.000) ---
+  L1_3_SEED_START: "309440000001"
+  L1_3_SEED_COUNT: "100000000"
+  L1_3_DIR: "l1-3"
+  L1_3_CACHE: "l1_cache/merged_seed309440000001.json"
   # --- Model phu (l1-1) ---
   L1_1_SEED_START: "900477750639"
   L1_1_LAST_N_DRAWS: "200"
@@ -212,7 +221,35 @@ jobs:
           L2_MERGED_DIR: "l2_merged"
         run: python3 check_l1_per_draw.py
 
-      - name: Commit ket qua (data + model chinh)
+      - name: "[Model l1-3] Quet dai 309.440.000.001 - 309.540.000.000 (toan bo CSV, chi ky MOI, vao CACHE)"
+        if: steps.check_ky.outputs.should_run == 'true'
+        env:
+          CSV_PATH: data/all.csv
+          OUT_DIR: l1_cache
+          OUT_NAME: merged_seed309440000001.json
+          SEED_START: ${{ env.L1_3_SEED_START }}
+          SEED_COUNT: ${{ env.L1_3_SEED_COUNT }}
+        run: ./scan_per_draw
+
+      - name: "[Model l1-3] Gioi han dung luong cache (tia ky qua cu neu vuot)"
+        if: steps.check_ky.outputs.should_run == 'true'
+        run: python3 prune_merged_seed.py --file "${{ env.L1_3_CACHE }}" --cap-bytes ${{ env.CACHE_CAP_BYTES }}
+
+      - name: "[Model l1-3] Tach cache thanh MOI KY 1 FILE (l1-3/, khong gop)"
+        if: steps.check_ky.outputs.should_run == 'true'
+        env:
+          CACHE_FILE: ${{ env.L1_3_CACHE }}
+          OUT_DIR: ${{ env.L1_3_DIR }}
+        run: python3 split_l1_per_draw.py
+
+      - name: "[Model l1-3] Ghi ky trung vao L2 (seed van o L1)"
+        if: steps.check_ky.outputs.should_run == 'true'
+        env:
+          L1_DIR: ${{ env.L1_3_DIR }}
+          L2_MERGED_DIR: "l2_merged"
+        run: python3 check_l1_per_draw.py
+
+      - name: Commit ket qua (data + model chinh + l1-3)
         if: steps.check_ky.outputs.should_run == 'true'
         run: |
           set -e
@@ -223,6 +260,7 @@ jobs:
           git stash pop || true
           echo "$LATEST_KY" > last_ky.txt
           [ -d "${{ env.L1_2_DIR }}" ] && git add "${{ env.L1_2_DIR }}/" || true
+          [ -d "${{ env.L1_3_DIR }}" ] && git add "${{ env.L1_3_DIR }}/" || true
           [ -d l1_cache ] && git add l1_cache/ || true
           [ -d l2_merged ] && git add l2_merged/ || true
           [ -f last_ky.txt ] && git add last_ky.txt || true
@@ -232,7 +270,7 @@ jobs:
             echo "Khong co gi de commit"
             exit 0
           fi
-          git commit -m "scan v2 (model chinh, moi ky 1 file): cap nhat sau ky quay $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git commit -m "scan v2 (model chinh + l1-3, moi ky 1 file): cap nhat sau ky quay $(date -u +%Y-%m-%d\ %H:%M) UTC"
           for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
@@ -441,34 +479,35 @@ jobs:
             fi
           done
 
-  predict_next:
-    # CHIEN LUOC DUY NHAT con lai: "gap" - chon ca KY lan SEED theo khoang
-    # cach (xem docstring predict_next_draw_gap.py), cho ca 2 model l1-1/l1-2.
-    needs: [scan_and_check, merge_l1_1]
-    if: ${{ needs.scan_and_check.outputs.should_run == 'true' && always() }}
+  predict_l1_3:
+    # MODEL DU DOAN DUY NHAT: chi l1-3, theo khoang cach cua seed trung J1 2 lan
+    # (l2_merged/promoted_seed309440000001.json). Xem predict_l1_3_gap.py.
+    # Cac job du doan cu (predict_next, check_prediction) da BO.
+    needs: [scan_and_check]
+    if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (da co du l1-1//l1-2//l2_merged moi nhat)
+      - name: Checkout (da co l1-3/ + l2_merged/ moi nhat)
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
           ref: main
 
-      - name: Du doan ky ke tiep - chien luoc gap (khoang cach)
+      - name: Du doan ky ke tiep - model l1-3 (khoang cach seed trung J1 2 lan)
         env:
           CSV_PATH: data/all.csv
-          L1_DIRS: "l1-1,l1-2"
-          L2_DIR: "l2_merged"
-          OUT_PATH: "predict/next_draw_predict.txt"
-          HISTORY_DIR: "predict/history"
-        run: python3 predict_next_draw_gap.py
+          L1_DIR: ${{ env.L1_3_DIR }}
+          L2_FILE: l2_merged/promoted_seed${{ env.L1_3_SEED_START }}.json
+          OUT_PATH: predict/next_draw_predict_l1_3.txt
+          HISTORY_DIR: predict/history
+        run: python3 predict_l1_3_gap.py
 
       - name: Commit ket qua du doan
         run: |
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash push -u -m "predict gap truoc rebase" || true
+          git stash push -u -m "predict l1-3 truoc rebase" || true
           git pull --rebase origin main
           git stash pop || true
           [ -d predict ] && git add predict/ || true
@@ -476,7 +515,7 @@ jobs:
             echo "Khong co gi de commit"
             exit 0
           fi
-          git commit -m "du doan ky ke tiep - chien luoc gap $(date -u +%Y-%m-%d\ %H:%M) UTC"
+          git commit -m "du doan ky ke tiep - model l1-3 $(date -u +%Y-%m-%d\ %H:%M) UTC"
           for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
@@ -490,69 +529,3 @@ jobs:
               exit 1
             fi
           done
-
-  check_prediction:
-    # Sau khi ky moi duoc XAC NHAN, doi chieu voi du doan DA LUU TU LAN
-    # CHAY TRUOC (predict/history/{ky}_gap.txt) voi ket qua THAT vua ve.
-    needs: scan_and_check
-    if: ${{ needs.scan_and_check.outputs.should_run == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT_TOKEN }}
-          ref: main
-
-      - name: Doi chieu du doan cu voi ket qua that cua ky vua xac nhan
-        id: check_prediction
-        env:
-          CSV_PATH: data/all.csv
-          DRAW_ID: ${{ needs.scan_and_check.outputs.latest_ky }}
-          HISTORY_DIR: "predict/history"
-          OUT_DIR: "j1_535"
-        run: |
-          set -e
-          python3 check_prediction_result.py | tee /tmp/check_prediction_out.txt
-          MATCHED=$(grep -o 'MATCHED_COUNT=[0-9]*' /tmp/check_prediction_out.txt | tail -1 | cut -d'=' -f2)
-          echo "matched_count=${MATCHED:-0}" >> "$GITHUB_OUTPUT"
-
-      - name: Commit ket qua doan dung (neu co)
-        run: |
-          set -e
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash push -u -m "check_prediction truoc rebase" || true
-          git pull --rebase origin main
-          git stash pop || true
-          [ -d j1_535 ] && git add j1_535/ || true
-          [ -d predict ] && git add predict/ || true
-          if git diff --cached --quiet; then
-            echo "Khong co du doan dung nao moi, khong co gi de commit"
-            exit 0
-          fi
-          git commit -m "du doan dung ky ${{ needs.scan_and_check.outputs.latest_ky }} - luu vao j1_535/ $(date -u +%Y-%m-%d\ %H:%M) UTC"
-          for i in 1 2 3 4 5; do
-            if git push origin main; then
-              echo "Push thanh cong (lan thu $i)"
-              break
-            fi
-            echo "Push bi tu choi, thu pull --rebase roi push lai... (lan $i/5)"
-            git pull --rebase origin main
-            sleep $((i * 5))
-            if [ "$i" = "5" ]; then
-              echo "Push that bai sau 5 lan thu, dung lai"
-              exit 1
-            fi
-          done
-
-      - name: Bao FCM khi co model doan DUNG (j1_535 co file moi)
-        if: steps.check_prediction.outputs.matched_count != '0'
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.FCM_SERVICE_ACCOUNT_JSON }}
-        run: |
-          set -e
-          pip install --quiet google-auth requests
-          python3 send_fcm_push.py --topic chiagiai_updates \
-            --event-type j1_prediction_hit \
-            --event-json "j1_535/${{ needs.scan_and_check.outputs.latest_ky }}.json"

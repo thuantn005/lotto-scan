@@ -1,0 +1,14 @@
+DU DOAN KY 00949 - MODEL l1-3 (seed 309440000001-309540000000), khoang cach seed trung J1 2 lan
+L1: 24454 seed | L2 (trung 2 lan): 10 seed | avg_draw_gap=154.30 | avg_seed_gap=9,120,494
+Loai ve trung results/j1_2plus: 11711 ve (11731 seed) | ung vien bi loai: 0
+
+#1 (CHINH): 19-20-21-23-29 + DB 4 | seed 309536321050 | trung gan nhat ky 00795 (gap 154)
+#2: 14-16-20-27-32 + DB 2 | seed 309470784112 | trung gan nhat ky 00795 (gap 154)
+#3: 01-05-21-24-28 + DB 2 | seed 309534787252 | trung gan nhat ky 00795 (gap 154)
+#4: 06-14-24-31-32 + DB 2 | seed 309519877137 | trung gan nhat ky 00795 (gap 154)
+#5: 07-11-15-17-29 + DB 9 | seed 309478141552 | trung gan nhat ky 00795 (gap 154)
+#6: 01-03-14-15-27 + DB 10 | seed 309515804397 | trung gan nhat ky 00795 (gap 154)
+#7: 06-11-14-22-26 + DB 6 | seed 309522623591 | trung gan nhat ky 00795 (gap 154)
+#8: 12-17-20-23-29 + DB 11 | seed 309458722786 | trung gan nhat ky 00795 (gap 154)
+#9: 07-08-19-21-34 + DB 8 | seed 309458879945 | trung gan nhat ky 00795 (gap 154)
+#10: 02-07-17-28-31 + DB 9 | seed 309514285373 | trung gan nhat ky 00795 (gap 154)
