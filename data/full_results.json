@@ -64,15 +64,7 @@
       "share_date": null,
       "peak_jackpot": 6139472500,
       "trigger_draw_id": null,
-      "last_event": {
-        "id": "cancelled-2026-10-16-00948",
-        "kind": "cancelled",
-        "title_vi": "🚫 Huỷ kỳ chia giải Lotto 5/35",
-        "title_en": "🚫 Lotto 5/35 share draw cancelled",
-        "message_vi": "Đã có người trúng Độc Đắc (~25.634.220.500 (~25.6 tỷ)) trước kỳ chia giải 16/10. Pot quay về ~6 tỷ.",
-        "message_en": "Someone already won the jackpot (~25.634.220.500 (~25.6 tỷ)) before the 16/10 share draw. Pot resets to ~6 billion VND.",
-        "urgent": false
-      }
+      "last_event": null
     }
   }
 ]
