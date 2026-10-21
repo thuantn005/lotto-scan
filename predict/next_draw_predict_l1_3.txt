@@ -1,14 +1,14 @@
-DU DOAN KY 00960 - MODEL l1-3 (seed 309440000001-309540000000), khoang cach seed trung J1 2 lan
-L1: 24719 seed | L2 (trung 2 lan): 10 seed | avg_draw_gap=154.30 | avg_seed_gap=9,120,494
-Loai ve trung results/j1_2plus: 11713 ve (11731 seed) | ung vien bi loai: 0
+DU DOAN KY 00961 - MODEL l1-3 (seed 309440000001-309540000000), khoang cach seed trung J1 2 lan
+L1: 24743 seed | L2 (trung 2 lan): 10 seed | avg_draw_gap=154.30 | avg_seed_gap=9,120,494
+Loai ve trung results/j1_2plus: 11714 ve (11731 seed) | ung vien bi loai: 0
 
-#1 (CHINH): 02-22-24-25-32 + DB 11 | seed 309535944852 | trung gan nhat ky 00806 (gap 154)
-#2: 08-10-17-29-30 + DB 12 | seed 309519084509 | trung gan nhat ky 00806 (gap 154)
-#3: 03-13-18-25-26 + DB 12 | seed 309516453256 | trung gan nhat ky 00806 (gap 154)
-#4: 03-16-19-30-31 + DB 8 | seed 309468841769 | trung gan nhat ky 00806 (gap 154)
-#5: 09-16-30-32-34 + DB 6 | seed 309539718187 | trung gan nhat ky 00806 (gap 154)
-#6: 05-09-23-27-28 + DB 1 | seed 309457344790 | trung gan nhat ky 00806 (gap 154)
-#7: 10-19-22-28-32 + DB 8 | seed 309457791338 | trung gan nhat ky 00806 (gap 154)
-#8: 04-15-22-34-35 + DB 7 | seed 309479697489 | trung gan nhat ky 00806 (gap 154)
-#9: 11-20-21-27-32 + DB 1 | seed 309467273216 | trung gan nhat ky 00806 (gap 154)
-#10: 09-14-24-25-26 + DB 6 | seed 309531422708 | trung gan nhat ky 00806 (gap 154)
+#1 (CHINH): 05-22-27-28-34 + DB 1 | seed 309471876999 | trung gan nhat ky 00807 (gap 154)
+#2: 11-12-16-18-20 + DB 8 | seed 309533823412 | trung gan nhat ky 00807 (gap 154)
+#3: 09-17-26-29-34 + DB 2 | seed 309478652180 | trung gan nhat ky 00807 (gap 154)
+#4: 05-08-12-28-31 + DB 11 | seed 309478716008 | trung gan nhat ky 00807 (gap 154)
+#5: 01-09-15-17-20 + DB 12 | seed 309532744668 | trung gan nhat ky 00807 (gap 154)
+#6: 02-08-13-21-29 + DB 11 | seed 309478868893 | trung gan nhat ky 00807 (gap 154)
+#7: 06-07-18-24-25 + DB 4 | seed 309479785216 | trung gan nhat ky 00807 (gap 154)
+#8: 02-12-19-21-30 + DB 2 | seed 309505830159 | trung gan nhat ky 00807 (gap 154)
+#9: 11-12-18-27-33 + DB 10 | seed 309465936084 | trung gan nhat ky 00807 (gap 154)
+#10: 02-06-20-29-30 + DB 6 | seed 309489844321 | trung gan nhat ky 00807 (gap 154)
