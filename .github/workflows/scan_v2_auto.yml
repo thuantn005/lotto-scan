@@ -57,7 +57,7 @@ env:
   L1_3_CACHE: "l1_cache/merged_seed309440000001.json"
   # --- Model phu (l1-1) ---
   L1_1_SEED_START: "900477750639"
-  L1_1_LAST_N_DRAWS: "958"
+  L1_1_LAST_N_DRAWS: "200"
   L1_1_DIR: "l1-1"
   L1_1_CACHE: "l1_cache/merged_seed900477750639.json"
   L1_1_CHUNK_DIR: "l1-1_chunks"
