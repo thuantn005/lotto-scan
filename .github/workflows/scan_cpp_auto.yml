@@ -1,9 +1,10 @@
 name: Scan J1 CPP Auto
 
 on:
-  # Tu dong resume vao Chu Nhat 00:05 UTC (~07:05 gio VN) sau khi nghi Thu 7
+  # Watchdog: neu chuoi bi dut (batch loi...) thi tu noi lai tu seed cuoi da luu.
+  # Neu chuoi dang chay, lan nay xep hang cho (concurrency) roi tu tinh seed moi.
   schedule:
-    - cron: "5 0 * * 0"
+    - cron: "17 */6 * * *"
   workflow_dispatch:
     inputs:
       min_j1:
@@ -11,13 +12,17 @@ on:
         required: true
         default: "2"
       batch_start:
-        description: "Seed bat dau batch"
+        description: "Seed bat dau batch ('auto' = tu noi tu batch_end cuoi trong results/)"
         required: true
-        default: "1"
+        default: "auto"
       batch_size:
         description: "So seed moi runner"
         required: true
         default: "1557775800"
+
+concurrency:
+  group: scan-j1-chain
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -25,63 +30,69 @@ permissions:
 
 jobs:
 
-  # Job rieng, CHI chay khi trigger boi cron schedule (resume sau ngay nghi)
-  resume-from-schedule:
-    name: Resume scan sau ngay nghi (chi chay khi la schedule event)
-    if: ${{ github.event_name == 'schedule' }}
+
+  prepare:
+    name: Tinh seed bat dau (tu noi)
     runs-on: ubuntu-latest
+    outputs:
+      batch_start: ${{ steps.calc.outputs.batch_start }}
+      batch_size: ${{ steps.calc.outputs.batch_size }}
+      min_j1: ${{ steps.calc.outputs.min_j1 }}
+      stop: ${{ steps.calc.outputs.stop }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Doc batch_end cuoi cung va trigger batch tiep
+      - name: Tinh batch_start = batch_end cuoi + 1
+        id: calc
         env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          IN_START: ${{ github.event.inputs.batch_start }}
+          IN_SIZE: ${{ github.event.inputs.batch_size }}
+          IN_MIN: ${{ github.event.inputs.min_j1 }}
         run: |
           python3 << 'PY'
-          import json, os, urllib.request
+          import glob, json, os, re
           from pathlib import Path
 
-          batch_end = 0
+          size = (os.environ.get("IN_SIZE") or "1557775800").strip()
+          min_j1 = (os.environ.get("IN_MIN") or "2").strip()
+          in_start = (os.environ.get("IN_START") or "auto").strip().lower()
+
+          # Dung neu da co seed J1>=4
+          stop = False
           try:
-              data = json.loads(Path("results/final_j1_3plus.json").read_text(encoding="utf-8"))
-              batch_end = data.get("batch_end", 0)
+              d = json.loads(Path("results/final_j1_4plus.json").read_text(encoding="utf-8"))
+              stop = d.get("found", 0) > 0
           except Exception as e:
-              print("Khong doc duoc final_j1_3plus.json:", e)
-              raise SystemExit(0)
+              print("Khong doc duoc final_j1_4plus.json:", e)
 
-          if batch_end <= 0:
-              print("Chua co batch_end hop le -- bo qua resume")
-              raise SystemExit(0)
+          # batch_end lon nhat da luu (theo ten file RIENG tung batch)
+          last_end = 0
+          for f in glob.glob("results/final_j1_2plus_*_*.json"):
+              m = re.search(r"_(\d+)_(\d+)\.json$", f)
+              if m:
+                  last_end = max(last_end, int(m.group(2)))
 
-          next_start = batch_end + 1
-          # Batch size mac dinh -- giu dong bo voi lan chay truoc
-          batch_size = "1557775800"
-          min_j1 = "2"
+          if in_start.isdigit() and int(in_start) > 0:
+              start = int(in_start)
+              print("Dung batch_start nhap tay:", start)
+              if start <= last_end:
+                  print("CANH BAO: batch_start <= batch_end da luu", last_end, "-> co the quet trung")
+          else:
+              start = last_end + 1
+              print("TU NOI: batch_end cuoi =", last_end, "-> batch_start =", start)
 
-          payload = {"ref": "main", "inputs": {
-              "min_j1": min_j1,
-              "batch_start": str(next_start),
-              "batch_size": batch_size,
-          }}
-          req = urllib.request.Request(
-              "https://api.github.com/repos/thuantn005/lotto-scan/actions/workflows/scan_cpp_auto.yml/dispatches",
-              data=json.dumps(payload).encode("utf-8"),
-              method="POST",
-              headers={
-                  "Authorization": "Bearer " + os.environ["GH_TOKEN"],
-                  "Accept": "application/vnd.github+json",
-                  "Content-Type": "application/json",
-              },
-          )
-          with urllib.request.urlopen(req, timeout=30) as resp:
-              print("Resume sau ngay nghi -- Trigger batch:", resp.status, "start=", next_start)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as o:
+              o.write(f"batch_start={start}\nbatch_size={size}\nmin_j1={min_j1}\nstop={'true' if stop else 'false'}\n")
+          if stop:
+              print("DA CO SEED J1>=4 -- khong quet them")
           PY
 
   scan:
-    if: ${{ github.event_name == 'workflow_dispatch' }}
+    needs: prepare
+    if: ${{ needs.prepare.outputs.stop != 'true' }}
     name: Scan chunk ${{ matrix.chunk }}
     strategy:
       fail-fast: false
@@ -107,8 +118,8 @@ jobs:
 
       - name: Calculate seed range
         env:
-          BATCH_START: ${{ github.event.inputs.batch_start }}
-          BATCH_SIZE: ${{ github.event.inputs.batch_size }}
+          BATCH_START: ${{ needs.prepare.outputs.batch_start }}
+          BATCH_SIZE: ${{ needs.prepare.outputs.batch_size }}
           CHUNK: ${{ matrix.chunk }}
         run: |
           set -e
@@ -127,7 +138,9 @@ jobs:
         env:
           CSV_PATH: data/all.csv
           OUT_PATH: results/chunk_${{ matrix.chunk }}.json
-          MIN_LOG: ${{ github.event.inputs.min_j1 }}
+          MIN_LOG: ${{ needs.prepare.outputs.min_j1 }}
+          NUM_THREADS: "4"
+          TOP_STATS: "0"
           SCAN_START: ${{ env.SCAN_START }}
           SCAN_END: ${{ env.SCAN_END }}
         run: |
@@ -199,8 +212,8 @@ jobs:
 
   merge:
     name: Merge batch
-    needs: scan
-    if: ${{ always() }}
+    needs: [prepare, scan]
+    if: ${{ always() && needs.prepare.outputs.stop != 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -247,8 +260,8 @@ jobs:
 
       - name: Merge results (tach rieng 6 loai file)
         env:
-          BATCH_START: ${{ github.event.inputs.batch_start }}
-          BATCH_SIZE: ${{ github.event.inputs.batch_size }}
+          BATCH_START: ${{ needs.prepare.outputs.batch_start }}
+          BATCH_SIZE: ${{ needs.prepare.outputs.batch_size }}
         run: |
           set -e
           mkdir -p results
@@ -361,7 +374,7 @@ jobs:
             echo "Nothing to commit"
             exit 0
           fi
-          git commit -m "cpp scan: batch ${{ github.event.inputs.batch_start }}"
+          git commit -m "cpp scan: batch ${{ needs.prepare.outputs.batch_start }}"
 
           # Push voi retry: neu co lan chay khac push xen giua (schedule
           # resume trung voi next-batch...), rebase lai (KHONG stash - da
@@ -384,8 +397,8 @@ jobs:
 
   next-batch:
     name: Trigger next batch (vo han cho den khi tim thay J1>=4)
-    needs: merge
-    if: ${{ success() }}
+    needs: [prepare, merge]
+    if: ${{ success() && needs.prepare.outputs.stop != 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -395,9 +408,9 @@ jobs:
 
       - name: Kiem tra J1>=4, neu chua co thi chay tiep vo han
         env:
-          BATCH_START: ${{ github.event.inputs.batch_start }}
-          BATCH_SIZE: ${{ github.event.inputs.batch_size }}
-          MIN_J1: ${{ github.event.inputs.min_j1 }}
+          BATCH_START: ${{ needs.prepare.outputs.batch_start }}
+          BATCH_SIZE: ${{ needs.prepare.outputs.batch_size }}
+          MIN_J1: ${{ needs.prepare.outputs.min_j1 }}
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           python3 << 'PY'
@@ -423,22 +436,11 @@ jobs:
               print("================================")
               raise SystemExit(0)
 
-          # Nghi Thu 7 hang tuan (gio VN, UTC+7) de giam rui ro vi pham
-          # dieu khoan GitHub Actions ve su dung tai nguyen lien tuc.
-          import datetime
-          now_vn = datetime.datetime.utcnow() + datetime.timedelta(hours=7)
-          if now_vn.weekday() == 5:  # 5 = Thu 7 (0=Thu 2 ... 6=Chu Nhat)
-              print("================================")
-              print(f"Hom nay Thu 7 ({now_vn.date()}) -- NGHI theo lich, khong trigger batch moi")
-              print("Se tu dong chay lai vao ngay mai (Chu Nhat)")
-              print("================================")
-              raise SystemExit(0)
-
           next_start = batch_start + runners * batch_size
 
           payload = {"ref": "main", "inputs": {
               "min_j1": min_j1,
-              "batch_start": str(next_start),
+              "batch_start": "auto",
               "batch_size": str(batch_size),
           }}
           req = urllib.request.Request(

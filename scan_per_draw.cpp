@@ -33,6 +33,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <thread>
+#include <unordered_map>
 #include <mutex>
 #include <atomic>
 
@@ -212,13 +213,13 @@ std::vector<DrawResult> load_existing_merged(const std::string& path, u64& out_s
 // mat giua chung se lang phi hang gio CPU neu khong co checkpoint.
 //
 // MOI CHECKPOINT_INTERVAL_SEC giay (mac dinh 300 = 5 phut), ghi lai VI
-// TRI DA QUET CUA TUNG THREAD (khong ghi lai NHUNG SEED DA TIM THAY
-// trong khoang tu checkpoint gan nhat den luc ngat - danh doi CHAP NHAN
-// DUOC: so seed "trung" ky vong bi mat toi da chi la 1 phan nho (ty le
-// CHECKPOINT_INTERVAL_SEC / tong thoi gian chay) trong tong so thuong
-// chi vai tram-vai nghin luot trung ky vong ca lan quet, doi lay code
-// don gian + an toan hon nhieu so voi phai dong bo hoa (mutex) MOI LAN
-// tim thay 1 seed trung).
+// TRI DA QUET CUA TUNG THREAD **VA TOAN BO SEED TRUNG DA TIM THAY**
+// ("hits": [draw_id,seed,draw_id,seed,...]). Moi thread chi khoa mutex
+// rieng cua no khi push 1 seed trung (rat hiem, ~1/3,9 trieu luot kiem
+// tra) va khi monitor chup snapshot, nen khong anh huong toc do. Snapshot
+// luon nhat quan: hit duoc push TRUOC khi tien do khoi chua no duoc ghi,
+// nen resume khong bao gio mat seed; khoi dang quet do co the bi quet lai
+// -> seed trung bi lap, da khu bang sort+unique luc gop ket qua.
 //
 // Checkpoint CHI duoc dung lai neu KHOP HOAN TOAN ca seed_start,
 // seed_count, num_threads VA danh sach draw_id dang quet (neu bat ky yeu
@@ -233,6 +234,7 @@ struct Checkpoint {
     unsigned int num_threads = 0;
     std::vector<u64> draw_ids;
     std::vector<u64> progress; // so seed DA quet (offset) trong dai rieng cua tung thread
+    std::vector<u64> hits;     // phang: draw_id, seed, draw_id, seed, ... (seed trung da tim thay)
 };
 
 std::vector<u64> parse_u64_array(const std::string& s) {
@@ -275,7 +277,8 @@ Checkpoint load_checkpoint(const std::string& path) {
     } catch (...) { return ck; }
     ck.draw_ids = parse_u64_array(extract_field("draw_ids"));
     ck.progress = parse_u64_array(extract_field("progress"));
-    ck.valid = true;
+    ck.hits = parse_u64_array(extract_field("hits"));
+    ck.valid = (ck.hits.size() % 2 == 0); // le -> checkpoint hong, bo qua
     return ck;
 }
 
@@ -284,7 +287,7 @@ Checkpoint load_checkpoint(const std::string& path) {
 // dung luc dang ghi, luc do file checkpoint CU (con nguyen ven) van con.
 void save_checkpoint(const std::string& path, u64 seed_start, u64 seed_count,
                       unsigned int num_threads, const std::vector<u64>& draw_ids,
-                      const std::vector<u64>& progress) {
+                      const std::vector<u64>& progress, const std::vector<u64>& hits) {
     std::string tmp_path = path + ".tmp";
     FILE* f = fopen(tmp_path.c_str(), "w");
     if (!f) return;
@@ -299,6 +302,11 @@ void save_checkpoint(const std::string& path, u64 seed_start, u64 seed_count,
         if (i) fprintf(f, ",");
         fprintf(f, "%llu", (unsigned long long)progress[i]);
     }
+    fprintf(f, "],\"hits\":[");
+    for (size_t i = 0; i < hits.size(); i++) {
+        if (i) fprintf(f, ",");
+        fprintf(f, "%llu", (unsigned long long)hits[i]);
+    }
     fprintf(f, "]}");
     fclose(f);
     std::error_code ec;
@@ -307,7 +315,7 @@ void save_checkpoint(const std::string& path, u64 seed_start, u64 seed_count,
 }
 
 int main() {
-    build_binom(); build_lut();
+    build_binom();
 
     auto getenv_str = [](const char* name, const char* def) -> std::string {
         const char* v = std::getenv(name); return v ? std::string(v) : std::string(def);
@@ -425,6 +433,19 @@ int main() {
     std::vector<std::vector<std::vector<u64>>> thread_results(
         num_threads, std::vector<std::vector<u64>>(n));
 
+    std::vector<std::mutex> thread_mtx(num_threads);
+    if (use_checkpoint) {
+        std::unordered_map<u64,int> idx; // draw_id -> chi so
+        for (int i = 0; i < n; i++) idx[draw_ids[i]] = i;
+        Checkpoint ck = load_checkpoint(checkpoint_path);
+        size_t restored = 0;
+        for (size_t i = 0; i + 1 < ck.hits.size(); i += 2) {
+            auto it = idx.find(ck.hits[i]);
+            if (it != idx.end()) { thread_results[0][it->second].push_back(ck.hits[i + 1]); restored++; }
+        }
+        fprintf(stderr, "  khoi phuc %zu seed trung tu checkpoint\n", restored);
+    }
+
     std::atomic<u64> checked_total{0};
     std::vector<std::atomic<u64>> thread_progress(num_threads);
     for (unsigned int t = 0; t < num_threads; t++) thread_progress[t].store(0, std::memory_order_relaxed);
@@ -432,21 +453,49 @@ int main() {
     u64 chunk = seed_count / num_threads;
     u64 remainder = seed_count % num_threads;
 
+    // TOI UU (2.3x): so sanh RANK thay vi tra LUT 2,6MB; draw_id*M2 tinh san;
+    // seed*M1 cong don; xu ly 4 seed/lan de CPU chay song song (ILP);
+    // mix64 lan 2 (special) chi tinh khi rank da trung (xac suat 1/324632).
+    std::vector<u64> doff(n), dsp(n), drank(n);
+    for (int i = 0; i < n; i++) {
+        doff[i] = draws[i].draw_id * M2;
+        dsp[i] = (u64)draws[i].special;
+        int k = 1; int64_t r = 0;
+        for (int x = 0; x < 35; x++) if ((draws[i].mask >> x) & 1) { r += BINOM[x][k]; k++; }
+        drank[i] = (u64)r;
+    }
     auto worker = [&](unsigned int tid, u64 range_start, u64 range_count, u64 already_progress) {
         auto& local = thread_results[tid];
         u64 local_checked = 0;
         thread_progress[tid].store(already_progress, std::memory_order_relaxed);
-        for (u64 seed = range_start; seed < range_start + range_count; seed++) {
+        const u64 range_end = range_start + range_count;
+        u64 seed = range_start;
+        u64 base = seed * M1;
+        auto hit = [&](u64 mixed, int di, u64 sd) {
+            if ((mix64(mixed) % 12) + 1 == dsp[di]) { std::lock_guard<std::mutex> lk(thread_mtx[tid]); local[di].push_back(sd); }
+        };
+        for (; seed + 4 <= range_end; seed += 4, base += 4 * M1) {
             for (int di = 0; di < n; di++) {
-                if (check_j1(seed, draws[di])) {
-                    local[di].push_back(seed);
-                }
+                const u64 d = doff[di], r = drank[di];
+                u64 m0 = mix64(base + d), m1 = mix64(base + M1 + d);
+                u64 m2 = mix64(base + 2 * M1 + d), m3 = mix64(base + 3 * M1 + d);
+                if (m0 % (u64)C == r) hit(m0, di, seed);
+                if (m1 % (u64)C == r) hit(m1, di, seed + 1);
+                if (m2 % (u64)C == r) hit(m2, di, seed + 2);
+                if (m3 % (u64)C == r) hit(m3, di, seed + 3);
+            }
+            local_checked += 4;
+            thread_progress[tid].store(already_progress + local_checked, std::memory_order_relaxed);
+            if ((local_checked & 0xFFFFF) == 0) checked_total.fetch_add(0x100000, std::memory_order_relaxed);
+        }
+        for (; seed < range_end; seed++, base += M1) {
+            for (int di = 0; di < n; di++) {
+                u64 m = mix64(base + doff[di]);
+                if (m % (u64)C == drank[di]) hit(m, di, seed);
             }
             local_checked++;
             thread_progress[tid].store(already_progress + local_checked, std::memory_order_relaxed);
-            if ((local_checked & 0xFFFFF) == 0) {
-                checked_total.fetch_add(0x100000, std::memory_order_relaxed);
-            }
+            if ((local_checked & 0xFFFFF) == 0) checked_total.fetch_add(0x100000, std::memory_order_relaxed);
         }
         checked_total.fetch_add(local_checked & 0xFFFFF, std::memory_order_relaxed);
     };
@@ -476,10 +525,14 @@ int main() {
                 last_log = now;
             }
             if (std::chrono::duration<double>(now - last_checkpoint).count() >= checkpoint_interval_sec) {
-                std::vector<u64> snapshot(num_threads);
-                for (unsigned int t = 0; t < num_threads; t++)
+                std::vector<u64> snapshot(num_threads), hitsnap;
+                for (unsigned int t = 0; t < num_threads; t++) {
+                    std::lock_guard<std::mutex> lk(thread_mtx[t]);
                     snapshot[t] = thread_progress[t].load(std::memory_order_relaxed);
-                save_checkpoint(checkpoint_path, seed_start, seed_count, num_threads, draw_ids, snapshot);
+                    for (int di = 0; di < n; di++)
+                        for (u64 sd : thread_results[t][di]) { hitsnap.push_back(draw_ids[di]); hitsnap.push_back(sd); }
+                }
+                save_checkpoint(checkpoint_path, seed_start, seed_count, num_threads, draw_ids, snapshot, hitsnap);
                 fprintf(stderr, "  [checkpoint] da luu tien do vao %s\n", checkpoint_path.c_str());
                 last_checkpoint = now;
             }
@@ -501,6 +554,7 @@ int main() {
             seeds_for_draw.insert(seeds_for_draw.end(), v.begin(), v.end());
         }
         std::sort(seeds_for_draw.begin(), seeds_for_draw.end());
+        seeds_for_draw.erase(std::unique(seeds_for_draw.begin(), seeds_for_draw.end()), seeds_for_draw.end());
         total_found_new += seeds_for_draw.size();
 
         DrawResult dr;
