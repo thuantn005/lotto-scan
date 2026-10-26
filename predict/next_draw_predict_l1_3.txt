@@ -1,14 +1,14 @@
-DU DOAN KY 00969 - MODEL l1-3 (seed 309440000001-309540000000), khoang cach seed trung J1 2 lan
-L1: 24943 seed | L2 (trung 2 lan): 11 seed | avg_draw_gap=175.91 | avg_seed_gap=8,208,444
-Loai ve trung results/j1_2plus: 71259 ve (71937 seed) | ung vien bi loai: 0
+DU DOAN KY 00970 - MODEL l1-3 (seed 309440000001-309540000000), khoang cach seed trung J1 2 lan
+L1: 24967 seed | L2 (trung 2 lan): 11 seed | avg_draw_gap=175.91 | avg_seed_gap=8,208,444
+Loai ve trung results/j1_2plus: 101338 ve (102686 seed) | ung vien bi loai: 0
 
-#1 (CHINH): 04-05-29-30-31 + DB 9 | seed 309475974891 | trung gan nhat ky 00793 (gap 176)
-#2: 05-18-25-32-35 + DB 7 | seed 309471450985 | trung gan nhat ky 00793 (gap 176)
-#3: 11-14-17-19-20 + DB 5 | seed 309455683604 | trung gan nhat ky 00793 (gap 176)
-#4: 15-20-24-30-33 + DB 3 | seed 309455620395 | trung gan nhat ky 00793 (gap 176)
-#5: 06-26-27-29-34 + DB 6 | seed 309533374771 | trung gan nhat ky 00793 (gap 176)
-#6: 02-10-13-17-19 + DB 2 | seed 309516241087 | trung gan nhat ky 00793 (gap 176)
-#7: 04-13-22-30-31 + DB 2 | seed 309453869741 | trung gan nhat ky 00793 (gap 176)
-#8: 07-12-15-19-28 + DB 1 | seed 309505856057 | trung gan nhat ky 00793 (gap 176)
-#9: 01-05-08-22-25 + DB 6 | seed 309505570637 | trung gan nhat ky 00793 (gap 176)
-#10: 02-05-22-23-29 + DB 7 | seed 309488539162 | trung gan nhat ky 00793 (gap 176)
+#1 (CHINH): 08-12-20-25-27 + DB 4 | seed 309534677257 | trung gan nhat ky 00794 (gap 176)
+#2: 06-14-15-21-33 + DB 4 | seed 309455964702 | trung gan nhat ky 00794 (gap 176)
+#3: 02-13-14-16-18 + DB 4 | seed 309456249265 | trung gan nhat ky 00794 (gap 176)
+#4: 06-10-16-19-26 + DB 11 | seed 309537226996 | trung gan nhat ky 00794 (gap 176)
+#5: 08-10-17-22-26 + DB 7 | seed 309456789465 | trung gan nhat ky 00794 (gap 176)
+#6: 04-08-12-20-32 + DB 6 | seed 309453930678 | trung gan nhat ky 00794 (gap 176)
+#7: 03-07-14-21-30 + DB 1 | seed 309515346406 | trung gan nhat ky 00794 (gap 176)
+#8: 03-08-23-30-34 + DB 2 | seed 309468056717 | trung gan nhat ky 00794 (gap 176)
+#9: 03-08-17-27-28 + DB 9 | seed 309458265593 | trung gan nhat ky 00794 (gap 176)
+#10: 12-17-20-22-24 + DB 12 | seed 309458367862 | trung gan nhat ky 00794 (gap 176)
