@@ -510,7 +510,7 @@ jobs:
           git stash push -u -m "predict l1-3 truoc rebase" || true
           git pull --rebase origin main
           git stash pop || true
-          [ -d predict ] && git add predict/ || true
+          git add -A predict l0 l200 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "Khong co gi de commit"
             exit 0

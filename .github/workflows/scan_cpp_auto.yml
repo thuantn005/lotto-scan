@@ -70,8 +70,8 @@ jobs:
 
           # batch_end lon nhat da luu (theo ten file RIENG tung batch)
           last_end = 0
-          for f in glob.glob("results/final_j1_2plus_*_*.json"):
-              m = re.search(r"_(\d+)_(\d+)\.json$", f)
+          for f in glob.glob("results/final_j1_2plus_*_*.json*"):
+              m = re.search(r"_(\d+)_(\d+)\.json(?:\.gz)?$", f)
               if m:
                   last_end = max(last_end, int(m.group(2)))
 
@@ -339,7 +339,7 @@ jobs:
                       collected.extend(data.get("results", []))
 
               final = dedup_j1(collected)  # dedup NOI BO batch nay thoi, khong gop batch khac
-              out_path = Path(f"results/final_j1_2plus_{batch_start}_{batch_end}.json")
+              out_path = Path(f"results/final_j1_2plus_{batch_start}_{batch_end}.json.gz")
               output = {
                   "batch_start": batch_start,
                   "batch_end": batch_end,
@@ -347,7 +347,11 @@ jobs:
                   "found": len(final),
                   "results": final,
               }
-              out_path.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+              import gzip
+              raw = json.dumps(output, ensure_ascii=False, indent=2).encode("utf-8")
+              with open(out_path, "wb") as fh:  # nen gzip, noi dung giu nguyen, mtime=0 de on dinh
+                  with gzip.GzipFile(filename="", mode="wb", fileobj=fh, compresslevel=9, mtime=0) as gz:
+                      gz.write(raw)
               print(f"_j1_2plus (rieng file, khong gop batch khac) -> {out_path}: found={len(final)}")
               for r in final[:5]:
                   print(f"  {r}")
@@ -369,7 +373,7 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add results/final_j1_2plus_*.json results/final_j1_3plus.json results/final_j1_4plus.json results/final_top_main5.json results/final_top_main4.json results/final_top_special.json
+          git add results/final_j1_2plus_*.json.gz results/final_j1_3plus.json results/final_j1_4plus.json results/final_top_main5.json results/final_top_main4.json results/final_top_special.json
           if git diff --cached --quiet; then
             echo "Nothing to commit"
             exit 0

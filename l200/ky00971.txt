@@ -1,0 +1,5 @@
+KY 00971 (2026-10-27) - VE TRUNG J1
+Ve trung: 07-08-11-12-35 + 8
+DOI CHIEU: khong co file l0 ky 00971 -> tinh lai tu results: CON LAI
+Tap l0 ky nay: bi loai 153,227 | con lai 3,742,357 / 3,895,584
+Du doan da ghi: 02-10-14-15-23 + 5 (seed 309470784112) -> trung 0/5 so chinh, DB sai

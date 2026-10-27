@@ -1,0 +1,15 @@
+CACH UP LEN GITHUB
+1. Giai nen zip nay DE LEN thu muc goc repo (ghi de file cung ten).
+2. Chay: sh xoa_file_cu_va_commit.sh   (xoa file cu da thay + commit + push)
+   Luu y: lich su git van giu ban cu (84 MB), muon nhe han phai don lich su rieng.
+
+NOI DUNG
+- results/*.json.gz (164 file): nen gzip, noi dung giu nguyen 100% (83.9 MB -> 5.3 MB)
+- .github/workflows/scan_cpp_auto.yml: ghi batch moi dang .json.gz, doc ca .json lan .json.gz
+- .github/workflows/scan_v2_auto.yml: commit them l0/ va l200/
+- predict_l1_3_gap.py: xoa moi du doan cu; tao l0 (CHI ve con lai); du doan 1 ve NGAU NHIEN tu l0,
+  khong quy tac; ghi l200 ky vua quay
+- l0_l200.py (moi), compress_results.py (moi)
+- l0/ky00972_ve_con_lai.txt.gz: 3,742,300 ve con lai ky 972 (gunzip -k de doc)
+- l200/ky00971.txt, predict/ (1 du doan ky 972)
+Luu y: moi lan chay predict_l1_3_gap.py se chon lai 1 ve ngau nhien moi.
