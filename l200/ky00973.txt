@@ -1,0 +1,5 @@
+KY 00973 (2026-10-28) - VE TRUNG J1
+Ve trung: 02-17-20-24-32 + 6
+DOI CHIEU l0 ky 00973: CO trong VE CON LAI (dong 962,962/3,734,023)
+Tap l0 ky nay: bi loai 191,130 | con lai 3,704,454 / 3,895,584
+Du doan da ghi: 10-14-21-28-32 + 7 (seed l0#3049468) -> trung 1/5 so chinh, DB sai
