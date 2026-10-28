@@ -1,0 +1,20 @@
+SCAN_INVERSE - tim seed trung J1 nhieu ky bang cach DAO ham hash
+
+Y tuong: ve(seed,d) = f(mix64(seed*M1 + d*M2)); mix64 va phep nhan M1 deu nghich dao duoc (mod 2^64).
+=> voi 1 ky d1, liet ke TRUC TIEP moi seed trung d1 (khong quet mu): mixed = rank + 324632*k, loc dac biet, dao ra seed.
+=> kiem tra them ky d2 (qua 1 trong 3.9 trieu) => cap (d1,d2) cho MOI seed 64-bit trung ca 2 ky (~1.2 trieu seed),
+   roi dem hit tren toan bo 971 ky.
+
+Y nghia:
+ (1) PHEP THU QUYET DINH: neu cong thuc hash nay la bo sinh that cua Vietlott voi seed 64-bit bat ky,
+     seed that co ~971 hit va PHAI nam trong tap song sot cua moi cap (d1,d2). Chay 1 cap la kiem tra het.
+ (2) Tim seed >3 hit: moi cap cho ky vong ~0.037 seed >=4 hit (neu ket qua thuan ngau nhien) - hieu qua hon
+     quet mu ~45 lan tren 1 lan chay, nhung van phai chay ~27 cap de ky vong 1 seed.
+Chi phi 1 cap: K_total = ~5.68e13 gia tri k; ~2.4e8 k/s/luong (do duoc) => ~65 luong-gio.
+   20 job x 4 vCPU GitHub: uoc tinh 1-2 gio/cap (chua chay thu tren GitHub).
+
+Cach chay: Actions > "scan_inverse" > Run workflow (d1, d2, chunks=20). Ket qua: inverse/ket_qua_<d1>_<d2>.txt
+Chay tay:  python3 make_draws_rank.py
+           g++ -O3 -march=native -pthread -std=c++17 scan_inverse.cpp -o scan_inverse
+           ./scan_inverse data/draws_rank.txt 971 970 0 1000000000 4 out.txt 3     (0..1e9 la thu nhanh)
+Da kiem tra: dao hash khop 100%; tim lai duoc seed 135853193942 (trung ky 94,137,159) tu cua so k nho.
