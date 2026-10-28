@@ -1,0 +1,174 @@
+name: Pack results (ra soat + dong goi + xoa .json)
+
+# Ra soat toan bo results/final_j1_2plus_*:
+#  - moi .json chua co .json.gz -> nen gzip (mtime=0, noi dung giu nguyen)
+#  - kiem tra giai nen == file goc (byte-by-byte) roi moi xoa .json
+#  - .json da co .gz nhung KHAC noi dung -> GIU LAI ca hai, bao loi (khong xoa)
+#  - kiem tra moi .gz: gzip hop le, JSON hop le, batch_start/end khop ten file
+#  - bao cao khoang trong (gap) / chong lan (overlap) giua cac batch
+# Dung chung concurrency voi chuoi scan de khong dam nhau khi push.
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "true = chi ra soat va bao cao, KHONG nen/xoa/commit"
+        required: true
+        default: "false"
+
+concurrency:
+  group: scan-j1-chain
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Ra soat + dong goi + xoa .json
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          python3 - <<'PY'
+          import glob, gzip, json, os, re, sys
+
+          dry = os.environ.get("DRY_RUN", "false").strip().lower() == "true"
+          RX = re.compile(r"final_j1_2plus_(\d+)_(\d+)\.json(?:\.gz)?$")
+          lines, errors = [], []
+          def log(s):
+              print(s); lines.append(s)
+
+          def gz_bytes(raw):
+              import io
+              buf = io.BytesIO()
+              with gzip.GzipFile(filename="", mode="wb", fileobj=buf, compresslevel=9, mtime=0) as g:
+                  g.write(raw)
+              return buf.getvalue()
+
+          log(f"== Che do: {'DRY-RUN (khong ghi)' if dry else 'THAT'} ==")
+
+          # ---- 1) Xu ly .json ----
+          jsons = sorted(glob.glob("results/final_j1_2plus_*_*.json"))
+          log(f"So file .json can xu ly: {len(jsons)}")
+          packed = deleted = dup_deleted = 0
+          before = after = 0
+          for f in jsons:
+              gz = f + ".gz"
+              raw = open(f, "rb").read()
+              try:
+                  json.loads(raw)
+              except Exception as e:
+                  errors.append(f"{f}: JSON hong ({e}) -> giu nguyen")
+                  continue
+              if os.path.exists(gz):
+                  try:
+                      same = gzip.open(gz, "rb").read() == raw
+                  except Exception as e:
+                      errors.append(f"{gz}: gzip hong ({e}) -> giu nguyen ca hai")
+                      continue
+                  if not same:
+                      errors.append(f"{f}: KHAC noi dung voi {gz} -> giu nguyen ca hai, can kiem tra tay")
+                      continue
+                  dup_deleted += 1
+                  before += len(raw); after += os.path.getsize(gz)
+                  if not dry: os.remove(f)
+              else:
+                  data = gz_bytes(raw)
+                  if gzip.decompress(data) != raw:
+                      errors.append(f"{f}: nen xong nhung giai nen khong khop -> giu nguyen")
+                      continue
+                  packed += 1
+                  before += len(raw); after += len(data)
+                  if not dry:
+                      open(gz, "wb").write(data)
+                      os.remove(f)
+              deleted += 1
+          log(f"  Da co san .gz giong het -> xoa .json: {dup_deleted}")
+          log(f"  Chua co .gz -> nen moi roi xoa .json: {packed}")
+          log(f"  Tong .json xu ly OK: {deleted}  ({before/1e6:.1f} MB -> {after/1e6:.1f} MB)")
+
+          # ---- 2) Ra soat toan bo .gz ----
+          log("")
+          log("== Ra soat .json.gz ==")
+          ranges = []
+          for gzf in sorted(glob.glob("results/final_j1_2plus_*_*.json.gz")):
+              m = RX.search(gzf)
+              if not m:
+                  errors.append(f"{gzf}: ten file khong dung dinh dang"); continue
+              s, e = int(m.group(1)), int(m.group(2))
+              try:
+                  d = json.loads(gzip.open(gzf, "rb").read())
+              except Exception as ex:
+                  errors.append(f"{gzf}: khong doc duoc ({ex})"); continue
+              if d.get("batch_start") != s or d.get("batch_end") != e:
+                  errors.append(f"{gzf}: batch_start/end trong file ({d.get('batch_start')}-{d.get('batch_end')}) khac ten file")
+              if d.get("found") != len(d.get("results", [])):
+                  errors.append(f"{gzf}: found={d.get('found')} nhung results co {len(d.get('results', []))}")
+              ranges.append((s, e, gzf))
+          ranges.sort()
+          log(f"So file .gz hop le (da doc duoc): {len(ranges)}")
+          gaps = overlaps = 0
+          for (s1, e1, f1), (s2, e2, f2) in zip(ranges, ranges[1:]):
+              if s2 <= e1:
+                  overlaps += 1; errors.append(f"CHONG LAN: {os.path.basename(f1)} va {os.path.basename(f2)}")
+              elif s2 != e1 + 1:
+                  gaps += 1; errors.append(f"KHOANG TRONG: {e1+1} -> {s2-1} (giua {os.path.basename(f1)} va {os.path.basename(f2)})")
+          if ranges:
+              log(f"Pham vi seed: {ranges[0][0]} -> {ranges[-1][1]}")
+          log(f"Khoang trong: {gaps} | Chong lan: {overlaps}")
+
+          log("")
+          if errors:
+              log(f"== CANH BAO / LOI ({len(errors)}) ==")
+              for x in errors: log("  - " + x)
+          else:
+              log("Khong co loi.")
+
+          os.makedirs("reports", exist_ok=True)
+          open("reports/pack_results_report.txt", "w", encoding="utf-8").write("\n".join(lines) + "\n")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as sm:
+              sm.write("```\n" + "\n".join(lines) + "\n```\n")
+          # Loi gap/overlap chi canh bao; loi du lieu (hong, khac noi dung) lam job do
+          hard = [x for x in errors if not x.startswith(("KHOANG TRONG", "CHONG LAN"))]
+          sys.exit(1 if hard else 0)
+          PY
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pack-results-report
+          path: reports/pack_results_report.txt
+
+      - name: Commit + push
+        if: ${{ inputs.dry_run != 'true' }}
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A results
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+            exit 0
+          fi
+          git commit -m "pack results: nen .json.gz, xoa .json thua"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push OK (lan thu $i)"
+              exit 0
+            fi
+            echo "Push that bai (lan thu $i), pull --rebase roi thu lai..."
+            git pull --rebase origin main
+            sleep $((i * 5))
+          done
+          echo "Push that bai sau 5 lan thu -- can kiem tra thu cong"
+          exit 1
