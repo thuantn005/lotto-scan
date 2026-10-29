@@ -1,0 +1,15 @@
+CHAY AUTO scan_inverse (nhieu cap d1:d2 tu noi tiep)
+
+1) Chep vao repo lotto-scan-main:
+   .github/workflows/scan_inverse_auto.yml
+   filter_inverse.py
+2) Actions > "scan_inverse_auto" > Run workflow. Giu mac dinh (27 cap, chunks=20, min_hits=4) hoac sua queue.
+   Moi cap xong thi workflow tu dispatch cap ke tiep (cap da co file inverse/ket_qua_D1_D2.txt se bi bo qua, nen chay lai khong bi quet trung).
+3) Ket qua gop: inverse/tong_hop_inverse.txt (seed >= 4 ky, da kiem tra lai bang hash tren data/all.csv).
+   Chay tay: python3 filter_inverse.py --min 4
+
+LUU Y
+- Moi cap ~20 job x 1-1.3 gio; 27 cap noi tiep ~ 27 x 1.3 gio = khoang 1.5 ngay do ban thuc (chay tuan tu, khong song song nhieu cap).
+- Repo private: ~540 job-gio/27 cap vuot xa 2000 phut mien phi/thang. Repo public thi mien phi.
+- Dung de dung: Actions > chon run dang chay > Cancel; xoa hang doi bang cach khong dispatch tiep.
+- Seed >= 4 ky chi la hien tuong chon loc, khong du bao duoc ky sau.

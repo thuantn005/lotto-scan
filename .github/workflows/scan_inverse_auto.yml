@@ -1,0 +1,122 @@
+name: scan_inverse_auto (chay noi tiep nhieu cap d1:d2, tu dispatch cap ke tiep)
+
+on:
+  workflow_dispatch:
+    inputs:
+      queue:
+        description: "Hang doi cap d1:d2 cach nhau dau phay. Cap dau chay truoc, phan con lai tu chay tiep"
+        default: "974:973,972:971,970:969,968:967,966:965,964:963,962:961,960:959,958:957,956:955,954:953,952:951,950:949,948:947,946:945,944:943,942:941,940:939,938:937,936:935,934:933,932:931,930:929,928:927,926:925,924:923,922:921"
+      chunks:
+        description: "So job song song moi cap (<=20)"
+        default: "20"
+      min_hits:
+        description: "Ghi seed co >= so ky trung nay"
+        default: "4"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: scan-inverse-auto
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+      ktotal: ${{ steps.m.outputs.ktotal }}
+      d1: ${{ steps.m.outputs.d1 }}
+      d2: ${{ steps.m.outputs.d2 }}
+      rest: ${{ steps.m.outputs.rest }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: m
+        env:
+          QUEUE: ${{ inputs.queue }}
+          CHUNKS: ${{ inputs.chunks }}
+        run: |
+          python3 make_draws_rank.py
+          python3 - <<'PY'
+          import os, json
+          rows = {int(l.split()[0]): (int(l.split()[1]), int(l.split()[2])) for l in open("data/draws_rank.txt")}
+          items = [x.strip() for x in os.environ["QUEUE"].split(",") if x.strip()]
+          # bo cac cap da co ket qua hoac khong hop le
+          todo = []
+          for it in items:
+              a, b = (int(v) for v in it.split(":"))
+              if a in rows and b in rows and a != b and not os.path.exists(f"inverse/ket_qua_{a}_{b}.txt"):
+                  todo.append((a, b))
+          assert todo, "hang doi rong"
+          d1, d2 = todo[0]; rest = ",".join(f"{a}:{b}" for a, b in todo[1:])
+          n = int(os.environ["CHUNKS"])
+          ktot = (2**64 - 1 - rows[d1][0]) // 324632 + 1
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write("matrix=" + json.dumps(list(range(n))) + "\n")
+              f.write(f"ktotal={ktot}\nd1={d1}\nd2={d2}\nrest={rest}\n")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: draws_rank
+          path: data/draws_rank.txt
+
+  scan:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        part: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: draws_rank
+          path: data
+      - name: build
+        run: g++ -O3 -march=native -pthread -std=c++17 scan_inverse.cpp -o scan_inverse
+      - name: run chunk
+        run: |
+          K=${{ needs.prepare.outputs.ktotal }}; N=${{ inputs.chunks }}; P=${{ matrix.part }}
+          KB=$(python3 -c "print($K*$P//$N)"); KE=$(python3 -c "print($K*($P+1)//$N)")
+          ./scan_inverse data/draws_rank.txt ${{ needs.prepare.outputs.d1 }} ${{ needs.prepare.outputs.d2 }} $KB $KE $(nproc) out_$P.txt ${{ inputs.min_hits }} | tee summary_$P.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: part_${{ matrix.part }}
+          path: |
+            out_*.txt
+            summary_*.txt
+
+  merge:
+    needs: [prepare, scan]
+    if: ${{ always() && needs.prepare.result == 'success' }}
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: part_*
+          path: parts
+          merge-multiple: true
+      - name: gop ket qua va loc seed
+        run: |
+          D1=${{ needs.prepare.outputs.d1 }}; D2=${{ needs.prepare.outputs.d2 }}
+          mkdir -p inverse; T=inverse/ket_qua_${D1}_${D2}.txt
+          {
+            echo "SCAN_INVERSE d1=$D1 d2=$D2 (moi seed 64-bit trung ca 2 ky), min_hits=${{ inputs.min_hits }}"
+            echo "--- tong ket tung phan ---"; cat parts/summary_*.txt
+            echo "--- seed co >= ${{ inputs.min_hits }} ky trung: seed so_hit cac_ky (sap giam theo so hit) ---"
+            cat parts/out_*.txt 2>/dev/null | sort -k2,2nr | head -2000
+          } > $T
+          python3 filter_inverse.py --min 4 --out inverse/tong_hop_inverse.txt || true
+          git config user.name github-actions; git config user.email actions@github.com
+          git add inverse; git commit -m "scan_inverse_auto ${D1}_${D2}" || true
+          git pull --rebase || true; git push || true
+      - name: chay cap ke tiep
+        if: ${{ needs.prepare.outputs.rest != '' }}
+        run: |
+          gh workflow run scan_inverse_auto.yml -f queue="${{ needs.prepare.outputs.rest }}" -f chunks=${{ inputs.chunks }} -f min_hits=${{ inputs.min_hits }}
