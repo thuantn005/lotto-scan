@@ -85,12 +85,16 @@ jobs:
       - name: gop ket qua
         run: |
           mkdir -p inverse; T=inverse/first2_${{ inputs.d1 }}_${{ inputs.d2 }}.txt
+          cat parts/out_*.txt | sort -k2,2nr > full.txt
           {
             echo "SCAN_INVERSE_FIRST2 d1=${{ inputs.d1 }} (hit dau) d2=${{ inputs.d2 }} (hit thu 2), min_hits=${{ inputs.min_hits }}"
             echo "--- tong ket tung phan ---"; cat parts/summary_*.txt
-            echo "--- seed co >= ${{ inputs.min_hits }} ky trung: seed so_hit cac_ky (sap giam theo so hit) ---"
-            cat parts/out_*.txt | sort -k2,2nr | head -2000
+            echo "--- tong so seed ghi: $(wc -l < full.txt) (toan bo trong file .txt.gz cung ten) ---"
+            echo "--- 100 seed nhieu hit nhat: seed so_hit cac_ky ---"
+            head -100 full.txt
           } > $T
+          gzip -9 -c full.txt > $T.gz
+          ls -l $T $T.gz
           head -20 $T
           git config user.name github-actions; git config user.email actions@github.com
           git add inverse; git commit -m "scan_inverse_first2 ${{ inputs.d1 }}_${{ inputs.d2 }}" || true; git push || true
