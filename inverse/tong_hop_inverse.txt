@@ -1,4 +1,4 @@
-Da quet 9 cap: 954_953, 960_959, 962_961, 964_963, 966_965, 968_967, 971_970, 972_971, 974_973
-2631 seed trong file, 1 seed co >= 4 ky (da kiem tra lai bang hash, 976 ky)
+Da quet 10 cap: 952_951, 954_953, 960_959, 962_961, 964_963, 966_965, 968_967, 971_970, 972_971, 974_973
+2980 seed trong file, 1 seed co >= 4 ky (da kiem tra lai bang hash, 976 ky)
 so_hit chuoi_lien_tiep seed cac_ky
 4 2 11274102774764344391 783,938,953,954
