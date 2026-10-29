@@ -1,0 +1,3 @@
+Da quet 2 cap: 971_970, 974_973
+303 seed trong file, 0 seed co >= 4 ky (da kiem tra lai bang hash, 974 ky)
+so_hit chuoi_lien_tiep seed cac_ky
