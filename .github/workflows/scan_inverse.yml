@@ -5,16 +5,16 @@ on:
     inputs:
       d1:
         description: "Ky 1 (liet ke moi seed trung ky nay)"
-        default: "971"
+        default: "871"
       d2:
         description: "Ky 2 (loc: seed phai trung ca ky nay)"
-        default: "970"
+        default: "872"
       chunks:
         description: "So job chia khong gian k (<=20 de chay song song)"
         default: "20"
       min_hits:
         description: "Ghi seed co >= so ky trung nay"
-        default: "3"
+        default: "4"
 
 permissions:
   contents: write
