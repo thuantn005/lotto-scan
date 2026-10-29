@@ -1,5 +1,0 @@
-DU DOAN KY 00975 - chon truc tiep tu VE CON LAI trong l0
-l0: tong 3,895,584 ve | bi loai 206,908 (tu 212,503 seed results J1>=2) | CON LAI 3,688,676
-Chon ngau nhien, khong quy tac: dong 1,197,435/3,688,676 trong l0/ky00975_ve_con_lai.txt.gz
-
-DU DOAN: 03-08-23-24-28 + 6
