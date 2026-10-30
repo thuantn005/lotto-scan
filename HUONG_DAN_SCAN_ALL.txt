@@ -17,3 +17,11 @@ UOC TINH (do thu 1 luong: ~2.3 micro giay / ung vien)
 
 Da kiem tra: tim lai seed 240428235936648586 (trung 968, 969, 977).
 Seed trung ky moi nhat va nhieu ky khac KHONG co bang chung se trung ky 978.
+
+-----
+CAP NHAT: CHAY TIEP KHI HET GIO (GitHub gioi han 6 gio/job)
+- chunks 160-256 (mac dinh 256, moi job ~3-4 gio). Job tu dung nhan khoi moi sau max_minutes (320 phut).
+- Phan chua quet xong ghi vao inverse/con_lai_<ky>.txt (moi dong 'kb-ke'). File rong = da quet het.
+- Chay tiep: Run workflow, dan noi dung con_lai vao o 'resume' (cac doan cach nhau dau cach/xuong dong).
+- AVX512 tu bat neu runner ho tro (nhanh hon ~20% o may thu).
+- Neu runner cham hon uoc tinh: giu nguyen, cu chay tiep bang 'resume' cho den khi con_lai rong.

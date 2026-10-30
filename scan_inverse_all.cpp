@@ -64,6 +64,7 @@ static inline __mmask8 eq_mod12_v(__m512i x, u64 t) {
 #endif
 
 struct Draw { int id; u64 rank; int sp; };
+static u64 INV40579, LIM40579; static std::vector<u64> PA, PR;   // mang pad 8 cho AVX512: id*M2, rank
 
 int main(int argc, char** argv) {
     if (argc < 7) { fprintf(stderr, "Dung: %s DRAWS_RANK.txt D3 K_BEGIN K_END THREADS OUT.txt [MIN_HITS=3]\n", argv[0]); return 1; }
@@ -75,9 +76,12 @@ int main(int argc, char** argv) {
     }
     std::vector<Draw> draws; std::map<int, Draw> byid;
     { std::ifstream f(argv[1]); Draw d; while (f >> d.id >> d.rank >> d.sp) { draws.push_back(d); byid[d.id] = d; } }
+    INV40579 = inv_mul(40579); LIM40579 = ~0ULL / 40579;
+    for (auto& d : draws) { PA.push_back((u64)d.id * M2); PR.push_back(d.rank); } while (PA.size() % 8) { PA.push_back(0); PR.push_back(0); }
     int D1 = atoi(argv[2]);                       // D1 = ky moi nhat (neo), khong con D2 co dinh
     u64 kb = strtoull(argv[3], 0, 10), ke = strtoull(argv[4], 0, 10); int nt = atoi(argv[5]);
-    int minhits = argc > 7 ? atoi(argv[7]) : 3;
+    int minhits = argc > 7 ? atoi(argv[7]) : 3; double maxsec = argc > 8 ? atof(argv[8]) : 0;   // MAX_SECONDS: dung nhan khoi moi khi qua gio
+
     std::sort(draws.begin(), draws.end(), [](const Draw& x, const Draw& y) { return x.id < y.id; });
     Draw a = byid.at(D1);
     u64 Ktot = (~0ULL - a.rank) / C + 1;              // so k hop le: a.rank + C*k <= 2^64-1
@@ -90,6 +94,7 @@ int main(int argc, char** argv) {
     auto work = [&]() {
         u64 lc = 0, ls = 0, lrej = 0; std::map<int, u64> lh;
         for (;;) {
+            if (maxsec > 0 && std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count() > maxsec) break;
             u64 s = next.fetch_add(CH); if (s >= ke) break; u64 e = s + CH < ke ? s + CH : ke;
             auto handle = [&](u64 k) {
                 u64 mixed = a.rank + C * k;
@@ -97,6 +102,22 @@ int main(int argc, char** argv) {
                 u64 comb = inv_mix(mixed);                                    // = seed*M1 + d1*M2
                 ls++;
                 u64 seed = (comb - offd1) * M1I; int hits = 0; std::vector<int> hl; bool ok = true;
+#ifdef USE_AVX512
+                {   // 8 ky/lan: (mx - rank) chia het C = 8*40579 <=> 3 bit thap = 0 va ((n>>3)*inv40579) <= LIM; lane dat -> xac nhan scalar
+                    const __m512i s1 = _mm512_set1_epi64((long long)(seed * M1)), c7 = _mm512_set1_epi64(7),
+                                  vinv = _mm512_set1_epi64((long long)INV40579), vlim = _mm512_set1_epi64((long long)LIM40579);
+                    for (size_t i = 0; i < PA.size(); i += 8) {
+                        __m512i mx = mix64_v(_mm512_add_epi64(s1, _mm512_loadu_si512((const void*)&PA[i])));
+                        __m512i n = _mm512_sub_epi64(mx, _mm512_loadu_si512((const void*)&PR[i]));
+                        __mmask8 m = _mm512_cmpeq_epi64_mask(_mm512_and_si512(n, c7), _mm512_setzero_si512());
+                        if (!m) continue;
+                        m &= _mm512_cmple_epu64_mask(_mm512_mullo_epi64(_mm512_srli_epi64(n, 3), vinv), vlim);
+                        while (m) { int j = __builtin_ctz(m); m &= m - 1; size_t di = i + j; if (di >= draws.size()) continue;
+                            u64 mxs = mix64(seed * M1 + (u64)draws[di].id * M2);
+                            if (mxs % C == draws[di].rank && mix64(mxs) % 12 == (u64)(draws[di].sp - 1)) { hits++; hl.push_back(draws[di].id); } }
+                    }
+                }
+#else
                 for (auto& d : draws) {                                      // draws da sap tang theo id
                     u64 mx = mix64(seed * M1 + (u64)d.id * M2);
                     if (mx % C != d.rank) continue;
@@ -104,6 +125,7 @@ int main(int argc, char** argv) {
                         hits++; hl.push_back(d.id);
                     }
                 }
+#endif
                 if (!ok) { lrej++; return; }
                 lh[hits]++;
                 if (hits >= minhits) {
@@ -132,6 +154,9 @@ int main(int argc, char** argv) {
         cand += lc; surv += ls; rej += lrej; std::lock_guard<std::mutex> g(mu); for (auto& p : lh) hist[p.first] += p.second;
     };
     std::vector<std::thread> th; for (int i = 0; i < nt; i++) th.emplace_back(work); for (auto& t : th) t.join();
+    u64 stop = next.load() < ke ? next.load() : ke;
+    { std::ofstream tp(std::string(argv[6]) + ".tiep"); tp << kb << " " << stop << " " << ke << "\n"; }
+    if (stop < ke) fprintf(stderr, "HET GIO: da quet k=[%llu,%llu), CON LAI k=[%llu,%llu) -> chay tiep\n", (unsigned long long)kb, (unsigned long long)stop, (unsigned long long)stop, (unsigned long long)ke);
     double sec = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
     printf("k=[%llu,%llu) | ung vien trung d1: %llu | song sot (trung ca d1,d2): %llu | loai (co hit truoc d1 / giua d1,d2): %llu | %.1fs (%.1f trieu k/s)\n",
            (unsigned long long)kb, (unsigned long long)ke, (unsigned long long)cand.load(), (unsigned long long)surv.load(), (unsigned long long)rej.load(), sec, (ke - kb) / sec / 1e6);
