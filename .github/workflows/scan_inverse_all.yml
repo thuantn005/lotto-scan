@@ -1,4 +1,4 @@
-name: scan_inverse_all (neo ky moi nhat, d1 d2 KHONG co dinh - dem hit tren moi ky)
+name: scan_inverse_all (diem cuoi = ky moi nhat, ghi seed >= n hit)
 
 on:
   workflow_dispatch:
@@ -10,8 +10,8 @@ on:
         description: "So job chia khong gian k (<=256; moi job phai < 6 gio)"
         default: "200"
       min_hits:
-        description: "Ghi seed co tong >= so ky trung nay (3 = ky moi nhat + it nhat 2 ky khac)"
-        default: "3"
+        description: "n = ghi seed co tong >= n ky trung (tinh ca ky moi nhat). Mac dinh 5 = ky moi nhat + it nhat 4 ky khac"
+        default: "5"
 
 permissions:
   contents: write
