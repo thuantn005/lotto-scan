@@ -2,7 +2,7 @@ SCAN ALL - 20 JOB, TU DONG CHAY TIEP (khong can dan 'resume' bang tay)
 
 CACH DUNG
 1. data/all.csv phai co ky moi nhat (977). Repo can co make_draws_rank.py.
-2. Chep scan_inverse_all.cpp (goc repo) va .github/workflows/scan_inverse_all.yml
+2. Chep scan_inverse_all.cpp ra goc repo; chep scan_inverse_all.yml vao thu muc .github/workflows/ (thu muc an, tao neu chua co)
 3. Actions > scan_inverse_all > Run workflow: newest=977, jobs=20, min_hits=5 (de trong resume). Chi bam 1 LAN.
 4. Moi vong: 20 job chay song song ~5.5 gio (max_minutes=330), tu dung nhan khoi.
    Cuoi vong, job 'merge' gop ket qua, commit vao inverse/, roi TU GOI LAI workflow voi
