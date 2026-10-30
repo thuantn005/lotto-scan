@@ -1,0 +1,22 @@
+SCAN ALL - 20 JOB, TU DONG CHAY TIEP (khong can dan 'resume' bang tay)
+
+CACH DUNG
+1. data/all.csv phai co ky moi nhat (977). Repo can co make_draws_rank.py.
+2. Chep scan_inverse_all.cpp (goc repo) va .github/workflows/scan_inverse_all.yml
+3. Actions > scan_inverse_all > Run workflow: newest=977, jobs=20, min_hits=5 (de trong resume). Chi bam 1 LAN.
+4. Moi vong: 20 job chay song song ~5.5 gio (max_minutes=330), tu dung nhan khoi.
+   Cuoi vong, job 'merge' gop ket qua, commit vao inverse/, roi TU GOI LAI workflow voi
+   resume = cac doan chua quet (chia lai cho du 20 job) -> vong sau. Lap den khi het.
+5. Ket qua: inverse/all_977_r<vong>_<time>.txt (+ .gz) moi vong; con_lai_977.txt rong = da quet het.
+
+THAY DOI SO VOI BAN CU
+- Co dinh 20 job (jobs=20) thay vi 256 chunk chay 20/luot -> khong con 13 dot cho.
+- Tu dong chay tiep: merge goi 'gh workflow run' (can permissions: actions: write - da them).
+- Job loi / bi giet (khong co file .tiep) -> quet lai ca doan do o vong sau, khong mat doan nao.
+- Moi vong chia lai doan con lai cho du 20 job (job xong som khong bi ranh).
+- max_rounds=30 la chot an toan chong lap vo han. Uoc tinh ~7 vong (~38-40 gio).
+- Muon dung giua chung: Actions > huy run dang chay (vong sau chi duoc goi khi merge chay xong).
+
+LUU Y
+- Repo > Settings > Actions > General > Workflow permissions: chon 'Read and write permissions'.
+- Neu GitHub chua ho tro 20 job cung luc (tai khoan tra phi/private co han muc khac), chinh jobs cho khop.
