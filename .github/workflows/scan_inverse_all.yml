@@ -1,0 +1,99 @@
+name: scan_inverse_all (neo ky moi nhat, d1 d2 KHONG co dinh - dem hit tren moi ky)
+
+on:
+  workflow_dispatch:
+    inputs:
+      newest:
+        description: "Ky moi nhat (seed bat buoc trung ky nay)"
+        default: "977"
+      chunks:
+        description: "So job chia khong gian k (<=256; moi job phai < 6 gio)"
+        default: "200"
+      min_hits:
+        description: "Ghi seed co tong >= so ky trung nay (3 = ky moi nhat + it nhat 2 ky khac)"
+        default: "3"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scan-inverse-all
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+      ktotal: ${{ steps.m.outputs.ktotal }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: m
+        run: |
+          python3 make_draws_rank.py
+          python3 - <<'PY'
+          import os, json
+          rows = {int(l.split()[0]): (int(l.split()[1]), int(l.split()[2])) for l in open("data/draws_rank.txt")}
+          d = int("${{ inputs.newest }}"); assert d in rows, f"chua co ky {d} trong data/all.csv"
+          ktot = (2**64 - 1 - rows[d][0]) // 324632 + 1
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write("matrix=" + json.dumps(list(range(int("${{ inputs.chunks }}")))) + "\n"); f.write(f"ktotal={ktot}\n")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: draws_rank
+          path: data/draws_rank.txt
+
+  scan:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        part: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: draws_rank
+          path: data
+      - name: build
+        run: g++ -O3 -march=native -pthread -std=c++17 scan_inverse_all.cpp -o scan_inverse_all
+      - name: run chunk
+        run: |
+          K=${{ needs.prepare.outputs.ktotal }}; N=${{ inputs.chunks }}; P=${{ matrix.part }}
+          KB=$(python3 -c "print($K*$P//$N)"); KE=$(python3 -c "print($K*($P+1)//$N)")
+          ./scan_inverse_all data/draws_rank.txt ${{ inputs.newest }} $KB $KE $(nproc) out_$P.txt ${{ inputs.min_hits }} | tee summary_$P.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: part_${{ matrix.part }}
+          path: |
+            out_*.txt
+            summary_*.txt
+
+  merge:
+    needs: [prepare, scan]
+    if: ${{ needs.scan.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: part_*
+          path: parts
+          merge-multiple: true
+      - name: gop ket qua
+        run: |
+          mkdir -p inverse; T=inverse/all_${{ inputs.newest }}.txt
+          cat parts/out_*.txt | sort -k2,2nr > full.txt
+          {
+            echo "SCAN_INVERSE_ALL neo ky ${{ inputs.newest }}, min_hits=${{ inputs.min_hits }}"
+            echo "--- tong so seed: $(wc -l < full.txt) (seed so_hit cac_ky) ---"
+            cat full.txt
+          } > $T
+          gzip -9 -c full.txt > $T.gz
+          git config user.name github-actions; git config user.email actions@github.com
+          git add inverse; git commit -m "scan_inverse_all ${{ inputs.newest }}" || true
+          git pull --rebase || true; git push

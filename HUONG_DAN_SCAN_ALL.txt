@@ -1,0 +1,18 @@
+SCAN ALL - neo ky moi nhat (977), KHONG co dinh d1 d2
+
+Y tuong: liet ke bang dao hash MOI seed 64-bit trung ky moi nhat (~4.7e12 ung vien), voi moi seed dem hit
+tren TOAN BO cac ky (977 ky), ghi seed co >= min_hits (mac dinh 3 = ky moi nhat + it nhat 2 ky khac).
+
+CACH DUNG
+1. data/all.csv phai co ky moi nhat (977).
+2. Chep scan_inverse_all.cpp (goc repo) va .github/workflows/scan_inverse_all.yml
+3. Actions > scan_inverse_all > Run workflow: newest=977, chunks=200, min_hits=3
+4. Ket qua: inverse/all_977.txt (+ .gz): moi dong "seed so_hit cac_ky"
+
+UOC TINH (do thu 1 luong: ~2.3 micro giay / ung vien)
+- Tong ~3000 gio-core => ~760 gio-job 4 vCPU => 20 job song song ~ 38 gio (1.5-2 ngay).
+- Moi job ~3.8 gio (< 6 gio gioi han). Neu runner cham hon, tang chunks (toi da 256).
+- Ky vong ~150.000 seed co >= 3 hit (neu hoan toan ngau nhien).
+
+Da kiem tra: tim lai seed 240428235936648586 (trung 968, 969, 977).
+Seed trung ky moi nhat va nhieu ky khac KHONG co bang chung se trung ky 978.
