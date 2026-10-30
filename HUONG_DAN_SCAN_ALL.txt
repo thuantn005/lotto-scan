@@ -1,27 +1,22 @@
-SCAN ALL - neo ky moi nhat (977), KHONG co dinh d1 d2
-
-Y tuong: liet ke bang dao hash MOI seed 64-bit trung ky moi nhat (~4.7e12 ung vien), voi moi seed dem hit
-tren TOAN BO cac ky (977 ky), ghi seed co >= min_hits (mac dinh 5 = ky moi nhat + it nhat 4 ky khac).
+SCAN ALL - 20 JOB, TU DONG CHAY TIEP (khong can dan 'resume' bang tay)
 
 CACH DUNG
-1. data/all.csv phai co ky moi nhat (977).
+1. data/all.csv phai co ky moi nhat (977). Repo can co make_draws_rank.py.
 2. Chep scan_inverse_all.cpp (goc repo) va .github/workflows/scan_inverse_all.yml
-3. Actions > scan_inverse_all > Run workflow: newest=977, chunks=200, min_hits=5
-4. Ket qua: inverse/all_977.txt (+ .gz): moi dong "seed so_hit cac_ky"
+3. Actions > scan_inverse_all > Run workflow: newest=977, jobs=20, min_hits=5 (de trong resume). Chi bam 1 LAN.
+4. Moi vong: 20 job chay song song ~5.5 gio (max_minutes=330), tu dung nhan khoi.
+   Cuoi vong, job 'merge' gop ket qua, commit vao inverse/, roi TU GOI LAI workflow voi
+   resume = cac doan chua quet (chia lai cho du 20 job) -> vong sau. Lap den khi het.
+5. Ket qua: inverse/all_977_r<vong>_<time>.txt (+ .gz) moi vong; con_lai_977.txt rong = da quet het.
 
-UOC TINH (do thu 1 luong: ~2.3 micro giay / ung vien)
-- Tong ~3000 gio-core => ~760 gio-job 4 vCPU => 20 job song song ~ 38 gio (1.5-2 ngay).
-- Moi job ~3.8 gio (< 6 gio gioi han). Neu runner cham hon, tang chunks (toi da 256).
-- Ky vong ~0.0008 seed co >= 5 hit tren toan bo khong gian (gan nhu 0) neu hoan toan ngau nhien.
-  Neu ra seed nao thi dang chu y. Muon co du lieu: min_hits=4 (~12 seed), min_hits=3 (~150.000 seed). Muon co du lieu: min_hits=4 (~12 seed), min_hits=3 (~150.000 seed).
+THAY DOI SO VOI BAN CU
+- Co dinh 20 job (jobs=20) thay vi 256 chunk chay 20/luot -> khong con 13 dot cho.
+- Tu dong chay tiep: merge goi 'gh workflow run' (can permissions: actions: write - da them).
+- Job loi / bi giet (khong co file .tiep) -> quet lai ca doan do o vong sau, khong mat doan nao.
+- Moi vong chia lai doan con lai cho du 20 job (job xong som khong bi ranh).
+- max_rounds=30 la chot an toan chong lap vo han. Uoc tinh ~7 vong (~38-40 gio).
+- Muon dung giua chung: Actions > huy run dang chay (vong sau chi duoc goi khi merge chay xong).
 
-Da kiem tra: tim lai seed 240428235936648586 (trung 968, 969, 977).
-Seed trung ky moi nhat va nhieu ky khac KHONG co bang chung se trung ky 978.
-
------
-CAP NHAT: CHAY TIEP KHI HET GIO (GitHub gioi han 6 gio/job)
-- chunks 160-256 (mac dinh 256, moi job ~3-4 gio). Job tu dung nhan khoi moi sau max_minutes (320 phut).
-- Phan chua quet xong ghi vao inverse/con_lai_<ky>.txt (moi dong 'kb-ke'). File rong = da quet het.
-- Chay tiep: Run workflow, dan noi dung con_lai vao o 'resume' (cac doan cach nhau dau cach/xuong dong).
-- AVX512 tu bat neu runner ho tro (nhanh hon ~20% o may thu).
-- Neu runner cham hon uoc tinh: giu nguyen, cu chay tiep bang 'resume' cho den khi con_lai rong.
+LUU Y
+- Repo > Settings > Actions > General > Workflow permissions: chon 'Read and write permissions'.
+- Neu GitHub chua ho tro 20 job cung luc (tai khoan tra phi/private co han muc khac), chinh jobs cho khop.

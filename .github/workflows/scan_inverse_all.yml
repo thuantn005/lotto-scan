@@ -1,4 +1,4 @@
-name: scan_inverse_all (diem cuoi = ky moi nhat, ghi seed >= n hit, tu dung truoc 6 gio va cho chay tiep)
+name: scan_inverse_all (20 job song song, TU DONG chay tiep den khi quet het)
 
 on:
   workflow_dispatch:
@@ -6,21 +6,28 @@ on:
       newest:
         description: "Ky moi nhat (seed bat buoc trung ky nay)"
         default: "977"
-      chunks:
-        description: "So job chia khong gian k (160-256). Moi job ~3-4 gio"
-        default: "256"
+      jobs:
+        description: "So job chay song song (20 = han muc mien phi cua GitHub)"
+        default: "20"
       min_hits:
-        description: "n = ghi seed co tong >= n ky trung (tinh ca ky moi nhat). Mac dinh 5"
+        description: "Ghi seed co tong >= n ky trung (tinh ca ky moi nhat)"
         default: "5"
       max_minutes:
-        description: "Job tu dung nhan khoi moi sau so phut nay (< 360). Phan chua quet duoc ghi vao inverse/con_lai_<ky>.txt"
-        default: "320"
+        description: "Moi job tu dung nhan khoi sau so phut nay (< 350)"
+        default: "330"
       resume:
-        description: "CHAY TIEP: dan cac doan con lai 'kb-ke' (cach nhau dau cach/xuong dong, tu file con_lai). De trong = quet tu dau"
+        description: "De trong khi chay lan dau. Cac lan sau workflow TU DIEN (dang 'kb-ke kb-ke ...')"
         default: ""
+      round:
+        description: "Vong hien tai (tu tang, khong can nhap)"
+        default: "1"
+      max_rounds:
+        description: "Toi da bao nhieu vong tu chay tiep (chong lap vo han)"
+        default: "30"
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: scan-inverse-all
@@ -34,22 +41,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: m
+        env:
+          NEWEST: ${{ inputs.newest }}
+          JOBS: ${{ inputs.jobs }}
+          RESUME: ${{ inputs.resume }}
         run: |
           python3 make_draws_rank.py
           python3 - <<'PY'
           import os, json, re
           rows = {int(l.split()[0]): (int(l.split()[1]), int(l.split()[2])) for l in open("data/draws_rank.txt")}
-          d = int("${{ inputs.newest }}"); assert d in rows, f"chua co ky {d} trong data/all.csv"
-          resume = """${{ inputs.resume }}""".strip()
+          d = int(os.environ["NEWEST"]); assert d in rows, f"chua co ky {d} trong data/all.csv"
+          njobs = int(os.environ["JOBS"]); assert 1 <= njobs <= 256
+          resume = os.environ["RESUME"].strip()
           if resume:
               rs = [tuple(map(int, x.split("-"))) for x in re.findall(r"\d+-\d+", resume)]
+              MIN = 2 * (1 << 22)
+              while len(rs) < njobs:            # chia nho doan lon nhat de du 20 job
+                  rs.sort(key=lambda t: t[1] - t[0])
+                  a, b = rs[-1]
+                  if b - a < MIN: break
+                  m = (a + b) // 2
+                  rs[-1:] = [(a, m), (m, b)]
+              rs.sort()
           else:
-              n = int("${{ inputs.chunks }}")
-              assert 160 <= n <= 256, "chunks phai trong 160-256 (moi job < 6 gio: ~760 gio-job / chunks)"
               ktot = (2**64 - 1 - rows[d][0]) // 324632 + 1
-              rs = [(ktot * i // n, ktot * (i + 1) // n) for i in range(n)]
+              rs = [(ktot * i // njobs, ktot * (i + 1) // njobs) for i in range(njobs)]
           inc = [{"part": i, "kb": a, "ke": b} for i, (a, b) in enumerate(rs)]
-          with open(os.environ["GITHUB_OUTPUT"], "a") as f: f.write("matrix=" + json.dumps({"include": inc}) + "\n")
+          print("so job:", len(inc))
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write("matrix=" + json.dumps({"include": inc}) + "\n")
           PY
       - uses: actions/upload-artifact@v4
         with:
@@ -89,8 +109,10 @@ jobs:
 
   merge:
     needs: [prepare, scan]
-    if: ${{ always() && needs.scan.result != 'cancelled' }}
+    if: ${{ always() && needs.scan.result != 'cancelled' && needs.prepare.result == 'success' }}
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -99,25 +121,54 @@ jobs:
           path: parts
           merge-multiple: true
       - name: gop ket qua
+        id: gop
+        env:
+          MATRIX: ${{ needs.prepare.outputs.matrix }}
+          NEWEST: ${{ inputs.newest }}
+          ROUND: ${{ inputs.round }}
         run: |
-          mkdir -p inverse; T=inverse/all_${{ inputs.newest }}_$(date +%s).txt
+          mkdir -p inverse
+          T=inverse/all_${NEWEST}_r${ROUND}_$(date +%s).txt
           cat parts/out_*[0-9].txt 2>/dev/null | sort -k2,2nr > full.txt || true
           {
-            echo "SCAN_INVERSE_ALL diem cuoi ky ${{ inputs.newest }}, min_hits=${{ inputs.min_hits }}"
+            echo "SCAN_INVERSE_ALL diem cuoi ky ${NEWEST}, vong ${ROUND}, min_hits=${{ inputs.min_hits }}"
             echo "--- tong so seed: $(wc -l < full.txt) (seed so_hit cac_ky) ---"
             cat full.txt
           } > $T
           gzip -9 -c full.txt > $T.gz
-          # doan chua quet duoc (het gio) hoac job loi -> dan vao o 'resume' de chay tiep
+          # doan con lai: het gio (stop < ke) HOAC job loi/khong co file .tiep (quet lai ca doan)
           python3 - <<'PY'
-          import glob
+          import os, json
+          m = json.loads(os.environ["MATRIX"])["include"]
           con = []
-          for f in sorted(glob.glob("parts/*.tiep")):
-              kb, stop, ke = map(int, open(f).read().split())
-              if stop < ke: con.append(f"{stop}-{ke}")
-          open("inverse/con_lai_${{ inputs.newest }}.txt", "w").write("\n".join(con) + ("\n" if con else ""))
+          for it in m:
+              f = f"parts/out_{it['part']}.txt.tiep"
+              if os.path.exists(f):
+                  kb, stop, ke = map(int, open(f).read().split())
+                  if stop < ke: con.append((stop, ke))
+              else:
+                  con.append((it["kb"], it["ke"]))
+          con.sort()
+          s = " ".join(f"{a}-{b}" for a, b in con)
+          open(f"inverse/con_lai_{os.environ['NEWEST']}.txt", "w").write("\n".join(f"{a}-{b}" for a, b in con) + ("\n" if con else ""))
           print("doan con lai:", len(con))
+          with open(os.environ["GITHUB_OUTPUT"], "a") as g:
+              g.write(f"remaining={len(con)}\nresume={s}\n")
           PY
           git config user.name github-actions; git config user.email actions@github.com
-          git add inverse; git commit -m "scan_inverse_all ${{ inputs.newest }}" || true
+          git add inverse; git commit -m "scan_inverse_all ${NEWEST} vong ${ROUND}" || true
           git pull --rebase || true; git push
+      - name: tu dong chay tiep vong sau
+        if: ${{ steps.gop.outputs.remaining != '0' && fromJson(inputs.round) < fromJson(inputs.max_rounds) }}
+        run: |
+          gh workflow run scan_inverse_all.yml --ref "${{ github.ref_name }}" \
+            -f newest="${{ inputs.newest }}" \
+            -f jobs="${{ inputs.jobs }}" \
+            -f min_hits="${{ inputs.min_hits }}" \
+            -f max_minutes="${{ inputs.max_minutes }}" \
+            -f max_rounds="${{ inputs.max_rounds }}" \
+            -f round="$(( ${{ inputs.round }} + 1 ))" \
+            -f resume="${{ steps.gop.outputs.resume }}"
+      - name: xong
+        if: ${{ steps.gop.outputs.remaining == '0' }}
+        run: echo "DA QUET HET khong gian k. Ket qua nam trong inverse/all_*.txt"
