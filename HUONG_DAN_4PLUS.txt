@@ -1,0 +1,6 @@
+SCAN_INVERSE_ALL - GHI SEED TRUNG >= 4 KY (BAT KY KY NAO)
+- min_hits=4: chi ghi seed co TONG >= 4 ky trung J1 tren toan bo lich su (4, 5, 6... ky). Khong gioi han o ky 977.
+- "newest" chi la KY MOC ky thuat: dao hash can co dinh 1 ky de liet ke seed. De trong = tu lay ky MOI NHAT trong data/all.csv; hoac nhap ky bat ky.
+  Seed >= 4 ky ma KHONG trung ky moc thi lan quet nay khong thay. Moi ky moc cho ~12 seed 4-hit (toan bo ~3.000 seed 4-hit).
+- Muon dung lai 5% da quet cua ky moc 977: newest=977 va dan noi dung RESUME_977.txt vao o resume.
+- Toc do that ~12-46 trieu k/s moi job (log in 143,5 trieu la chia ca doan theo thoi gian nen sai khi job dung som). 20 job x 5,5 gio chi quet ~9% -> can ~11 vong.
