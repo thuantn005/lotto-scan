@@ -1,0 +1,3 @@
+SCAN_INVERSE_ALL diem cuoi ky 979, vong 2, min_hits=4
+--- tong so seed: 1 (seed so_hit cac_ky) ---
+15470333474245787186 4 255,566,866,979
