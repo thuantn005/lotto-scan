@@ -1,0 +1,35 @@
+WORKFLOW TU DONG: inverse_ve_con_lai
+Moi lan chay: tu tinh ky sap quay (Lotto 5/35: 13:00 va 21:00 gio VN), doc inverse/first2_*.txt.gz + seed 4 hit (inverse/all_*_r*.txt),
+loai ve va ghi vao thu muc ve_con_lai/ (giu 10 ky gan nhat):
+  con_lai_<ky>.txt     danh sach ve con lai
+  1_2_seed_<ky>.txt    ve do 1 hoac 2 seed sinh ra, kem cap:seed
+  thong_ke_<ky>.txt    tom tat + cap quet them de xuat
+  loai_<ky>.txt.gz     danh sach ve bi loai (chi khi export_loai = true, len artifact)
+
+CAI DAT
+1. Copy 2 file vao repo: ve_con_lai_auto.py (thu muc goc, canh lotto_common.py) va .github/workflows/inverse_ve_con_lai.yml
+2. Repo -> Settings -> Actions -> General -> Workflow permissions: chon "Read and write permissions".
+3. Commit. Workflow tu chay luc 12:30 va 20:30 gio VN moi ngay, va sau moi lan scan_inverse_first2 chay xong.
+   Chay tay: Actions -> inverse_ve_con_lai -> Run workflow (co the nhap ky, target, auto_scan...).
+
+TU QUET THEM CAP
+Neu con lai > target (mac dinh 1) va auto_scan = true: tu goi scan_inverse_first2 voi hang doi cap moi (di xuong tu cap nho nhat da quet, buoc 2 ky,
+toi da max_pairs cap moi lan). Chi goi khi scan_inverse_first2 khong dang chay. Muon tat: dat auto_scan = false (nhap tay) hoac sua AUTO_SCAN trong yml.
+Luu y: scan ton phut GitHub Actions (repo public mien phi; repo private co han muc 2.000 phut/thang).
+
+GIOI HAN
+- Ky tiep theo tinh theo lich 2 ky/ngay tu moc ky 989 (05/11/2026 13:00). Neu lich thay doi hoac bo ky, nhap tay o o "draw".
+- Ve con lai la ngau nhien, khong co xac suat trung cao hon ve khac.
+
+----- THEM: scan_v2_auto.yml sinh ve + doi chieu ket qua + luu ve trung -----
+File: .github/workflows/scan_v2_auto.yml (thay file cu), ve_con_lai_auto.py, doi_chieu_ve.py (cung thu muc goc, canh lotto_common.py)
+Moi lan scan_v2_auto chay (16:00, 18:00, 00:00, 02:00 VN):
+ 1. cap nhat data/all.csv (nhu cu)
+ 2. doi chieu: voi moi ky moi co ket qua va co ve_con_lai/con_lai_<ky>.txt (hoac 1_2_seed_<ky>.txt) -> so sanh voi ket qua that
+      ve_trung/ve_trung_<ky>.txt   ve du doan trung >= 3 so chinh (kem muc: so chinh + DB)
+      ve_trung/doi_chieu.txt       moi ky mot dong + tong ket (ve J1 co nam trong danh sach khong, ky vong ngau nhien)
+      ve_trung/doi_chieu.jsonl     log may doc (moi ky chi doi chieu 1 lan)
+ 3. sinh ve ky tiep theo -> ve_con_lai/con_lai_<ky>.txt, 1_2_seed_<ky>.txt, thong_ke_<ky>.txt
+ 4. commit all.csv + ve_con_lai + ve_trung
+Luu y: ve du doan cua ky D phai duoc sinh TRUOC khi ky D quay; cron 16:00 VN sinh ve cho ky 21:00, cron 00:00 VN sinh ve cho ky 13:00 hom sau.
+Ky nao khong co file du doan (vi workflow chua chay truoc do) se khong duoc doi chieu.

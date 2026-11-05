@@ -1,0 +1,111 @@
+name: Cap nhat du lieu Lotto 5/35 (2 lan/ngay theo lich Vietlott) - KHONG quet seed
+
+# Workflow nay cao ket qua (6 so + so dac biet) cap nhat data/all.csv, doi chieu ve du doan va sinh ve ky tiep:
+#   - tai data/all.csv, bo sung ky con thieu tu nguon du phong
+#   - kiem tra khong thieu ky
+#   - doi chieu ve du doan (ve_con_lai/) voi ket qua that, luu ve trung vao ve_trung/ (doi_chieu_ve.py)
+#   - sinh ve du doan ky tiep theo (ve_con_lai_auto.py), commit data/all.csv + ve_con_lai + ve_trung
+# DA BO tu truoc: quet l1-1 / l1-2 / l1-3 (scan_per_draw), gop L2, va job du doan l1-3.
+
+on:
+  schedule:
+    # 3h sau ky quay 13:00 VN -> 16:00 VN = 09:00 UTC
+    - cron: "0 9 * * *"
+    # 3h sau ky quay 21:00 VN -> 00:00 VN hom sau = 17:00 UTC cung ngay
+    - cron: "0 17 * * *"
+    # chay LAI du phong (khi nguon du lieu len ket qua tre) - khong commit neu khong co gi moi
+    - cron: "0 11 * * *"
+    - cron: "0 19 * * *"
+  workflow_dispatch: {}
+  push:
+    tags:
+      - 'run-*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-data-single-runner
+  cancel-in-progress: false
+
+jobs:
+  update_data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          ref: main
+
+      - name: Download dataset moi nhat + GOP voi data/all.csv trong repo (khong mat ky)
+        run: |
+          set -e
+          mkdir -p data
+          curl -fsL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.new || { echo "::warning::Tai dataset that bai, dung file hien co + fallback"; : > data/all.new; }
+          python3 merge_all_csv.py --new data/all.new --old data/all.csv
+          rm -f data/all.new
+          wc -l data/all.csv
+
+      - name: Fallback cao xosominhngoc.net.vn neu dataset cham cap nhat
+        run: |
+          set -e
+          python3 scrape_xosominhngoc_fallback.py --csv data/all.csv --lookback-days 14
+          wc -l data/all.csv
+
+      - name: Kiem tra CSV khong thieu ky (lo + ky moi nhat theo lich quay)
+        id: verify
+        run: python3 check_csv_complete.py data/all.csv
+
+      - name: Cai Python + numpy/pandas (de doi chieu va sinh ve)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Doi chieu ve du doan voi ket qua that + luu ve trung
+        run: python3 doi_chieu_ve.py
+
+      - name: Sinh ve du doan ky tiep theo (loai inverse + danh sach 1-2 seed)
+        id: sinh_ve
+        run: |
+          pip install -q numpy pandas
+          python3 ve_con_lai_auto.py
+
+      - name: Commit data/all.csv + ve du doan + ve trung (luon chay, khong cho should_run)
+        id: commit_data
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git stash push -u -m "truoc khi commit all.csv" || true
+          git pull --rebase origin main
+          git stash pop || true
+          [ -f data/all.csv ] && git add data/all.csv || true
+          git add ve_con_lai ve_trung 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "khong co gi de commit"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "cap nhat all.csv + ve du doan $(date -u +%Y-%m-%d\ %H:%M) UTC"
+            for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push thanh cong (lan thu $i)"
+              break
+            fi
+            echo "Push bi tu choi, thu pull --rebase roi push lai... (lan $i/5)"
+            git pull --rebase origin main
+            sleep $((i * 5))
+            if [ "$i" = "5" ]; then
+              echo "Push that bai sau 5 lan thu, dung lai"
+              exit 1
+            fi
+          done
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: BAO LOI neu con thieu ky (sau khi da commit phan co duoc)
+        if: steps.verify.outputs.bad == 'true'
+        run: |
+          echo "::error::Con thieu ky - se tu thu lai o lan chay tiep theo (cron du phong)"
+          exit 1
