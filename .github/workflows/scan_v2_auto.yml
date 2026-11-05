@@ -1,12 +1,11 @@
 name: Cap nhat du lieu Lotto 5/35 (2 lan/ngay theo lich Vietlott) - KHONG quet seed
 
-# Workflow nay CHI cap nhat du lieu + thong bao:
+# Workflow nay cao ket qua (6 so + so dac biet) cap nhat data/all.csv, doi chieu ve du doan va sinh ve ky tiep:
 #   - tai data/all.csv, bo sung ky con thieu tu nguon du phong
-#   - cao ket qua day du (data/full_results.json), tinh trang thai chia giai
-#   - commit data/all.csv, data/full_results.json, share_draw_state.json
-#   - danh thuc app qua FCM
-# DA BO: quet l1-1 / l1-2 / l1-3 (scan_per_draw), gop L2, va job du doan l1-3.
-# Cac thu muc l1-1/ l1-2/ l1-3/ l1_cache/ l2_merged/ giu nguyen, khong con duoc cap nhat.
+#   - kiem tra khong thieu ky
+#   - doi chieu ve du doan (ve_con_lai/) voi ket qua that, luu ve trung vao ve_trung/ (doi_chieu_ve.py)
+#   - sinh ve du doan ky tiep theo (ve_con_lai_auto.py), commit data/all.csv + ve_con_lai + ve_trung
+# DA BO tu truoc: quet l1-1 / l1-2 / l1-3 (scan_per_draw), gop L2, va job du doan l1-3.
 
 on:
   schedule:
@@ -55,45 +54,40 @@ jobs:
           python3 scrape_xosominhngoc_fallback.py --csv data/all.csv --lookback-days 14
           wc -l data/all.csv
 
-      - name: Cao ket qua day du (jackpot + bang 7 giai) ra JSON
-        run: |
-          set -e
-          python3 scrape_full_result_json.py --json data/full_results.json --lookback-days 2
-
-      - name: Tinh trang thai ky chia giai (server-side, khong de app tu tinh)
-        id: share_state
-        run: |
-          set -e
-          python3 update_share_draw_state.py \
-            --results data/full_results.json \
-            --state share_draw_state.json \
-            --csv data/all.csv \
-            | tee /tmp/share_state_out.txt
-          grep -q "NEW_EVENT=true" /tmp/share_state_out.txt \
-            && echo "new_event=true" >> "$GITHUB_OUTPUT" \
-            || echo "new_event=false" >> "$GITHUB_OUTPUT"
-
       - name: Kiem tra CSV khong thieu ky (lo + ky moi nhat theo lich quay)
         id: verify
         run: python3 check_csv_complete.py data/all.csv
 
-      - name: Commit data/full_results.json + share_draw_state.json (luon chay, khong cho should_run)
-        id: commit_full_results
+      - name: Cai Python + numpy/pandas (de doi chieu va sinh ve)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Doi chieu ve du doan voi ket qua that + luu ve trung
+        run: python3 doi_chieu_ve.py
+
+      - name: Sinh ve du doan ky tiep theo (loai inverse + danh sach 1-2 seed)
+        id: sinh_ve
+        run: |
+          pip install -q numpy pandas
+          python3 ve_con_lai_auto.py
+
+      - name: Commit data/all.csv + ve du doan + ve trung (luon chay, khong cho should_run)
+        id: commit_data
         run: |
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash push -u -m "truoc khi commit full_results.json" || true
+          git stash push -u -m "truoc khi commit all.csv" || true
           git pull --rebase origin main
           git stash pop || true
           [ -f data/all.csv ] && git add data/all.csv || true
-          [ -f data/full_results.json ] && git add data/full_results.json || true
-          [ -f share_draw_state.json ] && git add share_draw_state.json || true
+          git add ve_con_lai ve_trung 2>/dev/null || true
           if git diff --cached --quiet; then
-            echo "full_results.json khong doi, khong co gi de commit"
+            echo "khong co gi de commit"
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
-            git commit -m "cap nhat full_results.json (jackpot) $(date -u +%Y-%m-%d\ %H:%M) UTC"
+            git commit -m "cap nhat all.csv + ve du doan $(date -u +%Y-%m-%d\ %H:%M) UTC"
             for i in 1 2 3 4 5; do
             if git push origin main; then
               echo "Push thanh cong (lan thu $i)"
@@ -109,15 +103,6 @@ jobs:
           done
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Danh thuc app qua FCM (data message, app tu quyet dinh co bao hay khong)
-        if: steps.commit_full_results.outputs.changed == 'true' || steps.share_state.outputs.new_event == 'true'
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.FCM_SERVICE_ACCOUNT_JSON }}
-        run: |
-          set -e
-          pip install --quiet google-auth requests
-          python3 send_fcm_push.py --topic chiagiai_updates
 
       - name: BAO LOI neu con thieu ky (sau khi da commit phan co duoc)
         if: steps.verify.outputs.bad == 'true'
