@@ -2,7 +2,7 @@ name: scan_inverse_mega_auto (Mega 6/45 - tu quet du N cap, gz chuyen sang Relea
 
 # Dat file nay vao .github/workflows/ . Bam Run workflow 1 lan: workflow tu chon cap tiep theo
 # (d1 le giam dan: 1581_1582, 1579_1580, ... ), quet, luu gz len Release, tu goi lai cho den khi du total_pairs cap.
-# Cap "da xong" = co inverse_mega/first2_mega_D1_D2.txt trong repo (file nho, giu lai). Chay lai an toan, khong quet trung.
+# Cap "da xong" = co scan_state/first2_mega_D1_D2.txt trong repo (file nho, giu lai). Chay lai an toan, khong quet trung.
 
 on:
   workflow_dispatch:
@@ -53,7 +53,7 @@ jobs:
           import os, json, re
           rows = {int(l.split()[0]): (int(l.split()[1]), int(l.split()[2])) for l in open("data/draws_rank_mega.txt")}
           done = set()
-          for f in os.listdir("inverse_mega") if os.path.isdir("inverse_mega") else []:
+          for f in os.listdir("scan_state") if os.path.isdir("scan_state") else []:
               m = re.fullmatch(r"first2_mega_(\d+)_(\d+)\.txt", f)
               if m: done.add((int(m.group(1)), int(m.group(2))))
           total = int(os.environ["TOTAL"]); n = int(os.environ["CHUNKS"])
@@ -127,7 +127,7 @@ jobs:
       - name: gop ket qua, gz len Release
         run: |
           D1=${{ needs.prepare.outputs.d1 }}; D2=${{ needs.prepare.outputs.d2 }}
-          mkdir -p inverse_mega /tmp/gz; T=inverse_mega/first2_mega_${D1}_${D2}.txt
+          mkdir -p scan_state /tmp/gz; T=scan_state/first2_mega_${D1}_${D2}.txt
           cat parts/out_*.txt | sort -k2,2nr > full.txt
           NSEED=$(wc -l < full.txt)
           test "$NSEED" -gt 0
@@ -142,15 +142,8 @@ jobs:
           # tao Release neu chua co, upload gz moi
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Mega inverse archive" --notes "File first2_mega_D1_D2.txt.gz (seed da quet) do workflow scan_inverse_mega_auto tao."
           gh release upload "$TAG" /tmp/gz/*.gz --clobber
-          # chuyen cac gz cu dang nam trong repo sang Release roi xoa khoi repo
-          shopt -s nullglob
-          OLD=(inverse_mega/*.gz)
-          if [ ${#OLD[@]} -gt 0 ]; then
-            gh release upload "$TAG" "${OLD[@]}" --clobber
-            git rm -q "${OLD[@]}"
-          fi
           git config user.name github-actions; git config user.email actions@github.com
-          git add inverse_mega; git commit -m "scan_inverse_mega_auto ${D1}_${D2}" || true
+          git add scan_state; git commit -m "scan_inverse_mega_auto ${D1}_${D2}" || true
           for i in 1 2 3 4 5; do git pull --rebase && git push && break; sleep 8; done
       - name: chay cap ke tiep
         run: |
@@ -181,6 +174,6 @@ jobs:
           gh release upload "$TAG" all_seeds_mega.txt.gz ve_con_lai_mega_summary_${{ inputs.next_draw }}.txt --clobber
           if [ -f ve_con_lai_mega_${{ inputs.next_draw }}.txt ]; then gh release upload "$TAG" ve_con_lai_mega_${{ inputs.next_draw }}.txt --clobber; fi
           git config user.name github-actions; git config user.email actions@github.com
-          cp ve_con_lai_mega_summary_${{ inputs.next_draw }}.txt inverse_mega/ || true
-          git add inverse_mega; git commit -m "ve con lai mega ${{ inputs.next_draw }}" || true
+          mkdir -p ve_con_lai_auto; cp ve_con_lai_mega_summary_${{ inputs.next_draw }}.txt ve_con_lai_auto/ || true
+          git add ve_con_lai_auto; git commit -m "ve con lai mega ${{ inputs.next_draw }}" || true
           for i in 1 2 3 4 5; do git pull --rebase && git push && break; sleep 8; done

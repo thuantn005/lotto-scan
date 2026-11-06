@@ -46,7 +46,7 @@ jobs:
           todo = []
           for it in items:
               a, b = (int(v) for v in it.split(":"))
-              if a in rows and b in rows and a < b and not os.path.exists(f"inverse/first2_{a}_{b}.txt"):
+              if a in rows and b in rows and a < b and not os.path.exists(f"scan_state/first2_{a}_{b}.txt"):
                   todo.append((a, b))
           assert todo, "hang doi rong"
           d1, d2 = todo[0]; rest = ",".join(f"{a}:{b}" for a, b in todo[1:])
@@ -106,7 +106,7 @@ jobs:
       - name: gop ket qua
         run: |
           D1=${{ needs.prepare.outputs.d1 }}; D2=${{ needs.prepare.outputs.d2 }}
-          mkdir -p inverse; T=inverse/first2_${D1}_${D2}.txt
+          mkdir -p scan_state; T=scan_state/first2_${D1}_${D2}.txt
           cat parts/out_*.txt | sort -k2,2nr > full.txt
           {
             echo "SCAN_INVERSE_FIRST2 d1=$D1 (hit dau) d2=$D2 (hit thu 2), min_hits=${{ inputs.min_hits }}"
@@ -121,7 +121,7 @@ jobs:
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Lotto 5/35 inverse archive" --notes "first2_D1_D2.txt.gz (seed da quet)"
           gh release upload "$TAG" /tmp/gz/*.gz --clobber
           git config user.name github-actions; git config user.email actions@github.com
-          git add inverse; git commit -m "scan_inverse_first2 ${D1}_${D2}" || true
+          git add scan_state; git commit -m "scan_inverse_first2 ${D1}_${D2}" || true
           git pull --rebase || true; git push
       - name: chay cap ke tiep
         if: ${{ needs.prepare.outputs.rest != '' }}

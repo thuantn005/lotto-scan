@@ -1,0 +1,56 @@
+name: archive_inverse_dir (chay 1 LAN - day inverse/ va inverse_mega/ len Release roi xoa 2 thu muc khoi repo)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_lotto:
+        description: "Release cho Lotto 5/35 (thu muc inverse)"
+        default: "lotto535-inverse-archive"
+      tag_mega:
+        description: "Release cho Mega 6/45 (thu muc inverse_mega)"
+        default: "mega-inverse-archive"
+
+permissions:
+  contents: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN || github.token }}
+          ref: main
+      - name: Upload len Release (kiem tra du tung thu muc roi moi xoa)
+        run: |
+          set -e
+          mkdir -p scan_state
+          upload_dir () {
+            DIR=$1; TAG=$2
+            [ -d "$DIR" ] || { echo "bo qua: khong co $DIR"; return 0; }
+            if [ -n "$(find "$DIR" -mindepth 1 -type d)" ]; then echo "::error::$DIR co thu muc con, dung lai de khong mat file"; exit 1; fi
+            mapfile -t FILES < <(find "$DIR" -maxdepth 1 -type f | sort)
+            echo "$DIR: ${#FILES[@]} file -> $TAG"
+            [ ${#FILES[@]} -gt 0 ] || return 0
+            gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "$3" --notes "Noi dung thu muc $DIR/ cu (seed .txt.gz, ket qua .txt)"
+            gh release upload "$TAG" "${FILES[@]}" --clobber
+            gh release view "$TAG" --json assets -q '.assets[].name' | sort > /tmp/assets.txt
+            for f in "${FILES[@]}"; do grep -qx "$(basename "$f")" /tmp/assets.txt || { echo "::error::THIEU tren Release: $f"; exit 1; }; done
+            echo "$DIR: da kiem tra du ${#FILES[@]} file tren Release"
+          }
+          upload_dir inverse "${{ inputs.tag_lotto }}" "Lotto 5/35 inverse archive"
+          upload_dir inverse_mega "${{ inputs.tag_mega }}" "Mega inverse archive"
+      - name: Giu dau da quet trong scan_state/, xoa 2 thu muc, commit
+        run: |
+          cp inverse/first2_*_*.txt scan_state/ 2>/dev/null || true
+          cp inverse_mega/first2_mega_*_*.txt scan_state/ 2>/dev/null || true
+          echo "dau da quet: $(ls scan_state | wc -l)"
+          git rm -rq --ignore-unmatch inverse inverse_mega
+          for d in inverse/ inverse_mega/; do grep -qx "$d" .gitignore 2>/dev/null || echo "$d" >> .gitignore; done
+          git add scan_state .gitignore
+          git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chuyen inverse/ va inverse_mega/ sang Release (giu dau da quet trong scan_state/)"
+          for i in 1 2 3 4 5; do git pull --rebase -q origin main && git push origin main && break; sleep 8; done

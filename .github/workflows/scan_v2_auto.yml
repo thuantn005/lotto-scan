@@ -5,6 +5,8 @@ name: Cap nhat du lieu Lotto 5/35 (2 lan/ngay) + TU QUET seed inverse den khi co
 #   - kiem tra khong thieu ky
 #   - doi chieu ve du doan (ve_con_lai/) voi ket qua that, luu ve trung vao ve_trung/ (doi_chieu_ve.py)
 #   - sinh ve du doan ky tiep theo (ve_con_lai_auto.py), commit data/all.csv + ve_con_lai + ve_trung
+# THEM MOI: cao ket qua Mega 6/45 (dataset NhanAZ-Data + fallback xosominhngoc) vao data/mega_all.csv, commit cung data/all.csv.
+# THEM MOI: sau moi lan cap nhat ky moi, TU QUET CAP KY MOI NHAT (ky-1, ky) neu chua quet (dau da quet: scan_state/first2_A_B.txt).
 # THEM MOI (tu dong het): sau khi sinh ve, neu ve con lai > target thi tu quet them cap seed inverse
 #   (matrix 20 job, gz len Release lotto535-inverse-archive, tu goi lai workflow nay voi skip_update=true) cho den khi
 #   con <= target; khi dat target thi xoa gz cua cap thua khoi Release (giu file .txt nho trong repo lam dau da quet).
@@ -19,6 +21,8 @@ on:
     # chay LAI du phong (khi nguon du lieu len ket qua tre) - khong commit neu khong co gi moi
     - cron: "0 11 * * *"
     - cron: "0 19 * * *"
+    # Mega 6/45 quay Thu 4/Thu 6/CN luc 18:00 VN -> cao ket qua 18:40 VN = 11:40 UTC (cac ngay khac chi cap nhat, khong co ky moi)
+    - cron: "40 11 * * *"
   workflow_dispatch:
     inputs:
       skip_update:
@@ -38,6 +42,9 @@ on:
         default: "60"
       prune:
         description: "Tu xoa cap thua khi da dat target (true/false)"
+        default: "true"
+      scan_newest:
+        description: "true = luon quet cap ky moi nhat (d1=ky-1, d2=ky) truoc khi xet target"
         default: "true"
       auto_scan:
         description: "false = chi cap nhat + sinh ve, khong tu quet them"
@@ -97,10 +104,10 @@ jobs:
       - name: Doi chieu ve du doan voi ket qua that + luu ve trung
         run: python3 doi_chieu_ve.py
 
-      - name: Tai seed inverse (.txt.gz) tu Release (de ve_con_lai_auto.py doc duoc)
+      - name: Tai TOAN BO thu muc inverse tu Release (thu muc inverse khong con trong repo)
         run: |
           mkdir -p inverse
-          gh release download lotto535-inverse-archive --pattern 'first2_*.txt.gz' --dir inverse --skip-existing || echo "::warning::chua co Release gz, dung gz trong repo (neu con)"
+          gh release download lotto535-inverse-archive --dir inverse --skip-existing || echo "::warning::chua co Release gz, dung gz trong repo (neu con)"
           ls inverse/first2_*.txt.gz 2>/dev/null | wc -l
 
       - name: Sinh ve du doan ky tiep theo (loai inverse + danh sach 1-2 seed)
@@ -108,6 +115,17 @@ jobs:
         run: |
           pip install -q numpy pandas
           python3 ve_con_lai_auto.py
+
+      - name: Cao ket qua Mega 6/45 -> data/mega_all.csv (dataset + fallback, loi khong lam hong cac buoc khac)
+        continue-on-error: true
+        run: |
+          mkdir -p data
+          curl -fsL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/mega645/all.csv" -o data/mega_all.new || { echo "::warning::Tai dataset Mega that bai, dung file hien co + fallback"; : > data/mega_all.new; }
+          [ -s data/mega_all.new ] && python3 merge_all_csv.py --new data/mega_all.new --old data/mega_all.csv || echo "bo qua merge (khong co du lieu moi)"
+          rm -f data/mega_all.new
+          python3 scrape_mega_fallback.py --csv data/mega_all.csv --lookback-days 14 || echo "::warning::fallback Mega loi"
+          python3 check_mega_csv.py data/mega_all.csv || true
+          wc -l data/mega_all.csv
 
       - name: Commit data/all.csv + ve du doan + ve trung (luon chay, khong cho should_run)
         id: commit_data
@@ -119,6 +137,7 @@ jobs:
           git pull --rebase origin main
           git stash pop || true
           [ -f data/all.csv ] && git add data/all.csv || true
+          [ -f data/mega_all.csv ] && git add data/mega_all.csv || true
           git add ve_con_lai ve_trung 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "khong co gi de commit"
@@ -166,6 +185,7 @@ jobs:
       d2: ${{ steps.p.outputs.d2 }}
       ktotal: ${{ steps.p.outputs.ktotal }}
       matrix: ${{ steps.p.outputs.matrix }}
+      newest: ${{ steps.p.outputs.newest }}
       nxt: ${{ steps.p.outputs.nxt }}
     steps:
       - uses: actions/checkout@v4
@@ -189,11 +209,11 @@ jobs:
           BUSY: ${{ steps.busy.outputs.busy }}
           TARGET: ${{ inputs.target || '1' }}
           CHUNKS: ${{ inputs.chunks || '20' }}
+          SCAN_NEWEST: ${{ inputs.scan_newest || 'true' }}
         run: |
           if [ "$BUSY" = "true" ]; then echo "go=false" >> $GITHUB_OUTPUT; exit 0; fi
           mkdir -p rel
           gh release download lotto535-inverse-archive --pattern 'first2_*.txt.gz' --dir rel 2>/dev/null || echo "chua co Release/asset"
-          cp -n inverse/first2_*.txt.gz rel/ 2>/dev/null || true
           ls rel | wc -l
           python3 make_draws_rank.py
           NXT=$(python3 -c "print(max(int(l.split()[0]) for l in open('data/draws_rank.txt'))+1)")
@@ -202,17 +222,24 @@ jobs:
           import os, json, re
           plan = json.load(open("plan.json"))
           rows = {int(l.split()[0]): int(l.split()[1]) for l in open("data/draws_rank.txt")}
-          out = {"go": "true", "need_more": "true" if plan["need_more"] else "false", "nxt": plan["next_draw"]}
-          if plan["need_more"]:
-              done = set()
-              for f in os.listdir("inverse") if os.path.isdir("inverse") else []:
-                  m = re.fullmatch(r"first2_(\d+)_(\d+)\.txt", f)
-                  if m: done.add((int(m.group(1)), int(m.group(2))))
-              top = max(rows); pref = (top - 1) % 2
-              cand = [(a, a + 1) for a in range(top - 1, 0, -1) if a in rows and a + 1 in rows and (a, a + 1) not in done]
-              assert cand, "het cap de quet"
-              cand.sort(key=lambda p: (p[0] % 2 != pref, -p[0]))
-              d1, d2 = cand[0]
+          done = set()
+          for f in os.listdir("scan_state") if os.path.isdir("scan_state") else []:
+              m = re.fullmatch(r"first2_(\d+)_(\d+)\.txt", f)
+              if m: done.add((int(m.group(1)), int(m.group(2))))
+          top = max(rows)
+          newest = (top - 1, top)   # cap ky MOI NHAT trong du lieu
+          newest_pending = os.environ.get("SCAN_NEWEST", "true") == "true" and (top - 1) in rows and newest not in done
+          pending = newest_pending or plan["need_more"]
+          out = {"go": "true", "need_more": "true" if pending else "false", "nxt": plan["next_draw"], "newest": f"{newest[0]}_{newest[1]}", "newest_pending": str(newest_pending).lower()}
+          if pending:
+              if newest_pending:
+                  d1, d2 = newest
+              else:
+                  pref = (top - 1) % 2
+                  cand = [(a, a + 1) for a in range(top - 1, 0, -1) if a in rows and a + 1 in rows and (a, a + 1) not in done]
+                  assert cand, "het cap de quet"
+                  cand.sort(key=lambda p: (p[0] % 2 != pref, -p[0]))
+                  d1, d2 = cand[0]
               out.update(d1=d1, d2=d2, ktotal=(2**64 - 1 - rows[d1]) // 324632 + 1, matrix=json.dumps(list(range(int(os.environ["CHUNKS"])))))
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
               for k, v in out.items(): f.write(f"{k}={v}\n")
@@ -280,7 +307,7 @@ jobs:
       - name: Gop, gz len Release, ghi dau da quet
         run: |
           D1=${{ needs.plan.outputs.d1 }}; D2=${{ needs.plan.outputs.d2 }}
-          mkdir -p inverse /tmp/gz; T=inverse/first2_${D1}_${D2}.txt
+          mkdir -p scan_state /tmp/gz; T=scan_state/first2_${D1}_${D2}.txt
           cat parts/out_*.txt | sort -k2,2nr > full.txt
           NSEED=$(wc -l < full.txt); test "$NSEED" -gt 0
           {
@@ -294,12 +321,12 @@ jobs:
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Lotto 5/35 inverse archive" --notes "first2_D1_D2.txt.gz (seed da quet, do scan_v2_auto tao)"
           gh release upload "$TAG" /tmp/gz/*.gz --clobber
           git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add inverse; git commit -m "scan seed inverse ${D1}_${D2}" || true
+          git add scan_state; git commit -m "scan seed inverse ${D1}_${D2}" || true
           for i in 1 2 3 4 5; do git pull --rebase -q origin main && git push origin main && break; sleep 8; done
       - name: Tu goi lai vong tiep (bo qua cap nhat du lieu)
         run: |
           N=$(( ${{ inputs.pairs_added || '0' }} + 1 ))
-          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f pairs_added=$N
+          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f pairs_added=$N
 
   prune:
     needs: plan

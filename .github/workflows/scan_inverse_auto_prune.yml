@@ -75,8 +75,6 @@ jobs:
         run: |
           mkdir -p rel
           gh release download "${{ steps.cfg.outputs.tag }}" --pattern '*.txt.gz' --dir rel 2>/dev/null || echo "chua co Release/asset"
-          # gz con nam trong repo (chua archive) cung tinh
-          if [ "$GAME" = "mega" ]; then cp -n inverse_mega/*.txt.gz rel/ 2>/dev/null || true; else cp -n inverse/first2_*.txt.gz rel/ 2>/dev/null || true; fi
           ls rel | wc -l
       - id: p
         env:
@@ -84,8 +82,8 @@ jobs:
           TARGET: ${{ inputs.target }}
           CHUNKS: ${{ inputs.chunks }}
         run: |
-          if [ "$GAME" = "mega" ]; then python3 make_draws_rank_mega.py; RANK=data/draws_rank_mega.txt; MARK=inverse_mega; PRE=first2_mega_; MOD=8145060
-          else python3 make_draws_rank.py; RANK=data/draws_rank.txt; MARK=inverse; PRE=first2_; MOD=324632; fi
+          if [ "$GAME" = "mega" ]; then python3 make_draws_rank_mega.py; RANK=data/draws_rank_mega.txt; MARK=scan_state; PRE=first2_mega_; MOD=8145060
+          else python3 make_draws_rank.py; RANK=data/draws_rank.txt; MARK=scan_state; PRE=first2_; MOD=324632; fi
           python3 - <<PY
           import os, json, re
           rank = "$RANK"; mark = "$MARK"; pre = "$PRE"; mod = $MOD
@@ -175,7 +173,7 @@ jobs:
       - name: gop, gz len Release, ghi dau da quet
         run: |
           D1=${{ needs.plan.outputs.d1 }}; D2=${{ needs.plan.outputs.d2 }}
-          if [ "$GAME" = "mega" ]; then MARK=inverse_mega; PRE=first2_mega_; else MARK=inverse; PRE=first2_; fi
+          MARK=scan_state; if [ "$GAME" = "mega" ]; then PRE=first2_mega_; else PRE=first2_; fi
           mkdir -p $MARK /tmp/gz; T=$MARK/${PRE}${D1}_${D2}.txt
           cat parts/out_*.txt | sort -k2,2nr > full.txt
           NSEED=$(wc -l < full.txt); test "$NSEED" -gt 0
