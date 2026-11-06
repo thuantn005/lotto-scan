@@ -1,4 +1,5 @@
 # ky | ngay | ket qua | con_lai (so ve, ve J1 trong danh sach?, so ve trung >=3 so) | 1_2_seed (nhu tren)
 990 | 2026-11-05 | 01-02-10-27-30 + 10 | con_lai: 5 ve, J1=khong, >=3 so: 0 | 1_2_seed: 598 ve, J1=khong, >=3 so: 3
+991 | 2026-11-06 | 01-16-24-29-33 + 05 | con_lai: 2 ve, J1=khong, >=3 so: 0 | 1_2_seed: 324 ve, J1=khong, >=3 so: 2
 
-TONG KET 1 ky: ve J1 nam trong danh sach con_lai 0 ky (ky vong ngau nhien ~0.0000 ky)
+TONG KET 2 ky: ve J1 nam trong danh sach con_lai 0 ky (ky vong ngau nhien ~0.0000 ky)
