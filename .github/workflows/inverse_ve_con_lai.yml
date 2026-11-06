@@ -50,6 +50,11 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install numpy pandas
+      - name: tai seed inverse tu Release
+        run: |
+          mkdir -p inverse
+          gh release download lotto535-inverse-archive --pattern 'first2_*.txt.gz' --dir inverse --skip-existing
+          ls inverse/first2_*.txt.gz | wc -l
       - id: calc
         run: python3 ve_con_lai_auto.py
       - name: Upload danh sach ve bi loai

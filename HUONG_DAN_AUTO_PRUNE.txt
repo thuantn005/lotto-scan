@@ -1,0 +1,31 @@
+GOI NAY GOM
+  .github/workflows/scan_v2_auto.yml              <- GHI DE: cap nhat du lieu + sinh ve (nhu cu) + TU QUET den khi con target ve + tia cap thua (Lotto 5/35)
+  .github/workflows/scan_inverse_auto_prune.yml   <- MOI: quet them cap cho den khi con <= target ve, roi tia cap thua
+  .github/workflows/archive_to_release.yml        <- chay 1 LAN: chuyen moi .txt.gz sang Release, xoa khoi repo
+  .github/workflows/scan_inverse_first2.yml       <- ban sua: cap quet moi len Release (ghi de ban cu)
+  .github/workflows/inverse_ve_con_lai.yml        <- ban sua: tai gz tu Release truoc khi tinh (ghi de ban cu)
+  .github/workflows/scan_inverse_mega_auto.yml    <- Mega: tu quet du N cap (neu muon dung ban N cap thay vi auto_prune)
+  auto_prune.py                                   <- tinh ve con lai + chon tap cap nho nhat
+  ve_con_lai_mega_release.py                      <- loai ve Mega doc truc tiep tu thu muc gz
+  THU_GON_LICH_SU_GIT.txt                         <- git filter-repo de .git thuc su nhe
+
+CACH DUNG (Lotto 5/35 - chi can scan_v2_auto.yml)
+  Sau buoc 1-2 duoi day, scan_v2_auto tu chay theo lich 4 lan/ngay: cap nhat -> sinh ve -> neu con > target thi tu quet them cap (tu goi lai skip_update=true) -> dat target thi tia cap thua.
+  Chay tay: Actions -> scan_v2_auto -> Run workflow (auto_scan=false de chi cap nhat, target, max_new_pairs=60 cap/chuoi).
+  scan_inverse_auto_prune.yml con dung cho Mega (game=mega) hoac chay doc lap.
+
+CACH DUNG CHUNG
+  1. Giai nen vao goc repo (ghi de file cung ten), commit, push.
+  2. Actions -> archive_to_release -> Run workflow (1 lan). Kiem tra Release da du file.
+  3. Actions -> scan_inverse_auto_prune -> Run workflow:
+       game=lotto535 (hoac mega), target=1, next_draw=<ky can tinh> (de trong = ky moi nhat+1)
+     Workflow tu lap: con lai > target -> quet them 1 cap -> tu chay lai; <= target -> tia cap thua -> xuat
+     ve_con_lai_<game>_<ky>.txt + plan_<game>.json (len Release va thu muc ve_con_lai_auto/).
+
+LUU Y
+  * Tia cap: dau "da quet" la file .txt nho trong repo, KHONG xoa -> khong quet lai cap da tia.
+  * Ve con lai phu thuoc KY (hash co ma ky). Sang ky sau, tap cap da tia co the khong con du -> phai chay lai.
+  * Stop khi con <= target; neu mot cap lam con lai nhay tu >1 xuong 0 thi ket qua co the la 0, khong dung dung 1.
+  * Repo private ton nhieu phut runner (moi cap ~20 job). max_new_pairs gioi han so cap moi trong 1 chuoi.
+  * Da test: auto_prune.py (lotto535 43 cap ky 990 -> con 5; target=5 tia 2 cap; mega 10 cap ky 1585 -> 5.788.524),
+    YAML hop le. CHUA chay thuc tren GitHub Actions.

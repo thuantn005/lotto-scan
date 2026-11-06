@@ -1,0 +1,6 @@
+Xoa file khoi repo KHONG lam nho thu muc .git (lich su van giu ban cu). Muon repo that su nhe:
+  pip install git-filter-repo
+  git clone --mirror https://github.com/<ban>/lotto-scan.git && cd lotto-scan.git
+  git filter-repo --path-glob 'inverse/first2_*.txt.gz' --path-glob 'inverse_mega/*.txt.gz' --invert-paths
+  git push --force
+(Chi lam SAU KHI archive_to_release xong va Release du file. Lam xong thi moi nguoi clone lai repo.)

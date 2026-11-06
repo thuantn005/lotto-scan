@@ -1,0 +1,44 @@
+name: archive_to_release (chay 1 lan - chuyen .txt.gz seed Lotto 5/35 va Mega sang Release, xoa khoi repo)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lotto 5/35 -> Release lotto535-inverse-archive
+        run: |
+          shopt -s nullglob
+          FILES=(inverse/first2_*.txt.gz)
+          echo "so file: ${#FILES[@]}"
+          if [ ${#FILES[@]} -gt 0 ]; then
+            gh release view lotto535-inverse-archive >/dev/null 2>&1 || gh release create lotto535-inverse-archive --title "Lotto 5/35 inverse archive" --notes "first2_D1_D2.txt.gz (seed da quet)"
+            gh release upload lotto535-inverse-archive "${FILES[@]}" --clobber
+            # kiem tra du asset tren Release roi moi xoa
+            N=$(gh release view lotto535-inverse-archive --json assets -q '.assets|length')
+            test "$N" -ge ${#FILES[@]}
+            git rm -q "${FILES[@]}"
+          fi
+      - name: Mega -> Release mega-inverse-archive
+        run: |
+          shopt -s nullglob
+          FILES=(inverse_mega/*.txt.gz)
+          echo "so file: ${#FILES[@]}"
+          if [ ${#FILES[@]} -gt 0 ]; then
+            gh release view mega-inverse-archive >/dev/null 2>&1 || gh release create mega-inverse-archive --title "Mega inverse archive" --notes "first2_mega_D1_D2.txt.gz (seed da quet)"
+            gh release upload mega-inverse-archive "${FILES[@]}" --clobber
+            git rm -q "${FILES[@]}"
+          fi
+      - name: commit
+        run: |
+          git config user.name github-actions; git config user.email actions@github.com
+          git commit -m "chuyen .txt.gz seed sang Release" || echo "khong co gi de commit"
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push && break; sleep 8; done

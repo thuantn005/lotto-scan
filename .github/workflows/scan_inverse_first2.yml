@@ -115,8 +115,11 @@ jobs:
             echo "--- 100 seed nhieu hit nhat: seed so_hit cac_ky ---"
             head -100 full.txt
           } > $T
-          gzip -9 -c full.txt > $T.gz
-          ls -l $T $T.gz
+          mkdir -p /tmp/gz; gzip -9 -c full.txt > /tmp/gz/first2_${D1}_${D2}.txt.gz
+          ls -l $T /tmp/gz/*.gz
+          TAG=lotto535-inverse-archive
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Lotto 5/35 inverse archive" --notes "first2_D1_D2.txt.gz (seed da quet)"
+          gh release upload "$TAG" /tmp/gz/*.gz --clobber
           git config user.name github-actions; git config user.email actions@github.com
           git add inverse; git commit -m "scan_inverse_first2 ${D1}_${D2}" || true
           git pull --rebase || true; git push

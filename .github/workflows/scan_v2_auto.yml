@@ -1,10 +1,13 @@
-name: Cap nhat du lieu Lotto 5/35 (2 lan/ngay theo lich Vietlott) - KHONG quet seed
+name: Cap nhat du lieu Lotto 5/35 (2 lan/ngay) + TU QUET seed inverse den khi con target ve + tia cap thua
 
 # Workflow nay cao ket qua (6 so + so dac biet) cap nhat data/all.csv, doi chieu ve du doan va sinh ve ky tiep:
 #   - tai data/all.csv, bo sung ky con thieu tu nguon du phong
 #   - kiem tra khong thieu ky
 #   - doi chieu ve du doan (ve_con_lai/) voi ket qua that, luu ve trung vao ve_trung/ (doi_chieu_ve.py)
 #   - sinh ve du doan ky tiep theo (ve_con_lai_auto.py), commit data/all.csv + ve_con_lai + ve_trung
+# THEM MOI (tu dong het): sau khi sinh ve, neu ve con lai > target thi tu quet them cap seed inverse
+#   (matrix 20 job, gz len Release lotto535-inverse-archive, tu goi lai workflow nay voi skip_update=true) cho den khi
+#   con <= target; khi dat target thi xoa gz cua cap thua khoi Release (giu file .txt nho trong repo lam dau da quet).
 # DA BO tu truoc: quet l1-1 / l1-2 / l1-3 (scan_per_draw), gop L2, va job du doan l1-3.
 
 on:
@@ -16,22 +19,50 @@ on:
     # chay LAI du phong (khi nguon du lieu len ket qua tre) - khong commit neu khong co gi moi
     - cron: "0 11 * * *"
     - cron: "0 19 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      skip_update:
+        description: "true = bo qua buoc cap nhat du lieu (dung cho vong quet tu goi lai)"
+        default: "false"
+      target:
+        description: "So ve con lai muc tieu"
+        default: "1"
+      chunks:
+        description: "So job quet song song (<=20)"
+        default: "20"
+      min_hits:
+        description: "Ghi seed co tong >= so ky trung nay"
+        default: "2"
+      max_new_pairs:
+        description: "Toi da so cap quet moi trong 1 chuoi (chong chay vo han)"
+        default: "60"
+      prune:
+        description: "Tu xoa cap thua khi da dat target (true/false)"
+        default: "true"
+      auto_scan:
+        description: "false = chi cap nhat + sinh ve, khong tu quet them"
+        default: "true"
+      pairs_added:
+        description: "(noi bo) so cap da quet trong chuoi nay"
+        default: "0"
   push:
     tags:
       - 'run-*'
 
 permissions:
   contents: write
-
-concurrency:
-  group: update-data-single-runner
-  cancel-in-progress: false
+  actions: write
 
 jobs:
   update_data:
+    if: ${{ inputs.skip_update != 'true' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
+    concurrency:
+      group: update-data-single-runner
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -65,6 +96,12 @@ jobs:
 
       - name: Doi chieu ve du doan voi ket qua that + luu ve trung
         run: python3 doi_chieu_ve.py
+
+      - name: Tai seed inverse (.txt.gz) tu Release (de ve_con_lai_auto.py doc duoc)
+        run: |
+          mkdir -p inverse
+          gh release download lotto535-inverse-archive --pattern 'first2_*.txt.gz' --dir inverse --skip-existing || echo "::warning::chua co Release gz, dung gz trong repo (neu con)"
+          ls inverse/first2_*.txt.gz 2>/dev/null | wc -l
 
       - name: Sinh ve du doan ky tiep theo (loai inverse + danh sach 1-2 seed)
         id: sinh_ve
@@ -109,3 +146,192 @@ jobs:
         run: |
           echo "::error::Con thieu ky - se tu thu lai o lan chay tiep theo (cron du phong)"
           exit 1
+
+  # ===================== TU QUET seed inverse + TIA CAP (Lotto 5/35) =====================
+  plan:
+    needs: update_data
+    # chay sau khi cap nhat xong (hoac khi vong quet tu goi lai bo qua cap nhat)
+    if: ${{ always() && inputs.auto_scan != 'false' && (needs.update_data.result == 'success' || needs.update_data.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    concurrency:
+      group: scan-loop-plan
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+    outputs:
+      go: ${{ steps.p.outputs.go }}
+      need_more: ${{ steps.p.outputs.need_more }}
+      d1: ${{ steps.p.outputs.d1 }}
+      d2: ${{ steps.p.outputs.d2 }}
+      ktotal: ${{ steps.p.outputs.ktotal }}
+      matrix: ${{ steps.p.outputs.matrix }}
+      nxt: ${{ steps.p.outputs.nxt }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q numpy pandas
+      - name: Tranh chay chong (khong de 2 chuoi quet song song)
+        id: busy
+        run: |
+          OTHERS=$(gh run list --workflow scan_v2_auto.yml --json databaseId,status -q "[.[]|select(.databaseId != $GITHUB_RUN_ID)|select(.status==\"in_progress\" or .status==\"queued\" or .status==\"waiting\" or .status==\"pending\")]|length")
+          echo "run khac dang chay/cho: $OTHERS"
+          # chay theo lich/thu cong chi bat dau chuoi quet khi khong co run nao khac; vong tu goi lai (skip_update=true) luon di tiep
+          if [ "${{ inputs.skip_update }}" != "true" ] && [ "$OTHERS" != "0" ]; then echo "busy=true" >> $GITHUB_OUTPUT; else echo "busy=false" >> $GITHUB_OUTPUT; fi
+      - name: Tai gz tu Release + lap ke hoach
+        id: p
+        env:
+          BUSY: ${{ steps.busy.outputs.busy }}
+          TARGET: ${{ inputs.target || '1' }}
+          CHUNKS: ${{ inputs.chunks || '20' }}
+        run: |
+          if [ "$BUSY" = "true" ]; then echo "go=false" >> $GITHUB_OUTPUT; exit 0; fi
+          mkdir -p rel
+          gh release download lotto535-inverse-archive --pattern 'first2_*.txt.gz' --dir rel 2>/dev/null || echo "chua co Release/asset"
+          cp -n inverse/first2_*.txt.gz rel/ 2>/dev/null || true
+          ls rel | wc -l
+          python3 make_draws_rank.py
+          NXT=$(python3 -c "print(max(int(l.split()[0]) for l in open('data/draws_rank.txt'))+1)")
+          python3 auto_prune.py lotto535 rel "$NXT" "$TARGET"
+          python3 - <<PY
+          import os, json, re
+          plan = json.load(open("plan.json"))
+          rows = {int(l.split()[0]): int(l.split()[1]) for l in open("data/draws_rank.txt")}
+          out = {"go": "true", "need_more": "true" if plan["need_more"] else "false", "nxt": plan["next_draw"]}
+          if plan["need_more"]:
+              done = set()
+              for f in os.listdir("inverse") if os.path.isdir("inverse") else []:
+                  m = re.fullmatch(r"first2_(\d+)_(\d+)\.txt", f)
+                  if m: done.add((int(m.group(1)), int(m.group(2))))
+              top = max(rows); pref = (top - 1) % 2
+              cand = [(a, a + 1) for a in range(top - 1, 0, -1) if a in rows and a + 1 in rows and (a, a + 1) not in done]
+              assert cand, "het cap de quet"
+              cand.sort(key=lambda p: (p[0] % 2 != pref, -p[0]))
+              d1, d2 = cand[0]
+              out.update(d1=d1, d2=d2, ktotal=(2**64 - 1 - rows[d1]) // 324632 + 1, matrix=json.dumps(list(range(int(os.environ["CHUNKS"])))))
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              for k, v in out.items(): f.write(f"{k}={v}\n")
+          print(out)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plan_files
+          path: |
+            plan.json
+            ve_con_lai_*.txt
+            data/draws_rank.txt
+          if-no-files-found: ignore
+
+  scan:
+    needs: plan
+    if: ${{ needs.plan.outputs.go == 'true' && needs.plan.outputs.need_more == 'true' && fromJson(inputs.pairs_added || '0') < fromJson(inputs.max_new_pairs || '60') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        part: ${{ fromJson(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/download-artifact@v4
+        with:
+          name: plan_files
+          path: pf
+      - name: build + chay phan ${{ matrix.part }}
+        run: |
+          g++ -O3 -march=native -pthread -std=c++17 scan_inverse_first2.cpp -o scanner
+          K=${{ needs.plan.outputs.ktotal }}; N=${{ inputs.chunks || '20' }}; P=${{ matrix.part }}
+          KB=$(python3 -c "print($K*$P//$N)"); KE=$(python3 -c "print($K*($P+1)//$N)")
+          ./scanner pf/data/draws_rank.txt ${{ needs.plan.outputs.d1 }} ${{ needs.plan.outputs.d2 }} $KB $KE $(nproc) out_$P.txt ${{ inputs.min_hits || '2' }} | tee summary_$P.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: part_${{ matrix.part }}
+          path: |
+            out_*.txt
+            summary_*.txt
+
+  merge:
+    needs: [plan, scan]
+    if: ${{ needs.scan.result == 'success' }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: scan-loop-merge
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: lotto535-inverse-archive
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          ref: main
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: part_*
+          path: parts
+          merge-multiple: true
+      - name: Gop, gz len Release, ghi dau da quet
+        run: |
+          D1=${{ needs.plan.outputs.d1 }}; D2=${{ needs.plan.outputs.d2 }}
+          mkdir -p inverse /tmp/gz; T=inverse/first2_${D1}_${D2}.txt
+          cat parts/out_*.txt | sort -k2,2nr > full.txt
+          NSEED=$(wc -l < full.txt); test "$NSEED" -gt 0
+          {
+            echo "SCAN_INVERSE_FIRST2 d1=$D1 d2=$D2 min_hits=${{ inputs.min_hits || '2' }}"
+            echo "--- tong ket tung phan ---"; cat parts/summary_*.txt
+            echo "--- tong so seed ghi: $NSEED (gz tren Release $TAG) ---"
+            echo "--- 100 seed nhieu hit nhat: seed so_hit cac_ky ---"
+            head -100 full.txt
+          } > $T
+          gzip -9 -c full.txt > /tmp/gz/first2_${D1}_${D2}.txt.gz
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Lotto 5/35 inverse archive" --notes "first2_D1_D2.txt.gz (seed da quet, do scan_v2_auto tao)"
+          gh release upload "$TAG" /tmp/gz/*.gz --clobber
+          git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add inverse; git commit -m "scan seed inverse ${D1}_${D2}" || true
+          for i in 1 2 3 4 5; do git pull --rebase -q origin main && git push origin main && break; sleep 8; done
+      - name: Tu goi lai vong tiep (bo qua cap nhat du lieu)
+        run: |
+          N=$(( ${{ inputs.pairs_added || '0' }} + 1 ))
+          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f pairs_added=$N
+
+  prune:
+    needs: plan
+    if: ${{ needs.plan.outputs.go == 'true' && needs.plan.outputs.need_more == 'false' }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: scan-loop-merge
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: lotto535-inverse-archive
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          ref: main
+      - uses: actions/download-artifact@v4
+        with:
+          name: plan_files
+          path: pf
+      - name: Xoa cap thua khoi Release, xuat ve con lai
+        run: |
+          cat pf/plan.json
+          if [ "${{ inputs.prune || 'true' }}" = "true" ]; then
+            for p in $(python3 -c "import json;print(' '.join(json.load(open('pf/plan.json'))['drop']))"); do
+              echo "xoa first2_${p}.txt.gz khoi Release"
+              gh release delete-asset "$TAG" "first2_${p}.txt.gz" -y || true
+            done
+          fi
+          mkdir -p ve_con_lai_auto; cp pf/plan.json ve_con_lai_auto/plan_lotto535.json
+          cp pf/ve_con_lai_lotto535_*.txt ve_con_lai_auto/ 2>/dev/null || true
+          gh release upload "$TAG" ve_con_lai_auto/* --clobber || true
+          git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ve_con_lai_auto; git commit -m "ve con lai (tia cap) ky ${{ needs.plan.outputs.nxt }}" || true
+          for i in 1 2 3 4 5; do git pull --rebase -q origin main && git push origin main && break; sleep 8; done
