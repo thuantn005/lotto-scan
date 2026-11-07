@@ -1,6 +1,6 @@
 # ky 995: so ve muc 1 / muc 2 cua TUNG CAP (chi tiet ve: out_muc/muc_theo_cap_995.txt.gz tren Release)
 # cap | muc1 | muc2
-15:16 | 889855 | 139387
+916:917 | 889765 | 139104
 918:919 | 890046 | 138935
 920:921 | 889005 | 138885
 922:923 | 889176 | 137916
