@@ -43,6 +43,9 @@ on:
       prune:
         description: "Tu xoa cap thua khi da dat target (true/false)"
         default: "true"
+      max_pairs:
+        description: "Chi dung N cap MOI NHAT (cua so truot); cap cu hon bi xoa khoi Release. 0 = khong gioi han"
+        default: "47"
       scan_newest:
         description: "true = luon quet cap ky moi nhat (d1=ky-1, d2=ky) truoc khi xet target"
         default: "true"
@@ -101,8 +104,20 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Doi chieu ve du doan voi ket qua that + luu ve trung
-        run: python3 doi_chieu_ve.py
+      - name: Tai seed (cap) tu Release de doi chieu muc 1 / muc 2 theo cap
+        run: |
+          mkdir -p inverse
+          gh release download lotto535-inverse-archive --pattern 'first2_*.txt.gz' --dir inverse --skip-existing || echo "::warning::chua co gz tren Release, bo qua doi chieu muc theo cap"
+          ls inverse/first2_*.txt.gz 2>/dev/null | wc -l
+
+      - name: Doi chieu ve du doan voi ket qua that + luu ve trung (ca muc 1 / muc 2 theo cap)
+        env:
+          USE_PAIRS: ${{ inputs.max_pairs || '47' }}
+          MIN_MATCH: "4"
+          MUC_LAST: "3"
+        run: |
+          pip install -q numpy pandas
+          python3 doi_chieu_ve.py
 
       - name: Tai TOAN BO thu muc inverse tu Release (thu muc inverse khong con trong repo)
         run: |
@@ -114,7 +129,15 @@ jobs:
         id: sinh_ve
         run: |
           pip install -q numpy pandas
-          python3 ve_con_lai_auto.py
+          gh release view lotto535-inverse-archive --json assets -q '.assets[].name' > release_assets.txt 2>/dev/null || : > release_assets.txt
+          USE_PAIRS=${{ inputs.max_pairs || '47' }} python3 ve_con_lai_auto.py
+          # chi tiet muc 1/muc 2 theo cap (lon) -> Release, giu ban moi nhat, khong commit
+          if ls out_muc/*.gz >/dev/null 2>&1; then
+            gh release upload lotto535-inverse-archive out_muc/*.gz --clobber
+            KEEPF=$(basename $(ls out_muc/*.gz | head -1))
+            for n in $(grep '^muc_theo_cap_' release_assets.txt); do [ "$n" = "$KEEPF" ] || gh release delete-asset lotto535-inverse-archive "$n" -y || true; done
+          fi
+          rm -rf out_muc release_assets.txt
 
       - name: Cao ket qua Mega 6/45 -> data/mega_all.csv (dataset + fallback, loi khong lam hong cac buoc khac)
         continue-on-error: true
@@ -127,6 +150,28 @@ jobs:
           python3 check_mega_csv.py data/mega_all.csv || true
           wc -l data/mega_all.csv
 
+      - name: Doi chieu ve MEGA con lai voi ket qua that + luu ve trung
+        continue-on-error: true
+        run: |
+          pip install -q numpy
+          python3 doi_chieu_mega.py
+
+      - name: Sinh ve du doan MEGA ky tiep theo (loai bang seed inverse tren Release mega-inverse-archive)
+        continue-on-error: true
+        run: |
+          pip install -q numpy pandas
+          mkdir -p relmega ve_con_lai_mega
+          gh release download mega-inverse-archive --pattern 'first2_mega_*.txt.gz' --dir relmega --skip-existing || { echo "::warning::chua co gz Mega tren Release"; exit 0; }
+          ls relmega | wc -l
+          NXT=$(python3 -c "import csv;print(max(int(r['draw_id']) for r in csv.DictReader(open('data/mega_all.csv')) if r['draw_id'].isdigit())+1)")
+          echo "ky Mega tiep theo: $NXT"
+          python3 ve_con_lai_mega_release.py relmega "$NXT" 400000
+          mv ve_con_lai_mega_summary_$NXT.txt ve_con_lai_mega/ 
+          [ -f ve_con_lai_mega_$NXT.txt ] && mv ve_con_lai_mega_$NXT.txt ve_con_lai_mega/ || echo "so ve con lai > 400000, chi ghi tom tat"
+          rm -rf relmega
+          ls -1 ve_con_lai_mega/ve_con_lai_mega_[0-9]*.txt 2>/dev/null | sort | head -n -3 | xargs -r rm -f   # giu 3 ky gan nhat
+          cat ve_con_lai_mega/ve_con_lai_mega_summary_$NXT.txt
+
       - name: Commit data/all.csv + ve du doan + ve trung (luon chay, khong cho should_run)
         id: commit_data
         run: |
@@ -138,7 +183,7 @@ jobs:
           git stash pop || true
           [ -f data/all.csv ] && git add data/all.csv || true
           [ -f data/mega_all.csv ] && git add data/mega_all.csv || true
-          git add ve_con_lai ve_trung 2>/dev/null || true
+          git add ve_con_lai ve_trung ve_con_lai_mega ve_trung_mega 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "khong co gi de commit"
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -209,12 +254,22 @@ jobs:
           BUSY: ${{ steps.busy.outputs.busy }}
           TARGET: ${{ inputs.target || '1' }}
           CHUNKS: ${{ inputs.chunks || '20' }}
+          MAXP: ${{ inputs.max_pairs || '47' }}
           SCAN_NEWEST: ${{ inputs.scan_newest || 'true' }}
         run: |
           if [ "$BUSY" = "true" ]; then echo "go=false" >> $GITHUB_OUTPUT; exit 0; fi
           mkdir -p rel
           gh release download lotto535-inverse-archive --pattern 'first2_*.txt.gz' --dir rel 2>/dev/null || echo "chua co Release/asset"
           ls rel | wc -l
+          python3 - <<PY
+          import os, re, glob
+          mx = int(os.environ["MAXP"])
+          fs = sorted(glob.glob("rel/first2_*_*.txt.gz"), key=lambda f: -int(re.search(r"first2_(\d+)_", f).group(1)))
+          old = fs[mx:] if mx > 0 else []
+          open("old_pairs.txt", "w").write("\n".join(os.path.basename(f) for f in old))
+          for f in old: os.remove(f)
+          print("giu", len(fs) - len(old), "cap moi nhat, cap cu hon se bi xoa:", len(old))
+          PY
           python3 make_draws_rank.py
           NXT=$(python3 -c "print(max(int(l.split()[0]) for l in open('data/draws_rank.txt'))+1)")
           python3 auto_prune.py lotto535 rel "$NXT" "$TARGET"
@@ -229,7 +284,8 @@ jobs:
           top = max(rows)
           newest = (top - 1, top)   # cap ky MOI NHAT trong du lieu
           newest_pending = os.environ.get("SCAN_NEWEST", "true") == "true" and (top - 1) in rows and newest not in done
-          pending = newest_pending or plan["need_more"]
+          windowed = int(os.environ["MAXP"]) > 0 and plan["pairs"] >= int(os.environ["MAXP"])   # cua so da du N cap -> khong quet them cap cu
+          pending = newest_pending or (plan["need_more"] and not windowed)
           out = {"go": "true", "need_more": "true" if pending else "false", "nxt": plan["next_draw"], "newest": f"{newest[0]}_{newest[1]}", "newest_pending": str(newest_pending).lower()}
           if pending:
               if newest_pending:
@@ -250,6 +306,7 @@ jobs:
           name: plan_files
           path: |
             plan.json
+            old_pairs.txt
             ve_con_lai_*.txt
             data/draws_rank.txt
           if-no-files-found: ignore
@@ -326,7 +383,7 @@ jobs:
       - name: Tu goi lai vong tiep (bo qua cap nhat du lieu)
         run: |
           N=$(( ${{ inputs.pairs_added || '0' }} + 1 ))
-          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f pairs_added=$N
+          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '47' }} -f pairs_added=$N
 
   prune:
     needs: plan
@@ -351,10 +408,17 @@ jobs:
         run: |
           cat pf/plan.json
           if [ "${{ inputs.prune || 'true' }}" = "true" ]; then
-            for p in $(python3 -c "import json;print(' '.join(json.load(open('pf/plan.json'))['drop']))"); do
-              echo "xoa first2_${p}.txt.gz khoi Release"
-              gh release delete-asset "$TAG" "first2_${p}.txt.gz" -y || true
-            done
+            # cua so truot: xoa gz cua cap cu hon N cap moi nhat khoi Release (dau da quet .txt van o scan_state/)
+            if [ -s pf/old_pairs.txt ]; then
+              while read -r n; do echo "xoa $n khoi Release"; gh release delete-asset "$TAG" "$n" -y || true; done < pf/old_pairs.txt
+            fi
+            # max_pairs=0: che do cu - tia cap thua theo bao phu
+            if [ "${{ inputs.max_pairs || '47' }}" = "0" ]; then
+              for p in $(python3 -c "import json;print(' '.join(json.load(open('pf/plan.json'))['drop']))"); do
+                echo "xoa first2_${p}.txt.gz khoi Release"
+                gh release delete-asset "$TAG" "first2_${p}.txt.gz" -y || true
+              done
+            fi
           fi
           mkdir -p ve_con_lai_auto; cp pf/plan.json ve_con_lai_auto/plan_lotto535.json
           cp pf/ve_con_lai_lotto535_*.txt ve_con_lai_auto/ 2>/dev/null || true

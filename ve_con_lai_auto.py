@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Tu dong: loai ve Lotto 5/35 bang cac seed inverse (inverse/first2_*.txt.gz + seed 4 hit) cho ky tiep theo.
-Ghi vao ve_con_lai/: con_lai_<ky>.txt, 1_2_seed_<ky>.txt, thong_ke_<ky>.txt (+ loai_<ky>.txt.gz neu EXPORT_LOAI=true).
+Ghi vao ve_con_lai/: con_lai_<ky>.txt, muc1_<ky>.txt (ve do dung 1 seed), muc2_<ky>.txt (ve do dung 2 seed), nhom theo cap, thong_ke_<ky>.txt (+ loai_<ky>.txt.gz neu EXPORT_LOAI=true).
 Neu con lai > TARGET: de xuat hang doi cap quet them (GITHUB_OUTPUT: next_queue).
 Bien moi truong: DRAW (de trong = tu tinh ky sap quay), TARGET (mac dinh 1), MAX_PAIRS (12), EXPORT_LOAI (false), KEEP (10)."""
 import os, re, glob, gzip, math, datetime as dt
@@ -43,7 +43,10 @@ b = LC.build_binom(); lut = LC.build_rank_to_mask(b)
 def dec(v):
     mk = lut[v // 12]; return '-'.join(f'{x:02d}' for x in range(1, 36) if mk >> (x - 1) & 1) + f' + {v % 12 + 1:02d}'
 
-files = sorted(glob.glob('inverse/first2_*_*.txt.gz'))
+USE = int(os.environ.get('USE_PAIRS') or 47)   # gioi han: chi dung N cap MOI NHAT (d1 lon nhat); 0 = khong gioi han
+files = sorted(glob.glob('inverse/first2_*_*.txt.gz'), key=lambda f: -int(re.search(r'first2_(\d+)_', f).group(1)))
+if USE > 0: files = files[:USE]
+files = sorted(files)
 pairs = []; data = {}; cnt = np.zeros(N, np.int32); nseed = 0
 for f in files:
     a, bb = [int(x) for x in re.search(r'first2_(\d+)_(\d+)', f).groups()]; pairs.append((a, bb))
@@ -60,13 +63,36 @@ rem = np.nonzero(~excl)[0]; R = len(rem)
 os.makedirs('ve_con_lai', exist_ok=True)
 with open(f've_con_lai/con_lai_{D}.txt', 'w') as o:
     for v in rem: o.write(dec(int(v)) + '\n')
-sel = np.nonzero((cnt >= 1) & (cnt <= 2))[0]; found = {}
-for pr, s in data.items():
-    t = tid(s, D); m = np.isin(t, sel)
-    for sd, tt in zip(s[m], t[m]): found.setdefault(int(tt), []).append((f'{pr[0]}:{pr[1]}', int(sd)))
-with open(f've_con_lai/1_2_seed_{D}.txt', 'w') as o:
-    o.write('# ve | so seed | cap:seed (chi ve do 1 hoac 2 seed sinh ra)\n')
-    for v in sel: o.write(dec(int(v)) + f' | {int(cnt[v])} | ' + ' ; '.join(f'{t}:{sd}' for t, sd in found[int(v)]) + '\n')
+# ---- Muc 1 / Muc 2 tinh RIENG TUNG CAP (khong xet cap khac) ------------------------------------
+# muc 1 = ve do DUNG 1 seed cua cap do sinh ra; muc 2 = ve do DUNG 2 seed cua cap do sinh ra.
+# Chi tiet (rat lon) ghi vao out_muc/muc_theo_cap_<ky>.txt.gz (workflow day len Release, KHONG commit); bang dem theo cap ghi vao ve_con_lai/.
+rank_str = []
+for r in range(C):
+    mk = lut[r]; rank_str.append('-'.join(f'{x:02d}' for x in range(1, 36) if mk >> (x - 1) & 1))
+sp_str = [f' + {i + 1:02d}' for i in range(12)]
+os.makedirs('out_muc', exist_ok=True); per_stats = []
+class _Null:
+    def write(self, *a): pass
+    def writelines(self, *a): pass
+    def __enter__(self): return self
+    def __exit__(self, *a): return False
+# da co asset tren Release (release_assets.txt do workflow ghi) -> khong sinh lai file chi tiet, chi dem
+_have = os.path.exists('release_assets.txt') and f'muc_theo_cap_{D}.txt.gz' in open('release_assets.txt').read().split()
+if _have: print('muc_theo_cap da co tren Release, bo qua ghi chi tiet')
+with (_Null() if _have else gzip.open(f'out_muc/muc_theo_cap_{D}.txt.gz', 'wt')) as o:
+    o.write(f'# ky {D}: moi cap RIENG - muc 1 = ve do DUNG 1 seed cua cap do; muc 2 = DUNG 2 seed cua cap do (khong xet cap khac)\n# cap | muc | ve | seed(s)\n')
+    for pr in sorted(data):
+        sd_ = data[pr]; t = tid(sd_, D); od = np.argsort(t, kind='stable'); ts = t[od]; ss = sd_[od]
+        st = np.flatnonzero(np.concatenate(([True], ts[1:] != ts[:-1]))); cn = np.diff(np.concatenate((st, [len(ts)])))
+        i1 = st[cn == 1]; i2 = st[cn == 2]; pk = f'{pr[0]}:{pr[1]}'
+        o.writelines(f'{pk} | 1 | {rank_str[int(ts[i]) // 12]}{sp_str[int(ts[i]) % 12]} | {int(ss[i])}\n' for i in i1)
+        o.writelines(f'{pk} | 2 | {rank_str[int(ts[i]) // 12]}{sp_str[int(ts[i]) % 12]} | {int(ss[i])},{int(ss[i + 1])}\n' for i in i2)
+        per_stats.append((pk, len(i1), len(i2)))
+tot1 = sum(x[1] for x in per_stats); tot2 = sum(x[2] for x in per_stats)
+os.makedirs('ve_con_lai', exist_ok=True)
+with open(f've_con_lai/muc_theo_cap_{D}.txt', 'w') as o:
+    o.write(f'# ky {D}: so ve muc 1 / muc 2 cua TUNG CAP (chi tiet ve: out_muc/muc_theo_cap_{D}.txt.gz tren Release)\n# cap | muc1 | muc2\n')
+    for pk, a1, a2 in per_stats: o.write(f'{pk} | {a1} | {a2}\n')
 if EXPORT:
     with gzip.open(f've_con_lai/loai_{D}.txt.gz', 'wt') as o:
         for v in np.nonzero(excl)[0]: o.write(dec(int(v)) + '\n')
@@ -83,11 +109,11 @@ if R > TARGET:
 exp = N * math.exp(-(nseed + len(S4)) / N)
 txt = [f'Ky {D} | {len(pairs)} cap | {nseed + len(S4):,} seed (gom {len(S4)} seed 4 hit)',
        f'Ve bi loai: {int(excl.sum()):,} / {N:,} | CON LAI: {R:,} (ky vong theo cong thuc ~{exp:.1f})',
-       f've 1-2 seed: {len(sel)} | cap quet them de xuat: {queue or "khong can (da <= " + str(TARGET) + " ve)"}',
+       f'{len(pairs)} cap moi nhat (gioi han {USE}) | muc 1 theo cap: {tot1:,} ve | muc 2 theo cap: {tot2:,} ve | cap quet them de xuat: {queue or "khong can (da <= " + str(TARGET) + " ve)"}',
        'Luu y: ve con lai la ngau nhien, khong co xac suat trung cao hon ve khac (1/3.895.584 moi ve).']
 open(f've_con_lai/thong_ke_{D}.txt', 'w').write('\n'.join(txt) + '\n'); print('\n'.join(txt))
 # don file cu
-for pre in ('con_lai_', '1_2_seed_', 'thong_ke_', 'loai_'):
+for pre in ('con_lai_', '1_2_seed_', 'muc1_', 'muc2_', 'muc_theo_cap_', 'thong_ke_', 'loai_'):
     fs = sorted(glob.glob(f've_con_lai/{pre}*'), key=lambda x: int(re.search(r'_(\d+)\.', x).group(1)))
     for f in fs[:-KEEP]: os.remove(f)
 go = os.environ.get('GITHUB_OUTPUT')

@@ -1,0 +1,28 @@
+BO DAY DU LOTTO 5/35 + MEGA 6/45  (giai nen vao GOC repo, ghi de file cung ten)
+
+WORKFLOW (.github/workflows/)
+  scan_v2_auto.yml          CHINH - 4 lan/ngay + 18:40 VN: cao Lotto + cao Mega (dataset + fallback) -> doi chieu ve (ca muc 1/muc 2 theo cap)
+                            -> sinh ve Lotto + ve Mega ky tiep -> tu quet cap Lotto moi nhat -> cua so truot 47 cap -> xoa cap cu khoi Release
+  archive_inverse_dir.yml   chay 1 LAN: day inverse/ va inverse_mega/ len Release, xoa 2 thu muc khoi repo (giu dau da quet o scan_state/)
+  scan_inverse_first2.yml / scan_inverse_first2_mega.yml   quet tay 1 hang doi cap (gz len Release)
+  scan_inverse_mega_auto.yml    Mega: tu quet du N cap (mac dinh 466) roi tinh ve con lai
+  scan_inverse_auto_prune.yml   Lotto hoac Mega (game=...): quet den khi con <= target ve + tia cap
+  inverse_ve_con_lai.yml    tinh ve con lai Lotto (tai Release truoc)
+SCRIPT (goc repo)
+  ve_con_lai_auto.py  doi_chieu_ve.py  doi_chieu_mega.py  auto_prune.py  ve_con_lai_mega_release.py  scrape_mega_fallback.py  check_mega_csv.py
+KHAC: GITIGNORE_THEM.txt (them vao .gitignore), THU_GON_LICH_SU_GIT.txt (git filter-repo de .git nhe)
+
+THU TU UP
+  1. Giai nen ghi de, them GITIGNORE_THEM.txt vao .gitignore, commit + push.
+  2. Actions -> archive_inverse_dir -> Run workflow (1 lan). Kiem tra 2 Release: lotto535-inverse-archive, mega-inverse-archive.
+  3. Actions -> scan_v2_auto -> Run workflow. Tu do chay theo lich.
+     Tham so chinh: max_pairs=47 (cua so truot), target=1, scan_newest=true, auto_scan=true, prune=true.
+
+DAU RA
+  Lotto: ve_con_lai/{con_lai,muc_theo_cap,thong_ke}_<ky>.txt | ve_trung/{muc_trung_<ky>,muc_doi_chieu,doi_chieu}.* | ve_con_lai_auto/ | Release: out muc_theo_cap_<ky>.txt.gz
+  Mega : ve_trung_mega/{ve_trung_mega_<ky>,doi_chieu_mega}.* (ve con lai Mega trung >= 4 so) | data/mega_all.csv | ve_con_lai_mega/ve_con_lai_mega_summary_<ky>.txt (+ danh sach neu <= 400000 ve)
+
+YEU CAU: repo da co make_draws_rank*.py, lotto_common.py, mega_lib.py, merge_all_csv.py, check_csv_complete.py, scrape_xosominhngoc_fallback.py,
+         scan_inverse_first2.cpp, scan_inverse_first2_mega.cpp (deu da co trong repo cua ban). Secret PAT_TOKEN nhu cu.
+CHUA CHAY THAT tren GitHub Actions; script da test tren du lieu mau. Parser cao Mega du phong chua kiem chung tren trang that (nguon chinh la dataset).
+LUU Y: ve con lai / muc 1-2 chi la to hop ngau nhien, xac suat trung moi ve van la 1/3.895.584 (Lotto) va 1/8.145.060 (Mega).
