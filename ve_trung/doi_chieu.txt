@@ -2,5 +2,6 @@
 990 | 2026-11-05 | 01-02-10-27-30 + 10 | con_lai: 5 ve, J1=khong, >=3 so: 0 | 1_2_seed: 598 ve, J1=khong, >=3 so: 3
 991 | 2026-11-06 | 01-16-24-29-33 + 05 | con_lai: 2 ve, J1=khong, >=3 so: 0 | 1_2_seed: 324 ve, J1=khong, >=3 so: 2
 992 | 2026-11-06 | 18-20-25-27-31 + 01 | con_lai: 0 ve, J1=khong, >=3 so: 0 | 1_2_seed: 95 ve, J1=khong, >=3 so: 0
+993 | 2026-11-07 | 06-10-23-25-33 + 05 | con_lai: 1 ve, J1=khong, >=3 so: 0 | 1_2_seed: 116 ve, J1=khong, >=3 so: 0
 
-TONG KET 3 ky: ve J1 nam trong danh sach con_lai 0 ky (ky vong ngau nhien ~0.0000 ky)
+TONG KET 4 ky: ve J1 nam trong danh sach con_lai 0 ky (ky vong ngau nhien ~0.0000 ky)
