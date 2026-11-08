@@ -1,0 +1,14 @@
+GON NHE: moi ky chi 100 ve du doan / game + luu ve trung.  Ghi de 4 file (goc repo + .github/workflows/scan_v2_auto.yml).
+
+Moi lan scan_v2_auto chay:
+  1. cao Lotto + Mega
+  2. luu_ve_trung.py : doi chieu 100 ve du doan cua ky vua quay -> ve_trung/<game>_<ky>.txt (chi cac ve trung >= 3 so chinh)
+                       + ve_trung/tong_ket_<game>.txt|.jsonl (moi ky 1 dong, kem ky vong ngau nhien)
+  3. seed_levels.py  : cap nhat MUC seed (so lan seed du doan dung ket qua that) -> seed_state/ (nho)
+  4. du_doan_100.py  : chon DUNG 100 ve cho ky tiep theo -> du_doan/<game>_<ky>.txt (giu 30 ky gan nhat)
+       uu tien: ve tu seed muc cao (muc3+/2/1) -> ve con lai (khong seed nao sinh) -> ve it seed nhat
+  5. don file nang cu (muc_trung_*, muc_doi_chieu*, ve_con_lai/, ve_con_lai_mega/, ve_trung_mega/) roi commit
+Tham so moi: so_ve (100), levels_backfill (3; lan dau dat 300 de tinh lai muc cho 300 ky gan nhat).
+Khong con: out_muc (Release), muc_theo_cap, 1_2_seed. Cac file cu doi_chieu.*, ve_trung_<ky>.txt cu (nho) van giu.
+VE CON LAI: du_doan/con_lai_<game>_<ky>.txt = danh sach day du ve con lai (neu <= CON_LAI_MAX=500; Lotto thuong chi vai ve).
+  Mega con lai hang trieu ve -> chi ghi so luong trong dong dau cua du_doan/<game>_<ky>.txt (nguon con_lai = lay mau co dinh theo ky).

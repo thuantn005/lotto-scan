@@ -3,8 +3,9 @@ name: Cap nhat du lieu Lotto 5/35 (2 lan/ngay) + TU QUET seed inverse den khi co
 # Workflow nay cao ket qua (6 so + so dac biet) cap nhat data/all.csv, doi chieu ve du doan va sinh ve ky tiep:
 #   - tai data/all.csv, bo sung ky con thieu tu nguon du phong
 #   - kiem tra khong thieu ky
-#   - doi chieu ve du doan (ve_con_lai/) voi ket qua that, luu ve trung vao ve_trung/ (doi_chieu_ve.py)
-#   - sinh ve du doan ky tiep theo (ve_con_lai_auto.py), commit data/all.csv + ve_con_lai + ve_trung
+#   - LUU VE TRUNG: doi chieu 100 ve du doan (du_doan/) voi ket qua that -> ve_trung/<game>_<ky>.txt + tong_ket (luu_ve_trung.py)
+#   - cap nhat muc seed (seed_levels.py) + chon DUNG 100 ve du doan ky tiep theo cho Lotto va Mega (du_doan_100.py)
+#   - commit data + du_doan + ve_trung + seed_state (khong con file muc/nang)
 # THEM MOI: cao ket qua Mega 6/45 (dataset NhanAZ-Data + fallback xosominhngoc) vao data/mega_all.csv, commit cung data/all.csv.
 # THEM MOI: sau moi lan cap nhat ky moi, TU QUET CAP KY MOI NHAT (ky-1, ky) neu chua quet (dau da quet: scan_state/first2_A_B.txt).
 # THEM MOI (tu dong het): sau khi sinh ve, neu ve con lai > target thi tu quet them cap seed inverse
@@ -46,6 +47,12 @@ on:
       max_pairs:
         description: "Chi dung N cap MOI NHAT (cua so truot); cap cu hon bi xoa khoi Release. 0 = khong gioi han"
         default: "47"
+      so_ve:
+        description: "So ve du doan moi ky (moi game)"
+        default: "100"
+      levels_backfill:
+        description: "So ky cuoi duoc tinh lai muc seed moi lan chay (3 binh thuong; dat lon, vd 300, de backfill lan dau)"
+        default: "3"
       scan_newest:
         description: "true = luon quet cap ky moi nhat (d1=ky-1, d2=ky) truoc khi xet target"
         default: "true"
@@ -67,7 +74,7 @@ jobs:
   update_data:
     if: ${{ inputs.skip_update != 'true' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 90
     concurrency:
       group: update-data-single-runner
       cancel-in-progress: false
@@ -99,45 +106,10 @@ jobs:
         id: verify
         run: python3 check_csv_complete.py data/all.csv
 
-      - name: Cai Python + numpy/pandas (de doi chieu va sinh ve)
+      - name: Cai Python + numpy/pandas
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-
-      - name: Tai seed (cap) tu Release de doi chieu muc 1 / muc 2 theo cap
-        run: |
-          mkdir -p inverse
-          gh release download lotto535-inverse-archive --pattern 'first2_*.txt.gz' --dir inverse --skip-existing || echo "::warning::chua co gz tren Release, bo qua doi chieu muc theo cap"
-          ls inverse/first2_*.txt.gz 2>/dev/null | wc -l
-
-      - name: Doi chieu ve du doan voi ket qua that + luu ve trung (ca muc 1 / muc 2 theo cap)
-        env:
-          USE_PAIRS: ${{ inputs.max_pairs || '47' }}
-          MIN_MATCH: "4"
-          MUC_LAST: "3"
-        run: |
-          pip install -q numpy pandas
-          python3 doi_chieu_ve.py
-
-      - name: Tai TOAN BO thu muc inverse tu Release (thu muc inverse khong con trong repo)
-        run: |
-          mkdir -p inverse
-          gh release download lotto535-inverse-archive --dir inverse --skip-existing || echo "::warning::chua co Release gz, dung gz trong repo (neu con)"
-          ls inverse/first2_*.txt.gz 2>/dev/null | wc -l
-
-      - name: Sinh ve du doan ky tiep theo (loai inverse + danh sach 1-2 seed)
-        id: sinh_ve
-        run: |
-          pip install -q numpy pandas
-          gh release view lotto535-inverse-archive --json assets -q '.assets[].name' > release_assets.txt 2>/dev/null || : > release_assets.txt
-          USE_PAIRS=${{ inputs.max_pairs || '47' }} python3 ve_con_lai_auto.py
-          # chi tiet muc 1/muc 2 theo cap (lon) -> Release, giu ban moi nhat, khong commit
-          if ls out_muc/*.gz >/dev/null 2>&1; then
-            gh release upload lotto535-inverse-archive out_muc/*.gz --clobber
-            KEEPF=$(basename $(ls out_muc/*.gz | head -1))
-            for n in $(grep '^muc_theo_cap_' release_assets.txt); do [ "$n" = "$KEEPF" ] || gh release delete-asset lotto535-inverse-archive "$n" -y || true; done
-          fi
-          rm -rf out_muc release_assets.txt
 
       - name: Cao ket qua Mega 6/45 -> data/mega_all.csv (dataset + fallback, loi khong lam hong cac buoc khac)
         continue-on-error: true
@@ -150,27 +122,43 @@ jobs:
           python3 check_mega_csv.py data/mega_all.csv || true
           wc -l data/mega_all.csv
 
-      - name: Doi chieu ve MEGA con lai voi ket qua that + luu ve trung
-        continue-on-error: true
-        run: |
-          pip install -q numpy
-          python3 doi_chieu_mega.py
-
-      - name: Sinh ve du doan MEGA ky tiep theo (loai bang seed inverse tren Release mega-inverse-archive)
-        continue-on-error: true
+      - name: Tai seed Lotto (gz) tu Release
         run: |
           pip install -q numpy pandas
-          mkdir -p relmega ve_con_lai_mega
+          mkdir -p inverse
+          gh release download lotto535-inverse-archive --pattern 'first2_*.txt.gz' --dir inverse --skip-existing || echo "::warning::chua co gz Lotto tren Release"
+          ls inverse/first2_*.txt.gz 2>/dev/null | wc -l
+
+      - name: LUU VE TRUNG (doi chieu 100 ve du doan voi ket qua that - Lotto + Mega)
+        run: python3 luu_ve_trung.py
+
+      - name: LOTTO - cap nhat muc seed + chon 100 ve du doan ky tiep theo
+        env:
+          USE_PAIRS: ${{ inputs.max_pairs || '47' }}
+          LEVEL_LAST: ${{ inputs.levels_backfill || '3' }}
+          TARGET_N: ${{ inputs.so_ve || '100' }}
+        run: |
+          python3 seed_levels.py lotto535 inverse || echo "::warning::seed_levels Lotto loi, bo qua muc seed"
+          python3 du_doan_100.py lotto535 inverse
+
+      - name: MEGA - cap nhat muc seed + chon 100 ve du doan ky tiep theo
+        continue-on-error: true
+        env:
+          LEVEL_LAST: ${{ inputs.levels_backfill || '3' }}
+          TARGET_N: ${{ inputs.so_ve || '100' }}
+        run: |
+          mkdir -p relmega
           gh release download mega-inverse-archive --pattern 'first2_mega_*.txt.gz' --dir relmega --skip-existing || { echo "::warning::chua co gz Mega tren Release"; exit 0; }
           ls relmega | wc -l
-          NXT=$(python3 -c "import csv;print(max(int(r['draw_id']) for r in csv.DictReader(open('data/mega_all.csv')) if r['draw_id'].isdigit())+1)")
-          echo "ky Mega tiep theo: $NXT"
-          python3 ve_con_lai_mega_release.py relmega "$NXT" 400000
-          mv ve_con_lai_mega_summary_$NXT.txt ve_con_lai_mega/ 
-          [ -f ve_con_lai_mega_$NXT.txt ] && mv ve_con_lai_mega_$NXT.txt ve_con_lai_mega/ || echo "so ve con lai > 400000, chi ghi tom tat"
+          USE_PAIRS=0 python3 seed_levels.py mega relmega || echo "::warning::seed_levels Mega loi"
+          USE_PAIRS=0 python3 du_doan_100.py mega relmega
           rm -rf relmega
-          ls -1 ve_con_lai_mega/ve_con_lai_mega_[0-9]*.txt 2>/dev/null | sort | head -n -3 | xargs -r rm -f   # giu 3 ky gan nhat
-          cat ve_con_lai_mega/ve_con_lai_mega_summary_$NXT.txt
+
+      - name: Don file nang cu (muc_trung, muc_theo_cap, ve_con_lai...) - chi giu 100 ve du doan + ve trung
+        run: |
+          rm -rf ve_con_lai ve_con_lai_mega ve_trung_mega ve_theo_muc out_muc
+          rm -f ve_trung/muc_trung_*.txt ve_trung/muc_doi_chieu.jsonl ve_trung/muc_doi_chieu.txt
+          du -sh ve_trung du_doan seed_state 2>/dev/null || true
 
       - name: Commit data/all.csv + ve du doan + ve trung (luon chay, khong cho should_run)
         id: commit_data
@@ -183,7 +171,7 @@ jobs:
           git stash pop || true
           [ -f data/all.csv ] && git add data/all.csv || true
           [ -f data/mega_all.csv ] && git add data/mega_all.csv || true
-          git add ve_con_lai ve_trung ve_con_lai_mega ve_trung_mega 2>/dev/null || true
+          git add -A ve_trung du_doan seed_state ve_con_lai ve_con_lai_mega ve_trung_mega ve_theo_muc 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "khong co gi de commit"
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -383,7 +371,7 @@ jobs:
       - name: Tu goi lai vong tiep (bo qua cap nhat du lieu)
         run: |
           N=$(( ${{ inputs.pairs_added || '0' }} + 1 ))
-          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '47' }} -f pairs_added=$N
+          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '47' }} -f so_ve=${{ inputs.so_ve || '100' }} -f levels_backfill=${{ inputs.levels_backfill || '3' }} -f pairs_added=$N
 
   prune:
     needs: plan
