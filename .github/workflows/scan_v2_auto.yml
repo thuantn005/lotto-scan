@@ -128,6 +128,7 @@ jobs:
           mkdir -p inverse
           gh release download lotto535-inverse-archive --pattern 'first2_*.txt.gz' --dir inverse --skip-existing || echo "::warning::chua co gz Lotto tren Release"
           ls inverse/first2_*.txt.gz 2>/dev/null | wc -l
+          [ "$(ls inverse/first2_*.txt.gz 2>/dev/null | wc -l)" -gt 0 ] || echo "::warning::Release lotto535-inverse-archive khong co gz - ve du doan Lotto se khong dung seed"
 
       - name: LUU VE TRUNG (doi chieu 100 ve du doan voi ket qua that - Lotto + Mega)
         run: python3 luu_ve_trung.py
@@ -148,7 +149,7 @@ jobs:
           TARGET_N: ${{ inputs.so_ve || '100' }}
         run: |
           mkdir -p relmega
-          gh release download mega-inverse-archive --pattern 'first2_mega_*.txt.gz' --dir relmega --skip-existing || { echo "::warning::chua co gz Mega tren Release"; exit 0; }
+          gh release download mega-inverse-archive --pattern 'first2_mega_*.txt.gz' --dir relmega --skip-existing || echo "::warning::chua co gz Mega tren Release - van sinh ve du doan (khong co seed)"
           ls relmega | wc -l
           USE_PAIRS=0 python3 seed_levels.py mega relmega || echo "::warning::seed_levels Mega loi"
           USE_PAIRS=0 python3 du_doan_100.py mega relmega
@@ -156,7 +157,7 @@ jobs:
 
       - name: Don file nang cu (muc_trung, muc_theo_cap, ve_con_lai...) - chi giu 100 ve du doan + ve trung
         run: |
-          rm -rf ve_con_lai ve_con_lai_mega ve_trung_mega ve_theo_muc out_muc
+          rm -rf ve_con_lai ve_con_lai_mega ve_theo_muc out_muc   # giu ve_trung_mega (nho) de luu ve trung Mega
           rm -f ve_trung/muc_trung_*.txt ve_trung/muc_doi_chieu.jsonl ve_trung/muc_doi_chieu.txt
           du -sh ve_trung du_doan seed_state 2>/dev/null || true
 
@@ -171,7 +172,10 @@ jobs:
           git stash pop || true
           [ -f data/all.csv ] && git add data/all.csv || true
           [ -f data/mega_all.csv ] && git add data/mega_all.csv || true
-          git add -A ve_trung du_doan seed_state ve_con_lai ve_con_lai_mega ve_trung_mega ve_theo_muc 2>/dev/null || true
+          # add TUNG thu muc rieng: 1 pathspec khong ton tai lam git add loi va KHONG stage gi ca (du_doan bi bo sot)
+          for p in ve_trung du_doan seed_state ve_con_lai ve_con_lai_mega ve_trung_mega ve_theo_muc; do
+            if [ -e "$p" ] || git ls-files --error-unmatch "$p" >/dev/null 2>&1; then git add -A -- "$p" || true; fi
+          done
           if git diff --cached --quiet; then
             echo "khong co gi de commit"
             echo "changed=false" >> "$GITHUB_OUTPUT"
