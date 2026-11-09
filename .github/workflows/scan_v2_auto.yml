@@ -91,7 +91,7 @@ jobs:
         run: |
           set -e
           mkdir -p data
-          curl -fsL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/lotto535/all.csv" -o data/all.new || { echo "::warning::Tai dataset that bai, dung file hien co + fallback"; : > data/all.new; }
+          bash fetch_dataset.sh lotto535 data/all.new
           python3 merge_all_csv.py --new data/all.new --old data/all.csv
           rm -f data/all.new
           wc -l data/all.csv
@@ -115,7 +115,7 @@ jobs:
         continue-on-error: true
         run: |
           mkdir -p data
-          curl -fsL --retry 5 --retry-delay 5 --retry-all-errors --connect-timeout 15 "https://raw.githubusercontent.com/NhanAZ-Data/vietlott-research/main/datasets/draws/mega645/all.csv" -o data/mega_all.new || { echo "::warning::Tai dataset Mega that bai, dung file hien co + fallback"; : > data/mega_all.new; }
+          bash fetch_dataset.sh mega645 data/mega_all.new
           [ -s data/mega_all.new ] && python3 merge_all_csv.py --new data/mega_all.new --old data/mega_all.csv || echo "bo qua merge (khong co du lieu moi)"
           rm -f data/mega_all.new
           python3 scrape_mega_fallback.py --csv data/mega_all.csv --lookback-days 14 || echo "::warning::fallback Mega loi"
