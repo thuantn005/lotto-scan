@@ -1,2 +1,0 @@
-SCAN_INVERSE_ALL diem cuoi ky 979, vong 8, min_hits=4
---- tong so seed: 0 (seed so_hit cac_ky) ---
