@@ -1,5 +1,0 @@
-# Ky 990 (2026-11-05) ket qua 01-02-10-27-30 + 10: ve du doan trung >= 3 so chinh
-# danh sach | ve | muc (so chinh+DB)
-1_2_seed | 01-07-10-27-29 + 11 | 3
-1_2_seed | 01-02-05-07-30 + 10 | 3+DB
-1_2_seed | 02-10-13-30-35 + 10 | 3+DB

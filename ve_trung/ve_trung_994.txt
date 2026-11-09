@@ -1,5 +1,0 @@
-# Ky 994 (2026-11-07) ket qua 09-18-23-25-27 + 08: ve du doan trung >= 3 so chinh
-# danh sach | ve | muc (so chinh+DB)
-1_2_seed | 09-15-17-18-27 + 02 | 3
-1_2_seed | 09-14-18-21-27 + 08 | 3+DB
-1_2_seed | 02-23-25-27-29 + 05 | 3

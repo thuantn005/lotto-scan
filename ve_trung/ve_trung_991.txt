@@ -1,4 +1,0 @@
-# Ky 991 (2026-11-06) ket qua 01-16-24-29-33 + 05: ve du doan trung >= 3 so chinh
-# danh sach | ve | muc (so chinh+DB)
-1_2_seed | 09-11-16-24-29 + 06 | 3
-1_2_seed | 01-02-24-26-33 + 04 | 3
