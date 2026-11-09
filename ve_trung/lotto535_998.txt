@@ -1,0 +1,3 @@
+# Ky 998 (2026-11-09) ket qua 06-15-22-27-31 + 01 | 100 ve du doan | trung >=3 so: 1 (ky vong ngau nhien ~1.39) | >=4: 0 | J: 0
+# ve | nguon | chi tiet | so chinh khop
+06-21-25-27-31 + 02 | muc1 | seed 3542295846007771713 cap 924_925 dung 1 lan: 971 | 3
