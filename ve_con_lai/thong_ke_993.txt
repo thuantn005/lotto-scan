@@ -1,4 +1,0 @@
-Ky 993 | 49 cap | 59,548,406 seed (gom 18 seed 4 hit)
-Ve bi loai: 3,895,583 / 3,895,584 | CON LAI: 1 (ky vong theo cong thuc ~0.9)
-ve 1-2 seed: 116 | cap quet them de xuat: khong can (da <= 1 ve)
-Luu y: ve con lai la ngau nhien, khong co xac suat trung cao hon ve khac (1/3.895.584 moi ve).
