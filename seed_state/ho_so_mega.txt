@@ -1,0 +1,4 @@
+# HO SO MUC SEED (mega). Muc = so lan seed du doan DUNG ket qua that (ky > d2 cua cap). Moi ky: seed muc>=L truoc ky do co bao nhieu, dung ky do bao nhieu (vong = ky vong NGAU NHIEN = so seed / 8,145,060)
+ky 1584 2026-11-04 | tat ca: 15/105,914,805 (vong 13.0) | muc>=1: 0/4940 (vong 0.0006) | muc>=2: 0/0 (vong 0.0) | muc>=3: 0/0 (vong 0.0)
+ky 1585 2026-11-06 | tat ca: 14/106,192,496 (vong 13.04) | muc>=1: 0/4955 (vong 0.0006) | muc>=2: 0/0 (vong 0.0) | muc>=3: 0/0 (vong 0.0)
+ky 1586 2026-11-08 | tat ca: 19/106,192,496 (vong 13.04) | muc>=1: 0/4969 (vong 0.0006) | muc>=2: 0/0 (vong 0.0) | muc>=3: 0/0 (vong 0.0)
