@@ -1,103 +1,103 @@
-# Ky 1587 (mega): 100 ve du doan | 456 cap, 126,770,882 seed | ve con lai (khong seed nao sinh): 2
-# nguon: muc (seed da du doan dung) 100 | con_lai 0 | it_seed 0. Moi ve chi co xac suat ngau nhien 1/8,145,060.
+# Ky 1587 (mega): 100 ve du doan | 456 cap, 126,770,882 seed (126,763,810 seed hit dung 2 ky, loai 0 seed trung them, 0 seed bi loai o buoc kiem tra cuoi) | ve con lai (khong seed nao sinh): 2
+# nguon: seed 2 hit 100 | con_lai 0 | it_seed 0. Moi ve chi co xac suat ngau nhien 1/8,145,060.
 # ve | nguon | chi tiet
-09-12-16-24-34-36 | muc1 | seed 3190734953292012 cap 1015_1016 dung 1 lan: 1489
-02-17-23-24-38-43 | muc1 | seed 3482411417705886 cap 729_730 dung 1 lan: 1158
-07-16-17-35-40-41 | muc1 | seed 8633305660767789 cap 741_742 dung 1 lan: 812
-07-11-13-16-22-28 | muc1 | seed 12384290930419755 cap 1063_1064 dung 1 lan: 1190
-21-27-31-39-40-42 | muc1 | seed 13452356394728877 cap 841_842 dung 1 lan: 1004
-05-08-10-20-24-43 | muc1 | seed 13973844886572946 cap 851_852 dung 1 lan: 1399
-01-09-22-27-35-44 | muc1 | seed 26981678969941570 cap 1179_1180 dung 1 lan: 1266
-06-08-11-37-42-44 | muc1 | seed 28807678511362575 cap 747_748 dung 1 lan: 951
-04-12-22-33-35-40 | muc1 | seed 34839561269972293 cap 725_726 dung 1 lan: 1048
-05-13-17-25-30-32 | muc1 | seed 35061987068757106 cap 1071_1072 dung 1 lan: 1376
-01-03-06-27-36-40 | muc1 | seed 37119331970887603 cap 855_856 dung 1 lan: 1039
-01-15-32-33-36-38 | muc1 | seed 37927586868269755 cap 1351_1352 dung 1 lan: 1494
-07-14-20-21-33-39 | muc1 | seed 41854993350764408 cap 1067_1068 dung 1 lan: 1345
-09-20-26-32-39-41 | muc1 | seed 43924909941522039 cap 679_680 dung 1 lan: 1260
-13-23-25-26-30-33 | muc1 | seed 47261614722814180 cap 1075_1076 dung 1 lan: 1483
-08-12-17-23-35-42 | muc1 | seed 47410434726137423 cap 803_804 dung 1 lan: 1304
-06-15-19-26-42-45 | muc1 | seed 47527081660444636 cap 1133_1134 dung 1 lan: 1321
-12-13-23-24-29-43 | muc1 | seed 48172696048777884 cap 1115_1116 dung 1 lan: 1244
-09-26-34-35-36-45 | muc1 | seed 49820273592623445 cap 837_838 dung 1 lan: 1356
-09-16-18-19-20-36 | muc1 | seed 51784013509330187 cap 789_790 dung 1 lan: 1159
-09-29-30-32-36-45 | muc1 | seed 58784164020729437 cap 691_692 dung 1 lan: 786
-01-04-09-10-19-28 | muc1 | seed 59541772225923582 cap 983_984 dung 1 lan: 1280
-01-10-29-35-36-38 | muc1 | seed 62172620488019238 cap 687_688 dung 1 lan: 1127
-04-11-26-29-37-43 | muc1 | seed 62285923574586009 cap 1167_1168 dung 1 lan: 1503
-13-15-16-21-27-43 | muc1 | seed 65463417226183540 cap 789_790 dung 1 lan: 1417
-21-24-28-30-36-42 | muc1 | seed 65932438085700437 cap 1037_1038 dung 1 lan: 1202
-09-10-21-27-28-42 | muc1 | seed 66025670147102540 cap 683_684 dung 1 lan: 758
-12-19-21-28-30-31 | muc1 | seed 67648100052453871 cap 1051_1052 dung 1 lan: 1408
-07-16-20-22-24-36 | muc1 | seed 74158696420453887 cap 1103_1104 dung 1 lan: 1150
-05-09-11-19-21-28 | muc1 | seed 80940429554563671 cap 885_886 dung 1 lan: 1255
-01-10-13-15-38-41 | muc1 | seed 81121534472302709 cap 921_922 dung 1 lan: 1284
-09-10-13-21-27-42 | muc1 | seed 85246259710425569 cap 1359_1360 dung 1 lan: 1563
-01-07-25-27-37-40 | muc1 | seed 85615347783116907 cap 1345_1346 dung 1 lan: 1421
-13-18-26-37-41-44 | muc1 | seed 87277206353329791 cap 731_732 dung 1 lan: 734
-13-16-24-31-40-44 | muc1 | seed 92323540943545986 cap 767_768 dung 1 lan: 1115
-06-07-09-24-27-39 | muc1 | seed 94462074723958262 cap 1053_1054 dung 1 lan: 1293
-03-05-21-36-39-43 | muc1 | seed 94521220283879080 cap 1199_1200 dung 1 lan: 1478
-01-07-12-17-29-45 | muc1 | seed 94805801166566764 cap 715_716 dung 1 lan: 1025
-19-25-29-31-37-38 | muc1 | seed 95377320014118988 cap 1261_1262 dung 1 lan: 1443
-06-14-23-26-33-39 | muc1 | seed 100270390464270918 cap 1079_1080 dung 1 lan: 1114
-04-29-33-35-39-45 | muc1 | seed 102561847849234666 cap 1321_1322 dung 1 lan: 1494
-12-15-16-17-21-37 | muc1 | seed 106374725783072482 cap 751_752 dung 1 lan: 1394
-10-15-27-31-37-38 | muc1 | seed 106561408025007871 cap 1149_1150 dung 1 lan: 1245
-05-06-16-19-20-39 | muc1 | seed 106878879844588934 cap 775_776 dung 1 lan: 954
-05-06-14-20-33-45 | muc1 | seed 108881522331552623 cap 995_996 dung 1 lan: 1521
-01-03-07-09-17-18 | muc1 | seed 116571224453727452 cap 1261_1262 dung 1 lan: 1508
-03-07-16-17-26-33 | muc1 | seed 121010663437443709 cap 771_772 dung 1 lan: 847
-04-05-10-14-18-28 | muc1 | seed 123296472943191174 cap 1285_1286 dung 1 lan: 1346
-05-12-28-33-39-43 | muc1 | seed 124793225051770065 cap 685_686 dung 1 lan: 1514
-04-12-25-30-37-42 | muc1 | seed 125555506070826701 cap 749_750 dung 1 lan: 988
-17-25-27-35-39-42 | muc1 | seed 132475330845150939 cap 1071_1072 dung 1 lan: 1534
-24-27-36-38-42-45 | muc1 | seed 133588397389206401 cap 695_696 dung 1 lan: 1026
-02-04-12-15-34-45 | muc1 | seed 136786142488646903 cap 991_992 dung 1 lan: 1023
-01-04-10-19-25-30 | muc1 | seed 137888865837286768 cap 677_678 dung 1 lan: 1583
-07-19-24-26-41-42 | muc1 | seed 138687372075992384 cap 1091_1092 dung 1 lan: 1347
-05-09-14-21-31-33 | muc1 | seed 142189436586654590 cap 713_714 dung 1 lan: 1023
-02-06-17-20-24-43 | muc1 | seed 144368418839253797 cap 859_860 dung 1 lan: 1130
-01-06-12-15-17-42 | muc1 | seed 144682334336037472 cap 685_686 dung 1 lan: 805
-01-05-28-29-32-42 | muc1 | seed 144857809969599392 cap 1387_1388 dung 1 lan: 1488
-08-24-33-35-39-44 | muc1 | seed 145352381956259859 cap 1049_1050 dung 1 lan: 1414
-02-04-12-29-38-39 | muc1 | seed 148657508823247539 cap 685_686 dung 1 lan: 810
-07-13-32-36-37-38 | muc1 | seed 150329623914513599 cap 1011_1012 dung 1 lan: 1266
-04-19-33-37-42-44 | muc1 | seed 151938713023806032 cap 911_912 dung 1 lan: 1410
-24-27-28-31-34-35 | muc1 | seed 152438153359347039 cap 749_750 dung 1 lan: 1091
-16-25-40-42-43-44 | muc1 | seed 158048014137442653 cap 693_694 dung 1 lan: 753
-05-10-18-21-37-45 | muc1 | seed 158455259119957251 cap 849_850 dung 1 lan: 898
-15-20-30-36-38-45 | muc1 | seed 161752781376521169 cap 1133_1134 dung 1 lan: 1234
-01-05-07-14-17-22 | muc1 | seed 168681528948470464 cap 821_822 dung 1 lan: 1382
-06-15-21-22-27-45 | muc1 | seed 170828003470297173 cap 699_700 dung 1 lan: 1079
-02-08-27-28-29-36 | muc1 | seed 171971686161922000 cap 859_860 dung 1 lan: 976
-03-06-11-27-36-41 | muc1 | seed 173322348226034535 cap 693_694 dung 1 lan: 1308
-29-31-35-36-37-44 | muc1 | seed 174932573106334474 cap 1181_1182 dung 1 lan: 1538
-01-02-08-14-17-39 | muc1 | seed 177510166473675852 cap 807_808 dung 1 lan: 1009
-19-21-32-33-40-43 | muc1 | seed 183879668293955278 cap 717_718 dung 1 lan: 1202
-06-16-23-26-38-43 | muc1 | seed 188307530418251031 cap 1225_1226 dung 1 lan: 1373
-02-05-18-20-31-45 | muc1 | seed 188314476375393384 cap 1291_1292 dung 1 lan: 1418
-02-07-09-16-22-42 | muc1 | seed 188794355261986721 cap 719_720 dung 1 lan: 815
-01-20-24-37-39-44 | muc1 | seed 190946587666784431 cap 1133_1134 dung 1 lan: 1501
-06-13-14-21-28-38 | muc1 | seed 191485322874950429 cap 883_884 dung 1 lan: 1517
-11-21-30-41-44-45 | muc1 | seed 192111666789973314 cap 775_776 dung 1 lan: 1384
-10-23-27-28-34-38 | muc1 | seed 196464917239061067 cap 921_922 dung 1 lan: 1315
-03-06-07-18-21-34 | muc1 | seed 199190894200103864 cap 841_842 dung 1 lan: 1061
-01-09-13-35-40-45 | muc1 | seed 201048386359091091 cap 1173_1174 dung 1 lan: 1498
-07-20-21-37-40-44 | muc1 | seed 205192341316446009 cap 1235_1236 dung 1 lan: 1581
-01-04-12-26-28-42 | muc1 | seed 207500066251340857 cap 1261_1262 dung 1 lan: 1328
-04-09-21-30-31-42 | muc1 | seed 209178011156507886 cap 677_678 dung 1 lan: 1289
-05-11-15-27-30-39 | muc1 | seed 210391815237992340 cap 817_818 dung 1 lan: 851
-03-14-16-23-32-42 | muc1 | seed 211477500738826931 cap 1331_1332 dung 1 lan: 1540
-03-08-28-30-34-36 | muc1 | seed 212854430420397097 cap 1015_1016 dung 1 lan: 1266
-12-21-31-41-43-45 | muc1 | seed 215589150756931695 cap 795_796 dung 1 lan: 872
-23-24-27-32-36-42 | muc1 | seed 216907507595978677 cap 909_910 dung 1 lan: 1407
-09-12-15-28-35-39 | muc1 | seed 219376488381269794 cap 709_710 dung 1 lan: 1463
-09-12-15-19-35-45 | muc1 | seed 224118919129854127 cap 827_828 dung 1 lan: 1064
-07-12-18-22-25-28 | muc1 | seed 225080221794318624 cap 947_948 dung 1 lan: 1067
-06-12-16-23-28-39 | muc1 | seed 225166678456527463 cap 1375_1376 dung 1 lan: 1459
-07-08-14-24-33-39 | muc1 | seed 228724804955965076 cap 1451_1452 dung 1 lan: 1561
-11-25-39-40-42-44 | muc1 | seed 231317344050013243 cap 911_912 dung 1 lan: 1284
-15-24-25-29-33-43 | muc1 | seed 233013757819171161 cap 813_814 dung 1 lan: 1369
-08-15-21-23-39-44 | muc1 | seed 233906296284016403 cap 675_676 dung 1 lan: 1491
-02-09-19-32-35-43 | muc1 | seed 234711438338202155 cap 825_826 dung 1 lan: 1353
+26-27-39-42-43-44 | seed2hit | cap 1503_1504 (da co 7 seed len 3 hit, ti le 2.50x ngau nhien, 1 ve): ngau nhien trong 278,157 seed hit dung 2 ky (seed 15850657615378888340)
+04-07-21-22-25-30 | seed2hit | cap 1501_1502 (da co 7 seed len 3 hit, ti le 2.44x ngau nhien, 1 ve): ngau nhien trong 278,674 seed hit dung 2 ky (seed 6351482023575782855)
+10-26-28-29-36-39 | seed2hit | cap 1439_1440 (da co 11 seed len 3 hit, ti le 2.21x ngau nhien, 1 ve): ngau nhien trong 277,998 seed hit dung 2 ky (seed 2550337485061750412)
+01-09-12-17-42-45 | seed2hit | cap 1445_1446 (da co 10 seed len 3 hit, ti le 2.09x ngau nhien, 1 ve): ngau nhien trong 278,150 seed hit dung 2 ky (seed 6850130960407309552)
+02-10-25-26-27-42 | seed2hit | cap 1571_1572 (da co 1 seed len 3 hit, ti le 2.09x ngau nhien, 1 ve): ngau nhien trong 278,711 seed hit dung 2 ky (seed 12887019706954371483)
+03-16-22-32-35-41 | seed2hit | cap 1359_1360 (da co 16 seed len 3 hit, ti le 2.07x ngau nhien, 1 ve): ngau nhien trong 277,916 seed hit dung 2 ky (seed 8058107510545250800)
+03-13-17-21-23-43 | seed2hit | cap 1265_1266 (da co 21 seed len 3 hit, ti le 1.93x ngau nhien, 1 ve): ngau nhien trong 276,594 seed hit dung 2 ky (seed 14000953975210791127)
+01-12-19-32-42-44 | seed2hit | cap 1401_1402 (da co 12 seed len 3 hit, ti le 1.91x ngau nhien, 1 ve): ngau nhien trong 277,640 seed hit dung 2 ky (seed 1355651881964021663)
+05-13-32-33-35-41 | seed2hit | cap 1381_1382 (da co 13 seed len 3 hit, ti le 1.87x ngau nhien, 1 ve): ngau nhien trong 277,935 seed hit dung 2 ky (seed 4101015391725830425)
+01-09-17-27-31-36 | seed2hit | cap 1569_1570 (da co 1 seed len 3 hit, ti le 1.84x ngau nhien, 1 ve): ngau nhien trong 277,004 seed hit dung 2 ky (seed 5258457968383805206)
+03-08-15-18-29-42 | seed2hit | cap 1553_1554 (da co 2 seed len 3 hit, ti le 1.83x ngau nhien, 1 ve): ngau nhien trong 277,747 seed hit dung 2 ky (seed 478611644147774527)
+12-18-23-31-35-45 | seed2hit | cap 1535_1536 (da co 3 seed len 3 hit, ti le 1.76x ngau nhien, 1 ve): ngau nhien trong 277,690 seed hit dung 2 ky (seed 5012586067930149645)
+01-08-21-28-29-40 | seed2hit | cap 1313_1314 (da co 16 seed len 3 hit, ti le 1.72x ngau nhien, 1 ve): ngau nhien trong 277,747 seed hit dung 2 ky (seed 15045407071176379838)
+05-10-27-38-39-41 | seed2hit | cap 1429_1430 (da co 9 seed len 3 hit, ti le 1.69x ngau nhien, 1 ve): ngau nhien trong 278,037 seed hit dung 2 ky (seed 7165057348571831944)
+03-05-07-08-20-39 | seed2hit | cap 1269_1270 (da co 18 seed len 3 hit, ti le 1.66x ngau nhien, 1 ve): ngau nhien trong 278,701 seed hit dung 2 ky (seed 11376825577252081047)
+05-18-21-26-38-42 | seed2hit | cap 1409_1410 (da co 10 seed len 3 hit, ti le 1.66x ngau nhien, 1 ve): ngau nhien trong 278,172 seed hit dung 2 ky (seed 11963428945699373349)
+17-22-25-28-42-43 | seed2hit | cap 1531_1532 (da co 3 seed len 3 hit, ti le 1.62x ngau nhien, 1 ve): ngau nhien trong 278,492 seed hit dung 2 ky (seed 11824301630378381415)
+10-12-13-14-37-40 | seed2hit | cap 1529_1530 (da co 3 seed len 3 hit, ti le 1.57x ngau nhien, 1 ve): ngau nhien trong 277,477 seed hit dung 2 ky (seed 2833238204912946893)
+01-03-20-23-26-36 | seed2hit | cap 1127_1128 (da co 24 seed len 3 hit, ti le 1.53x ngau nhien, 1 ve): ngau nhien trong 278,079 seed hit dung 2 ky (seed 11205034511733845236)
+06-11-21-26-27-39 | seed2hit | cap 1489_1490 (da co 5 seed len 3 hit, ti le 1.53x ngau nhien, 1 ve): ngau nhien trong 278,048 seed hit dung 2 ky (seed 2184335853784186771)
+18-20-30-33-40-42 | seed2hit | cap 1143_1144 (da co 23 seed len 3 hit, ti le 1.52x ngau nhien, 1 ve): ngau nhien trong 278,503 seed hit dung 2 ky (seed 8725622997732332405)
+05-06-10-13-33-40 | seed2hit | cap 1181_1182 (da co 21 seed len 3 hit, ti le 1.52x ngau nhien, 1 ve): ngau nhien trong 278,498 seed hit dung 2 ky (seed 6971333569007519282)
+01-22-24-32-33-41 | seed2hit | cap 963_964 (da co 32 seed len 3 hit, ti le 1.51x ngau nhien, 1 ve): ngau nhien trong 276,891 seed hit dung 2 ky (seed 5949705585127055674)
+03-22-26-30-34-37 | seed2hit | cap 1099_1100 (da co 25 seed len 3 hit, ti le 1.51x ngau nhien, 1 ve): ngau nhien trong 277,489 seed hit dung 2 ky (seed 17255854432177594059)
+05-12-19-25-28-41 | seed2hit | cap 1507_1508 (da co 4 seed len 3 hit, ti le 1.50x ngau nhien, 1 ve): ngau nhien trong 278,515 seed hit dung 2 ky (seed 7809685353709262230)
+12-16-23-26-28-32 | seed2hit | cap 783_784 (da co 41 seed len 3 hit, ti le 1.49x ngau nhien, 1 ve): ngau nhien trong 278,868 seed hit dung 2 ky (seed 16522643100292261288)
+08-12-19-24-28-30 | seed2hit | cap 991_992 (da co 30 seed len 3 hit, ti le 1.48x ngau nhien, 1 ve): ngau nhien trong 277,545 seed hit dung 2 ky (seed 18140592777207223943)
+05-11-17-29-42-44 | seed2hit | cap 1227_1228 (da co 18 seed len 3 hit, ti le 1.48x ngau nhien, 1 ve): ngau nhien trong 277,282 seed hit dung 2 ky (seed 4420387393120582959)
+01-12-18-33-38-43 | seed2hit | cap 1327_1328 (da co 13 seed len 3 hit, ti le 1.48x ngau nhien, 1 ve): ngau nhien trong 278,069 seed hit dung 2 ky (seed 17458176318807138462)
+03-22-31-38-44-45 | seed2hit | cap 1307_1308 (da co 14 seed len 3 hit, ti le 1.48x ngau nhien, 1 ve): ngau nhien trong 277,926 seed hit dung 2 ky (seed 10388447693055520600)
+09-15-22-26-35-45 | seed2hit | cap 1545_1546 (da co 2 seed len 3 hit, ti le 1.47x ngau nhien, 1 ve): ngau nhien trong 277,927 seed hit dung 2 ky (seed 9539239917031456039)
+02-14-16-22-28-30 | seed2hit | cap 1343_1344 (da co 12 seed len 3 hit, ti le 1.45x ngau nhien, 1 ve): ngau nhien trong 277,999 seed hit dung 2 ky (seed 11740571966141947566)
+05-10-12-14-39-45 | seed2hit | cap 1321_1322 (da co 13 seed len 3 hit, ti le 1.44x ngau nhien, 1 ve): ngau nhien trong 277,611 seed hit dung 2 ky (seed 16325312097150619485)
+02-04-22-32-37-41 | seed2hit | cap 1483_1484 (da co 5 seed len 3 hit, ti le 1.43x ngau nhien, 1 ve): ngau nhien trong 278,239 seed hit dung 2 ky (seed 13562069681050106265)
+03-15-21-29-30-44 | seed2hit | cap 857_858 (da co 35 seed len 3 hit, ti le 1.41x ngau nhien, 1 ve): ngau nhien trong 277,604 seed hit dung 2 ky (seed 6215607358195847046)
+10-13-15-20-21-41 | seed2hit | cap 835_836 (da co 36 seed len 3 hit, ti le 1.40x ngau nhien, 1 ve): ngau nhien trong 278,630 seed hit dung 2 ky (seed 4142197323388552035)
+11-19-21-32-33-36 | seed2hit | cap 1103_1104 (da co 23 seed len 3 hit, ti le 1.40x ngau nhien, 1 ve): ngau nhien trong 278,007 seed hit dung 2 ky (seed 13896682260802370140)
+02-06-18-21-29-34 | seed2hit | cap 789_790 (da co 38 seed len 3 hit, ti le 1.39x ngau nhien, 1 ve): ngau nhien trong 278,707 seed hit dung 2 ky (seed 886198202052499878)
+01-03-10-21-26-34 | seed2hit | cap 995_996 (da co 28 seed len 3 hit, ti le 1.39x ngau nhien, 1 ve): ngau nhien trong 277,431 seed hit dung 2 ky (seed 804948267258991892)
+08-14-16-24-26-31 | seed2hit | cap 1267_1268 (da co 15 seed len 3 hit, ti le 1.38x ngau nhien, 1 ve): ngau nhien trong 277,642 seed hit dung 2 ky (seed 6407813067692903099)
+08-16-21-35-36-40 | seed2hit | cap 1415_1416 (da co 8 seed len 3 hit, ti le 1.38x ngau nhien, 1 ve): ngau nhien trong 277,044 seed hit dung 2 ky (seed 13231719193139981187)
+05-10-18-31-34-36 | seed2hit | cap 1119_1120 (da co 22 seed len 3 hit, ti le 1.38x ngau nhien, 1 ve): ngau nhien trong 278,404 seed hit dung 2 ky (seed 7147367116955157839)
+02-16-30-32-36-45 | seed2hit | cap 1479_1480 (da co 5 seed len 3 hit, ti le 1.38x ngau nhien, 1 ve): ngau nhien trong 278,211 seed hit dung 2 ky (seed 17287225783720335310)
+13-15-16-27-34-40 | seed2hit | cap 1073_1074 (da co 24 seed len 3 hit, ti le 1.37x ngau nhien, 1 ve): ngau nhien trong 277,964 seed hit dung 2 ky (seed 24464268680047016)
+11-21-24-29-41-42 | seed2hit | cap 1435_1436 (da co 7 seed len 3 hit, ti le 1.36x ngau nhien, 1 ve): ngau nhien trong 278,622 seed hit dung 2 ky (seed 6700282816238520666)
+04-17-18-19-28-33 | seed2hit | cap 807_808 (da co 36 seed len 3 hit, ti le 1.36x ngau nhien, 1 ve): ngau nhien trong 277,644 seed hit dung 2 ky (seed 5236613408087709751)
+03-17-24-36-38-44 | seed2hit | cap 675_676 (da co 42 seed len 3 hit, ti le 1.35x ngau nhien, 1 ve): ngau nhien trong 277,841 seed hit dung 2 ky (seed 4726776016195686776)
+05-07-16-23-27-34 | seed2hit | cap 1215_1216 (da co 17 seed len 3 hit, ti le 1.35x ngau nhien, 1 ve): ngau nhien trong 277,730 seed hit dung 2 ky (seed 2935244448947773460)
+10-12-22-27-28-33 | seed2hit | cap 1345_1346 (da co 11 seed len 3 hit, ti le 1.35x ngau nhien, 1 ve): ngau nhien trong 277,228 seed hit dung 2 ky (seed 13612930892021380160)
+16-25-35-36-40-45 | seed2hit | cap 1105_1106 (da co 22 seed len 3 hit, ti le 1.35x ngau nhien, 1 ve): ngau nhien trong 277,245 seed hit dung 2 ky (seed 3214142762649726735)
+07-37-39-40-41-42 | seed2hit | cap 801_802 (da co 36 seed len 3 hit, ti le 1.35x ngau nhien, 1 ve): ngau nhien trong 277,777 seed hit dung 2 ky (seed 2267309673772268758)
+07-16-18-32-33-41 | seed2hit | cap 907_908 (da co 31 seed len 3 hit, ti le 1.34x ngau nhien, 1 ve): ngau nhien trong 278,211 seed hit dung 2 ky (seed 9360584783178616112)
+12-17-32-36-43-44 | seed2hit | cap 993_994 (da co 27 seed len 3 hit, ti le 1.33x ngau nhien, 1 ve): ngau nhien trong 278,304 seed hit dung 2 ky (seed 10803072259897313896)
+24-27-31-34-41-43 | seed2hit | cap 1035_1036 (da co 25 seed len 3 hit, ti le 1.33x ngau nhien, 1 ve): ngau nhien trong 278,045 seed hit dung 2 ky (seed 3608679187750036127)
+01-03-14-31-32-44 | seed2hit | cap 1029_1030 (da co 25 seed len 3 hit, ti le 1.32x ngau nhien, 1 ve): ngau nhien trong 278,092 seed hit dung 2 ky (seed 12999057980490318387)
+04-07-13-16-36-42 | seed2hit | cap 959_960 (da co 28 seed len 3 hit, ti le 1.31x ngau nhien, 1 ve): ngau nhien trong 278,448 seed hit dung 2 ky (seed 17880891713644510841)
+01-04-08-10-31-37 | seed2hit | cap 955_956 (da co 28 seed len 3 hit, ti le 1.30x ngau nhien, 1 ve): ngau nhien trong 277,866 seed hit dung 2 ky (seed 13504723509747593228)
+04-05-08-16-19-31 | seed2hit | cap 1449_1450 (da co 6 seed len 3 hit, ti le 1.30x ngau nhien, 1 ve): ngau nhien trong 277,289 seed hit dung 2 ky (seed 2670879974987810085)
+08-14-17-19-33-34 | seed2hit | cap 1245_1246 (da co 15 seed len 3 hit, ti le 1.29x ngau nhien, 1 ve): ngau nhien trong 277,695 seed hit dung 2 ky (seed 2879236242920067057)
+07-19-21-27-30-39 | seed2hit | cap 1425_1426 (da co 7 seed len 3 hit, ti le 1.28x ngau nhien, 1 ve): ngau nhien trong 278,699 seed hit dung 2 ky (seed 7807750697086016367)
+01-09-11-21-26-31 | seed2hit | cap 713_714 (da co 38 seed len 3 hit, ti le 1.28x ngau nhien, 1 ve): ngau nhien trong 278,340 seed hit dung 2 ky (seed 12702431924792928254)
+01-16-21-23-28-29 | seed2hit | cap 1377_1378 (da co 9 seed len 3 hit, ti le 1.27x ngau nhien, 1 ve): ngau nhien trong 277,825 seed hit dung 2 ky (seed 5754345341770923249)
+04-12-13-25-34-37 | seed2hit | cap 1121_1122 (da co 20 seed len 3 hit, ti le 1.26x ngau nhien, 1 ve): ngau nhien trong 277,526 seed hit dung 2 ky (seed 15247081459249213058)
+01-02-22-28-33-45 | seed2hit | cap 893_894 (da co 30 seed len 3 hit, ti le 1.26x ngau nhien, 1 ve): ngau nhien trong 279,438 seed hit dung 2 ky (seed 609010305267046230)
+08-10-17-18-38-39 | seed2hit | cap 727_728 (da co 37 seed len 3 hit, ti le 1.26x ngau nhien, 1 ve): ngau nhien trong 278,136 seed hit dung 2 ky (seed 7366611141126403266)
+06-13-17-29-38-43 | seed2hit | cap 1353_1354 (da co 10 seed len 3 hit, ti le 1.26x ngau nhien, 1 ve): ngau nhien trong 278,355 seed hit dung 2 ky (seed 5200415633604652848)
+04-15-19-24-30-34 | seed2hit | cap 1283_1284 (da co 13 seed len 3 hit, ti le 1.26x ngau nhien, 1 ve): ngau nhien trong 278,071 seed hit dung 2 ky (seed 9029670281906528656)
+08-10-27-28-36-39 | seed2hit | cap 1049_1050 (da co 23 seed len 3 hit, ti le 1.26x ngau nhien, 1 ve): ngau nhien trong 277,820 seed hit dung 2 ky (seed 14981419171857292240)
+01-15-19-25-28-30 | seed2hit | cap 791_792 (da co 34 seed len 3 hit, ti le 1.25x ngau nhien, 1 ve): ngau nhien trong 278,547 seed hit dung 2 ky (seed 3545928831508303659)
+02-11-17-20-39-40 | seed2hit | cap 1233_1234 (da co 15 seed len 3 hit, ti le 1.25x ngau nhien, 1 ve): ngau nhien trong 277,486 seed hit dung 2 ky (seed 1349115129103809673)
+11-16-27-32-35-38 | seed2hit | cap 1045_1046 (da co 23 seed len 3 hit, ti le 1.25x ngau nhien, 1 ve): ngau nhien trong 278,163 seed hit dung 2 ky (seed 9433190594437258081)
+03-10-35-36-43-45 | seed2hit | cap 1067_1068 (da co 22 seed len 3 hit, ti le 1.25x ngau nhien, 1 ve): ngau nhien trong 277,374 seed hit dung 2 ky (seed 9647372041928757496)
+08-16-18-25-32-44 | seed2hit | cap 1209_1210 (da co 16 seed len 3 hit, ti le 1.25x ngau nhien, 1 ve): ngau nhien trong 278,319 seed hit dung 2 ky (seed 7810084224181825058)
+01-05-13-20-29-42 | seed2hit | cap 689_690 (da co 38 seed len 3 hit, ti le 1.25x ngau nhien, 1 ve): ngau nhien trong 277,409 seed hit dung 2 ky (seed 10212146329394299351)
+09-13-21-25-29-44 | seed2hit | cap 1065_1066 (da co 22 seed len 3 hit, ti le 1.24x ngau nhien, 1 ve): ngau nhien trong 277,284 seed hit dung 2 ky (seed 10740038400318094283)
+01-02-06-15-22-32 | seed2hit | cap 881_882 (da co 30 seed len 3 hit, ti le 1.24x ngau nhien, 1 ve): ngau nhien trong 279,372 seed hit dung 2 ky (seed 5323257450602823273)
+06-18-29-34-39-42 | seed2hit | cap 1043_1044 (da co 23 seed len 3 hit, ti le 1.24x ngau nhien, 1 ve): ngau nhien trong 278,676 seed hit dung 2 ky (seed 3756733965236065365)
+20-23-31-32-34-43 | seed2hit | cap 1231_1232 (da co 15 seed len 3 hit, ti le 1.24x ngau nhien, 1 ve): ngau nhien trong 278,641 seed hit dung 2 ky (seed 7907819824246626021)
+01-14-17-18-29-31 | seed2hit | cap 1419_1420 (da co 7 seed len 3 hit, ti le 1.24x ngau nhien, 1 ve): ngau nhien trong 277,855 seed hit dung 2 ky (seed 13341578064446889288)
+13-18-31-37-42-43 | seed2hit | cap 755_756 (da co 35 seed len 3 hit, ti le 1.23x ngau nhien, 1 ve): ngau nhien trong 278,288 seed hit dung 2 ky (seed 11650493923348511493)
+16-21-30-32-36-44 | seed2hit | cap 969_970 (da co 26 seed len 3 hit, ti le 1.23x ngau nhien, 1 ve): ngau nhien trong 278,685 seed hit dung 2 ky (seed 17258620525397846443)
+06-10-21-28-32-33 | seed2hit | cap 971_972 (da co 26 seed len 3 hit, ti le 1.23x ngau nhien, 1 ve): ngau nhien trong 279,655 seed hit dung 2 ky (seed 3192872797504622122)
+02-14-18-26-35-45 | seed2hit | cap 1275_1276 (da co 13 seed len 3 hit, ti le 1.23x ngau nhien, 1 ve): ngau nhien trong 278,299 seed hit dung 2 ky (seed 14343299467951792546)
+13-23-28-37-42-45 | seed2hit | cap 1059_1060 (da co 22 seed len 3 hit, ti le 1.23x ngau nhien, 1 ve): ngau nhien trong 278,065 seed hit dung 2 ky (seed 18351849370447749493)
+05-09-20-23-24-37 | seed2hit | cap 1249_1250 (da co 14 seed len 3 hit, ti le 1.22x ngau nhien, 1 ve): ngau nhien trong 277,735 seed hit dung 2 ky (seed 10838877246792268962)
+09-13-27-39-41-42 | seed2hit | cap 1393_1394 (da co 8 seed len 3 hit, ti le 1.22x ngau nhien, 1 ve): ngau nhien trong 277,773 seed hit dung 2 ky (seed 5297259244882878806)
+07-23-31-33-38-42 | seed2hit | cap 1561_1562 (da co 1 seed len 3 hit, ti le 1.22x ngau nhien, 1 ve): ngau nhien trong 277,989 seed hit dung 2 ky (seed 15048048646993607920)
+07-12-18-24-38-39 | seed2hit | cap 1537_1538 (da co 2 seed len 3 hit, ti le 1.22x ngau nhien, 1 ve): ngau nhien trong 278,196 seed hit dung 2 ky (seed 15237636003198518650)
+02-09-10-35-37-39 | seed2hit | cap 819_820 (da co 32 seed len 3 hit, ti le 1.22x ngau nhien, 1 ve): ngau nhien trong 279,117 seed hit dung 2 ky (seed 2196335185048007442)
+01-04-09-15-27-28 | seed2hit | cap 1513_1514 (da co 3 seed len 3 hit, ti le 1.22x ngau nhien, 1 ve): ngau nhien trong 278,830 seed hit dung 2 ky (seed 11931629366581829227)
+07-15-22-29-41-45 | seed2hit | cap 1295_1296 (da co 12 seed len 3 hit, ti le 1.21x ngau nhien, 1 ve): ngau nhien trong 277,900 seed hit dung 2 ky (seed 5255417623082441858)
+10-12-18-23-30-40 | seed2hit | cap 691_692 (da co 37 seed len 3 hit, ti le 1.21x ngau nhien, 1 ve): ngau nhien trong 278,648 seed hit dung 2 ky (seed 1281152342515519593)
+09-17-30-37-39-40 | seed2hit | cap 1149_1150 (da co 18 seed len 3 hit, ti le 1.21x ngau nhien, 1 ve): ngau nhien trong 278,011 seed hit dung 2 ky (seed 7744750880426668394)
+06-07-13-28-31-44 | seed2hit | cap 979_980 (da co 25 seed len 3 hit, ti le 1.21x ngau nhien, 1 ve): ngau nhien trong 277,934 seed hit dung 2 ky (seed 9752135519669974316)
+01-02-03-07-27-39 | seed2hit | cap 957_958 (da co 26 seed len 3 hit, ti le 1.21x ngau nhien, 1 ve): ngau nhien trong 279,177 seed hit dung 2 ky (seed 6616222606482807428)
+11-27-30-34-36-40 | seed2hit | cap 927_928 (da co 27 seed len 3 hit, ti le 1.20x ngau nhien, 1 ve): ngau nhien trong 277,840 seed hit dung 2 ky (seed 6923181124331971158)
+01-02-18-21-23-32 | seed2hit | cap 1195_1196 (da co 16 seed len 3 hit, ti le 1.20x ngau nhien, 1 ve): ngau nhien trong 278,554 seed hit dung 2 ky (seed 13589654456481244512)
+02-11-12-18-20-43 | seed2hit | cap 1389_1390 (da co 8 seed len 3 hit, ti le 1.20x ngau nhien, 1 ve): ngau nhien trong 277,891 seed hit dung 2 ky (seed 9298852829848909059)
+09-17-32-36-39-45 | seed2hit | cap 1487_1488 (da co 4 seed len 3 hit, ti le 1.20x ngau nhien, 1 ve): ngau nhien trong 277,965 seed hit dung 2 ky (seed 10055943323045543726)
+08-11-17-24-28-37 | seed2hit | cap 1339_1340 (da co 10 seed len 3 hit, ti le 1.19x ngau nhien, 1 ve): ngau nhien trong 277,172 seed hit dung 2 ky (seed 9433987400551516757)
