@@ -9,8 +9,8 @@ name: Cap nhat du lieu Lotto 5/35 (2 lan/ngay) + TU QUET seed inverse den khi co
 # THEM MOI: cao ket qua Mega 6/45 (dataset NhanAZ-Data + fallback xosominhngoc) vao data/mega_all.csv, commit cung data/all.csv.
 # THEM MOI: sau moi lan cap nhat ky moi, TU QUET CAP KY MOI NHAT (ky-1, ky) neu chua quet (dau da quet: scan_state/first2_A_B.txt).
 # THEM MOI (tu dong het): sau khi sinh ve, neu ve con lai > target thi tu quet them cap seed inverse
-#   (matrix 20 job, gz len Release lotto535-inverse-archive, tu goi lai workflow nay voi skip_update=true) cho den khi
-#   con <= target; khi dat target thi xoa gz cua cap thua khoi Release (giu file .txt nho trong repo lam dau da quet).
+#   (matrix 20 job, gz luu trong repo inverse/, tu goi lai workflow nay voi skip_update=true) cho den khi
+#   con <= target; khi dat target thi xoa gz cua cap thua khoi repo (giu file .txt nho trong repo lam dau da quet).
 # DA BO tu truoc: quet l1-1 / l1-2 / l1-3 (scan_per_draw), gop L2, va job du doan l1-3.
 
 on:
@@ -45,10 +45,10 @@ on:
         description: "Tu xoa cap thua khi da dat target (true/false)"
         default: "true"
       max_pairs:
-        description: "Chi dung N cap MOI NHAT (cua so truot); cap cu hon bi xoa khoi Release. 0 = khong gioi han"
+        description: "Chi dung N cap MOI NHAT (cua so truot); cap cu hon bi xoa khoi repo inverse/. 0 = khong gioi han"
         default: "47"
       use_pairs:
-        description: "So cap MOI NHAT dung de LOAI ve / sinh ve du doan / doi chieu (khong xoa gi khoi Release)"
+        description: "So cap MOI NHAT dung de LOAI ve / sinh ve du doan / doi chieu (khong xoa gi)"
         default: "4"
       so_ve:
         description: "So ve du doan moi ky (moi game)"
@@ -125,13 +125,12 @@ jobs:
           python3 check_mega_csv.py data/mega_all.csv || true
           wc -l data/mega_all.csv
 
-      - name: Tai seed Lotto (gz) tu Release
+      - name: Seed Lotto (gz) nam trong repo (thu muc inverse/) - khong dung Release
         run: |
           pip install -q numpy pandas
           mkdir -p inverse
-          gh release download lotto535-inverse-archive --pattern 'first2_*.txt.gz' --dir inverse --skip-existing || echo "::warning::chua co gz Lotto tren Release"
           ls inverse/first2_*.txt.gz 2>/dev/null | wc -l
-          [ "$(ls inverse/first2_*.txt.gz 2>/dev/null | wc -l)" -gt 0 ] || echo "::warning::Release lotto535-inverse-archive khong co gz - ve du doan Lotto se khong dung seed"
+          [ "$(ls inverse/first2_*.txt.gz 2>/dev/null | wc -l)" -gt 0 ] || echo "::warning::inverse/ khong co gz Lotto - ve du doan Lotto se khong dung seed"
 
       - name: LUU VE TRUNG (doi chieu 100 ve du doan voi ket qua that - Lotto + Mega)
         run: python3 luu_ve_trung.py
@@ -141,7 +140,6 @@ jobs:
           USE_PAIRS: ${{ inputs.use_pairs || '4' }}
           LEVEL_LAST: ${{ inputs.levels_backfill || '3' }}
           TARGET_N: ${{ inputs.so_ve || '100' }}
-          CON_LAI_RELEASE_DIR: out_release
         run: |
           python3 seed_levels.py lotto535 inverse || echo "::warning::seed_levels Lotto loi, bo qua muc seed"
           python3 du_doan_100.py lotto535 inverse
@@ -150,16 +148,6 @@ jobs:
         env:
           USE_PAIRS: ${{ inputs.use_pairs || '4' }}
         run: python3 doi_chieu_con_lai.py inverse || echo "::warning::doi_chieu_con_lai loi"
-
-      - name: LOTTO - day danh sach VE CON LAI day du (bi loai do seed trung cap) len Release
-        run: |
-          TAG=lotto535-con-lai
-          if ls out_release/con_lai_full_lotto535_*.txt.gz >/dev/null 2>&1; then
-            gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Lotto 5/35 ve con lai" --notes "con_lai_full_lotto535_<ky>.txt.gz: ve con lai sau khi loai ve do seed cac cap sinh ra (giu 10 ky gan nhat)"
-            gh release upload "$TAG" out_release/con_lai_full_lotto535_*.txt.gz --clobber || echo "::warning::upload Release loi"
-            for n in $(gh release view "$TAG" --json assets -q '.assets[].name' | grep '^con_lai_full_lotto535_' | sort -t_ -k5 -n | head -n -10); do gh release delete-asset "$TAG" "$n" -y || true; done
-          fi
-          rm -rf out_release
 
       - name: MEGA - cap nhat muc seed + chon 100 ve du doan ky tiep theo
         continue-on-error: true
@@ -259,7 +247,7 @@ jobs:
           echo "run khac dang chay/cho: $OTHERS"
           # chay theo lich/thu cong chi bat dau chuoi quet khi khong co run nao khac; vong tu goi lai (skip_update=true) luon di tiep
           if [ "${{ inputs.skip_update }}" != "true" ] && [ "$OTHERS" != "0" ]; then echo "busy=true" >> $GITHUB_OUTPUT; else echo "busy=false" >> $GITHUB_OUTPUT; fi
-      - name: Tai gz tu Release + lap ke hoach
+      - name: Doc gz tu repo (inverse/) + lap ke hoach
         id: p
         env:
           BUSY: ${{ steps.busy.outputs.busy }}
@@ -269,21 +257,19 @@ jobs:
           SCAN_NEWEST: ${{ inputs.scan_newest || 'true' }}
         run: |
           if [ "$BUSY" = "true" ]; then echo "go=false" >> $GITHUB_OUTPUT; exit 0; fi
-          mkdir -p rel
-          gh release download lotto535-inverse-archive --pattern 'first2_*.txt.gz' --dir rel 2>/dev/null || echo "chua co Release/asset"
-          ls rel | wc -l
+          mkdir -p inverse
+          ls inverse | wc -l
           python3 - <<PY
           import os, re, glob
           mx = int(os.environ["MAXP"])
-          fs = sorted(glob.glob("rel/first2_*_*.txt.gz"), key=lambda f: -int(re.search(r"first2_(\d+)_", f).group(1)))
+          fs = sorted(glob.glob("inverse/first2_*_*.txt.gz"), key=lambda f: -int(re.search(r"first2_(\d+)_", f).group(1)))
           old = fs[mx:] if mx > 0 else []
           open("old_pairs.txt", "w").write("\n".join(os.path.basename(f) for f in old))
-          for f in old: os.remove(f)
           print("giu", len(fs) - len(old), "cap moi nhat, cap cu hon se bi xoa:", len(old))
           PY
           python3 make_draws_rank.py
           NXT=$(python3 -c "print(max(int(l.split()[0]) for l in open('data/draws_rank.txt'))+1)")
-          python3 auto_prune.py lotto535 rel "$NXT" "$TARGET"
+          python3 auto_prune.py lotto535 inverse "$NXT" "$TARGET"
           python3 - <<PY
           import os, json, re
           plan = json.load(open("plan.json"))
@@ -361,7 +347,6 @@ jobs:
       cancel-in-progress: false
     env:
       GH_TOKEN: ${{ github.token }}
-      TAG: lotto535-inverse-archive
     steps:
       - uses: actions/checkout@v4
         with:
@@ -372,24 +357,22 @@ jobs:
           pattern: part_*
           path: parts
           merge-multiple: true
-      - name: Gop, gz len Release, ghi dau da quet
+      - name: Gop, luu gz vao repo (inverse/), ghi dau da quet
         run: |
           D1=${{ needs.plan.outputs.d1 }}; D2=${{ needs.plan.outputs.d2 }}
-          mkdir -p scan_state /tmp/gz; T=scan_state/first2_${D1}_${D2}.txt
+          mkdir -p scan_state inverse; T=scan_state/first2_${D1}_${D2}.txt
           cat parts/out_*.txt | sort -k2,2nr > full.txt
           NSEED=$(wc -l < full.txt); test "$NSEED" -gt 0
           {
             echo "SCAN_INVERSE_FIRST2 d1=$D1 d2=$D2 min_hits=${{ inputs.min_hits || '2' }}"
             echo "--- tong ket tung phan ---"; cat parts/summary_*.txt
-            echo "--- tong so seed ghi: $NSEED (gz tren Release $TAG) ---"
+            echo "--- tong so seed ghi: $NSEED (gz trong repo inverse/) ---"
             echo "--- 100 seed nhieu hit nhat: seed so_hit cac_ky ---"
             head -100 full.txt
           } > $T
-          gzip -9 -c full.txt > /tmp/gz/first2_${D1}_${D2}.txt.gz
-          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Lotto 5/35 inverse archive" --notes "first2_D1_D2.txt.gz (seed da quet, do scan_v2_auto tao)"
-          gh release upload "$TAG" /tmp/gz/*.gz --clobber
+          gzip -9 -c full.txt > inverse/first2_${D1}_${D2}.txt.gz
           git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add scan_state; git commit -m "scan seed inverse ${D1}_${D2}" || true
+          git add scan_state inverse/first2_${D1}_${D2}.txt.gz; git commit -m "scan seed inverse ${D1}_${D2}" || true
           for i in 1 2 3 4 5; do git pull --rebase -q origin main && git push origin main && break; sleep 8; done
       - name: Tu goi lai vong tiep (bo qua cap nhat du lieu)
         run: |
@@ -405,7 +388,6 @@ jobs:
       cancel-in-progress: false
     env:
       GH_TOKEN: ${{ github.token }}
-      TAG: lotto535-inverse-archive
     steps:
       - uses: actions/checkout@v4
         with:
@@ -415,25 +397,25 @@ jobs:
         with:
           name: plan_files
           path: pf
-      - name: Xoa cap thua khoi Release, xuat ve con lai
+      - name: Xoa cap thua khoi repo (inverse/), xuat ve con lai
         run: |
           cat pf/plan.json
           if [ "${{ inputs.prune || 'true' }}" = "true" ]; then
-            # cua so truot: xoa gz cua cap cu hon N cap moi nhat khoi Release (dau da quet .txt van o scan_state/)
+            # cua so truot: xoa gz cua cap cu hon N cap moi nhat khoi repo (dau da quet .txt van o scan_state/)
             if [ -s pf/old_pairs.txt ]; then
-              while read -r n; do echo "xoa $n khoi Release"; gh release delete-asset "$TAG" "$n" -y || true; done < pf/old_pairs.txt
+              while read -r n; do echo "xoa inverse/$n"; git rm -q --ignore-unmatch "inverse/$n" || true; done < pf/old_pairs.txt
             fi
             # max_pairs=0: che do cu - tia cap thua theo bao phu
             if [ "${{ inputs.max_pairs || '47' }}" = "0" ]; then
               for p in $(python3 -c "import json;print(' '.join(json.load(open('pf/plan.json'))['drop']))"); do
-                echo "xoa first2_${p}.txt.gz khoi Release"
-                gh release delete-asset "$TAG" "first2_${p}.txt.gz" -y || true
+                echo "xoa inverse/first2_${p}.txt.gz"; git rm -q --ignore-unmatch "inverse/first2_${p}.txt.gz" || true
               done
             fi
           fi
           mkdir -p ve_con_lai_auto; cp pf/plan.json ve_con_lai_auto/plan_lotto535.json
           cp pf/ve_con_lai_lotto535_*.txt ve_con_lai_auto/ 2>/dev/null || true
-          gh release upload "$TAG" ve_con_lai_auto/* --clobber || true
+          # ve con lai chi giu 5 ky gan nhat (ve trung luu vinh vien o ve_trung/)
+          ls ve_con_lai_auto/ve_con_lai_lotto535_*.txt 2>/dev/null | sort -t_ -k5 -n | head -n -5 | xargs -r rm -f
           git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
           git add ve_con_lai_auto; git commit -m "ve con lai (tia cap) ky ${{ needs.plan.outputs.nxt }}" || true
           for i in 1 2 3 4 5; do git pull --rebase -q origin main && git push origin main && break; sleep 8; done

@@ -173,8 +173,9 @@ if RDIR and n_rem_total > 0:
         for v in rem: o.write(dec(v) + ('\n' if REM_MODE == 'old' else f' | {int(pcnt[v])} cap\n'))
     print('da ghi', f'{RDIR}/con_lai_full_{game}_{N}.txt.gz', n_rem_total)
 # giu KEEP file gan nhat
-for pre in (f'du_doan/{game}_*.txt', f'du_doan/con_lai_{game}_*.txt'):
+KEEP_CL = int(os.environ.get('KEEP_CON_LAI') or 5)      # ve CON LAI chi giu 5 ky gan nhat (ve trung da luu vinh vien o ve_trung/)
+for pre, kp in ((f'du_doan/{game}_*.txt', KEEP), (f'du_doan/con_lai_{game}_*.txt', KEEP_CL)):
     fs = sorted(glob.glob(pre), key=lambda p: int(re.search(r'_(\d+)\.txt$', p).group(1)))
-    for p in fs[:-KEEP]: os.remove(p)
+    for p in fs[:-kp]: os.remove(p)
 print('Phan bo so cap trung moi ve (' + str(len(files)) + ' cap): ' + ' | '.join(f'{k} cap: {int((pcnt == k).sum()):,}' for k in range(len(files) + 1)))
 print(f'{game} ky {N}: {len(chosen)} ve (muc {n_muc}, con_lai {n_rem}, it_seed {len(chosen) - n_muc - n_rem}) | con lai tong {n_rem_total:,} -> {out}')
