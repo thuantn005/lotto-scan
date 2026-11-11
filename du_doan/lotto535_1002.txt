@@ -1,103 +1,103 @@
-# Ky 1002 (lotto535): 100 ve du doan | 4 cap, 4,859,028 seed (4,859,026 seed hit dung 2 ky, loai 0 seed trung them, 0 seed bi loai o buoc kiem tra cuoi) | ve con lai (khong seed nao sinh): 1,120,024
-# nguon: seed 2 hit 100 | con_lai 0 | it_seed 0. Moi ve chi co xac suat ngau nhien 1/3,895,584.
+# Ky 1002 (lotto535): 100 ve du doan | 0 cap, 0 seed (0 seed hit dung 2 ky, loai 0 seed trung them, 0 seed bi loai o buoc kiem tra cuoi) | ve con lai (khong seed nao sinh): 3,895,584
+# nguon: seed 2 hit 0 | con_lai 100 | it_seed 0. Moi ve chi co xac suat ngau nhien 1/3,895,584.
 # ve | nguon | chi tiet
-08-12-14-17-35 + 05 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 7418274490346875343)
-03-06-18-23-30 + 07 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 4300473384379821666)
-03-16-32-34-35 + 02 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 3155944664622626147)
-02-06-11-17-18 + 12 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 8477858238262214321)
-03-07-25-26-27 + 11 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 4816144335628733523)
-04-07-14-15-34 + 03 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 1303888175562135512)
-01-04-06-12-13 + 11 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 8995083707418433646)
-01-10-19-29-33 + 03 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 17799213326411033347)
-07-14-21-24-27 + 09 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 6392008973283189168)
-03-08-11-17-35 + 04 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 3801189839962947306)
-11-12-19-21-33 + 03 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 7937897998835026785)
-06-07-09-15-31 + 02 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 17661560460143212296)
-03-14-17-18-22 + 10 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 15470739174824321696)
-01-15-18-21-34 + 01 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 499731705391331478)
-07-23-26-30-31 + 10 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 3913900172890763096)
-02-07-09-28-33 + 03 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 8472056422617550842)
-06-07-17-18-31 + 05 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 9601333903011867587)
-26-27-28-29-34 + 07 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 6766724792973944709)
-07-15-17-29-31 + 07 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 13221443086139858032)
-12-17-24-27-34 + 06 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 6745883459794157161)
-08-13-15-17-20 + 05 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 1861770195746958920)
-10-11-13-16-23 + 06 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 4531078303233226374)
-08-17-21-28-29 + 09 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 12653834162049045008)
-13-16-20-32-35 + 04 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 15526786652213048034)
-08-28-29-34-35 + 09 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 18155000320943501613)
-02-09-13-17-21 + 06 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 227768340269819533)
-01-07-20-27-31 + 01 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 16077664711457055497)
-02-03-04-23-34 + 07 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 12235839353667693002)
-08-17-20-33-34 + 06 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 15544670291373360822)
-11-14-15-25-30 + 03 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 3215599528496388600)
-02-03-05-16-31 + 03 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 12322625834722215021)
-14-15-20-28-34 + 05 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 17391341255199928693)
-12-16-19-30-33 + 10 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 15009013386614944872)
-10-12-14-15-25 + 09 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 10356414006936478599)
-03-12-15-23-32 + 09 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 16179909008533769822)
-06-09-20-28-30 + 02 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 17731101142489773052)
-15-21-23-24-28 + 04 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 2631492517783622659)
-22-24-28-32-34 + 12 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 1467518934991830258)
-01-03-07-13-33 + 07 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 11332117230751744176)
-11-18-23-25-32 + 04 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 17488232780723301532)
-21-22-24-26-28 + 05 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 15728323735088850562)
-08-10-15-29-30 + 08 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 7952113576149688391)
-05-10-14-27-28 + 03 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 12266697195538934262)
-05-15-19-20-34 + 01 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 15874050380690697832)
-11-18-19-28-33 + 04 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 17576413743227876525)
-03-05-12-23-24 + 11 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 1059009508436040302)
-07-10-14-24-33 + 05 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 16633404477043249948)
-05-13-19-30-34 + 09 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 11069563094268987430)
-02-09-10-28-35 + 09 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 15211750107517946681)
-09-13-15-19-27 + 05 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 15704688252577100632)
-04-11-16-25-29 + 04 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 16204973228864774999)
-02-09-21-22-27 + 01 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 9217643415954306547)
-07-27-30-34-35 + 04 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 11072890930627660414)
-01-02-05-21-23 + 07 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 15671846185351561023)
-02-08-29-31-35 + 12 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 8313850123657766685)
-03-19-28-29-30 + 01 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 17951680674159823305)
-04-11-14-22-27 + 08 | seed2hit | cap 997_998 (da co 1 seed muc>=1, ti le 1.07x ngau nhien, 57 ve): muc 1, ngau nhien trong 889,886 seed hit dung 2 ky (seed 3619803163346319630)
-06-10-12-22-25 + 05 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 15993711577449117463)
-09-18-19-26-33 + 11 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 7024486972760559873)
-09-16-21-28-35 + 01 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 5849365188218636755)
-13-15-17-21-27 + 05 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 14633468110619518702)
-03-05-21-28-31 + 10 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 713421186421462036)
-06-10-24-30-33 + 04 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 6994135464082081653)
-09-22-26-27-32 + 03 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 10283286909687173431)
-02-04-17-20-34 + 02 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 4742231686292672937)
-03-14-18-32-35 + 05 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 4932925813313177720)
-05-19-24-26-30 + 05 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 10626492322802578788)
-05-11-12-13-24 + 05 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 12498781387866936323)
-06-18-19-31-33 + 08 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 2519931760168351775)
-02-16-19-29-33 + 04 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 16866499933336585402)
-01-14-15-19-34 + 09 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 4341200170705172180)
-12-13-19-20-28 + 04 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 10766535295073481908)
-01-10-25-26-29 + 02 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 17566882379170913200)
-05-10-11-15-31 + 07 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 15831161595127341481)
-07-09-15-16-35 + 06 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 11641046848484269742)
-02-03-12-29-34 + 11 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 8429688611006963644)
-01-03-12-13-31 + 04 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 12852656752494456228)
-03-04-09-11-16 + 10 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 5274123759812259798)
-10-14-15-20-30 + 02 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 4522738687486767535)
-06-13-14-25-35 + 05 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 10799880818389897868)
-14-26-27-31-35 + 10 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 15922568724946074847)
-01-06-16-27-34 + 03 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 12088335808164987500)
-06-11-24-25-35 + 06 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 17908220494449244467)
-01-04-07-08-29 + 10 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 3199956079346922470)
-09-17-28-30-33 + 11 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 14258499124494244)
-06-15-22-25-29 + 04 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 4606630156982235985)
-05-09-11-13-33 + 05 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 7147050950854237783)
-01-15-17-27-30 + 04 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 11312332149024714461)
-08-11-19-32-34 + 08 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 7025504463791833336)
-03-11-18-21-31 + 04 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 5865876023801594232)
-25-26-28-29-33 + 11 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 16868631605866683134)
-04-05-10-27-31 + 08 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 11159897520379499251)
-03-09-15-22-29 + 11 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 3594534634213626196)
-08-10-25-29-33 + 06 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 14273637846674654988)
-01-05-12-16-29 + 12 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 9892443534885371390)
-06-24-29-30-34 + 10 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 5906198881165523301)
-09-15-16-34-35 + 06 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 6302133369658480918)
-01-02-08-09-25 + 12 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 1258526945933274658)
-07-13-23-25-32 + 05 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 10142174865737974762)
-05-13-22-29-31 + 09 | seed2hit | cap 996_997 (da co 1 seed muc>=1, ti le 0.80x ngau nhien, 43 ve): muc 1, ngau nhien trong 889,059 seed hit dung 2 ky (seed 15955010208934377911)
+06-07-08-09-13 + 03 | con_lai | khong seed nao sinh ra
+05-06-10-16-17 + 02 | con_lai | khong seed nao sinh ra
+01-08-12-14-18 + 03 | con_lai | khong seed nao sinh ra
+04-10-11-16-18 + 11 | con_lai | khong seed nao sinh ra
+01-04-07-17-19 + 01 | con_lai | khong seed nao sinh ra
+07-10-17-19-21 + 06 | con_lai | khong seed nao sinh ra
+04-08-10-20-22 + 07 | con_lai | khong seed nao sinh ra
+01-16-19-20-22 + 08 | con_lai | khong seed nao sinh ra
+01-07-12-21-22 + 09 | con_lai | khong seed nao sinh ra
+06-07-09-21-23 + 09 | con_lai | khong seed nao sinh ra
+08-12-14-21-24 + 02 | con_lai | khong seed nao sinh ra
+07-19-20-22-24 + 03 | con_lai | khong seed nao sinh ra
+03-09-12-14-25 + 05 | con_lai | khong seed nao sinh ra
+06-09-10-15-25 + 07 | con_lai | khong seed nao sinh ra
+04-10-15-20-25 + 09 | con_lai | khong seed nao sinh ra
+02-05-08-21-25 + 07 | con_lai | khong seed nao sinh ra
+03-07-14-23-25 + 08 | con_lai | khong seed nao sinh ra
+04-14-17-23-25 + 05 | con_lai | khong seed nao sinh ra
+08-14-15-20-26 + 12 | con_lai | khong seed nao sinh ra
+09-10-14-23-26 + 09 | con_lai | khong seed nao sinh ra
+04-11-16-18-27 + 06 | con_lai | khong seed nao sinh ra
+02-06-11-19-27 + 09 | con_lai | khong seed nao sinh ra
+09-10-12-25-27 + 09 | con_lai | khong seed nao sinh ra
+15-16-23-26-27 + 07 | con_lai | khong seed nao sinh ra
+03-10-11-15-28 + 04 | con_lai | khong seed nao sinh ra
+03-07-18-19-28 + 01 | con_lai | khong seed nao sinh ra
+09-12-18-21-28 + 08 | con_lai | khong seed nao sinh ra
+03-12-16-23-28 + 04 | con_lai | khong seed nao sinh ra
+06-14-16-25-28 + 01 | con_lai | khong seed nao sinh ra
+06-14-20-26-28 + 10 | con_lai | khong seed nao sinh ra
+15-22-25-27-28 + 04 | con_lai | khong seed nao sinh ra
+02-12-19-24-29 + 05 | con_lai | khong seed nao sinh ra
+03-14-16-25-29 + 01 | con_lai | khong seed nao sinh ra
+01-05-06-26-29 + 02 | con_lai | khong seed nao sinh ra
+07-12-24-26-29 + 02 | con_lai | khong seed nao sinh ra
+10-23-24-26-29 + 07 | con_lai | khong seed nao sinh ra
+02-04-18-27-29 + 01 | con_lai | khong seed nao sinh ra
+07-16-21-27-29 + 11 | con_lai | khong seed nao sinh ra
+09-11-26-27-29 + 07 | con_lai | khong seed nao sinh ra
+02-03-11-28-29 + 03 | con_lai | khong seed nao sinh ra
+09-13-17-28-29 + 08 | con_lai | khong seed nao sinh ra
+05-08-20-28-29 + 09 | con_lai | khong seed nao sinh ra
+02-04-05-08-30 + 01 | con_lai | khong seed nao sinh ra
+01-04-07-21-30 + 08 | con_lai | khong seed nao sinh ra
+02-19-21-22-30 + 01 | con_lai | khong seed nao sinh ra
+02-04-15-23-30 + 07 | con_lai | khong seed nao sinh ra
+01-07-22-25-30 + 08 | con_lai | khong seed nao sinh ra
+01-05-07-26-30 + 06 | con_lai | khong seed nao sinh ra
+13-15-25-26-30 + 03 | con_lai | khong seed nao sinh ra
+06-10-13-27-30 + 04 | con_lai | khong seed nao sinh ra
+09-11-12-13-31 + 04 | con_lai | khong seed nao sinh ra
+04-05-15-22-31 + 06 | con_lai | khong seed nao sinh ra
+01-12-14-23-31 + 05 | con_lai | khong seed nao sinh ra
+08-11-14-24-31 + 07 | con_lai | khong seed nao sinh ra
+15-16-20-24-31 + 09 | con_lai | khong seed nao sinh ra
+03-09-18-25-31 + 06 | con_lai | khong seed nao sinh ra
+06-16-23-25-31 + 10 | con_lai | khong seed nao sinh ra
+01-15-24-25-31 + 09 | con_lai | khong seed nao sinh ra
+01-06-21-30-31 + 07 | con_lai | khong seed nao sinh ra
+01-06-09-12-32 + 03 | con_lai | khong seed nao sinh ra
+02-03-09-13-32 + 02 | con_lai | khong seed nao sinh ra
+01-10-22-24-32 + 06 | con_lai | khong seed nao sinh ra
+01-09-21-25-32 + 08 | con_lai | khong seed nao sinh ra
+05-09-15-26-32 + 10 | con_lai | khong seed nao sinh ra
+03-11-15-26-32 + 06 | con_lai | khong seed nao sinh ra
+11-25-26-29-32 + 05 | con_lai | khong seed nao sinh ra
+21-25-26-30-32 + 06 | con_lai | khong seed nao sinh ra
+11-12-27-30-32 + 01 | con_lai | khong seed nao sinh ra
+02-20-21-31-32 + 10 | con_lai | khong seed nao sinh ra
+05-11-13-21-33 + 02 | con_lai | khong seed nao sinh ra
+05-07-18-22-33 + 08 | con_lai | khong seed nao sinh ra
+07-09-17-28-33 + 01 | con_lai | khong seed nao sinh ra
+03-16-17-28-33 + 10 | con_lai | khong seed nao sinh ra
+07-15-20-28-33 + 02 | con_lai | khong seed nao sinh ra
+08-17-22-31-33 + 01 | con_lai | khong seed nao sinh ra
+12-24-29-31-33 + 05 | con_lai | khong seed nao sinh ra
+04-05-16-21-34 + 05 | con_lai | khong seed nao sinh ra
+03-12-16-21-34 + 01 | con_lai | khong seed nao sinh ra
+01-07-10-23-34 + 05 | con_lai | khong seed nao sinh ra
+08-13-21-23-34 + 10 | con_lai | khong seed nao sinh ra
+08-09-17-25-34 + 07 | con_lai | khong seed nao sinh ra
+08-15-25-26-34 + 12 | con_lai | khong seed nao sinh ra
+11-15-22-28-34 + 12 | con_lai | khong seed nao sinh ra
+13-19-25-28-34 + 04 | con_lai | khong seed nao sinh ra
+01-08-11-29-34 + 06 | con_lai | khong seed nao sinh ra
+05-12-16-31-34 + 09 | con_lai | khong seed nao sinh ra
+19-27-30-32-34 + 09 | con_lai | khong seed nao sinh ra
+01-06-14-33-34 + 03 | con_lai | khong seed nao sinh ra
+05-13-27-33-34 + 02 | con_lai | khong seed nao sinh ra
+03-04-29-33-34 + 03 | con_lai | khong seed nao sinh ra
+03-11-12-13-35 + 05 | con_lai | khong seed nao sinh ra
+05-09-15-19-35 + 12 | con_lai | khong seed nao sinh ra
+03-12-21-23-35 + 02 | con_lai | khong seed nao sinh ra
+02-05-23-25-35 + 05 | con_lai | khong seed nao sinh ra
+10-19-26-27-35 + 02 | con_lai | khong seed nao sinh ra
+06-17-25-29-35 + 11 | con_lai | khong seed nao sinh ra
+08-21-27-29-35 + 11 | con_lai | khong seed nao sinh ra
+11-13-20-30-35 + 10 | con_lai | khong seed nao sinh ra
+05-08-19-31-35 + 03 | con_lai | khong seed nao sinh ra
+09-15-25-34-35 + 06 | con_lai | khong seed nao sinh ra
