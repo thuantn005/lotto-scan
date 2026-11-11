@@ -135,7 +135,7 @@ jobs:
 
       - name: LOTTO - cap nhat muc seed + chon 100 ve du doan ky tiep theo
         env:
-          USE_PAIRS: ${{ inputs.max_pairs || '47' }}
+          USE_PAIRS: ${{ inputs.max_pairs || '4' }}
           LEVEL_LAST: ${{ inputs.levels_backfill || '3' }}
           TARGET_N: ${{ inputs.so_ve || '100' }}
         run: |
