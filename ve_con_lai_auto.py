@@ -2,7 +2,9 @@
 """Tu dong: loai ve Lotto 5/35 bang cac seed inverse (inverse/first2_*.txt.gz + seed 4 hit) cho ky tiep theo.
 Ghi vao ve_con_lai/: con_lai_<ky>.txt, muc1_<ky>.txt (ve do dung 1 seed), muc2_<ky>.txt (ve do dung 2 seed), nhom theo cap, thong_ke_<ky>.txt (+ loai_<ky>.txt.gz neu EXPORT_LOAI=true).
 Neu con lai > TARGET: de xuat hang doi cap quet them (GITHUB_OUTPUT: next_queue).
-Bien moi truong: DRAW (de trong = tu tinh ky sap quay), TARGET (mac dinh 1), MAX_PAIRS (12), EXPORT_LOAI (false), KEEP (10)."""
+Bien moi truong: DRAW (de trong = tu tinh ky sap quay), TARGET (mac dinh 1), MAX_PAIRS (12), EXPORT_LOAI (false), KEEP (10).
+MODE=dup (mac dinh): VE CON LAI = ve bi loai do SEED TRUNG CAC CAP, tuc ve duoc sinh ra boi >= MIN_PAIRS cap khac nhau (mac dinh 2;
+  seed 4 hit tinh nhu 1 nguon). TOP>0: chi giu TOP ve co nhieu cap trung nhat. MODE=old: ve CON LAI = ve khong seed nao sinh ra (cach cu)."""
 import os, re, glob, gzip, math, datetime as dt
 import numpy as np, pandas as pd
 import lotto_common as LC
@@ -11,6 +13,7 @@ M1 = np.uint64(0x9E3779B97F4A7C15); M2 = np.uint64(0xD1B54A32D192ED03)
 M3 = np.uint64(0xBF58476D1CE4E5B9); M4 = np.uint64(0x94D049BB133111EB)
 C = 324632; N = C * 12; PER_PAIR = 1_215_000
 TARGET = int(os.environ.get('TARGET') or 1); MAX_PAIRS = int(os.environ.get('MAX_PAIRS') or 12)
+MODE = (os.environ.get('MODE') or 'dup').lower(); MIN_PAIRS = int(os.environ.get('MIN_PAIRS') or 2); TOP = int(os.environ.get('TOP') or 0)
 EXPORT = (os.environ.get('EXPORT_LOAI') or 'false').lower() == 'true'; KEEP = int(os.environ.get('KEEP') or 10)
 
 def next_draw():
@@ -47,22 +50,32 @@ USE = int(os.environ.get('USE_PAIRS') or 47)   # gioi han: chi dung N cap MOI NH
 files = sorted(glob.glob('inverse/first2_*_*.txt.gz'), key=lambda f: -int(re.search(r'first2_(\d+)_', f).group(1)))
 if USE > 0: files = files[:USE]
 files = sorted(files)
-pairs = []; data = {}; cnt = np.zeros(N, np.int32); nseed = 0
+pairs = []; data = {}; cnt = np.zeros(N, np.int32); pcnt = np.zeros(N, np.int32); nseed = 0
 for f in files:
     a, bb = [int(x) for x in re.search(r'first2_(\d+)_(\d+)', f).groups()]; pairs.append((a, bb))
     s = pd.read_csv(f, sep=' ', header=None, usecols=[0], dtype={0: np.uint64})[0].to_numpy()
-    data[(a, bb)] = s; nseed += len(s); cnt += np.bincount(tid(s, D), minlength=N).astype(np.int32)
+    data[(a, bb)] = s; nseed += len(s); t_ = tid(s, D); cnt += np.bincount(t_, minlength=N).astype(np.int32)
+    pcnt[np.unique(t_)] += 1   # moi cap chi tinh 1 lan cho moi ve -> pcnt = so CAP khac nhau cung sinh ra ve do
 S4 = set()
 for f in glob.glob('inverse/all_*_r*_*[0-9].txt'):
     for l in open(f):
         p = l.split()
         if len(p) == 3 and p[0].isdigit(): S4.add(int(p[0]))
 excl = cnt > 0
-if S4: excl[tid(np.array(sorted(S4), dtype=np.uint64), D)] = True
-rem = np.nonzero(~excl)[0]; R = len(rem)
+if S4:
+    t4 = tid(np.array(sorted(S4), dtype=np.uint64), D); excl[t4] = True
+    pcnt[np.unique(t4)] += 1   # seed 4 hit = 1 nguon them
+if MODE == 'old':
+    rem = np.nonzero(~excl)[0]                      # cach cu: ve khong seed nao sinh ra
+else:
+    rem = np.nonzero(pcnt >= MIN_PAIRS)[0]          # cach moi: ve bi loai vi seed cua >= MIN_PAIRS cap trung nhau
+    if TOP > 0 and len(rem) > TOP:
+        rem = rem[np.argsort(-pcnt[rem], kind='stable')[:TOP]]
+    rem = rem[np.argsort(-pcnt[rem], kind='stable')]  # nhieu cap trung nhat len dau
+R = len(rem)
 os.makedirs('ve_con_lai', exist_ok=True)
 with open(f've_con_lai/con_lai_{D}.txt', 'w') as o:
-    for v in rem: o.write(dec(int(v)) + '\n')
+    for v in rem: o.write(dec(int(v)) + ('' if MODE == 'old' else f' | {int(pcnt[v])} cap') + '\n')
 # ---- Muc 1 / Muc 2 tinh RIENG TUNG CAP (khong xet cap khac) ------------------------------------
 # muc 1 = ve do DUNG 1 seed cua cap do sinh ra; muc 2 = ve do DUNG 2 seed cua cap do sinh ra.
 # Chi tiet (rat lon) ghi vao out_muc/muc_theo_cap_<ky>.txt.gz (workflow day len Release, KHONG commit); bang dem theo cap ghi vao ve_con_lai/.
@@ -98,7 +111,7 @@ if EXPORT:
         for v in np.nonzero(excl)[0]: o.write(dec(int(v)) + '\n')
 # de xuat quet them
 queue = ''
-if R > TARGET:
+if MODE == 'old' and R > TARGET:
     extra = N * math.log(R / TARGET); need = max(1, min(MAX_PAIRS, math.ceil(extra / PER_PAIR)))
     done = set(pairs); low = [a for a, _ in pairs if a >= 100]; m = min(low) if low else 0
     cand = []; d = m - 2
@@ -108,9 +121,10 @@ if R > TARGET:
     queue = ','.join(cand)
 exp = N * math.exp(-(nseed + len(S4)) / N)
 txt = [f'Ky {D} | {len(pairs)} cap | {nseed + len(S4):,} seed (gom {len(S4)} seed 4 hit)',
-       f'Ve bi loai: {int(excl.sum()):,} / {N:,} | CON LAI: {R:,} (ky vong theo cong thuc ~{exp:.1f})',
+       (f'Ve bi loai: {int(excl.sum()):,} / {N:,} | CON LAI: {R:,} (ky vong theo cong thuc ~{exp:.1f})' if MODE == 'old' else
+        f'Ve bi loai: {int(excl.sum()):,} / {N:,} | CON LAI = ve bi loai do seed trung >= {MIN_PAIRS} cap: {R:,}' + (f' (giu TOP {TOP})' if TOP > 0 else '') + f' | nhieu cap nhat: {int(pcnt.max())} cap'),
        f'{len(pairs)} cap moi nhat (gioi han {USE}) | muc 1 theo cap: {tot1:,} ve | muc 2 theo cap: {tot2:,} ve | cap quet them de xuat: {queue or "khong can (da <= " + str(TARGET) + " ve)"}',
-       'Luu y: ve con lai la ngau nhien, khong co xac suat trung cao hon ve khac (1/3.895.584 moi ve).']
+       'Luu y: ve con lai chi la ket qua loc theo seed, khong co xac suat trung cao hon ve khac (1/3.895.584 moi ve).']
 open(f've_con_lai/thong_ke_{D}.txt', 'w').write('\n'.join(txt) + '\n'); print('\n'.join(txt))
 # don file cu
 for pre in ('con_lai_', '1_2_seed_', 'muc1_', 'muc2_', 'muc_theo_cap_', 'thong_ke_', 'loai_'):

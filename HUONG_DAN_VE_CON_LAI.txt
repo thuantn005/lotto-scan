@@ -33,3 +33,13 @@ Moi lan scan_v2_auto chay (16:00, 18:00, 00:00, 02:00 VN):
  4. commit all.csv + ve_con_lai + ve_trung
 Luu y: ve du doan cua ky D phai duoc sinh TRUOC khi ky D quay; cron 16:00 VN sinh ve cho ky 21:00, cron 00:00 VN sinh ve cho ky 13:00 hom sau.
 Ky nao khong co file du doan (vi workflow chua chay truoc do) se khong duoc doi chieu.
+
+
+----- SUA: VE CON LAI = VE BI LOAI DO SEED TRUNG CAC CAP -----
+ve_con_lai_auto.py co 2 che do (bien MODE, workflow input "mode"):
+  dup (mac dinh): ve con lai = ve duoc sinh ra boi >= MIN_PAIRS cap khac nhau (mac dinh 2; seed 4 hit tinh nhu 1 nguon).
+                  Moi cap chi tinh 1 lan cho moi ve. File con_lai_<ky>.txt ghi them "| N cap", sap nhieu cap nhat len dau.
+                  TOP>0 de chi giu N ve trung nhieu cap nhat.
+  old           : cach cu, ve con lai = ve khong seed nao sinh ra (con ~1 ve).
+Luu y: voi ~47 cap, moi ve trung trung binh ~14 seed nen MIN_PAIRS=2 se giu gan nhu ca 3.9 trieu ve; hay tang MIN_PAIRS hoac dat TOP.
+Che do dup khong tu de xuat quet them cap (chi che do old moi de xuat).

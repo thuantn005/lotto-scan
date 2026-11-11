@@ -6,8 +6,9 @@ Thu tu uu tien (dedupe, du 100 thi dung):
      CHON SEED THEO MUC: chi lay ve do DUNG MUC seed cua cap cung sinh ra (env MUC, mac dinh 1; MUC=0 de khong loc theo muc). Thong ke muc (47 cap, moi ky sau cap toi ky 1000): ve trung that o muc 1 = 1,07x ngau nhien (khong co y nghia thong ke).
      Trong cap lay NGAU NHIEN (co dinh theo ky) trong cac seed CHI HIT DUNG 2 KY (cap d1,d2) thoa muc tren; seed trung them bat ky ky nao sau d2 (vd 995) bi LOAI - kiem tra truc tiep voi ket qua that
      (gz + scan_state cho so ky luc quet). Ve trung giua cac cap -> lay ve ke tiep cua cap. Env PER_PAIR (150) = so ung vien du phong/cap.
-  2) neu thieu: ve CON LAI (khong seed nao tren cac cap dang dung sinh ra); lay mau co dinh theo ky (rng seed = ky)
-  3) neu van thieu: ve it seed nhat (do boi 1 seed, roi 2 seed, ...)
+  2) neu thieu: ve CON LAI = ve con lai trong TO HOP sau khi LOAI moi ve ma seed cua cac cap (USE_PAIRS cap) sinh ra (seed ve nao trung thi loai); lay mau co dinh theo ky (rng seed = ky).
+   REM_MODE=dup: cach khac - ve con lai = ve bi seed trung >= MIN_PAIRS cap.
+3) neu van thieu: ve it seed nhat (do boi 1 seed, roi 2 seed, ...)
 Luon xuat DU TARGET_N ve. Muc/seed chi la thong ke: moi ve van chi co xac suat ngau nhien."""
 import os, sys, re, glob, json, csv
 import numpy as np, pandas as pd
@@ -61,7 +62,7 @@ for f in glob.glob(os.path.join(gzdir, '*.txt.gz')):
     if m: files.append((int(m.group(1)), int(m.group(2)), f))
 files.sort(key=lambda p: -p[0])
 if USE > 0: files = files[:USE]
-cnt = np.zeros(CT, dtype=np.int32); nseed = 0; nseed2 = 0
+cnt = np.zeros(CT, dtype=np.int32); pcnt = np.zeros(CT, dtype=np.int32); nseed = 0; nseed2 = 0
 PERPAIR = int(os.environ.get('PER_PAIR') or 150); percand = []
 later = np.array([], dtype=np.uint64)   # seed da trung them sau d2 (hit >= 3) theo seed_state
 MUC = int(os.environ.get('MUC') or 1); tsvn = {}   # tsvn: cap -> so seed muc>=1 trong hits tsv (so lieu chia ve)
@@ -74,7 +75,7 @@ if os.path.exists(hf0):
 for a, b, f in files:
     d = pd.read_csv(f, sep=' ', header=None, usecols=[0, 1], dtype={0: np.uint64, 1: np.int32}, engine='c')
     s = d[0].to_numpy(); h = d[1].to_numpy(); t = tid(s, N)
-    nseed += len(s); cp = np.bincount(t, minlength=CT); cnt += cp.astype(np.int32)   # cp = so seed CUA CAP sinh tung ve (muc)
+    nseed += len(s); cp = np.bincount(t, minlength=CT); cnt += cp.astype(np.int32); pcnt += (cp > 0).astype(np.int32)   # cp = so seed CUA CAP sinh tung ve (muc); pcnt = so CAP khac nhau cung sinh ve do
     nl_pair = 0
     m2 = h == 2                                  # seed chi hit dung 2 ky (cap d1,d2) tinh den luc quet
     if len(later): m2 &= ~np.isin(s, later)
@@ -123,11 +124,25 @@ if P:
         for pr, lst, nconv, rate in percand:
             if rd < len(lst) and lst[rd][0] not in used and valid(lst[rd][2], pr): add(lst[rd][0], 'seed2hit', f'cap {pr}: ngau nhien trong {lst[rd][1]:,} seed hit dung 2 ky cua cap (seed {lst[rd][2]})')
 n_muc = len(chosen)
-# 2) ve con lai
-rem = np.flatnonzero(cnt == 0); n_rem_total = int(len(rem)); need = NEED - len(chosen)
+# 2) ve con lai = ve bi loai do seed trung cac cap (>= MIN_PAIRS cap cung sinh ra ve do)
+REM_MODE = (os.environ.get('REM_MODE') or 'old').lower(); MIN_PAIRS = int(os.environ.get('MIN_PAIRS') or 2)
+if REM_MODE == 'old': rem = np.flatnonzero(cnt == 0)
+else:
+    rem = np.flatnonzero(pcnt >= MIN_PAIRS)
+    if len(rem): rem = rem[np.argsort(-pcnt[rem], kind='stable')]      # trung nhieu cap nhat len dau
+n_rem_total = int(len(rem)); need = NEED - len(chosen)
 if need > 0 and len(rem):
-    pick = np.sort(rem if len(rem) <= need else np.random.default_rng(N).choice(rem, size=need, replace=False))
-    for v in pick: add(v, 'con_lai', 'khong seed nao sinh ra')
+    if REM_MODE == 'old':
+        pick = np.sort(rem if len(rem) <= need else np.random.default_rng(N).choice(rem, size=need, replace=False))
+    else:                                                               # lay ve trung nhieu cap nhat; cung so cap thi lay mau co dinh theo ky
+        top = pcnt[rem[0]]; pick = []
+        for lv in range(int(top), MIN_PAIRS - 1, -1):
+            g = rem[pcnt[rem] == lv]
+            if len(g) > need - len(pick): g = np.sort(np.random.default_rng(N + lv).choice(g, size=need - len(pick), replace=False))
+            pick.extend(g.tolist())
+            if len(pick) >= need: break
+        pick = np.array(pick, dtype=np.int64)
+    for v in pick: add(v, 'con_lai', 'khong seed nao sinh ra' if REM_MODE == 'old' else f'bi loai do seed trung {int(pcnt[v])} cap')
 n_rem = len(chosen) - n_muc
 # 3) ve it seed nhat
 c = 1
@@ -137,17 +152,28 @@ while len(chosen) < NEED and c <= 200:
 os.makedirs('du_doan', exist_ok=True)
 out = f'du_doan/{game}_{N}.txt'
 with open(out, 'w') as o:
-    o.write(f'# Ky {N} ({game}): {len(chosen)} ve du doan | {len(files)} cap, {nseed:,} seed ({nseed2:,} seed hit dung 2 ky, loai {nlate} seed trung them, {nrej} seed bi loai o buoc kiem tra cuoi) | ve con lai (khong seed nao sinh): {n_rem_total:,}\n')
+    o.write(f'# Ky {N} ({game}): {len(chosen)} ve du doan | {len(files)} cap, {nseed:,} seed ({nseed2:,} seed hit dung 2 ky, loai {nlate} seed trung them, {nrej} seed bi loai o buoc kiem tra cuoi) | ve con lai ({'khong seed nao sinh' if REM_MODE == 'old' else f'bi loai do seed trung >= {MIN_PAIRS} cap'}): {n_rem_total:,}\n')
     o.write(f'# nguon: seed 2 hit {n_muc} | con_lai {n_rem} | it_seed {len(chosen) - n_muc - n_rem}. Moi ve chi co xac suat ngau nhien 1/{CT:,}.\n# ve | nguon | chi tiet\n')
     for v, src, det in chosen: o.write(f'{dec(v)} | {src} | {det}\n')
 # danh sach VE CON LAI day du (neu <= CON_LAI_MAX, mac dinh 500 - Lotto thuong chi vai ve; Mega thi qua nhieu nen chi ghi so luong trong header)
 CLMAX = int(os.environ.get('CON_LAI_MAX') or 500)
-if 0 < n_rem_total <= CLMAX:
+if n_rem_total > 0:
+    lst_ = rem[:CLMAX]                                                  # ghi toi da CLMAX ve (danh sach day du len Release)
     with open(f'du_doan/con_lai_{game}_{N}.txt', 'w') as o:
-        o.write(f'# Ky {N} ({game}): {n_rem_total} ve CON LAI (khong seed nao tren {len(files)} cap sinh ra)\n')
-        for v in rem: o.write(dec(v) + '\n')
+        if REM_MODE == 'old': o.write(f'# Ky {N} ({game}): {n_rem_total:,} ve CON LAI trong to hop sau khi loai ve do seed cua {len(files)} cap sinh ra; ghi {len(lst_)} ve dau (danh sach day du tren Release)\n')
+        else: o.write(f'# Ky {N} ({game}): {n_rem_total:,} ve CON LAI = ve bi loai do seed trung >= {MIN_PAIRS} cap (tren {len(files)} cap); ghi {len(lst_)} ve trung nhieu cap nhat | ve | so cap trung\n')
+        for v in lst_: o.write(dec(v) + ('\n' if REM_MODE == 'old' else f' | {int(pcnt[v])} cap\n'))
+# DANH SACH DAY DU ve con lai (rat lon, vd ~1 trieu ve) -> khong commit vao repo; ghi .gz vao CON_LAI_RELEASE_DIR de workflow day len Release
+RDIR = os.environ.get('CON_LAI_RELEASE_DIR')
+if RDIR and n_rem_total > 0:
+    import gzip; os.makedirs(RDIR, exist_ok=True)
+    with gzip.open(f'{RDIR}/con_lai_full_{game}_{N}.txt.gz', 'wt') as o:
+        o.write(f'# Ky {N} ({game}): {n_rem_total:,} ve CON LAI ' + (f'(khong seed nao cua {len(files)} cap sinh ra)' if REM_MODE == 'old' else f'(bi seed trung >= {MIN_PAIRS} cap tren {len(files)} cap) | ve | so cap trung') + '\\n')
+        for v in rem: o.write(dec(v) + ('\\n' if REM_MODE == 'old' else f' | {int(pcnt[v])} cap\\n'))
+    print('da ghi', f'{RDIR}/con_lai_full_{game}_{N}.txt.gz', n_rem_total)
 # giu KEEP file gan nhat
 for pre in (f'du_doan/{game}_*.txt', f'du_doan/con_lai_{game}_*.txt'):
     fs = sorted(glob.glob(pre), key=lambda p: int(re.search(r'_(\d+)\.txt$', p).group(1)))
     for p in fs[:-KEEP]: os.remove(p)
+print('Phan bo so cap trung moi ve (' + str(len(files)) + ' cap): ' + ' | '.join(f'{k} cap: {int((pcnt == k).sum()):,}' for k in range(len(files) + 1)))
 print(f'{game} ky {N}: {len(chosen)} ve (muc {n_muc}, con_lai {n_rem}, it_seed {len(chosen) - n_muc - n_rem}) | con lai tong {n_rem_total:,} -> {out}')

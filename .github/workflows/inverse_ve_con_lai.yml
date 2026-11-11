@@ -18,6 +18,15 @@ on:
       export_loai:
         description: "Xuat ca danh sach ve bi loai (loai_<ky>.txt.gz, ~10 MB) len artifact"
         default: "false"
+      mode:
+        description: "dup = ve con lai la ve bi loai do seed trung >= min_pairs cap; old = cach cu (ve khong seed nao sinh ra)"
+        default: "dup"
+      min_pairs:
+        description: "(mode dup) so cap khac nhau toi thieu cung sinh ra mot ve"
+        default: "2"
+      top:
+        description: "(mode dup) chi giu N ve co nhieu cap trung nhat, 0 = giu tat ca"
+        default: "0"
   workflow_run:
     workflows: ["scan_inverse_first2 (noi tiep nhieu cap d1:d2, hit dau = d1, hit thu 2 = d2)"]
     types: [completed]
@@ -42,6 +51,9 @@ jobs:
       TARGET: ${{ inputs.target || '1' }}
       MAX_PAIRS: ${{ inputs.max_pairs || '12' }}
       EXPORT_LOAI: ${{ inputs.export_loai || 'false' }}
+      MODE: ${{ inputs.mode || 'dup' }}
+      MIN_PAIRS: ${{ inputs.min_pairs || '2' }}
+      TOP: ${{ inputs.top || '0' }}
       AUTO_SCAN: ${{ inputs.auto_scan || 'true' }}
       GH_TOKEN: ${{ github.token }}
     steps:

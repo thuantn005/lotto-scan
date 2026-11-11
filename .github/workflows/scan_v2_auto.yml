@@ -138,9 +138,25 @@ jobs:
           USE_PAIRS: ${{ inputs.max_pairs || '4' }}
           LEVEL_LAST: ${{ inputs.levels_backfill || '3' }}
           TARGET_N: ${{ inputs.so_ve || '100' }}
+          CON_LAI_RELEASE_DIR: out_release
         run: |
           python3 seed_levels.py lotto535 inverse || echo "::warning::seed_levels Lotto loi, bo qua muc seed"
           python3 du_doan_100.py lotto535 inverse
+
+      - name: LOTTO - doi chieu VE CON LAI voi ket qua that (ve trung that con lai hay bi loai)
+        env:
+          USE_PAIRS: ${{ inputs.max_pairs || '4' }}
+        run: python3 doi_chieu_con_lai.py inverse || echo "::warning::doi_chieu_con_lai loi"
+
+      - name: LOTTO - day danh sach VE CON LAI day du (bi loai do seed trung cap) len Release
+        run: |
+          TAG=lotto535-con-lai
+          if ls out_release/con_lai_full_lotto535_*.txt.gz >/dev/null 2>&1; then
+            gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Lotto 5/35 ve con lai" --notes "con_lai_full_lotto535_<ky>.txt.gz: ve con lai sau khi loai ve do seed cac cap sinh ra (giu 10 ky gan nhat)"
+            gh release upload "$TAG" out_release/con_lai_full_lotto535_*.txt.gz --clobber || echo "::warning::upload Release loi"
+            for n in $(gh release view "$TAG" --json assets -q '.assets[].name' | grep '^con_lai_full_lotto535_' | sort -t_ -k5 -n | head -n -10); do gh release delete-asset "$TAG" "$n" -y || true; done
+          fi
+          rm -rf out_release
 
       - name: MEGA - cap nhat muc seed + chon 100 ve du doan ky tiep theo
         continue-on-error: true
