@@ -2,8 +2,9 @@
 """Chon DUNG 100 ve du doan cho ky tiep theo (Lotto 5/35 hoac Mega 6/45) va luu vao du_doan/<game>_<ky>.txt.
   python3 du_doan_100.py GAME THU_MUC_GZ        GAME = lotto535 | mega      (so ve: env TARGET_N, mac dinh 100)
 Thu tu uu tien (dedupe, du 100 thi dung):
-  1) THEO TUNG CAP, CHIA THEO XAC SUAT (SPLIT=prob, mac dinh; SPLIT=equal de chia deu): so ve cua cap ~ ti le seed len >=3 hit / (seed x ky da qua sau d2). Trong cap lay NGAU NHIEN (co dinh theo ky)
-     trong cac seed CHI HIT DUNG 2 KY (cap d1,d2); seed trung them bat ky ky nao sau d2 (vd 995) bi LOAI - kiem tra truc tiep voi ket qua that
+  1) THEO TUNG CAP, CHIA THEO SO LIEU seed_state/hits_<game>.tsv (SPLIT=prob, mac dinh; SPLIT=equal de chia deu): so ve cua cap ~ (so seed muc>=1 cua cap trong tsv) / (seed cua cap x ky da qua sau d2).
+     CHON SEED THEO MUC: chi lay ve do DUNG MUC seed cua cap cung sinh ra (env MUC, mac dinh 1; MUC=0 de khong loc theo muc). Thong ke muc (47 cap, moi ky sau cap toi ky 1000): ve trung that o muc 1 = 1,07x ngau nhien (khong co y nghia thong ke).
+     Trong cap lay NGAU NHIEN (co dinh theo ky) trong cac seed CHI HIT DUNG 2 KY (cap d1,d2) thoa muc tren; seed trung them bat ky ky nao sau d2 (vd 995) bi LOAI - kiem tra truc tiep voi ket qua that
      (gz + scan_state cho so ky luc quet). Ve trung giua cac cap -> lay ve ke tiep cua cap. Env PER_PAIR (150) = so ung vien du phong/cap.
   2) neu thieu: ve CON LAI (khong seed nao tren cac cap dang dung sinh ra); lay mau co dinh theo ky (rng seed = ky)
   3) neu van thieu: ve it seed nhat (do boi 1 seed, roi 2 seed, ...)
@@ -63,13 +64,17 @@ if USE > 0: files = files[:USE]
 cnt = np.zeros(CT, dtype=np.int32); nseed = 0; nseed2 = 0
 PERPAIR = int(os.environ.get('PER_PAIR') or 150); percand = []
 later = np.array([], dtype=np.uint64)   # seed da trung them sau d2 (hit >= 3) theo seed_state
+MUC = int(os.environ.get('MUC') or 1); tsvn = {}   # tsvn: cap -> so seed muc>=1 trong hits tsv (so lieu chia ve)
 hf0 = f'seed_state/hits_{game}.tsv'
 if os.path.exists(hf0):
     later = np.array([int(l.split('\t')[0]) for l in open(hf0) if l.count('\t') == 2 and l.rstrip('\n').split('\t')[2].strip()], dtype=np.uint64)
+    for l in open(hf0):
+        a_ = l.rstrip('\n').split('\t')
+        if len(a_) == 3 and a_[2].strip(): tsvn[a_[1]] = tsvn.get(a_[1], 0) + 1
 for a, b, f in files:
     d = pd.read_csv(f, sep=' ', header=None, usecols=[0, 1], dtype={0: np.uint64, 1: np.int32}, engine='c')
     s = d[0].to_numpy(); h = d[1].to_numpy(); t = tid(s, N)
-    nseed += len(s); cnt += np.bincount(t, minlength=CT).astype(np.int32)
+    nseed += len(s); cp = np.bincount(t, minlength=CT); cnt += cp.astype(np.int32)   # cp = so seed CUA CAP sinh tung ve (muc)
     nl_pair = 0
     m2 = h == 2                                  # seed chi hit dung 2 ky (cap d1,d2) tinh den luc quet
     if len(later): m2 &= ~np.isin(s, later)
@@ -77,10 +82,12 @@ for a, b, f in files:
         if D in RES and m2.any():
             ix_ = np.flatnonzero(m2); hit_ = tid(s[ix_], D) == RES[D]; m2[ix_[hit_]] = False; nlate += int(hit_.sum()); nl_pair += int(hit_.sum())
     ix = np.flatnonzero(m2); nseed2 += len(ix)
+    if MUC > 0: ix = ix[cp[t[ix]] == MUC]          # CHON SEED THEO MUC: chi ve do dung MUC seed cua cap sinh ra
     if len(ix):                                    # ung vien RIENG CUA CAP nay: lay NGAU NHIEN deu trong cac seed hit dung 2 ky (giong cach seed len hit 3: roi ngau nhien)
         rg = np.random.default_rng((N * 1000003 + a * 1009 + b) & 0xFFFFFFFF)
         pk = rg.choice(ix, size=min(len(ix), PERPAIR), replace=False)
-        percand.append((f'{a}_{b}', [(int(t[q]), len(ix), int(s[q])) for q in pk], int((h >= 3).sum()) + nl_pair, (int((h >= 3).sum()) + nl_pair) / (len(s) * max(1, N - 1 - b))))   # so seed cua cap da len >= 3 hit (luc quet + trung them sau do)
+        nconv = tsvn.get(f'{a}_{b}', 0) if tsvn else int((h >= 3).sum()) + nl_pair   # so seed muc>=1 cua cap (theo hits tsv)
+        percand.append((f'{a}_{b}', [(int(t[q]), len(ix), int(s[q])) for q in pk], nconv, nconv / (len(s) * max(1, N - 1 - b))))   # so seed cua cap da len >= 3 hit (luc quet + trung them sau do)
 chosen = []; used = set()
 nrej = 0
 def valid(sd, pr):                                 # KIEM TRA CUOI: seed sinh ve phai hit DUNG 2 ky (d1,d2 cua cap) tren TOAN BO ket qua that; hit 3, 4.. ky -> bo
@@ -93,7 +100,7 @@ def valid(sd, pr):                                 # KIEM TRA CUOI: seed sinh ve
 def add(v, src, det):
     if len(chosen) < NEED and int(v) not in used: used.add(int(v)); chosen.append((int(v), src, det))
 # 1) CHON THEO TUNG CAP: vong 1 lay ve dung dau cua moi cap (cap moi nhat truoc), vong 2 lay ve thu 2 cua moi cap, ... den du NEED
-# tieu chi cap: chi cap DA CO seed len >= 3 hit (cap 'trung len 3 hit'), cap nhieu seed len 3 hit nhat truoc, bang nhau thi cap moi hon; PAIR_CRIT=all de dung moi cap
+# tieu chi cap: chi cap DA CO seed muc>=1 trong hits tsv, ti le cao nhat truoc, bang nhau thi cap moi hon; PAIR_CRIT=all de dung moi cap
 if os.environ.get('PAIR_CRIT', 'conv') == 'conv': percand = [x for x in percand if x[2] > 0]      # CHI lay cap DA CO seed len >= 3 hit
 percand.sort(key=lambda x: (-x[3], -int(x[0].split('_')[0])) if os.environ.get('PAIR_CRIT', 'conv') == 'conv' else -int(x[0].split('_')[0]))
 # CHIA DEU: moi cap cung so ve (NEED // so cap, phan du chia cho cac cap moi nhat); ve trung giua cac cap thi lay ve ke tiep cua cap do
@@ -110,7 +117,7 @@ if P:
         q = quota[k]; got = 0
         for v, nsd, sd in lst:
             if got >= q: break
-            if v not in used and valid(sd, pr): add(v, 'seed2hit', f'cap {pr} (da co {nconv} seed len 3 hit, ti le {rate * CT:.2f}x ngau nhien, {q} ve): ngau nhien trong {nsd:,} seed hit dung 2 ky (seed {sd})'); got += 1
+            if v not in used and valid(sd, pr): add(v, 'seed2hit', f'cap {pr} (da co {nconv} seed muc>=1, ti le {rate * CT:.2f}x ngau nhien, {q} ve): muc {MUC}, ngau nhien trong {nsd:,} seed hit dung 2 ky (seed {sd})'); got += 1
     for rd in range(PERPAIR):                      # con thieu (do trung ve) -> bo sung vong tron
         if len(chosen) >= NEED: break
         for pr, lst, nconv, rate in percand:
