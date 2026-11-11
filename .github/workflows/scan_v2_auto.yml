@@ -47,6 +47,9 @@ on:
       max_pairs:
         description: "Chi dung N cap MOI NHAT (cua so truot); cap cu hon bi xoa khoi Release. 0 = khong gioi han"
         default: "47"
+      use_pairs:
+        description: "So cap MOI NHAT dung de LOAI ve / sinh ve du doan / doi chieu (khong xoa gi khoi Release)"
+        default: "4"
       so_ve:
         description: "So ve du doan moi ky (moi game)"
         default: "100"
@@ -135,7 +138,7 @@ jobs:
 
       - name: LOTTO - cap nhat muc seed + chon 100 ve du doan ky tiep theo
         env:
-          USE_PAIRS: ${{ inputs.max_pairs || '4' }}
+          USE_PAIRS: ${{ inputs.use_pairs || '4' }}
           LEVEL_LAST: ${{ inputs.levels_backfill || '3' }}
           TARGET_N: ${{ inputs.so_ve || '100' }}
           CON_LAI_RELEASE_DIR: out_release
@@ -145,7 +148,7 @@ jobs:
 
       - name: LOTTO - doi chieu VE CON LAI voi ket qua that (ve trung that con lai hay bi loai)
         env:
-          USE_PAIRS: ${{ inputs.max_pairs || '4' }}
+          USE_PAIRS: ${{ inputs.use_pairs || '4' }}
         run: python3 doi_chieu_con_lai.py inverse || echo "::warning::doi_chieu_con_lai loi"
 
       - name: LOTTO - day danh sach VE CON LAI day du (bi loai do seed trung cap) len Release
@@ -391,7 +394,7 @@ jobs:
       - name: Tu goi lai vong tiep (bo qua cap nhat du lieu)
         run: |
           N=$(( ${{ inputs.pairs_added || '0' }} + 1 ))
-          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '47' }} -f so_ve=${{ inputs.so_ve || '100' }} -f levels_backfill=${{ inputs.levels_backfill || '3' }} -f pairs_added=$N
+          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '47' }} -f use_pairs=${{ inputs.use_pairs || '4' }} -f so_ve=${{ inputs.so_ve || '100' }} -f levels_backfill=${{ inputs.levels_backfill || '3' }} -f pairs_added=$N
 
   prune:
     needs: plan

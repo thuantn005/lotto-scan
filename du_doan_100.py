@@ -131,6 +131,7 @@ else:
     rem = np.flatnonzero(pcnt >= MIN_PAIRS)
     if len(rem): rem = rem[np.argsort(-pcnt[rem], kind='stable')]      # trung nhieu cap nhat len dau
 n_rem_total = int(len(rem)); need = NEED - len(chosen)
+REM_LABEL = 'khong seed nao sinh' if REM_MODE == 'old' else 'bi loai do seed trung >= %d cap' % MIN_PAIRS
 if need > 0 and len(rem):
     if REM_MODE == 'old':
         pick = np.sort(rem if len(rem) <= need else np.random.default_rng(N).choice(rem, size=need, replace=False))
@@ -152,7 +153,7 @@ while len(chosen) < NEED and c <= 200:
 os.makedirs('du_doan', exist_ok=True)
 out = f'du_doan/{game}_{N}.txt'
 with open(out, 'w') as o:
-    o.write(f'# Ky {N} ({game}): {len(chosen)} ve du doan | {len(files)} cap, {nseed:,} seed ({nseed2:,} seed hit dung 2 ky, loai {nlate} seed trung them, {nrej} seed bi loai o buoc kiem tra cuoi) | ve con lai ({'khong seed nao sinh' if REM_MODE == 'old' else f'bi loai do seed trung >= {MIN_PAIRS} cap'}): {n_rem_total:,}\n')
+    o.write(f'# Ky {N} ({game}): {len(chosen)} ve du doan | {len(files)} cap, {nseed:,} seed ({nseed2:,} seed hit dung 2 ky, loai {nlate} seed trung them, {nrej} seed bi loai o buoc kiem tra cuoi) | ve con lai ({REM_LABEL}): {n_rem_total:,}\n')
     o.write(f'# nguon: seed 2 hit {n_muc} | con_lai {n_rem} | it_seed {len(chosen) - n_muc - n_rem}. Moi ve chi co xac suat ngau nhien 1/{CT:,}.\n# ve | nguon | chi tiet\n')
     for v, src, det in chosen: o.write(f'{dec(v)} | {src} | {det}\n')
 # danh sach VE CON LAI day du (neu <= CON_LAI_MAX, mac dinh 500 - Lotto thuong chi vai ve; Mega thi qua nhieu nen chi ghi so luong trong header)
@@ -168,8 +169,8 @@ RDIR = os.environ.get('CON_LAI_RELEASE_DIR')
 if RDIR and n_rem_total > 0:
     import gzip; os.makedirs(RDIR, exist_ok=True)
     with gzip.open(f'{RDIR}/con_lai_full_{game}_{N}.txt.gz', 'wt') as o:
-        o.write(f'# Ky {N} ({game}): {n_rem_total:,} ve CON LAI ' + (f'(khong seed nao cua {len(files)} cap sinh ra)' if REM_MODE == 'old' else f'(bi seed trung >= {MIN_PAIRS} cap tren {len(files)} cap) | ve | so cap trung') + '\\n')
-        for v in rem: o.write(dec(v) + ('\\n' if REM_MODE == 'old' else f' | {int(pcnt[v])} cap\\n'))
+        o.write(f'# Ky {N} ({game}): {n_rem_total:,} ve CON LAI ' + (f'(khong seed nao cua {len(files)} cap sinh ra)' if REM_MODE == 'old' else f'(bi seed trung >= {MIN_PAIRS} cap tren {len(files)} cap) | ve | so cap trung') + '\n')
+        for v in rem: o.write(dec(v) + ('\n' if REM_MODE == 'old' else f' | {int(pcnt[v])} cap\n'))
     print('da ghi', f'{RDIR}/con_lai_full_{game}_{N}.txt.gz', n_rem_total)
 # giu KEEP file gan nhat
 for pre in (f'du_doan/{game}_*.txt', f'du_doan/con_lai_{game}_*.txt'):
