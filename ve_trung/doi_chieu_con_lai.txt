@@ -4,4 +4,5 @@
 999 | 2026-11-10 | 3 | 3,645,368 | BI LOAI | 1 | 39.2%
 1000 | 2026-11-10 | 4 | 4,860,516 | BI LOAI | 2 | 28.7%
 1001 | 2026-11-11 | 4 | 4,859,028 | CON LAI | 0 | 28.7%
-# TONG KET: 5 ky | ve that nam trong danh sach CON LAI: 3 ky (60.0%) | ky vong ngau nhien: 2.23 ky (44.7%)
+1002 | 2026-11-11 | 1 | 1,213,877 | CON LAI | 0 | 73.2%
+# TONG KET: 6 ky | ve that nam trong danh sach CON LAI: 4 ky (66.7%) | ky vong ngau nhien: 2.97 ky (49.4%)

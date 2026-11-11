@@ -3,3 +3,4 @@
 {"ky": 999, "ngay": "2026-11-10", "so_cap": 3, "cap": ["997_998", "996_997", "995_996"], "so_seed": 3645368, "ve_that_con_lai": false, "so_seed_sinh_ve_that": 1, "xs_con_lai_ngau_nhien": 0.3923}
 {"ky": 1000, "ngay": "2026-11-10", "so_cap": 4, "cap": ["998_999", "997_998", "996_997", "995_996"], "so_seed": 4860516, "ve_that_con_lai": false, "so_seed_sinh_ve_that": 2, "xs_con_lai_ngau_nhien": 0.2872}
 {"ky": 1001, "ngay": "2026-11-11", "so_cap": 4, "cap": ["999_1000", "998_999", "997_998", "996_997"], "so_seed": 4859028, "ve_that_con_lai": true, "so_seed_sinh_ve_that": 0, "xs_con_lai_ngau_nhien": 0.2873}
+{"ky": 1002, "ngay": "2026-11-11", "so_cap": 1, "cap": ["1000_1001"], "so_seed": 1213877, "ve_that_con_lai": true, "so_seed_sinh_ve_that": 0, "xs_con_lai_ngau_nhien": 0.7323}
