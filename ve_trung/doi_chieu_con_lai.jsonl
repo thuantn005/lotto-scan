@@ -5,3 +5,4 @@
 {"ky": 1001, "ngay": "2026-11-11", "so_cap": 4, "cap": ["999_1000", "998_999", "997_998", "996_997"], "so_seed": 4859028, "ve_that_con_lai": true, "so_seed_sinh_ve_that": 0, "xs_con_lai_ngau_nhien": 0.2873}
 {"ky": 1002, "ngay": "2026-11-11", "so_cap": 1, "cap": ["1000_1001"], "so_seed": 1213877, "ve_that_con_lai": true, "so_seed_sinh_ve_that": 0, "xs_con_lai_ngau_nhien": 0.7323}
 {"ky": 1003, "ngay": "2026-11-12", "so_cap": 3, "cap": ["1001_1002", "1000_1001", "999_1000"], "so_seed": 3644848, "ve_that_con_lai": true, "so_seed_sinh_ve_that": 0, "xs_con_lai_ngau_nhien": 0.3923, "so_seed_hit34": 12}
+{"ky": 1004, "ngay": "2026-11-12", "so_cap": 4, "cap": ["1002_1003", "1001_1002", "1000_1001", "999_1000"], "so_seed": 4860639, "ve_that_con_lai": false, "so_seed_sinh_ve_that": 2, "xs_con_lai_ngau_nhien": 0.2872, "so_seed_hit34": 12}
