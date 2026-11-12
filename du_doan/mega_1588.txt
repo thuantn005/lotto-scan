@@ -1,5 +1,5 @@
 # Ky 1588 (mega): 100 ve du doan | 456 cap, 126,770,882 seed (126,763,800 seed hit dung 2 ky, loai 0 seed trung them, 0 seed bi loai o buoc kiem tra cuoi) | ve con lai (khong seed nao sinh): 2
-# nguon: seed 2 hit 100 | con_lai 0 | it_seed 0. Moi ve chi co xac suat ngau nhien 1/8,145,060.
+# nguon: seed 2 hit 100 | con_lai 0 | it_seed 0 | seed hit>=3 ky giu de loai: 0. Moi ve chi co xac suat ngau nhien 1/8,145,060.
 # ve | nguon | chi tiet
 11-15-16-20-23-37 | seed2hit | cap 1503_1504 (da co 7 seed muc>=1, ti le 2.47x ngau nhien, 1 ve): muc 1, ngau nhien trong 268,901 seed hit dung 2 ky (seed 12287000376453630955)
 04-14-20-23-25-40 | seed2hit | cap 1501_1502 (da co 7 seed muc>=1, ti le 2.41x ngau nhien, 1 ve): muc 1, ngau nhien trong 268,997 seed hit dung 2 ky (seed 9756166888982132404)
