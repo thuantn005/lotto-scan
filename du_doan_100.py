@@ -77,10 +77,11 @@ if os.path.exists(hf0):
     for l in open(hf0):
         a_ = l.rstrip('\n').split('\t')
         if len(a_) == 3 and a_[2].strip(): tsvn[a_[1]] = tsvn.get(a_[1], 0) + 1
+wseeds = []
 for a, b, f in files:
     d = pd.read_csv(f, sep=' ', header=None, usecols=[0, 1], dtype={0: np.uint64, 1: np.int32}, engine='c')
     s = d[0].to_numpy(); h = d[1].to_numpy(); t = tid(s, N)
-    nseed += len(s); cp = np.bincount(t, minlength=CT); cnt += cp.astype(np.int32); pcnt += (cp > 0).astype(np.int32)   # cp = so seed CUA CAP sinh tung ve (muc); pcnt = so CAP khac nhau cung sinh ve do
+    wseeds.append(s); nseed += len(s); cp = np.bincount(t, minlength=CT); cnt += cp.astype(np.int32); pcnt += (cp > 0).astype(np.int32)   # cp = so seed CUA CAP sinh tung ve (muc); pcnt = so CAP khac nhau cung sinh ve do
     nl_pair = 0
     m2 = h == 2                                  # seed chi hit dung 2 ky (cap d1,d2) tinh den luc quet
     if len(later): m2 &= ~np.isin(s, later)
@@ -94,6 +95,13 @@ for a, b, f in files:
         pk = rg.choice(ix, size=min(len(ix), PERPAIR), replace=False)
         nconv = tsvn.get(f'{a}_{b}', 0) if tsvn else int((h >= 3).sum()) + nl_pair   # so seed muc>=1 cua cap (theo hits tsv)
         percand.append((f'{a}_{b}', [(int(t[q]), len(ix), int(s[q])) for q in pk], nconv, nconv / (len(s) * max(1, N - 1 - b))))   # so seed cua cap da len >= 3 hit (luc quet + trung them sau do)
+# SEED HIT >= 3 KY (3, 4, ...) GIU VINH VIEN (seed_state/keep34_<game>.txt, du cap gz da bi xoa) -> cung dung de LOAI VE; bo seed da co trong cac cap cua so (tranh dem trung)
+n34 = 0; KEEP34 = f'seed_state/keep34_{game}.txt'
+if LOTTO and os.environ.get('USE_KEEP34', '1') == '1' and os.path.exists(KEEP34):
+    ks_ = np.array([int(l.split('\t')[0]) for l in open(KEEP34) if l.strip() and l.split('\t')[0].isdigit()], dtype=np.uint64)
+    if len(ks_) and wseeds: ks_ = ks_[~np.isin(ks_, np.concatenate(wseeds))]
+    if len(ks_):
+        c34 = np.bincount(tid(ks_, N), minlength=CT); cnt += c34.astype(np.int32); pcnt += (c34 > 0).astype(np.int32); n34 = len(ks_); nseed += n34
 chosen = []; used = set()
 nrej = 0
 def valid(sd, pr):                                 # KIEM TRA CUOI: seed sinh ve phai hit DUNG 2 ky (d1,d2 cua cap) tren TOAN BO ket qua that; hit 3, 4.. ky -> bo
@@ -161,7 +169,7 @@ os.makedirs('du_doan', exist_ok=True)
 out = f'du_doan/{game}_{N}.txt'
 with open(out, 'w') as o:
     o.write(f'# Ky {N} ({game}): {len(chosen)} {SRC_TXT} | {len(files)} cap, {nseed:,} seed ({nseed2:,} seed hit dung 2 ky, loai {nlate} seed trung them, {nrej} seed bi loai o buoc kiem tra cuoi) | ve con lai ({REM_LABEL}): {n_rem_total:,}\n')
-    o.write(f'# nguon: seed 2 hit {n_muc} | con_lai {n_rem} | it_seed {len(chosen) - n_muc - n_rem}. Moi ve chi co xac suat ngau nhien 1/{CT:,}.\n# ve | nguon | chi tiet\n')
+    o.write(f'# nguon: seed 2 hit {n_muc} | con_lai {n_rem} | it_seed {len(chosen) - n_muc - n_rem} | seed hit>=3 ky giu de loai: {n34:,}. Moi ve chi co xac suat ngau nhien 1/{CT:,}.\n# ve | nguon | chi tiet\n')
     for v, src, det in chosen: o.write(f'{dec(v)} | {src} | {det}\n')
 # danh sach VE CON LAI DAY DU -> du_doan/con_lai_<game>_<ky>.txt
 CLMAX = int(os.environ.get('CON_LAI_MAX') or (0 if LOTTO else 500))      # 0 = ghi DAY DU tat ca ve con lai (Lotto ~1,1 trieu ve ~25 MB/ky, giu 5 ky); >0 = chi ghi CLMAX ve dau

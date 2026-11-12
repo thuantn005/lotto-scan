@@ -149,6 +149,9 @@ jobs:
           USE_PAIRS: ${{ inputs.use_pairs || '4' }}
         run: python3 doi_chieu_con_lai.py inverse || echo "::warning::doi_chieu_con_lai loi"
 
+      - name: LOTTO - bao cao tom tat moi ky (bao_cao/tom_tat_lotto535.txt)
+        run: python3 bao_cao_tom_tat.py || echo "::warning::bao_cao_tom_tat loi"
+
       - name: MEGA - cap nhat muc seed + chon 100 ve du doan ky tiep theo
         continue-on-error: true
         env:
@@ -180,7 +183,7 @@ jobs:
           [ -f data/all.csv ] && git add data/all.csv || true
           [ -f data/mega_all.csv ] && git add data/mega_all.csv || true
           # add TUNG thu muc rieng: 1 pathspec khong ton tai lam git add loi va KHONG stage gi ca (du_doan bi bo sot)
-          for p in ve_trung du_doan seed_state ve_con_lai ve_con_lai_mega ve_trung_mega ve_theo_muc; do
+          for p in ve_trung du_doan seed_state bao_cao ve_con_lai ve_con_lai_mega ve_trung_mega ve_theo_muc; do
             if [ -e "$p" ] || git ls-files --error-unmatch "$p" >/dev/null 2>&1; then git add -A -- "$p" || true; fi
           done
           if git diff --cached --quiet; then
@@ -381,8 +384,9 @@ jobs:
             head -100 full.txt
           } > $T
           gzip -9 -c full.txt > inverse/first2_${D1}_${D2}.txt.gz
+          pip install -q numpy pandas; python3 keep_seeds_34.py inverse   # giu vinh vien seed hit >= 3 ky
           git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add scan_state inverse/first2_${D1}_${D2}.txt.gz; git commit -m "scan seed inverse ${D1}_${D2}" || true
+          git add scan_state seed_state/keep34_lotto535.txt inverse/first2_${D1}_${D2}.txt.gz; git commit -m "scan seed inverse ${D1}_${D2}" || true
           for i in 1 2 3 4 5; do git pull --rebase -q origin main && git push origin main && break; sleep 8; done
       - name: Tu goi lai vong tiep (bo qua cap nhat du lieu)
         run: |
@@ -412,6 +416,8 @@ jobs:
           cat pf/plan.json
           if [ "${{ inputs.prune || 'true' }}" = "true" ]; then
             # cua so truot: xoa gz cua cap cu hon N cap moi nhat khoi repo (dau da quet .txt van o scan_state/)
+            pip install -q numpy pandas; python3 keep_seeds_34.py inverse   # chot kho seed hit >= 3 ky TRUOC khi xoa gz cu
+            git add seed_state/keep34_lotto535.txt
             if [ -s pf/old_pairs.txt ]; then
               while read -r n; do echo "xoa inverse/$n"; git rm -q --ignore-unmatch "inverse/$n" || true; done < pf/old_pairs.txt
             fi
@@ -427,5 +433,5 @@ jobs:
           # ve con lai chi giu 5 ky gan nhat (ve trung luu vinh vien o ve_trung/)
           ls ve_con_lai_auto/ve_con_lai_lotto535_*.txt 2>/dev/null | sort -t_ -k5 -n | head -n -5 | xargs -r rm -f
           git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ve_con_lai_auto; git commit -m "ve con lai (tia cap) ky ${{ needs.plan.outputs.nxt }}" || true
+          git add ve_con_lai_auto seed_state/keep34_lotto535.txt; git commit -m "ve con lai (tia cap) ky ${{ needs.plan.outputs.nxt }}" || true
           for i in 1 2 3 4 5; do git pull --rebase -q origin main && git push origin main && break; sleep 8; done

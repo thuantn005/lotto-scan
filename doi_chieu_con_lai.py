@@ -41,6 +41,16 @@ for D in sorted(RES)[-LAST:]:
         s = seeds(f); ns += len(s); h = int((tid(s, D) == RES[D]).sum()); cnt += h; bi_loai |= h > 0
     rec = {'ky': D, 'ngay': DATE.get(D, ''), 'so_cap': len(fs), 'cap': [f'{a}_{b}' for a, b, _ in fs], 'so_seed': ns, 've_that_con_lai': not bi_loai,
            'so_seed_sinh_ve_that': cnt, 'xs_con_lai_ngau_nhien': round(exp(-ns / CT), 4)}
+    K = {}
+    if os.path.exists('seed_state/keep34_lotto535.txt'):
+        for l in open('seed_state/keep34_lotto535.txt'):
+            a = l.rstrip('\n').split('\t')
+            if len(a) == 2 and a[0].isdigit():
+                hs = [int(x) for x in a[1].split(',') if x.strip().isdigit() and int(x) < D]
+                if len(hs) >= 3: K[int(a[0])] = 1
+    if K:
+        ka = np.array(sorted(K), dtype=np.uint64); h34 = int((tid(ka, D) == RES[D]).sum()); cnt += h34; bi_loai |= h34 > 0; ns += len(ka)
+        rec.update(so_seed=ns, ve_that_con_lai=not bi_loai, so_seed_sinh_ve_that=cnt, so_seed_hit34=len(ka), xs_con_lai_ngau_nhien=round(exp(-ns / CT), 4))
     log.append(rec)
 log.sort(key=lambda r: r['ky'])
 with open(lf, 'w') as o:
