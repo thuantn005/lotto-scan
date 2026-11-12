@@ -2,19 +2,16 @@
  "game": "lotto535",
  "next_draw": 1005,
  "target": 1,
- "pairs": 8,
- "remaining_all": 321554,
+ "pairs": 5,
+ "remaining_all": 818426,
  "need_more": true,
  "keep": [
   "1000_1001",
   "1001_1002",
   "1002_1003",
   "1003_1004",
-  "985_986",
-  "987_988",
-  "989_990",
-  "999_1000"
+  "987_988"
  ],
  "drop": [],
- "remaining_keep": 321554
+ "remaining_keep": 818426
 }
