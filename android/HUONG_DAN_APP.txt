@@ -1,0 +1,7 @@
+APP ANDROID "Lotto Con Lai"
+1. Chep thu muc android/ va .github/workflows/build_apk.yml vao repo, commit.
+2. GitHub > Actions > "Build APK Android (Lotto Con Lai)" > Run workflow. Xong: tai app-debug.apk o Artifacts hoac Releases (tag lotto-app).
+3. Cai APK tren dien thoai (cho phep cai tu nguon khong ro).
+4. Mo app: nhap owner + ten repo (+ token neu repo private) -> bam "1. Tai ve con lai moi nhat" (doc du_doan/con_lai_lotto535_<ky>.txt, ~25 MB, lay mau 40.000 ve) -> bam "2. Du doan".
+   Chi chon ve tu danh sach con lai; loc bo ve dang ngay sinh/day so, phu deu, co dinh theo ky.
+Luu y: day chi la bo loc, khong tang xac suat trung (1/3.895.584 moi ve).

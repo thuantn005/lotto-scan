@@ -1,0 +1,37 @@
+name: Build APK Android (Lotto Con Lai)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "android/**"
+      - ".github/workflows/build_apk.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.7"
+      - name: Build debug APK
+        run: gradle -p android assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lotto-con-lai-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Dua APK len Release (de tai ve dien thoai)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG=lotto-app
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Lotto Con Lai app" --notes "APK Android: tai app-debug.apk"
+          gh release upload "$TAG" android/app/build/outputs/apk/debug/app-debug.apk --clobber
