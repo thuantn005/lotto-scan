@@ -61,7 +61,12 @@ for f in glob.glob(os.path.join(gzdir, '*.txt.gz')):
     m = pat.search(f)
     if m: files.append((int(m.group(1)), int(m.group(2)), f))
 files.sort(key=lambda p: -p[0])
-if USE > 0: files = files[:USE]
+if USE > 0 and LOTTO:      # cap LIEN TIEP: (N-2,N-1), (N-3,N-2), ... USE cap (N = ky sap quay); cap nao thieu thi bo qua
+    want = {(N - 1 - k - 1, N - 1 - k) for k in range(USE)}
+    miss = sorted(want - {(a, b) for a, b, _ in files}, reverse=True)
+    if miss: print('CANH BAO thieu cap lien tiep:', miss)
+    files = [x for x in files if (x[0], x[1]) in want]
+elif USE > 0: files = files[:USE]
 cnt = np.zeros(CT, dtype=np.int32); pcnt = np.zeros(CT, dtype=np.int32); nseed = 0; nseed2 = 0
 PERPAIR = int(os.environ.get('PER_PAIR') or 150); percand = []
 later = np.array([], dtype=np.uint64)   # seed da trung them sau d2 (hit >= 3) theo seed_state
@@ -106,7 +111,8 @@ if os.environ.get('PAIR_CRIT', 'conv') == 'conv': percand = [x for x in percand 
 percand.sort(key=lambda x: (-x[3], -int(x[0].split('_')[0])) if os.environ.get('PAIR_CRIT', 'conv') == 'conv' else -int(x[0].split('_')[0]))
 # CHIA DEU: moi cap cung so ve (NEED // so cap, phan du chia cho cac cap moi nhat); ve trung giua cac cap thi lay ve ke tiep cua cap do
 P = len(percand)
-if P:
+PICK = (os.environ.get('PICK') or ('con_lai' if LOTTO else 'seed')).lower()   # con_lai: 100 ve lay tu VE CON LAI (sau khi loai seed); seed: cach cu (seed hit dung 2 ky)
+if P and PICK == 'seed':
     # CHIA THEO XAC SUAT: ti le cua cap = so seed len >= 3 hit / (so seed cua cap x so ky da qua sau d2); so ve cua cap ~ ti le (lam tron lon nhat, tong = NEED)
     if os.environ.get('SPLIT', 'prob') == 'prob' and sum(x[3] for x in percand) > 0:
         tw = sum(x[3] for x in percand); raw = [NEED * x[3] / tw for x in percand]
@@ -131,6 +137,7 @@ else:
     rem = np.flatnonzero(pcnt >= MIN_PAIRS)
     if len(rem): rem = rem[np.argsort(-pcnt[rem], kind='stable')]      # trung nhieu cap nhat len dau
 n_rem_total = int(len(rem)); need = NEED - len(chosen)
+SRC_TXT = 've du doan' if PICK == 'seed' else 've CON LAI'
 REM_LABEL = 'khong seed nao sinh' if REM_MODE == 'old' else 'bi loai do seed trung >= %d cap' % MIN_PAIRS
 if need > 0 and len(rem):
     if REM_MODE == 'old':
@@ -153,15 +160,15 @@ while len(chosen) < NEED and c <= 200:
 os.makedirs('du_doan', exist_ok=True)
 out = f'du_doan/{game}_{N}.txt'
 with open(out, 'w') as o:
-    o.write(f'# Ky {N} ({game}): {len(chosen)} ve du doan | {len(files)} cap, {nseed:,} seed ({nseed2:,} seed hit dung 2 ky, loai {nlate} seed trung them, {nrej} seed bi loai o buoc kiem tra cuoi) | ve con lai ({REM_LABEL}): {n_rem_total:,}\n')
+    o.write(f'# Ky {N} ({game}): {len(chosen)} {SRC_TXT} | {len(files)} cap, {nseed:,} seed ({nseed2:,} seed hit dung 2 ky, loai {nlate} seed trung them, {nrej} seed bi loai o buoc kiem tra cuoi) | ve con lai ({REM_LABEL}): {n_rem_total:,}\n')
     o.write(f'# nguon: seed 2 hit {n_muc} | con_lai {n_rem} | it_seed {len(chosen) - n_muc - n_rem}. Moi ve chi co xac suat ngau nhien 1/{CT:,}.\n# ve | nguon | chi tiet\n')
     for v, src, det in chosen: o.write(f'{dec(v)} | {src} | {det}\n')
-# danh sach VE CON LAI day du (neu <= CON_LAI_MAX, mac dinh 500 - Lotto thuong chi vai ve; Mega thi qua nhieu nen chi ghi so luong trong header)
-CLMAX = int(os.environ.get('CON_LAI_MAX') or 500)
+# danh sach VE CON LAI DAY DU -> du_doan/con_lai_<game>_<ky>.txt
+CLMAX = int(os.environ.get('CON_LAI_MAX') or (0 if LOTTO else 500))      # 0 = ghi DAY DU tat ca ve con lai (Lotto ~1,1 trieu ve ~25 MB/ky, giu 5 ky); >0 = chi ghi CLMAX ve dau
 if n_rem_total > 0:
-    lst_ = rem[:CLMAX]                                                  # ghi toi da CLMAX ve (danh sach day du len Release)
+    lst_ = rem if CLMAX <= 0 else rem[:CLMAX]
     with open(f'du_doan/con_lai_{game}_{N}.txt', 'w') as o:
-        if REM_MODE == 'old': o.write(f'# Ky {N} ({game}): {n_rem_total:,} ve CON LAI trong to hop sau khi loai ve do seed cua {len(files)} cap sinh ra; ghi {len(lst_)} ve dau (danh sach day du tren Release)\n')
+        if REM_MODE == 'old': o.write(f'# Ky {N} ({game}): {n_rem_total:,} ve CON LAI trong to hop sau khi loai ve do seed cua {len(files)} cap sinh ra; ghi {len(lst_):,} ve (danh sach day du)\n')
         else: o.write(f'# Ky {N} ({game}): {n_rem_total:,} ve CON LAI = ve bi loai do seed trung >= {MIN_PAIRS} cap (tren {len(files)} cap); ghi {len(lst_)} ve trung nhieu cap nhat | ve | so cap trung\n')
         for v in lst_: o.write(dec(v) + ('\n' if REM_MODE == 'old' else f' | {int(pcnt[v])} cap\n'))
 # DANH SACH DAY DU ve con lai (rat lon, vd ~1 trieu ve) -> khong commit vao repo; ghi .gz vao CON_LAI_RELEASE_DIR de workflow day len Release

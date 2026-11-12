@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Doi chieu VE CON LAI voi ket qua that (Lotto 5/35). Moi ky 1 lan.
-Voi moi ky D da co ket qua: lay USE_PAIRS cap MOI NHAT co d2 < D (cap biet truoc khi ky D quay), tinh tap ve bi loai (seed cua cac cap sinh ra ve cho ky D),
+Voi moi ky D da co ket qua: lay USE_PAIRS cap LIEN TIEP ngay truoc ky D: (D-2,D-1), (D-3,D-2), ... (cap biet truoc khi ky D quay), tinh tap ve bi loai (seed cua cac cap sinh ra ve cho ky D),
 roi xem VE TRUNG THAT (5 so + DB) cua ky D la CON LAI hay BI LOAI. Ngau nhien: ve that con lai voi xac suat ~ exp(-so_seed/tong_ve).
   python3 doi_chieu_con_lai.py THU_MUC_GZ      env: USE_PAIRS (4), SAVE_LAST (5), CSV (data/all.csv)
 Ghi ve_trung/doi_chieu_con_lai.jsonl (log) va ve_trung/doi_chieu_con_lai.txt (de doc + tong ket)."""
@@ -34,7 +34,7 @@ def seeds(f):
     return cache[f]
 for D in sorted(RES)[-LAST:]:
     if D in done: continue
-    fs = sorted([x for x in files if x[1] < D], key=lambda x: -x[0])[:USE]
+    want = {(D - 1 - k - 1, D - 1 - k) for k in range(USE)}; fs = sorted([x for x in files if (x[0], x[1]) in want], key=lambda x: -x[0])   # cap LIEN TIEP truoc ky D
     if not fs: continue
     ns = 0; bi_loai = False; cnt = 0
     for a, b, f in fs:

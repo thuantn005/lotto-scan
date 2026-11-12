@@ -46,7 +46,7 @@ on:
         default: "true"
       max_pairs:
         description: "Chi dung N cap MOI NHAT (cua so truot); cap cu hon bi xoa khoi repo inverse/. 0 = khong gioi han"
-        default: "47"
+        default: "4"
       use_pairs:
         description: "So cap MOI NHAT dung de LOAI ve / sinh ve du doan / doi chieu (khong xoa gi)"
         default: "4"
@@ -253,25 +253,29 @@ jobs:
           BUSY: ${{ steps.busy.outputs.busy }}
           TARGET: ${{ inputs.target || '1' }}
           CHUNKS: ${{ inputs.chunks || '20' }}
-          MAXP: ${{ inputs.max_pairs || '47' }}
+          MAXP: ${{ inputs.max_pairs || '4' }}
           SCAN_NEWEST: ${{ inputs.scan_newest || 'true' }}
         run: |
           if [ "$BUSY" = "true" ]; then echo "go=false" >> $GITHUB_OUTPUT; exit 0; fi
           mkdir -p inverse
           ls inverse | wc -l
+          python3 make_draws_rank.py
           python3 - <<PY
           import os, re, glob
           mx = int(os.environ["MAXP"])
-          fs = sorted(glob.glob("inverse/first2_*_*.txt.gz"), key=lambda f: -int(re.search(r"first2_(\d+)_", f).group(1)))
-          old = fs[mx:] if mx > 0 else []
+          top = max(int(l.split()[0]) for l in open("data/draws_rank.txt"))
+          want = {(top - 1 - k, top - k) for k in range(mx)} if mx > 0 else None   # cua so: mx cap LIEN TIEP (top-1,top), (top-2,top-1), ...
+          def pr(f):
+              m = re.search(r"first2_(\d+)_(\d+)", f); return (int(m.group(1)), int(m.group(2)))
+          fs = glob.glob("inverse/first2_*_*.txt.gz")
+          old = [f for f in fs if want is not None and pr(f) not in want]
           open("old_pairs.txt", "w").write("\n".join(os.path.basename(f) for f in old))
-          print("giu", len(fs) - len(old), "cap moi nhat, cap cu hon se bi xoa:", len(old))
+          print("cua so lien tiep:", sorted(want) if want else "khong gioi han", "| xoa cap ngoai cua so:", len(old))
           PY
-          python3 make_draws_rank.py
           NXT=$(python3 -c "print(max(int(l.split()[0]) for l in open('data/draws_rank.txt'))+1)")
           python3 auto_prune.py lotto535 inverse "$NXT" "$TARGET"
           python3 - <<PY
-          import os, json, re
+          import os, json, re, glob
           plan = json.load(open("plan.json"))
           rows = {int(l.split()[0]): int(l.split()[1]) for l in open("data/draws_rank.txt")}
           done = set()
@@ -281,8 +285,14 @@ jobs:
           top = max(rows)
           newest = (top - 1, top)   # cap ky MOI NHAT trong du lieu
           newest_pending = os.environ.get("SCAN_NEWEST", "true") == "true" and (top - 1) in rows and newest not in done
-          windowed = int(os.environ["MAXP"]) > 0 and plan["pairs"] >= int(os.environ["MAXP"])   # cua so da du N cap -> khong quet them cap cu
-          pending = newest_pending or (plan["need_more"] and not windowed)
+          mx = int(os.environ["MAXP"])
+          have = {(int(m.group(1)), int(m.group(2))) for f in glob.glob("inverse/first2_*_*.txt.gz") for m in [re.search(r"first2_(\d+)_(\d+)", f)] if m}
+          if mx > 0:       # che do cua so: chi quet cap LIEN TIEP con thieu (cap moi nhat truoc); du mx cap thi dung
+              miss = [(top - 1 - k, top - k) for k in range(mx) if (top - 1 - k) in rows and (top - k) in rows and (top - 1 - k, top - k) not in have]
+              pending = bool(miss); newest_pending = pending
+              if pending: newest = miss[0]
+          else:
+              pending = newest_pending or plan["need_more"]
           out = {"go": "true", "need_more": "true" if pending else "false", "nxt": plan["next_draw"], "newest": f"{newest[0]}_{newest[1]}", "newest_pending": str(newest_pending).lower()}
           if pending:
               if newest_pending:
@@ -377,7 +387,7 @@ jobs:
       - name: Tu goi lai vong tiep (bo qua cap nhat du lieu)
         run: |
           N=$(( ${{ inputs.pairs_added || '0' }} + 1 ))
-          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '47' }} -f use_pairs=${{ inputs.use_pairs || '4' }} -f so_ve=${{ inputs.so_ve || '100' }} -f levels_backfill=${{ inputs.levels_backfill || '3' }} -f pairs_added=$N
+          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '4' }} -f use_pairs=${{ inputs.use_pairs || '4' }} -f so_ve=${{ inputs.so_ve || '100' }} -f levels_backfill=${{ inputs.levels_backfill || '3' }} -f pairs_added=$N
 
   prune:
     needs: plan
@@ -406,7 +416,7 @@ jobs:
               while read -r n; do echo "xoa inverse/$n"; git rm -q --ignore-unmatch "inverse/$n" || true; done < pf/old_pairs.txt
             fi
             # max_pairs=0: che do cu - tia cap thua theo bao phu
-            if [ "${{ inputs.max_pairs || '47' }}" = "0" ]; then
+            if [ "${{ inputs.max_pairs || '4' }}" = "0" ]; then
               for p in $(python3 -c "import json;print(' '.join(json.load(open('pf/plan.json'))['drop']))"); do
                 echo "xoa inverse/first2_${p}.txt.gz"; git rm -q --ignore-unmatch "inverse/first2_${p}.txt.gz" || true
               done
