@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Chon DUNG 100 ve du doan cho ky tiep theo (Lotto 5/35 hoac Mega 6/45) va luu vao du_doan/<game>_<ky>.txt.
-  python3 du_doan_100.py GAME THU_MUC_GZ        GAME = lotto535 | mega      (so ve: env TARGET_N, mac dinh 100)
+  python3 du_doan_100.py GAME THU_MUC_GZ        GAME = lotto535 | mega      (so ve: env TARGET_N, mac dinh 10)
 Thu tu uu tien (dedupe, du 100 thi dung):
   1) THEO TUNG CAP, CHIA THEO SO LIEU seed_state/hits_<game>.tsv (SPLIT=prob, mac dinh; SPLIT=equal de chia deu): so ve cua cap ~ (so seed muc>=1 cua cap trong tsv) / (seed cua cap x ky da qua sau d2).
      CHON SEED THEO MUC: chi lay ve do DUNG MUC seed cua cap cung sinh ra (env MUC, mac dinh 1; MUC=0 de khong loc theo muc). Thong ke muc (47 cap, moi ky sau cap toi ky 1000): ve trung that o muc 1 = 1,07x ngau nhien (khong co y nghia thong ke).
@@ -14,7 +14,7 @@ import os, sys, re, glob, json, csv
 import numpy as np, pandas as pd
 from math import comb
 game, gzdir = sys.argv[1], sys.argv[2]
-LOTTO = game == 'lotto535'; NEED = int(os.environ.get('TARGET_N') or 100); USE = int(os.environ.get('USE_PAIRS') or (47 if LOTTO else 0))
+LOTTO = game == 'lotto535'; NEED = int(os.environ.get('TARGET_N') or 10); USE = int(os.environ.get('USE_PAIRS') or (47 if LOTTO else 0))
 KEEP = int(os.environ.get('KEEP_DU_DOAN') or 30)
 MOD = 324632 if LOTTO else 8145060; CT = MOD * 12 if LOTTO else MOD
 M1 = np.uint64(0x9E3779B97F4A7C15); M2 = 0xD1B54A32D192ED03; M3 = np.uint64(0xBF58476D1CE4E5B9); M4 = np.uint64(0x94D049BB133111EB)
@@ -148,7 +148,29 @@ n_rem_total = int(len(rem)); need = NEED - len(chosen)
 SRC_TXT = 've du doan' if PICK == 'seed' else 've CON LAI'
 REM_LABEL = 'khong seed nao sinh' if REM_MODE == 'old' else 'bi loai do seed trung >= %d cap' % MIN_PAIRS
 if need > 0 and len(rem):
-    if REM_MODE == 'old':
+    if REM_MODE == 'old' and LOTTO and os.environ.get('SPREAD', '1') == '1' and len(rem) > need:
+        # CHON 100 VE TU VE CON LAI: (1) bo ve dang 'nhieu nguoi chon' (toan so <= 31 kieu ngay sinh, day >= 3 so lien tiep, cap so cong) -> neu trung giai it phai chia;
+        # (2) PHU DEU: 2 ve bat ky chung <= 2 so, moi so (1-35) xuat hien khong qua nhieu. Deu chi LOC/SAP XEP, khong doi xac suat 1/{CT} cua tung ve.
+        rg_ = np.random.default_rng(N); cand = rg_.choice(rem, size=min(len(rem), 40000), replace=False); good = []
+        for v in cand:
+            nums = [int(x) for x in dec(int(v)).split(' + ')[0].split('-')]
+            ap = len({b - a for a, b in zip(nums, nums[1:])}) == 1
+            run = sum(1 for a, b in zip(nums, nums[1:]) if b - a == 1) >= 2
+            if max(nums) >= 32 and not ap and not run: good.append((int(v), frozenset(nums)))
+        use_cap = int(need * 5 / 35 * 1.8) + 1; sel = []; usage = {}
+        for ov in (2, 3, 4):                                       # noi dan chong lan neu chua du
+            for v, ns_ in good:
+                if len(sel) >= need: break
+                if v in {x[0] for x in sel}: continue
+                if any(len(ns_ & x[1]) > ov for x in sel): continue
+                if any(usage.get(n, 0) >= use_cap for n in ns_): continue
+                sel.append((v, ns_))
+                for n in ns_: usage[n] = usage.get(n, 0) + 1
+            if len(sel) >= need: break
+        pick = np.array(sorted(x[0] for x in sel), dtype=np.int64)
+        if len(pick) < need:                                       # van thieu -> bo sung ngau nhien tu ve con lai
+            extra = np.setdiff1d(rem, pick); pick = np.sort(np.concatenate([pick, rg_.choice(extra, size=min(len(extra), need - len(pick)), replace=False)]))
+    elif REM_MODE == 'old':
         pick = np.sort(rem if len(rem) <= need else np.random.default_rng(N).choice(rem, size=need, replace=False))
     else:                                                               # lay ve trung nhieu cap nhat; cung so cap thi lay mau co dinh theo ky
         top = pcnt[rem[0]]; pick = []
@@ -158,7 +180,7 @@ if need > 0 and len(rem):
             pick.extend(g.tolist())
             if len(pick) >= need: break
         pick = np.array(pick, dtype=np.int64)
-    for v in pick: add(v, 'con_lai', 'khong seed nao sinh ra' if REM_MODE == 'old' else f'bi loai do seed trung {int(pcnt[v])} cap')
+    for v in pick: add(v, 'con_lai', 'khong seed nao sinh ra, loc it nguoi chon + phu deu' if REM_MODE == 'old' and LOTTO else 'khong seed nao sinh ra' if REM_MODE == 'old' else f'bi loai do seed trung {int(pcnt[v])} cap')
 n_rem = len(chosen) - n_muc
 # 3) ve it seed nhat
 c = 1

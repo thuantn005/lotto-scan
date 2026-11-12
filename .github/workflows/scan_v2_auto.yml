@@ -52,7 +52,7 @@ on:
         default: "4"
       so_ve:
         description: "So ve du doan moi ky (moi game)"
-        default: "100"
+        default: "10"
       levels_backfill:
         description: "So ky cuoi duoc tinh lai muc seed moi lan chay (3 binh thuong; dat lon, vd 300, de backfill lan dau)"
         default: "3"
@@ -139,7 +139,7 @@ jobs:
         env:
           USE_PAIRS: ${{ inputs.use_pairs || '4' }}
           LEVEL_LAST: ${{ inputs.levels_backfill || '3' }}
-          TARGET_N: ${{ inputs.so_ve || '100' }}
+          TARGET_N: ${{ inputs.so_ve || '10' }}
         run: |
           python3 seed_levels.py lotto535 inverse || echo "::warning::seed_levels Lotto loi, bo qua muc seed"
           python3 du_doan_100.py lotto535 inverse
@@ -150,13 +150,15 @@ jobs:
         run: python3 doi_chieu_con_lai.py inverse || echo "::warning::doi_chieu_con_lai loi"
 
       - name: LOTTO - bao cao tom tat moi ky (bao_cao/tom_tat_lotto535.txt)
+        env:
+          USE_PAIRS: ${{ inputs.use_pairs || '4' }}
         run: python3 bao_cao_tom_tat.py || echo "::warning::bao_cao_tom_tat loi"
 
       - name: MEGA - cap nhat muc seed + chon 100 ve du doan ky tiep theo
         continue-on-error: true
         env:
           LEVEL_LAST: ${{ inputs.levels_backfill || '3' }}
-          TARGET_N: ${{ inputs.so_ve || '100' }}
+          TARGET_N: ${{ inputs.so_ve || '10' }}
         run: |
           mkdir -p relmega
           gh release download mega-inverse-archive --pattern 'first2_mega_*.txt.gz' --dir relmega --skip-existing || echo "::warning::chua co gz Mega tren Release - van sinh ve du doan (khong co seed)"
@@ -391,7 +393,7 @@ jobs:
       - name: Tu goi lai vong tiep (bo qua cap nhat du lieu)
         run: |
           N=$(( ${{ inputs.pairs_added || '0' }} + 1 ))
-          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '4' }} -f use_pairs=${{ inputs.use_pairs || '4' }} -f so_ve=${{ inputs.so_ve || '100' }} -f levels_backfill=${{ inputs.levels_backfill || '3' }} -f pairs_added=$N
+          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '4' }} -f use_pairs=${{ inputs.use_pairs || '4' }} -f so_ve=${{ inputs.so_ve || '10' }} -f levels_backfill=${{ inputs.levels_backfill || '3' }} -f pairs_added=$N
 
   prune:
     needs: plan
