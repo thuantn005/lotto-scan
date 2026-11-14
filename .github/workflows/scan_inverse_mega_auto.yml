@@ -1,15 +1,25 @@
-name: scan_inverse_mega_auto (Mega 6/45 - tu quet du N cap, gz chuyen sang Release, cuoi cung loai ve)
+name: scan_inverse_mega_auto (Mega 6/45 - tu quet TOAN BO cap + cap moi theo ky, gz len Release, chon 400 cap moi ky)
 
 # Dat file nay vao .github/workflows/ . Bam Run workflow 1 lan: workflow tu chon cap tiep theo
 # (d1 le giam dan: 1581_1582, 1579_1580, ... ), quet, luu gz len Release, tu goi lai cho den khi du total_pairs cap.
 # Cap "da xong" = co scan_state/first2_mega_D1_D2.txt trong repo (file nho, giu lai). Chay lai an toan, khong quet trung.
 
+# CHE DO MOI: giu DAY DU moi cap tren Release (400 cap duoc chon LAI moi ky nen khong xoa cap nao).
+#   total_pairs=0 -> quet TAT CA cap (a le, (a,a+1)) tu ky moi nhat xuong 1_2, tu noi tiep tung cap.
+#   Chay tu dong moi ngay sau khi scan_v2_auto cap nhat data/mega_all.csv: co ky Mega moi -> quet cap moi truoc.
+#   Het cap thi chon 400 cap (chon_cap_loai.py) cho ky tiep theo -> Release + chon_cap/ trong repo.
 on:
+  # TAM DUNG quet Mega tu dong (bo comment 2 dong duoi de bat lai)
+  # schedule:
+  #   - cron: "20 12 * * *"
   workflow_dispatch:
     inputs:
       total_pairs:
-        description: "Tong so cap can co (tinh ca cac cap da quet)"
-        default: "466"
+        description: "Tong so cap can co (0 = TAT CA cap tu 1_2 den ky moi nhat; khuyen dung)"
+        default: "0"
+      keep_pairs:
+        description: "So cap duoc chon moi ky de loai ve"
+        default: "400"
       chunks:
         description: "So job chia khong gian k (<=20)"
         default: "20"
@@ -20,8 +30,8 @@ on:
         description: "Tag Release chua cac file .txt.gz"
         default: "mega-inverse-archive"
       next_draw:
-        description: "Ky Mega can tinh ve con lai khi quet xong"
-        default: "1585"
+        description: "Ky Mega can chon cap (de trong = ky moi nhat trong du lieu + 1)"
+        default: ""
 
 permissions:
   contents: write
@@ -45,8 +55,8 @@ jobs:
       - uses: actions/checkout@v4
       - id: m
         env:
-          TOTAL: ${{ inputs.total_pairs }}
-          CHUNKS: ${{ inputs.chunks }}
+          TOTAL: ${{ inputs.total_pairs || '0' }}
+          CHUNKS: ${{ inputs.chunks || '20' }}
         run: |
           python3 make_draws_rank_mega.py
           python3 - <<'PY'
@@ -59,7 +69,7 @@ jobs:
           total = int(os.environ["TOTAL"]); n = int(os.environ["CHUNKS"])
           out = {"done": len(done)}
           nxt = None
-          if len(done) < total:
+          if total == 0 or len(done) < total:   # total=0: quet tat ca cap
               last = max(rows)                       # ky moi nhat trong du lieu
               a = last - 1 if last % 2 == 0 else last - 2   # cap (a, a+1), a le, lon nhat co du lieu
               if a % 2 == 0: a -= 1
@@ -99,9 +109,9 @@ jobs:
         run: g++ -O3 -march=native -pthread -std=c++17 scan_inverse_first2_mega.cpp -o scan_inverse_first2_mega
       - name: run chunk
         run: |
-          K=${{ needs.prepare.outputs.ktotal }}; N=${{ inputs.chunks }}; P=${{ matrix.part }}
+          K=${{ needs.prepare.outputs.ktotal }}; N=${{ inputs.chunks || '20' }}; P=${{ matrix.part }}
           KB=$(python3 -c "print($K*$P//$N)"); KE=$(python3 -c "print($K*($P+1)//$N)")
-          ./scan_inverse_first2_mega data/draws_rank_mega.txt ${{ needs.prepare.outputs.d1 }} ${{ needs.prepare.outputs.d2 }} $KB $KE $(nproc) out_$P.txt ${{ inputs.min_hits }} | tee summary_$P.txt
+          ./scan_inverse_first2_mega data/draws_rank_mega.txt ${{ needs.prepare.outputs.d1 }} ${{ needs.prepare.outputs.d2 }} $KB $KE $(nproc) out_$P.txt ${{ inputs.min_hits || '2' }} | tee summary_$P.txt
       - uses: actions/upload-artifact@v4
         with:
           name: part_${{ matrix.part }}
@@ -116,7 +126,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TAG: ${{ inputs.release_tag }}
+      TAG: ${{ inputs.release_tag || 'mega-inverse-archive' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
@@ -132,7 +142,7 @@ jobs:
           NSEED=$(wc -l < full.txt)
           test "$NSEED" -gt 0
           {
-            echo "SCAN_INVERSE_FIRST2_MEGA d1=$D1 (hit dau) d2=$D2 (hit thu 2), min_hits=${{ inputs.min_hits }}"
+            echo "SCAN_INVERSE_FIRST2_MEGA d1=$D1 (hit dau) d2=$D2 (hit thu 2), min_hits=${{ inputs.min_hits || '2' }}"
             echo "--- tong ket tung phan ---"; cat parts/summary_*.txt
             echo "--- tong so seed ghi: $NSEED (toan bo trong file .txt.gz cung ten tren Release $TAG) ---"
             echo "--- 100 seed nhieu hit nhat: seed so_hit cac_ky ---"
@@ -147,7 +157,7 @@ jobs:
           for i in 1 2 3 4 5; do git pull --rebase && git push && break; sleep 8; done
       - name: chay cap ke tiep
         run: |
-          gh workflow run scan_inverse_mega_auto.yml -f total_pairs=${{ inputs.total_pairs }} -f chunks=${{ inputs.chunks }} -f min_hits=${{ inputs.min_hits }} -f release_tag="$TAG" -f next_draw=${{ inputs.next_draw }}
+          gh workflow run scan_inverse_mega_auto.yml -f total_pairs=${{ inputs.total_pairs || '0' }} -f keep_pairs=${{ inputs.keep_pairs || '400' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f release_tag="$TAG" -f next_draw=${{ inputs.next_draw || '' }}
 
   finalize:
     # chay khi da du total_pairs: tai gz tu Release, gop 1 file, tinh ve con lai cho ky next_draw
@@ -157,7 +167,7 @@ jobs:
     timeout-minutes: 120
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TAG: ${{ inputs.release_tag }}
+      TAG: ${{ inputs.release_tag || 'mega-inverse-archive' }}
     steps:
       - uses: actions/checkout@v4
       - name: tai gz tu Release
@@ -165,15 +175,16 @@ jobs:
           mkdir -p rel
           gh release download "$TAG" --pattern 'first2_mega_*.txt.gz' --dir rel
           ls rel | wc -l; du -sh rel
-      - name: loai ve cho ky ${{ inputs.next_draw }}
-        run: pip install numpy pandas && python3 ve_con_lai_mega_release.py rel ${{ inputs.next_draw }} 300000
-      - name: gop 1 file + upload ket qua
+      - name: chon cap loai ve cho ky tiep (giu day du lich su cap)
         run: |
-          cat rel/first2_mega_*.txt.gz > all_seeds_mega.txt.gz   # gzip noi tiep van hop le
-          ls -l all_seeds_mega.txt.gz ve_con_lai_mega_*.txt 2>/dev/null || true
-          gh release upload "$TAG" all_seeds_mega.txt.gz ve_con_lai_mega_summary_${{ inputs.next_draw }}.txt --clobber
-          if [ -f ve_con_lai_mega_${{ inputs.next_draw }}.txt ]; then gh release upload "$TAG" ve_con_lai_mega_${{ inputs.next_draw }}.txt --clobber; fi
+          pip install numpy pandas
+          NEXT="${{ inputs.next_draw || '' }}"
+          KEEP=${{ inputs.keep_pairs || '400' }} HIST=40 TARGET=10 python3 chon_cap_loai.py mega rel $NEXT
+      - name: upload ket qua len Release + commit chon_cap/
+        run: |
+          ls -l chon_cap_loai_mega_*.txt cap_lich_su_mega.txt cap_ke_hoach_mega.txt
+          gh release upload "$TAG" chon_cap_loai_mega_*.txt cap_lich_su_mega.txt cap_ke_hoach_mega.txt --clobber
+          mkdir -p chon_cap; rm -f chon_cap/*mega*; mv chon_cap_loai_mega_*.txt cap_lich_su_mega.txt cap_ke_hoach_mega.txt chon_cap/
           git config user.name github-actions; git config user.email actions@github.com
-          mkdir -p ve_con_lai_auto; cp ve_con_lai_mega_summary_${{ inputs.next_draw }}.txt ve_con_lai_auto/ || true
-          git add ve_con_lai_auto; git commit -m "ve con lai mega ${{ inputs.next_draw }}" || true
+          git add chon_cap; git commit -m "chon cap mega" || true
           for i in 1 2 3 4 5; do git pull --rebase && git push && break; sleep 8; done

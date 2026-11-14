@@ -9,7 +9,7 @@ name: Cap nhat du lieu Lotto 5/35 (2 lan/ngay) + TU QUET seed inverse den khi co
 # THEM MOI: cao ket qua Mega 6/45 (dataset NhanAZ-Data + fallback xosominhngoc) vao data/mega_all.csv, commit cung data/all.csv.
 # THEM MOI: sau moi lan cap nhat ky moi, TU QUET CAP KY MOI NHAT (ky-1, ky) neu chua quet (dau da quet: scan_state/first2_A_B.txt).
 # THEM MOI (tu dong het): sau khi sinh ve, neu ve con lai > target thi tu quet them cap seed inverse
-#   (matrix 20 job, gz luu trong repo inverse/, tu goi lai workflow nay voi skip_update=true) cho den khi
+#   (matrix 20 job, gz luu tren Release (khong luu inverse/ trong repo), tu goi lai workflow nay voi skip_update=true) cho den khi
 #   con <= target; khi dat target thi xoa gz cua cap thua khoi repo (giu file .txt nho trong repo lam dau da quet).
 # DA BO tu truoc: quet l1-1 / l1-2 / l1-3 (scan_per_draw), gop L2, va job du doan l1-3.
 
@@ -42,14 +42,23 @@ on:
         description: "Toi da so cap quet moi trong 1 chuoi (chong chay vo han)"
         default: "60"
       prune:
-        description: "Tu xoa cap thua khi da dat target (true/false)"
-        default: "true"
+        description: "true = xoa cap (KHONG khuyen dung: 400/40 cap duoc chon lai moi ky nen phai giu DAY DU cap)"
+        default: "false"
       max_pairs:
-        description: "Chi dung N cap MOI NHAT (cua so truot); cap cu hon bi xoa khoi repo inverse/. 0 = khong gioi han"
-        default: "4"
+        description: "0 = giu day du moi cap (khong cua so truot). >0 = chi giu N cap moi nhat va XOA cap cu"
+        default: "0"
+      keep_pairs:
+        description: "Quet cho toi khi co du N cap gz tren Release (mac dinh 40). 0 = QUET TAT CA cap lich su"
+        default: "40"
+      chon_pairs:
+        description: "So cap duoc CHON moi ky de loai ve (chon_cap_loai.py)"
+        default: "40"
+      release_tag:
+        description: "Tag Release chua gz Lotto (khong luu inverse/ trong repo nua)"
+        default: "lotto535-inverse-archive"
       use_pairs:
         description: "So cap MOI NHAT dung de LOAI ve / sinh ve du doan / doi chieu (khong xoa gi)"
-        default: "4"
+        default: "40"
       so_ve:
         description: "So ve du doan moi ky (moi game)"
         default: "10"
@@ -83,6 +92,7 @@ jobs:
       cancel-in-progress: false
     env:
       GH_TOKEN: ${{ github.token }}
+      TAG: ${{ inputs.release_tag || 'lotto535-inverse-archive' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -125,47 +135,30 @@ jobs:
           python3 check_mega_csv.py data/mega_all.csv || true
           wc -l data/mega_all.csv
 
-      - name: Seed Lotto (gz) nam trong repo (thu muc inverse/) - khong dung Release
-        run: |
-          pip install -q numpy pandas
-          mkdir -p inverse
-          ls inverse/first2_*.txt.gz 2>/dev/null | wc -l
-          [ "$(ls inverse/first2_*.txt.gz 2>/dev/null | wc -l)" -gt 0 ] || echo "::warning::inverse/ khong co gz Lotto - ve du doan Lotto se khong dung seed"
+      - name: Cai numpy + pandas
+        run: pip install -q numpy pandas
 
-      - name: LUU VE TRUNG (doi chieu 100 ve du doan voi ket qua that - Lotto + Mega)
+      - name: LUU VE TRUNG (doi chieu ve du doan voi ket qua that - Lotto + Mega)
         run: python3 luu_ve_trung.py
 
-      - name: LOTTO - cap nhat muc seed + chon 100 ve du doan ky tiep theo
-        env:
-          USE_PAIRS: ${{ inputs.use_pairs || '4' }}
-          LEVEL_LAST: ${{ inputs.levels_backfill || '3' }}
-          TARGET_N: ${{ inputs.so_ve || '10' }}
-        run: |
-          python3 seed_levels.py lotto535 inverse || echo "::warning::seed_levels Lotto loi, bo qua muc seed"
-          python3 du_doan_100.py lotto535 inverse
-
-      - name: LOTTO - doi chieu VE CON LAI voi ket qua that (ve trung that con lai hay bi loai)
-        env:
-          USE_PAIRS: ${{ inputs.use_pairs || '4' }}
-        run: python3 doi_chieu_con_lai.py inverse || echo "::warning::doi_chieu_con_lai loi"
-
-      - name: LOTTO - bao cao tom tat moi ky (bao_cao/tom_tat_lotto535.txt)
-        env:
-          USE_PAIRS: ${{ inputs.use_pairs || '4' }}
-        run: python3 bao_cao_tom_tat.py || echo "::warning::bao_cao_tom_tat loi"
-
-      - name: MEGA - cap nhat muc seed + chon 100 ve du doan ky tiep theo
+      # DU DOAN MOI: chon CAP khong trung truoc (chi tai cap duoc chon tu Release), VE CON LAI = du doan
+      - name: LOTTO - chon cap khong trung -> ve con lai = du doan ky tiep (du_doan/ + chon_cap/)
         continue-on-error: true
         env:
-          LEVEL_LAST: ${{ inputs.levels_backfill || '3' }}
-          TARGET_N: ${{ inputs.so_ve || '10' }}
-        run: |
-          mkdir -p relmega
-          gh release download mega-inverse-archive --pattern 'first2_mega_*.txt.gz' --dir relmega --skip-existing || echo "::warning::chua co gz Mega tren Release - van sinh ve du doan (khong co seed)"
-          ls relmega | wc -l
-          USE_PAIRS=0 python3 seed_levels.py mega relmega || echo "::warning::seed_levels Mega loi"
-          USE_PAIRS=0 python3 du_doan_100.py mega relmega
-          rm -rf relmega
+          KEEP: ${{ inputs.chon_pairs || '40' }}
+          TARGET: ${{ inputs.so_ve || '10' }}
+        run: python3 chon_cap_release.py lotto535 "$TAG"
+
+      - name: LOTTO - bao cao tom tat moi ky (bao_cao/tom_tat_lotto535.txt)
+        continue-on-error: true
+        run: python3 bao_cao_tom_tat.py || echo "::warning::bao_cao_tom_tat loi"
+
+      - name: MEGA - chon cap khong trung -> ve con lai = du doan ky tiep (du_doan/ + chon_cap/)
+        continue-on-error: true
+        env:
+          KEEP: "400"
+          TARGET: ${{ inputs.so_ve || '10' }}
+        run: python3 chon_cap_release.py mega mega-inverse-archive
 
       - name: Don file nang cu (muc_trung, muc_theo_cap, ve_con_lai...) - chi giu 100 ve du doan + ve trung
         run: |
@@ -185,7 +178,7 @@ jobs:
           [ -f data/all.csv ] && git add data/all.csv || true
           [ -f data/mega_all.csv ] && git add data/mega_all.csv || true
           # add TUNG thu muc rieng: 1 pathspec khong ton tai lam git add loi va KHONG stage gi ca (du_doan bi bo sot)
-          for p in ve_trung du_doan seed_state bao_cao ve_con_lai ve_con_lai_mega ve_trung_mega ve_theo_muc; do
+          for p in ve_trung du_doan chon_cap seed_state bao_cao ve_con_lai ve_con_lai_mega ve_trung_mega ve_theo_muc; do
             if [ -e "$p" ] || git ls-files --error-unmatch "$p" >/dev/null 2>&1; then git add -A -- "$p" || true; fi
           done
           if git diff --cached --quiet; then
@@ -227,6 +220,7 @@ jobs:
       cancel-in-progress: false
     env:
       GH_TOKEN: ${{ github.token }}
+      TAG: ${{ inputs.release_tag || 'lotto535-inverse-archive' }}
     outputs:
       go: ${{ steps.p.outputs.go }}
       need_more: ${{ steps.p.outputs.need_more }}
@@ -252,18 +246,20 @@ jobs:
           echo "run khac dang chay/cho: $OTHERS"
           # chay theo lich/thu cong chi bat dau chuoi quet khi khong co run nao khac; vong tu goi lai (skip_update=true) luon di tiep
           if [ "${{ inputs.skip_update }}" != "true" ] && [ "$OTHERS" != "0" ]; then echo "busy=true" >> $GITHUB_OUTPUT; else echo "busy=false" >> $GITHUB_OUTPUT; fi
-      - name: Doc gz tu repo (inverse/) + lap ke hoach
+      - name: Doc danh sach gz tren Release + lap ke hoach
         id: p
         env:
           BUSY: ${{ steps.busy.outputs.busy }}
           TARGET: ${{ inputs.target || '1' }}
           CHUNKS: ${{ inputs.chunks || '20' }}
-          MAXP: ${{ inputs.max_pairs || '4' }}
+          MAXP: ${{ inputs.max_pairs || '0' }}
+          KEEP: ${{ inputs.keep_pairs || '40' }}
           SCAN_NEWEST: ${{ inputs.scan_newest || 'true' }}
         run: |
           if [ "$BUSY" = "true" ]; then echo "go=false" >> $GITHUB_OUTPUT; exit 0; fi
           mkdir -p inverse
-          ls inverse | wc -l
+          gh release view "$TAG" --json assets -q '.assets[].name' > release_assets.txt 2>/dev/null || : > release_assets.txt
+          wc -l < release_assets.txt
           python3 make_draws_rank.py
           python3 - <<PY
           import os, re, glob
@@ -278,7 +274,7 @@ jobs:
           print("cua so lien tiep:", sorted(want) if want else "khong gioi han", "| xoa cap ngoai cua so:", len(old))
           PY
           NXT=$(python3 -c "print(max(int(l.split()[0]) for l in open('data/draws_rank.txt'))+1)")
-          python3 auto_prune.py lotto535 inverse "$NXT" "$TARGET"
+          echo "{\"next_draw\": $NXT, \"need_more\": false, \"drop\": []}" > plan.json   # loai ve theo cap do chon_cap_loai.py lam, khong dung auto_prune.py nua
           python3 - <<PY
           import os, json, re, glob
           plan = json.load(open("plan.json"))
@@ -287,17 +283,21 @@ jobs:
           for f in os.listdir("scan_state") if os.path.isdir("scan_state") else []:
               m = re.fullmatch(r"first2_(\d+)_(\d+)\.txt", f)
               if m: done.add((int(m.group(1)), int(m.group(2))))
+          have = {(int(m.group(1)), int(m.group(2))) for l in open("release_assets.txt") for m in [re.fullmatch(r"first2_(\d+)_(\d+)\.txt\.gz", l.strip())] if m}
+          done = set(have)   # DA QUET = co gz tren Release (cap bi mat gz phai quet lai)
           top = max(rows)
           newest = (top - 1, top)   # cap ky MOI NHAT trong du lieu
           newest_pending = os.environ.get("SCAN_NEWEST", "true") == "true" and (top - 1) in rows and newest not in done
           mx = int(os.environ["MAXP"])
-          have = {(int(m.group(1)), int(m.group(2))) for f in glob.glob("inverse/first2_*_*.txt.gz") for m in [re.search(r"first2_(\d+)_(\d+)", f)] if m}
+          # have: lay tu Release (o tren)
           if mx > 0:       # che do cua so: chi quet cap LIEN TIEP con thieu (cap moi nhat truoc); du mx cap thi dung
               miss = [(top - 1 - k, top - k) for k in range(mx) if (top - 1 - k) in rows and (top - k) in rows and (top - 1 - k, top - k) not in have]
               pending = bool(miss); newest_pending = pending
               if pending: newest = miss[0]
           else:
-              pending = newest_pending or plan["need_more"]
+              keep = int(os.environ.get("KEEP", "0"))
+              cand0 = [(a, a + 1) for a in range(top - 1, 0, -1) if a in rows and a + 1 in rows and (a, a + 1) not in done]
+              pending = newest_pending or ((len(have) < keep and bool(cand0)) if keep > 0 else bool(cand0))   # keep=0: quet TAT CA cap
           out = {"go": "true", "need_more": "true" if pending else "false", "nxt": plan["next_draw"], "newest": f"{newest[0]}_{newest[1]}", "newest_pending": str(newest_pending).lower()}
           if pending:
               if newest_pending:
@@ -362,6 +362,7 @@ jobs:
       cancel-in-progress: false
     env:
       GH_TOKEN: ${{ github.token }}
+      TAG: ${{ inputs.release_tag || 'lotto535-inverse-archive' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -385,15 +386,17 @@ jobs:
             echo "--- 100 seed nhieu hit nhat: seed so_hit cac_ky ---"
             head -100 full.txt
           } > $T
-          gzip -9 -c full.txt > inverse/first2_${D1}_${D2}.txt.gz
-          pip install -q numpy pandas; python3 keep_seeds_34.py inverse   # giu vinh vien seed hit >= 3 ky
+          mkdir -p inv_new; gzip -9 -c full.txt > inv_new/first2_${D1}_${D2}.txt.gz
+          pip install -q numpy pandas; python3 keep_seeds_34.py inv_new   # giu vinh vien seed hit >= 3 ky (gop them, khong mat seed cu)
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Lotto 5/35 inverse archive" --notes "File first2_D1_D2.txt.gz (seed da quet) do scan_v2_auto tao."
+          gh release upload "$TAG" inv_new/*.gz --clobber
           git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add scan_state seed_state/keep34_lotto535.txt inverse/first2_${D1}_${D2}.txt.gz; git commit -m "scan seed inverse ${D1}_${D2}" || true
+          git add scan_state seed_state/keep34_lotto535.txt; git commit -m "scan seed inverse ${D1}_${D2}" || true
           for i in 1 2 3 4 5; do git pull --rebase -q origin main && git push origin main && break; sleep 8; done
       - name: Tu goi lai vong tiep (bo qua cap nhat du lieu)
         run: |
           N=$(( ${{ inputs.pairs_added || '0' }} + 1 ))
-          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'true' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '4' }} -f use_pairs=${{ inputs.use_pairs || '4' }} -f so_ve=${{ inputs.so_ve || '10' }} -f levels_backfill=${{ inputs.levels_backfill || '3' }} -f pairs_added=$N
+          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'false' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '0' }} -f keep_pairs=${{ inputs.keep_pairs || '40' }} -f chon_pairs=${{ inputs.chon_pairs || '40' }} -f release_tag=${{ inputs.release_tag || 'lotto535-inverse-archive' }} -f use_pairs=${{ inputs.use_pairs || '40' }} -f so_ve=${{ inputs.so_ve || '10' }} -f levels_backfill=${{ inputs.levels_backfill || '3' }} -f pairs_added=$N
 
   prune:
     needs: plan
@@ -404,6 +407,7 @@ jobs:
       cancel-in-progress: false
     env:
       GH_TOKEN: ${{ github.token }}
+      TAG: ${{ inputs.release_tag || 'lotto535-inverse-archive' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -416,7 +420,7 @@ jobs:
       - name: Xoa cap thua khoi repo (inverse/), xuat ve con lai
         run: |
           cat pf/plan.json
-          if [ "${{ inputs.prune || 'true' }}" = "true" ]; then
+          if [ "${{ inputs.prune || 'false' }}" = "true" ]; then
             # cua so truot: xoa gz cua cap cu hon N cap moi nhat khoi repo (dau da quet .txt van o scan_state/)
             pip install -q numpy pandas; python3 keep_seeds_34.py inverse   # chot kho seed hit >= 3 ky TRUOC khi xoa gz cu
             git add seed_state/keep34_lotto535.txt
@@ -424,7 +428,7 @@ jobs:
               while read -r n; do echo "xoa inverse/$n"; git rm -q --ignore-unmatch "inverse/$n" || true; done < pf/old_pairs.txt
             fi
             # max_pairs=0: che do cu - tia cap thua theo bao phu
-            if [ "${{ inputs.max_pairs || '4' }}" = "0" ]; then
+            if [ "${{ inputs.max_pairs || '0' }}" = "0" ]; then
               for p in $(python3 -c "import json;print(' '.join(json.load(open('pf/plan.json'))['drop']))"); do
                 echo "xoa inverse/first2_${p}.txt.gz"; git rm -q --ignore-unmatch "inverse/first2_${p}.txt.gz" || true
               done
