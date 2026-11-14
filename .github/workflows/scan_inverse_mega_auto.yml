@@ -31,7 +31,7 @@ on:
         default: "20"
       min_hits:
         description: "Ghi seed co tong >= so ky trung nay (2 = ghi moi seed hop le)"
-        default: "2"
+        default: "2+"
       release_tag:
         description: "Tag Release chua cac file .txt.gz"
         default: "mega-inverse-archive"
