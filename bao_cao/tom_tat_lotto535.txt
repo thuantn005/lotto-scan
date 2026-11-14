@@ -1,24 +1,22 @@
 BAO CAO TOM TAT LOTTO 5/35
-to hop 3,895,584 ve | kho seed hit>=3 ky giu vinh vien: 12 seed | cap gz dang giu: 7
+to hop 3,895,584 ve | kho seed hit>=3 ky giu vinh vien: 17 seed | cap gz dang giu: 0
 
-== KY DU DOAN GAN NHAT: 1005 ==
-Ve con lai: 1,528,419 / 3,895,584 (39.23%) | bi loai: 2,367,165 (60.77%)
-Nguon loai: 3 cap lien tiep (3,645,570 seed) + 12 seed hit>=3 ky giu lai
-100 ve chon: 100 tu ve con lai, 0 tu seed hit, 0 it seed
+== KY DU DOAN GAN NHAT: 1006 ==
+Ve con lai: 1,528,086 / 3,895,584 (39.23%) | bi loai: 2,367,498 (60.77%)
+Nguon loai: 3 cap lien tiep (3,646,009 seed) + 12 seed hit>=3 ky giu lai
+100 ve chon: 10 tu ve con lai, 0 tu seed hit, 0 it seed
 
 == TUNG KY (moi nhat truoc) ==
 ky | ngay | ve con lai (% to hop) | cap | ve THAT: con lai hay bi loai | 100 ve trung>=3 so
-1005 |  | 1,528,419 (39.2%) | 3 | (chua quay/chua doi chieu) | -
-1004 | 2026-11-12 | 1,528,536 (39.2%) | 3 | BI LOAI | 2
-1003 | 2026-11-12 | 2,087,991 (53.6%) | 2 | CON LAI | 2
-1002 | 2026-11-11 | 3,895,584 (100.0%) | 0 | CON LAI | 1
-1001 | 2026-11-11 | 0 (0.0%) | 47 | CON LAI | 0
-1000 | 2026-11-10 | 2 (0.0%) | 47 | BI LOAI | 2
-999 | 2026-11-10 | 2 (0.0%) | 47 | BI LOAI | 0
-998 | 2026-11-09 | 1 (0.0%) | 47 | CON LAI | 1
-997 | 2026-11-09 | - | 1 | CON LAI | -
+1007 | 2026-11-14 | - | - | (chua quay/chua doi chieu) | 0
+1006 | 2026-11-13 | 1,528,086 (39.2%) *thieu cap* | 3 | (chua quay/chua doi chieu) | 0
+1005 | 2026-11-13 | 1,119,539 (28.7%) | 4 | (chua quay/chua doi chieu) | 0
+1004 | 2026-11-12 | 1,528,536 (39.2%) *thieu cap* | 3 | (chua quay/chua doi chieu) | 2
+1003 | 2026-11-12 | 2,087,991 (53.6%) *thieu cap* | 2 | (chua quay/chua doi chieu) | 2
+1002 |  | 3,895,584 (100.0%) *thieu cap* | 0 | (chua quay/chua doi chieu) | -
+1001 |  | 0 (0.0%) | 47 | (chua quay/chua doi chieu) | -
+1000 |  | 2 (0.0%) | 47 | (chua quay/chua doi chieu) | -
+999 |  | 2 (0.0%) | 47 | (chua quay/chua doi chieu) | -
+998 |  | 1 (0.0%) | 47 | (chua quay/chua doi chieu) | -
 
-== TONG KET ==
-Doi chieu 8 ky: ve that nam trong danh sach CON LAI 5 ky (62.5%); ngau nhien ky vong 3.65 ky (45.6%).
-Neu loai seed co tac dung, ve that phai bi loai it hon muc ngau nhien; can vai chuc ky moi du kiem dinh. Moi ve van chi co xac suat 1/3,895,584.
-100 ve: 7 ky, tong ve trung>=3 so = 8 (ky vong ngau nhien ~9.7).
+Ve du doan: 5 ky, tong ve trung>=3 so = 4 (ky vong ngau nhien ~3.2).
