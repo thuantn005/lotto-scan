@@ -1,0 +1,4 @@
+# KET QUA THAT cua cap da chon (ngoai mau: so cap duoc ghi TRUOC khi ky quay) | mega
+# ky | quy tac | K | so cap trung | ket qua | cap trung ky vong | P(thanh cong) ly thuyet
+# TONG: 0 ky da quay | thanh cong 0 (ky vong ngau nhien 0.00) | tong cap trung 0 (ky vong 0.0)
+# Thanh cong = KHONG cap nao trung. Chua co ky nao thi can doi ky tiep theo quay roi chay lai (bo cap duoc ghi truoc khi quay).

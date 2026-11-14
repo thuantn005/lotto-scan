@@ -1,0 +1,16 @@
+# Ky 1589 (mega): 13 ve du doan = VE CON LAI (PHU) sau khi loai ve cua 400 cap chon | ve con lai: 13
+# nguon: con_lai 13 | CHI CO NGHIA neu khong cap nao trung (xac suat ~ 1.18e-06); KHONG quy tac nao hon ngau nhien -> cap chon cung xac suat nhu cap ngau nhien. Moi ve chi co xac suat ngau nhien 1/8,145,060.
+# ve | nguon | chi tiet
+03-05-10-18-24-27 | con_lai | khong seed nao cua 400 cap chon sinh ra
+06-08-12-19-31-34 | con_lai | khong seed nao cua 400 cap chon sinh ra
+06-08-21-22-34-35 | con_lai | khong seed nao cua 400 cap chon sinh ra
+04-14-17-25-35-36 | con_lai | khong seed nao cua 400 cap chon sinh ra
+10-26-27-29-33-37 | con_lai | khong seed nao cua 400 cap chon sinh ra
+10-21-22-30-34-38 | con_lai | khong seed nao cua 400 cap chon sinh ra
+01-06-08-09-37-39 | con_lai | khong seed nao cua 400 cap chon sinh ra
+03-11-12-26-32-40 | con_lai | khong seed nao cua 400 cap chon sinh ra
+04-11-14-32-35-41 | con_lai | khong seed nao cua 400 cap chon sinh ra
+15-29-30-32-39-41 | con_lai | khong seed nao cua 400 cap chon sinh ra
+10-12-17-18-35-42 | con_lai | khong seed nao cua 400 cap chon sinh ra
+09-13-18-37-42-44 | con_lai | khong seed nao cua 400 cap chon sinh ra
+05-13-30-38-43-45 | con_lai | khong seed nao cua 400 cap chon sinh ra

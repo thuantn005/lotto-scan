@@ -1,0 +1,35 @@
+NGHIEN CUU + BACKTEST MU CHON CAP | mega | ky dich 1589 | 456 cap (TAI HET Release)
+Cot loi: chon cap KHONG trung (khong cap nao sinh dung ve that). Co cap trung thi ve con lai vo nghia.
+
+Backtest mu: 112 ky (ky 1477..1588), nua dau = train (56 ky), nua sau = test (56 ky).
+Chi tieu chinh: chon 25% cap co diem thap nhat; z < 0 = cap chon trung IT hon ngau nhien (hypergeometric, cung tap cap tung ky).
+Duyet quy tac khi z_test <= -2.5 VA z_train <= -1.0 (nguong chat vi thu 4 quy tac) VA >= 15 ky test.
+Do chenh P(trung) ly thuyet giua cac cap (theo so seed): 1.11% cua gia tri TB -> kich thuoc cap gan nhu khong phan biet duoc cap.
+
+quy tac | z train | z test | z chung | cap chon trung / ky vong | ket luan
+ngau_nhien | +0.48 | +1.44 | +1.37 | 417 / 393.9 | DOI CHUNG (phai ~ 0)
+kich_thuoc | -1.04 | -0.38 | -1.00 | 377 / 393.9 | chua hon ngau nhien
+lich_su_K20 | -0.78 | -0.05 | -0.58 | 384 / 393.9 | chua hon ngau nhien
+lich_su_K5 | -0.70 | +0.20 | -0.35 | 388 / 393.9 | chua hon ngau nhien
+gan_day_10 | -0.53 | -0.05 | -0.41 | 387 / 393.9 | chua hon ngau nhien
+
+KET LUAN: KHONG quy tac lich su nao hon ngau nhien ngoai mau. Chon cap = chon cap it seed nhat (ly thuyet, khac biet rat nho) + hoa ngau nhien.
+Hieu: neu lich su cap khong du bao duoc, xac suat K cap deu khong trung = ve con lai / to hop, cap nao cung nhu cap nao.
+
+Theo K (so cap chon): thanh cong = ca K cap deu KHONG trung (ve that con trong tap ve con lai)
+K | ky | cap chon trung / ky vong | thanh cong that / ky vong (ngau nhien) | quy tac kich_thuoc
+1 | 112 | 6 / 3.7 | 106 / 108.3 | z = +1.22
+2 | 112 | 12 / 7.4 | 100 / 104.7 | z = +1.73
+3 | 112 | 14 / 11.1 | 98 / 101.3 | z = +0.90
+5 | 112 | 21 / 18.5 | 92 / 94.7 | z = +0.61
+8 | 112 | 28 / 29.5 | 86 / 85.6 | z = -0.29
+10 | 112 | 41 / 36.9 | 75 / 80.1 | z = +0.69
+15 | 112 | 58 / 55.4 | 62 / 67.7 | z = +0.37
+20 | 112 | 77 / 73.8 | 54 / 57.2 | z = +0.39
+40 | 112 | 145 / 147.6 | 27 / 29.2 | z = -0.23
+100 | 112 | 358 / 369.0 | 6 / 3.9 | z = -0.67
+200 | 112 | 725 / 738.1 | 0 / 0.1 | z = -0.67
+400 | 112 | 1480 / 1476.2 | 0 / 0.0 | z = +0.40
+
+LUU Y: ky quay la su kien doc lap -> cap trung ky D khong phu thuoc cac ky truoc; chi so seed cua cap (rat gan nhau) quyet dinh P(trung).
+Mau backtest it ky -> p-value chi mang tinh tham khao; tiep tuc tich luy ky moi (chon_cap/ket_qua_chon_cap_<game>.txt la ket qua THAT ngoai mau).
