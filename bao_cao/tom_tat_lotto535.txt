@@ -5,3 +5,4 @@ to hop 3,895,584 ve | kho seed hit>=3 ky giu vinh vien: 0 seed | cap gz dang giu
 ky | ngay | ve con lai (% to hop) | cap | ve THAT: con lai hay bi loai | 100 ve trung>=3 so
 
 Chon cap LOTTO (ket qua THAT): TONG: 0 ky da quay | thanh cong 0 (ky vong ngau nhien 0.00) | tong cap trung 0 (ky vong 0.0)
+Chon cap MEGA (ket qua THAT): TONG: 0 ky da quay | thanh cong 0 (ky vong ngau nhien 0.00) | tong cap trung 0 (ky vong 0.0)
