@@ -1,0 +1,15 @@
+# Ky 1009 (lotto535): 12 ve du doan = VE CON LAI (PHU) sau khi loai ve cua 40 cap chon | ve con lai: 12
+# nguon: con_lai 12 | CHI CO NGHIA neu khong cap nao trung (xac suat ~ 3.83e-06); KHONG quy tac nao hon ngau nhien -> cap chon cung xac suat nhu cap ngau nhien. Moi ve chi co xac suat ngau nhien 1/3,895,584.
+# ve | nguon | chi tiet
+15-18-19-22-29 + 03 | con_lai | khong seed nao cua 40 cap chon sinh ra
+01-08-14-26-29 + 11 | con_lai | khong seed nao cua 40 cap chon sinh ra
+18-19-21-24-30 + 03 | con_lai | khong seed nao cua 40 cap chon sinh ra
+05-13-27-29-30 + 03 | con_lai | khong seed nao cua 40 cap chon sinh ra
+06-18-22-25-31 + 11 | con_lai | khong seed nao cua 40 cap chon sinh ra
+13-15-16-25-33 + 06 | con_lai | khong seed nao cua 40 cap chon sinh ra
+01-02-05-26-33 + 01 | con_lai | khong seed nao cua 40 cap chon sinh ra
+10-11-16-21-34 + 11 | con_lai | khong seed nao cua 40 cap chon sinh ra
+01-13-20-31-34 + 03 | con_lai | khong seed nao cua 40 cap chon sinh ra
+02-26-30-31-34 + 08 | con_lai | khong seed nao cua 40 cap chon sinh ra
+05-10-21-26-35 + 10 | con_lai | khong seed nao cua 40 cap chon sinh ra
+02-12-18-33-35 + 04 | con_lai | khong seed nao cua 40 cap chon sinh ra

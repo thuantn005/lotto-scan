@@ -1,5 +1,5 @@
-# CHON CAP (CHINH) | lotto535 ky 1008 | chon 40 cap / 53 cap da tai het | quy tac: kich_thuoc | KHONG quy tac nao hon ngau nhien -> cap chon cung xac suat nhu cap ngau nhien
-# KY 1008 CHUA QUAY: xac suat KHONG cap nao trung (thanh cong) ~ 3.833e-06 = ve con lai / to hop. Co cap trung -> ve con lai VO NGHIA.
+# CHON CAP (CHINH) | lotto535 ky 1009 | chon 40 cap / 54 cap da tai het | quy tac: kich_thuoc | KHONG quy tac nao hon ngau nhien -> cap chon cung xac suat nhu cap ngau nhien
+# KY 1009 CHUA QUAY: xac suat KHONG cap nao trung (thanh cong) ~ 3.834e-06 = ve con lai / to hop. Co cap trung -> ve con lai VO NGHIA.
 # cap | P(trung) ly thuyet | diem quy tac
 955_956 | 0.2674 | 0.2674
 954_955 | 0.2674 | 0.2674
@@ -16,6 +16,7 @@
 979_980 | 0.2678 | 0.2678
 944_945 | 0.2678 | 0.2678
 961_962 | 0.2678 | 0.2678
+1006_1007 | 0.2678 | 0.2678
 1003_1004 | 0.2678 | 0.2678
 11_12 | 0.2678 | 0.2678
 971_972 | 0.2678 | 0.2678
@@ -40,4 +41,3 @@
 976_977 | 0.2681 | 0.2681
 973_974 | 0.2681 | 0.2681
 987_988 | 0.2681 | 0.2681
-15_16 | 0.2681 | 0.2681

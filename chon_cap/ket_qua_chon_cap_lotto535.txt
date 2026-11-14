@@ -1,4 +1,5 @@
 # KET QUA THAT cua cap da chon (ngoai mau: so cap duoc ghi TRUOC khi ky quay) | lotto535
 # ky | quy tac | K | so cap trung | ket qua | cap trung ky vong | P(thanh cong) ly thuyet
-# TONG: 0 ky da quay | thanh cong 0 (ky vong ngau nhien 0.00) | tong cap trung 0 (ky vong 0.0)
+1008 | kich_thuoc | 40 | 13 | THAT BAI (cap trung: 944_945,11_12,953_954,977_978,999_1000,9_10,...) | 10.71 | 3.83e-06
+# TONG: 1 ky da quay | thanh cong 0 (ky vong ngau nhien 0.00) | tong cap trung 13 (ky vong 10.7)
 # Thanh cong = KHONG cap nao trung. Chua co ky nao thi can doi ky tiep theo quay roi chay lai (bo cap duoc ghi truoc khi quay).

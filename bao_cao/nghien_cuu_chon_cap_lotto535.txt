@@ -1,32 +1,32 @@
-NGHIEN CUU + BACKTEST MU CHON CAP | lotto535 | ky dich 1008 | 53 cap (TAI HET Release)
+NGHIEN CUU + BACKTEST MU CHON CAP | lotto535 | ky dich 1009 | 54 cap (TAI HET Release)
 Cot loi: chon cap KHONG trung (khong cap nao sinh dung ve that). Co cap trung thi ve con lai vo nghia.
 
-Backtest mu: 112 ky (ky 896..1007), nua dau = train (56 ky), nua sau = test (56 ky).
+Backtest mu: 113 ky (ky 896..1008), nua dau = train (56 ky), nua sau = test (57 ky).
 Chi tieu chinh: chon 25% cap co diem thap nhat; z < 0 = cap chon trung IT hon ngau nhien (hypergeometric, cung tap cap tung ky).
 Duyet quy tac khi z_test <= -2.5 VA z_train <= -1.0 (nguong chat vi thu 4 quy tac) VA >= 15 ky test.
 Do chenh P(trung) ly thuyet giua cac cap (theo so seed): 0.41% cua gia tri TB -> kich thuoc cap gan nhu khong phan biet duoc cap.
 
 quy tac | z train | z test | z chung | cap chon trung / ky vong | ket luan
-ngau_nhien | +0.80 | -0.65 | -0.19 | 184 / 186.0 | DOI CHUNG (phai ~ 0)
-kich_thuoc | -0.66 | -0.32 | -0.59 | 180 / 186.0 | chua hon ngau nhien
-lich_su_K20 | -1.28 | +0.24 | -0.39 | 182 / 186.0 | chua hon ngau nhien
-lich_su_K5 | -1.28 | +0.24 | -0.39 | 182 / 186.0 | chua hon ngau nhien
-gan_day_10 | -0.45 | -0.99 | -1.08 | 175 / 186.0 | chua hon ngau nhien
+ngau_nhien | +0.80 | -0.76 | -0.30 | 187 / 190.1 | DOI CHUNG (phai ~ 0)
+kich_thuoc | -0.66 | -0.76 | -0.98 | 180 / 190.1 | chua hon ngau nhien
+lich_su_K20 | -1.28 | +0.34 | -0.30 | 187 / 190.1 | chua hon ngau nhien
+lich_su_K5 | -1.28 | +0.34 | -0.30 | 187 / 190.1 | chua hon ngau nhien
+gan_day_10 | -0.45 | -0.87 | -0.98 | 180 / 190.1 | chua hon ngau nhien
 
 KET LUAN: KHONG quy tac lich su nao hon ngau nhien ngoai mau. Chon cap = chon cap it seed nhat (ly thuyet, khac biet rat nho) + hoa ngau nhien.
 Hieu: neu lich su cap khong du bao duoc, xac suat K cap deu khong trung = ve con lai / to hop, cap nao cung nhu cap nao.
 
 Theo K (so cap chon): thanh cong = ca K cap deu KHONG trung (ve that con trong tap ve con lai)
 K | ky | cap chon trung / ky vong | thanh cong that / ky vong (ngau nhien) | quy tac kich_thuoc
-1 | 112 | 28 / 29.1 | 84 / 82.9 | z = -0.24
-2 | 112 | 55 / 58.2 | 63 / 61.5 | z = -0.52
-3 | 112 | 80 / 87.3 | 50 / 45.8 | z = -1.00
-5 | 112 | 150 / 145.5 | 27 / 25.6 | z = +0.52
-8 | 84 | 179 / 187.8 | 10 / 5.2 | z = -0.91
-10 | 80 | 213 / 223.2 | 2 / 2.6 | z = -1.02
-15 | 70 | 286 / 295.6 | 1 / 0.5 | z = -0.91
-20 | 60 | 334 / 329.7 | 0 / 0.1 | z = +0.42
-40 | 30 | 330 / 326.2 | 0 / 0.0 | z = +0.65
+1 | 113 | 28 / 29.4 | 85 / 83.6 | z = -0.31
+2 | 113 | 55 / 58.8 | 64 / 62.0 | z = -0.62
+3 | 113 | 80 / 88.2 | 51 / 46.1 | z = -1.12
+5 | 113 | 150 / 147.0 | 28 / 25.7 | z = +0.34
+8 | 85 | 179 / 190.3 | 11 / 5.3 | z = -1.17
+10 | 81 | 213 / 226.4 | 3 / 2.6 | z = -1.32
+15 | 71 | 287 / 300.3 | 1 / 0.5 | z = -1.26
+20 | 61 | 336 / 336.0 | 0 / 0.1 | z = +0.00
+40 | 31 | 342 / 338.8 | 0 / 0.0 | z = +0.54
 
 LUU Y: ky quay la su kien doc lap -> cap trung ky D khong phu thuoc cac ky truoc; chi so seed cua cap (rat gan nhau) quyet dinh P(trung).
 Mau backtest it ky -> p-value chi mang tinh tham khao; tiep tuc tich luy ky moi (chon_cap/ket_qua_chon_cap_<game>.txt la ket qua THAT ngoai mau).
