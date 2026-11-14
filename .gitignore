@@ -3,3 +3,5 @@ work/
 __pycache__/
 
 data/seed_history.csv
+inverse/
+inverse_mega/
