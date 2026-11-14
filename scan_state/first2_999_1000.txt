@@ -1,45 +1,45 @@
-SCAN_INVERSE_FIRST2 d1=999 d2=1000 min_hits=2
+SCAN_INVERSE_FIRST2 d1=999 d2=1000 min_hits=2+
 --- tong ket tung phan ---
-k=[0,2841177714105) | ung vien trung d1: 236764241142 | song sot (trung ca d1,d2): 60792 | loai (co hit truoc d1 / giua d1,d2): 19 | 3663.4s (775.6 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60773
-k=[2841177714105,5682355428210) | ung vien trung d1: 236764090620 | song sot (trung ca d1,d2): 61111 | loai (co hit truoc d1 / giua d1,d2): 7 | 4327.0s (656.6 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:61104
-k=[28411777141054,31252954855159) | ung vien trung d1: 236765097252 | song sot (trung ca d1,d2): 60725 | loai (co hit truoc d1 / giua d1,d2): 12 | 3664.4s (775.3 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60713
-k=[31252954855159,34094132569265) | ung vien trung d1: 236764998233 | song sot (trung ca d1,d2): 60968 | loai (co hit truoc d1 / giua d1,d2): 16 | 2790.3s (1018.2 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60952
-k=[34094132569265,36935310283370) | ung vien trung d1: 236764786062 | song sot (trung ca d1,d2): 60955 | loai (co hit truoc d1 / giua d1,d2): 16 | 3664.0s (775.4 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60939
-k=[36935310283370,39776487997476) | ung vien trung d1: 236765229316 | song sot (trung ca d1,d2): 60869 | loai (co hit truoc d1 / giua d1,d2): 12 | 3663.9s (775.5 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60857
-k=[39776487997476,42617665711581) | ung vien trung d1: 236764620868 | song sot (trung ca d1,d2): 60461 | loai (co hit truoc d1 / giua d1,d2): 19 | 3663.2s (775.6 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60442
-k=[42617665711581,45458843425687) | ung vien trung d1: 236765152035 | song sot (trung ca d1,d2): 61094 | loai (co hit truoc d1 / giua d1,d2): 14 | 2829.8s (1004.0 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:61080
-k=[45458843425687,48300021139792) | ung vien trung d1: 236764153484 | song sot (trung ca d1,d2): 60729 | loai (co hit truoc d1 / giua d1,d2): 13 | 3663.7s (775.5 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60716
-k=[48300021139792,51141198853898) | ung vien trung d1: 236764742494 | song sot (trung ca d1,d2): 60854 | loai (co hit truoc d1 / giua d1,d2): 13 | 3664.6s (775.3 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60841
-k=[51141198853898,53982376568003) | ung vien trung d1: 236764261928 | song sot (trung ca d1,d2): 60647 | loai (co hit truoc d1 / giua d1,d2): 21 | 3663.8s (775.5 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60626
-k=[53982376568003,56823554282109) | ung vien trung d1: 236764374954 | song sot (trung ca d1,d2): 60748 | loai (co hit truoc d1 / giua d1,d2): 13 | 3663.7s (775.5 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60735
-k=[5682355428210,8523533142316) | ung vien trung d1: 236763707453 | song sot (trung ca d1,d2): 60195 | loai (co hit truoc d1 / giua d1,d2): 11 | 4462.0s (636.7 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60184
-k=[8523533142316,11364710856421) | ung vien trung d1: 236764948168 | song sot (trung ca d1,d2): 60494 | loai (co hit truoc d1 / giua d1,d2): 14 | 2921.0s (972.7 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60480
-k=[11364710856421,14205888570527) | ung vien trung d1: 236764330557 | song sot (trung ca d1,d2): 60546 | loai (co hit truoc d1 / giua d1,d2): 15 | 3663.6s (775.5 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60531
-k=[14205888570527,17047066284632) | ung vien trung d1: 236764016218 | song sot (trung ca d1,d2): 61025 | loai (co hit truoc d1 / giua d1,d2): 18 | 4325.7s (656.8 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:61007
-k=[17047066284632,19888243998738) | ung vien trung d1: 236764594550 | song sot (trung ca d1,d2): 60986 | loai (co hit truoc d1 / giua d1,d2): 25 | 4326.8s (656.6 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60961
-k=[19888243998738,22729421712843) | ung vien trung d1: 236765152732 | song sot (trung ca d1,d2): 60969 | loai (co hit truoc d1 / giua d1,d2): 13 | 2759.9s (1029.4 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60956
-k=[22729421712843,25570599426949) | ung vien trung d1: 236765047103 | song sot (trung ca d1,d2): 60686 | loai (co hit truoc d1 / giua d1,d2): 26 | 3664.7s (775.3 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60660
-k=[25570599426949,28411777141054) | ung vien trung d1: 236764561979 | song sot (trung ca d1,d2): 60530 | loai (co hit truoc d1 / giua d1,d2): 18 | 4326.3s (656.7 trieu k/s)
-Phan bo so hit (tren 1002 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60512
+k=[0,2841177714105) | ung vien trung d1: 236764241142 | song sot (trung ca d1,d2): 60792 | loai (co hit truoc d1 / giua d1,d2): 19 | 4325.4s (656.9 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60773
+k=[2841177714105,5682355428210) | ung vien trung d1: 236764090620 | song sot (trung ca d1,d2): 61111 | loai (co hit truoc d1 / giua d1,d2): 7 | 3664.0s (775.4 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:61104
+k=[28411777141054,31252954855159) | ung vien trung d1: 236765097252 | song sot (trung ca d1,d2): 60725 | loai (co hit truoc d1 / giua d1,d2): 12 | 4330.2s (656.1 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60713
+k=[31252954855159,34094132569265) | ung vien trung d1: 236764998233 | song sot (trung ca d1,d2): 60968 | loai (co hit truoc d1 / giua d1,d2): 16 | 4327.6s (656.5 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60952
+k=[34094132569265,36935310283370) | ung vien trung d1: 236764786062 | song sot (trung ca d1,d2): 60955 | loai (co hit truoc d1 / giua d1,d2): 16 | 4517.9s (628.9 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60939
+k=[36935310283370,39776487997476) | ung vien trung d1: 236765229316 | song sot (trung ca d1,d2): 60869 | loai (co hit truoc d1 / giua d1,d2): 12 | 4547.7s (624.7 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60857
+k=[39776487997476,42617665711581) | ung vien trung d1: 236764620868 | song sot (trung ca d1,d2): 60461 | loai (co hit truoc d1 / giua d1,d2): 19 | 3216.2s (883.4 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60442
+k=[42617665711581,45458843425687) | ung vien trung d1: 236765152035 | song sot (trung ca d1,d2): 61094 | loai (co hit truoc d1 / giua d1,d2): 14 | 3212.4s (884.5 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:61080
+k=[45458843425687,48300021139792) | ung vien trung d1: 236764153484 | song sot (trung ca d1,d2): 60729 | loai (co hit truoc d1 / giua d1,d2): 13 | 4427.7s (641.7 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60716
+k=[48300021139792,51141198853898) | ung vien trung d1: 236764742494 | song sot (trung ca d1,d2): 60854 | loai (co hit truoc d1 / giua d1,d2): 13 | 3200.4s (887.8 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60841
+k=[51141198853898,53982376568003) | ung vien trung d1: 236764261928 | song sot (trung ca d1,d2): 60647 | loai (co hit truoc d1 / giua d1,d2): 21 | 2822.8s (1006.5 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60626
+k=[53982376568003,56823554282109) | ung vien trung d1: 236764374954 | song sot (trung ca d1,d2): 60748 | loai (co hit truoc d1 / giua d1,d2): 13 | 2795.8s (1016.2 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60735
+k=[5682355428210,8523533142316) | ung vien trung d1: 236763707453 | song sot (trung ca d1,d2): 60195 | loai (co hit truoc d1 / giua d1,d2): 11 | 4325.7s (656.8 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60184
+k=[8523533142316,11364710856421) | ung vien trung d1: 236764948168 | song sot (trung ca d1,d2): 60494 | loai (co hit truoc d1 / giua d1,d2): 14 | 3184.6s (892.2 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60480
+k=[11364710856421,14205888570527) | ung vien trung d1: 236764330557 | song sot (trung ca d1,d2): 60546 | loai (co hit truoc d1 / giua d1,d2): 15 | 4326.3s (656.7 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60531
+k=[14205888570527,17047066284632) | ung vien trung d1: 236764016218 | song sot (trung ca d1,d2): 61025 | loai (co hit truoc d1 / giua d1,d2): 18 | 3209.9s (885.1 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:61007
+k=[17047066284632,19888243998738) | ung vien trung d1: 236764594550 | song sot (trung ca d1,d2): 60986 | loai (co hit truoc d1 / giua d1,d2): 25 | 3210.9s (884.9 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60961
+k=[19888243998738,22729421712843) | ung vien trung d1: 236765152732 | song sot (trung ca d1,d2): 60969 | loai (co hit truoc d1 / giua d1,d2): 13 | 4327.3s (656.6 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60956
+k=[22729421712843,25570599426949) | ung vien trung d1: 236765047103 | song sot (trung ca d1,d2): 60686 | loai (co hit truoc d1 / giua d1,d2): 26 | 3203.5s (886.9 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60660
+k=[25570599426949,28411777141054) | ung vien trung d1: 236764561979 | song sot (trung ca d1,d2): 60530 | loai (co hit truoc d1 / giua d1,d2): 18 | 4327.1s (656.6 trieu k/s)
+Phan bo so hit (tren 1006 ky) cua cac seed hop le (d1 dau, d2 thu 2): 2:60512
 --- tong so seed ghi: 1215069 (gz trong repo inverse/) ---
 --- 100 seed nhieu hit nhat: seed so_hit cac_ky ---
 10000000721575218236 2 999,1000
