@@ -9,11 +9,17 @@ name: scan_inverse_mega_auto (Mega 6/45 - tu quet TOAN BO cap + cap moi theo ky,
 #   Chay tu dong moi ngay sau khi scan_v2_auto cap nhat data/mega_all.csv: co ky Mega moi -> quet cap moi truoc.
 #   Het cap thi chon 400 cap (chon_cap_loai.py) cho ky tiep theo -> Release + chon_cap/ trong repo.
 on:
-  # TAM DUNG quet Mega tu dong (bo comment 2 dong duoi de bat lai)
+  # TAT lich tu dong: quet nang khong chay tren GitHub-hosted runner (xem quet_local.py)
   # schedule:
   #   - cron: "20 12 * * *"
   workflow_dispatch:
     inputs:
+      scan_tren_github:
+        description: "true = quet Mega tren GitHub (mac dinh, theo yeu cau). false = chi quet bang quet_local.py tren may ban"
+        default: "true"
+      che_do:
+        description: "lich_quay (mac dinh) = chi quet CAP MOI NHAT sau moi ky quay Mega (T4/T6/CN 18:00), xong thi dung. lich_su = quet them cac cap cu con thieu cho den 1_2"
+        default: "lich_quay"
       total_pairs:
         description: "Tong so cap can co (0 = TAT CA cap tu 1_2 den ky moi nhat; khuyen dung)"
         default: "0"
@@ -57,6 +63,7 @@ jobs:
         env:
           TOTAL: ${{ inputs.total_pairs || '0' }}
           CHUNKS: ${{ inputs.chunks || '20' }}
+          MODE: ${{ inputs.che_do || 'lich_quay' }}
         run: |
           python3 make_draws_rank_mega.py
           python3 - <<'PY'
@@ -76,6 +83,7 @@ jobs:
               while a >= 1:
                   if (a, a + 1) not in done and a in rows and a + 1 in rows:
                       nxt = (a, a + 1); break
+                  if os.environ["MODE"] == "lich_quay": break   # chi xet cap moi nhat
                   a -= 2
           out["finish"] = "false" if nxt else "true"
           if nxt:
@@ -92,7 +100,7 @@ jobs:
 
   scan:
     needs: prepare
-    if: ${{ needs.prepare.outputs.finish == 'false' }}
+    if: ${{ inputs.scan_tren_github == 'true' && needs.prepare.outputs.finish == 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 350
     strategy:
@@ -157,7 +165,7 @@ jobs:
           for i in 1 2 3 4 5; do git pull --rebase && git push && break; sleep 8; done
       - name: chay cap ke tiep
         run: |
-          gh workflow run scan_inverse_mega_auto.yml -f total_pairs=${{ inputs.total_pairs || '0' }} -f keep_pairs=${{ inputs.keep_pairs || '400' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f release_tag="$TAG" -f next_draw=${{ inputs.next_draw || '' }}
+          gh workflow run scan_inverse_mega_auto.yml -f che_do=${{ inputs.che_do || 'lich_quay' }} -f total_pairs=${{ inputs.total_pairs || '0' }} -f keep_pairs=${{ inputs.keep_pairs || '400' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f release_tag="$TAG" -f next_draw=${{ inputs.next_draw || '' }}
 
   finalize:
     # chay khi da du total_pairs: tai gz tu Release, gop 1 file, tinh ve con lai cho ky next_draw
@@ -170,21 +178,23 @@ jobs:
       TAG: ${{ inputs.release_tag || 'mega-inverse-archive' }}
     steps:
       - uses: actions/checkout@v4
-      - name: tai gz tu Release
+      - name: kiem tra du doan ky moi nhat (da co thi bo qua, khong tai Release)
+        id: chk
         run: |
-          mkdir -p rel
-          gh release download "$TAG" --pattern 'first2_mega_*.txt.gz' --dir rel
-          ls rel | wc -l; du -sh rel
-      - name: chon cap loai ve cho ky tiep (giu day du lich su cap)
+          N="${{ inputs.next_draw || '' }}"
+          if [ -z "$N" ]; then
+            N=$(python3 -c "import csv; print(max(int(r['draw_id']) for r in csv.DictReader(open('data/mega_all.csv',encoding='utf-8')) if (r.get('draw_id') or '').isdigit())+1)")
+          fi
+          echo "n=$N" >> "$GITHUB_OUTPUT"
+          if [ -f "du_doan/mega_${N}.txt" ]; then echo "skip=true" >> "$GITHUB_OUTPUT"; echo "Da co du_doan/mega_${N}.txt -> bo qua"; else echo "skip=false" >> "$GITHUB_OUTPUT"; fi
+      - name: chon cap khong trung -> ve con lai = du doan (chi tai cap duoc chon tu Release)
+        if: ${{ steps.chk.outputs.skip != 'true' }}
         run: |
           pip install numpy pandas
-          NEXT="${{ inputs.next_draw || '' }}"
-          KEEP=${{ inputs.keep_pairs || '400' }} HIST=40 TARGET=10 python3 chon_cap_loai.py mega rel $NEXT
-      - name: upload ket qua len Release + commit chon_cap/
+          KEEP=${{ inputs.keep_pairs || '400' }} TARGET=0 python3 chon_cap_release.py mega "$TAG" ${{ steps.chk.outputs.n }}
+      - name: commit du_doan/ + chon_cap/
+        if: ${{ steps.chk.outputs.skip != 'true' }}
         run: |
-          ls -l chon_cap_loai_mega_*.txt cap_lich_su_mega.txt cap_ke_hoach_mega.txt
-          gh release upload "$TAG" chon_cap_loai_mega_*.txt cap_lich_su_mega.txt cap_ke_hoach_mega.txt --clobber
-          mkdir -p chon_cap; rm -f chon_cap/*mega*; mv chon_cap_loai_mega_*.txt cap_lich_su_mega.txt cap_ke_hoach_mega.txt chon_cap/
           git config user.name github-actions; git config user.email actions@github.com
-          git add chon_cap; git commit -m "chon cap mega" || true
+          git add du_doan chon_cap; git commit -m "du doan + chon cap mega ky ${{ steps.chk.outputs.n }}" || true
           for i in 1 2 3 4 5; do git pull --rebase && git push && break; sleep 8; done

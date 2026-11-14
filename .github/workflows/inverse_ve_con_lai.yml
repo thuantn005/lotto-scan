@@ -30,9 +30,9 @@ on:
   workflow_run:
     workflows: ["scan_inverse_first2 (noi tiep nhieu cap d1:d2, hit dau = d1, hit thu 2 = d2)"]
     types: [completed]
-  schedule:
-    - cron: "30 5 * * *"    # 12:30 VN, truoc ky 13h
-    - cron: "30 13 * * *"   # 20:30 VN, truoc ky 21h
+  # TAT cron GitHub (dung cron ben ngoai goi workflow_dispatch): schedule:
+  # - cron: "30 5 * * *"    # 12:30 VN, truoc ky 13h
+  # - cron: "30 13 * * *"   # 20:30 VN, truoc ky 21h
 
 permissions:
   contents: write

@@ -3,8 +3,8 @@ name: Scan J1 CPP Auto
 on:
   # Watchdog: neu chuoi bi dut (batch loi...) thi tu noi lai tu seed cuoi da luu.
   # Neu chuoi dang chay, lan nay xep hang cho (concurrency) roi tu tinh seed moi.
-  schedule:
-    - cron: "17 */6 * * *"
+  # TAT cron GitHub (dung cron ben ngoai goi workflow_dispatch): schedule:
+  # - cron: "17 */6 * * *"
   workflow_dispatch:
     inputs:
       min_j1:

@@ -16,7 +16,7 @@ from math import comb
 game, src = sys.argv[1], sys.argv[2]
 LOTTO = game == 'lotto535'
 KEEP = int(os.environ.get('KEEP') or (40 if LOTTO else 400)); TARGET = int(os.environ.get('TARGET') or 10)
-HIST = int(os.environ.get('HIST') or 40); MAXLIST = int(os.environ.get('MAXLIST') or 300)
+HIST = int(os.environ.get('HIST') or 40); MAXPRED = int(os.environ.get('MAXPRED') or 100); MAXLIST = int(os.environ.get('MAXLIST') or 300)
 WORK = os.environ.get('WORK') or 'gzwork'; DU_DOAN = (os.environ.get('DU_DOAN') or '1') == '1'
 MOD = 324632 if LOTTO else 8145060; CT = MOD * 12 if LOTTO else MOD
 M1 = np.uint64(0x9E3779B97F4A7C15); M2 = 0xD1B54A32D192ED03; M3 = np.uint64(0xBF58476D1CE4E5B9); M4 = np.uint64(0x94D049BB133111EB)
@@ -48,6 +48,8 @@ for r in csv.DictReader(open('data/all.csv' if LOTTO else 'data/mega_all.csv', e
             RES[int(r['draw_id'])] = rk * 12 + int(j['special_numbers'][0]) - 1 if LOTTO else rk
         except Exception: pass
 latest = max(RES); N = int(sys.argv[3]) if len(sys.argv) > 3 else latest + 1; KNOWN = N in RES
+if os.path.exists(f'du_doan/{game}_{N}.txt') and os.environ.get('FORCE') != '1':   # da co du doan ky moi nhat -> KHONG tai Release
+    print(f'{game} ky {N}: da co du_doan/{game}_{N}.txt -> bo qua (khong tai Release). FORCE=1 de chay lai'); sys.exit(0)
 pat = re.compile(r'^first2_(?:mega_)?(\d+)_(\d+)\.txt\.gz$')
 # ---- 1. danh sach cap (khong tai seed)
 ISDIR = os.path.isdir(src); SIZE = {}
@@ -89,7 +91,7 @@ def pcover(p, before=None, K=20.0):
 def tie(p): return hashlib.md5(f'{p[0]}_{p[1]}_{N}'.encode()).hexdigest()
 order = sorted(SIZE, key=lambda p: (round(pcover(p, N), 6), tie(p)))
 # ---- 3. duyet: chi tai cap duoc xet; cap trung ky da biet bi bo
-alive = np.ones(CT, dtype=bool); chosen = []; skipped_hit = []; downloaded = 0
+alive = np.ones(CT, dtype=bool); TRAJ = []; chosen = []; skipped_hit = []; downloaded = 0
 def update_hist(p, s):
     b = p[1]; lo = b + 1 if not HIST else max(b + 1, latest - HIST + 1)
     old = DB.get(p); start = max(lo, old['thru'] + 1) if old else lo
@@ -98,16 +100,21 @@ def update_hist(p, s):
         if D in RES and (tid(s, D) == RES[D]).any(): cov.add(D)
     DB[p] = dict(n=len(s), cov=cov, thru=max(latest, old['thru'] if old else 0), lo=old['lo'] if old else lo)
 for p in order:
-    if len(chosen) >= KEEP and alive.sum() <= TARGET: break
+    if len(chosen) >= KEEP and (TARGET == 0 or np.count_nonzero(alive) <= TARGET): break   # TARGET=0: KHONG rang buoc so ve, chi chon dung KEEP cap
     path, tmp = fetch(p); s = seeds_of(path); downloaded += 1
     try:
         update_hist(p, s)
         if KNOWN and (tid(s, N) == RES[N]).any(): skipped_hit.append(p); continue
-        alive[tid(s, N)] = False; chosen.append(p)
+        alive[tid(s, N)] = False; chosen.append(p); TRAJ.append((len(chosen), int(np.count_nonzero(alive))))
     finally:
         if tmp: os.remove(path)
 rem = np.flatnonzero(alive); real_in = bool(alive[RES[N]]) if KNOWN else None
 surv = math.exp(sum(math.log(1 - pcover(p, N)) for p in chosen))
+# ---- 4a. BANG K -> so ve con lai -> xac suat trung: K cang lon, ve cang it, xac suat trung (= ve con lai / tong ve) cang nho
+with open(f'chon_cap/bang_k_{game}_{N}.txt', 'w', encoding='utf-8') as f:
+    f.write(f'# {game} ky {N}: so cap da chon K | so ve con lai R | xac suat ve that nam trong R ve (ngau nhien) = R / {CT:,} ve\n')
+    for k, r in TRAJ:
+        if k <= 5 or k % 5 == 0 or k == len(chosen): f.write(f'{k} | {r:,} | {r / CT:.2e}\n')
 # ---- 4. ghi lich su + ket qua
 os.makedirs('chon_cap', exist_ok=True)
 with open(HF, 'w', encoding='utf-8') as f:
@@ -119,15 +126,16 @@ note = (f'KY {N} DA CO KET QUA: bo {len(skipped_hit)} cap co seed trung ky nay; 
 out = f'chon_cap/chon_cap_loai_{game}_{N}.txt'
 for old in glob.glob(f'chon_cap/chon_cap_loai_{game}_*.txt'): os.remove(old)
 with open(out, 'w', encoding='utf-8') as f:
-    f.write(f'# CHON CAP LOAI VE | {game} ky {N} | {len(SIZE)} cap tren Release | chon {len(chosen)} cap (chi tai {downloaded}) | CON LAI {len(rem):,} ve (muc tieu {TARGET})\n# {note}\n')
-    if len(rem) > TARGET: f.write(f'# CHUA DU CAP: can them cap de con <= {TARGET} ve\n')
+    f.write(f'# CHON CAP LOAI VE | {game} ky {N} | {len(SIZE)} cap tren Release | chon {len(chosen)} cap (chi tai {downloaded}) | CON LAI {len(rem):,} ve ({'khong rang buoc so ve' if TARGET == 0 else f'muc tieu {TARGET}'})\n# {note}\n')
+    if TARGET and len(rem) > TARGET: f.write(f'# CHUA DU CAP: can them cap de con <= {TARGET} ve\n')
     f.write('# cap | P(trung) uoc luong\n')
     for p in chosen: f.write(f'{p[0]}_{p[1]} | {pcover(p, N):.3f}\n')
     f.write(f'# ve con lai (toi da {MAXLIST})\n')
     for v in rem[:MAXLIST]: f.write(dec(v) + '\n')
 # ---- 5. DU DOAN = ve con lai (khong chon cap nao sinh ra)
 if DU_DOAN:
-    pick = rem if len(rem) <= TARGET else rem[np.linspace(0, len(rem) - 1, TARGET).astype(np.int64)]
+    cap = MAXPRED if TARGET == 0 else TARGET
+    pick = rem if len(rem) <= cap else rem[np.linspace(0, len(rem) - 1, cap).astype(np.int64)]
     os.makedirs('du_doan', exist_ok=True)
     with open(f'du_doan/{game}_{N}.txt', 'w', encoding='utf-8') as f:
         f.write(f'# Ky {N} ({game}): {len(pick)} ve du doan = VE CON LAI sau khi loai ve cua {len(chosen)} cap duoc chon (cap khong trung) | ve con lai: {len(rem):,}\n')

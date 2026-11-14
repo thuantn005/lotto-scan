@@ -14,16 +14,16 @@ name: Cap nhat du lieu Lotto 5/35 (2 lan/ngay) + TU QUET seed inverse den khi co
 # DA BO tu truoc: quet l1-1 / l1-2 / l1-3 (scan_per_draw), gop L2, va job du doan l1-3.
 
 on:
-  schedule:
-    # 3h sau ky quay 13:00 VN -> 16:00 VN = 09:00 UTC
-    - cron: "0 9 * * *"
-    # 3h sau ky quay 21:00 VN -> 00:00 VN hom sau = 17:00 UTC cung ngay
-    - cron: "0 17 * * *"
-    # chay LAI du phong (khi nguon du lieu len ket qua tre) - khong commit neu khong co gi moi
-    - cron: "0 11 * * *"
-    - cron: "0 19 * * *"
-    # Mega 6/45 quay Thu 4/Thu 6/CN luc 18:00 VN -> cao ket qua 18:40 VN = 11:40 UTC (cac ngay khac chi cap nhat, khong co ky moi)
-    - cron: "40 11 * * *"
+  # TAT cron GitHub (dung cron ben ngoai goi workflow_dispatch): schedule:
+  # # 3h sau ky quay 13:00 VN -> 16:00 VN = 09:00 UTC
+  # - cron: "0 9 * * *"
+  # # 3h sau ky quay 21:00 VN -> 00:00 VN hom sau = 17:00 UTC cung ngay
+  # - cron: "0 17 * * *"
+  # # chay LAI du phong (khi nguon du lieu len ket qua tre) - khong commit neu khong co gi moi
+  # - cron: "0 11 * * *"
+  # - cron: "0 19 * * *"
+  # # Mega 6/45 quay Thu 4/Thu 6/CN luc 18:00 VN -> cao ket qua 18:40 VN = 11:40 UTC (cac ngay khac chi cap nhat, khong co ky moi)
+  # - cron: "40 11 * * *"
   workflow_dispatch:
     inputs:
       skip_update:
@@ -48,8 +48,8 @@ on:
         description: "0 = giu day du moi cap (khong cua so truot). >0 = chi giu N cap moi nhat va XOA cap cu"
         default: "0"
       keep_pairs:
-        description: "Quet cho toi khi co du N cap gz tren Release (mac dinh 40). 0 = QUET TAT CA cap lich su"
-        default: "40"
+        description: "0 = KHONG GIOI HAN: quet TAT CA cap lich su (mac dinh). N>0 = dung khi co du N cap gz tren Release"
+        default: "0"
       chon_pairs:
         description: "So cap duoc CHON moi ky de loai ve (chon_cap_loai.py)"
         default: "40"
@@ -59,9 +59,12 @@ on:
       use_pairs:
         description: "So cap MOI NHAT dung de LOAI ve / sinh ve du doan / doi chieu (khong xoa gi)"
         default: "40"
+      scan_tren_github:
+        description: "true = quet cap Lotto tren GitHub (mac dinh, theo yeu cau). false = chi quet bang quet_local.py"
+        default: "true"
       so_ve:
-        description: "So ve du doan moi ky (moi game)"
-        default: "10"
+        description: "0 = KHONG rang buoc so ve: chon dung N cap (chon_pairs) roi lay MOI ve con lai lam du doan (ghi toi da 100 ve). >0 = chon them cap cho toi khi con <= N ve"
+        default: "0"
       levels_backfill:
         description: "So ky cuoi duoc tinh lai muc seed moi lan chay (3 binh thuong; dat lon, vd 300, de backfill lan dau)"
         default: "3"
@@ -146,7 +149,7 @@ jobs:
         continue-on-error: true
         env:
           KEEP: ${{ inputs.chon_pairs || '40' }}
-          TARGET: ${{ inputs.so_ve || '10' }}
+          TARGET: ${{ inputs.so_ve || '0' }}
         run: python3 chon_cap_release.py lotto535 "$TAG"
 
       - name: LOTTO - bao cao tom tat moi ky (bao_cao/tom_tat_lotto535.txt)
@@ -157,7 +160,7 @@ jobs:
         continue-on-error: true
         env:
           KEEP: "400"
-          TARGET: ${{ inputs.so_ve || '10' }}
+          TARGET: ${{ inputs.so_ve || '0' }}
         run: python3 chon_cap_release.py mega mega-inverse-archive
 
       - name: Don file nang cu (muc_trung, muc_theo_cap, ve_con_lai...) - chi giu 100 ve du doan + ve trung
@@ -253,7 +256,7 @@ jobs:
           TARGET: ${{ inputs.target || '1' }}
           CHUNKS: ${{ inputs.chunks || '20' }}
           MAXP: ${{ inputs.max_pairs || '0' }}
-          KEEP: ${{ inputs.keep_pairs || '40' }}
+          KEEP: ${{ inputs.keep_pairs || '0' }}
           SCAN_NEWEST: ${{ inputs.scan_newest || 'true' }}
         run: |
           if [ "$BUSY" = "true" ]; then echo "go=false" >> $GITHUB_OUTPUT; exit 0; fi
@@ -325,7 +328,7 @@ jobs:
 
   scan:
     needs: plan
-    if: ${{ needs.plan.outputs.go == 'true' && needs.plan.outputs.need_more == 'true' && fromJson(inputs.pairs_added || '0') < fromJson(inputs.max_new_pairs || '60') }}
+    if: ${{ inputs.scan_tren_github == 'true' && needs.plan.outputs.go == 'true' && needs.plan.outputs.need_more == 'true' && fromJson(inputs.pairs_added || '0') < fromJson(inputs.max_new_pairs || '60') }}
     runs-on: ubuntu-latest
     timeout-minutes: 350
     strategy:
@@ -396,7 +399,7 @@ jobs:
       - name: Tu goi lai vong tiep (bo qua cap nhat du lieu)
         run: |
           N=$(( ${{ inputs.pairs_added || '0' }} + 1 ))
-          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'false' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '0' }} -f keep_pairs=${{ inputs.keep_pairs || '40' }} -f chon_pairs=${{ inputs.chon_pairs || '40' }} -f release_tag=${{ inputs.release_tag || 'lotto535-inverse-archive' }} -f use_pairs=${{ inputs.use_pairs || '40' }} -f so_ve=${{ inputs.so_ve || '10' }} -f levels_backfill=${{ inputs.levels_backfill || '3' }} -f pairs_added=$N
+          gh workflow run scan_v2_auto.yml --ref main -f skip_update=true -f target=${{ inputs.target || '1' }} -f chunks=${{ inputs.chunks || '20' }} -f min_hits=${{ inputs.min_hits || '2' }} -f max_new_pairs=${{ inputs.max_new_pairs || '60' }} -f prune=${{ inputs.prune || 'false' }} -f scan_newest=${{ inputs.scan_newest || 'true' }} -f max_pairs=${{ inputs.max_pairs || '0' }} -f keep_pairs=${{ inputs.keep_pairs || '0' }} -f chon_pairs=${{ inputs.chon_pairs || '40' }} -f release_tag=${{ inputs.release_tag || 'lotto535-inverse-archive' }} -f use_pairs=${{ inputs.use_pairs || '40' }} -f so_ve=${{ inputs.so_ve || '0' }} -f levels_backfill=${{ inputs.levels_backfill || '3' }} -f pairs_added=$N
 
   prune:
     needs: plan

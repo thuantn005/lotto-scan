@@ -14,9 +14,9 @@ on:
       recent:
         description: "Cua so (ky) lay seed trung de du doan"
         default: "20"
-  schedule:
-    # Mega 6/45 quay thu 4, 6, CN luc 18:00 (gio VN = 11:00 UTC) -> chay luc 11:45 UTC
-    - cron: "45 11 * * 0,3,5"
+  # TAT cron GitHub (dung cron ben ngoai goi workflow_dispatch): schedule:
+  # # Mega 6/45 quay thu 4, 6, CN luc 18:00 (gio VN = 11:00 UTC) -> chay luc 11:45 UTC
+  # - cron: "45 11 * * 0,3,5"
 permissions:
   contents: write
 concurrency:
