@@ -1,6 +1,0 @@
-# Ky 1587 (2026-11-11) ket qua 03-11-14-23-25-43 | 100 ve du doan | trung >=3 so: 4 (ky vong ngau nhien ~2.38) | >=4: 0 | J: 0
-# ve | nguon | chi tiet | so chinh khop
-23-25-26-41-43-45 | seed2hit | cap 907_908 (da co 31 seed muc>=1, ti le 1.34x ngau nhien, 1 ve): muc 1, ngau nhien trong 268,719 seed hit dung 2 ky (seed 9359487106043585925) | 3
-07-23-25-38-41-43 | seed2hit | cap 1425_1426 (da co 7 seed muc>=1, ti le 1.28x ngau nhien, 1 ve): muc 1, ngau nhien trong 269,167 seed hit dung 2 ky (seed 7808119524640902374) | 3
-10-11-12-14-23-35 | seed2hit | cap 1087_1088 (da co 21 seed muc>=1, ti le 1.24x ngau nhien, 1 ve): muc 1, ngau nhien trong 267,977 seed hit dung 2 ky (seed 1134548125017781893) | 3
-11-14-17-20-23-38 | seed2hit | cap 1561_1562 (da co 1 seed muc>=1, ti le 1.22x ngau nhien, 1 ve): muc 1, ngau nhien trong 268,776 seed hit dung 2 ky (seed 15050458324185125259) | 3

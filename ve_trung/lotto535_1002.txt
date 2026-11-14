@@ -1,3 +1,0 @@
-# Ky 1002 (2026-11-11) ket qua 07-19-24-25-27 + 11 | 100 ve du doan | trung >=3 so: 1 (ky vong ngau nhien ~1.39) | >=4: 0 | J: 0
-# ve | nguon | chi tiet | so chinh khop
-07-19-20-22-24 + 03 | con_lai | khong seed nao sinh ra | 3

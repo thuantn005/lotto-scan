@@ -1,4 +1,0 @@
-# Ky 1000 (2026-11-10) ket qua 04-08-12-21-26 + 05 | 100 ve du doan | trung >=3 so: 2 (ky vong ngau nhien ~1.39) | >=4: 0 | J: 0
-# ve | nguon | chi tiet | so chinh khop
-08-16-18-21-26 + 02 | seed2hit | cap 974_975 (da co 9 seed len 3 hit, ti le 1.20x ngau nhien, 4 ve): ngau nhien trong 1,216,623 seed hit dung 2 ky (seed 12980600294745497166) | 3
-04-08-14-26-34 + 03 | seed2hit | cap 977_978 (da co 2 seed len 3 hit, ti le 0.31x ngau nhien, 1 ve): ngau nhien trong 1,214,858 seed hit dung 2 ky (seed 4954093826170956427) | 3
