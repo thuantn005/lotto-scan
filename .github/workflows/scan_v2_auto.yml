@@ -37,7 +37,7 @@ on:
         default: "20"
       min_hits:
         description: "Ghi seed co tong >= so ky trung nay"
-        default: "2"
+        default: "2+"
       max_new_pairs:
         description: "Toi da so cap quet moi trong 1 chuoi (chong chay vo han)"
         default: "60"
@@ -46,10 +46,10 @@ on:
         default: "false"
       max_pairs:
         description: "0 = giu day du moi cap (khong cua so truot). >0 = chi giu N cap moi nhat va XOA cap cu"
-        default: "0"
+        default: "60"
       keep_pairs:
         description: "0 = KHONG GIOI HAN: quet TAT CA cap lich su (mac dinh). N>0 = dung khi co du N cap gz tren Release"
-        default: "0"
+        default: "60"
       chon_pairs:
         description: "So cap duoc CHON moi ky de loai ve (chon_cap_loai.py)"
         default: "40"
