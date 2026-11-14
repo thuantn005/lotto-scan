@@ -1,0 +1,26 @@
+CHON CAP (COT LOI) - TAI HET CAP -> NGHIEN CUU/BACKTEST -> MOI CHON CAP
+=====================================================================
+Cot loi la CAP, khong phai ve con lai. Cap "trung" = cap co seed sinh dung ve that cua ky do -> ve that bi loai oan -> ve con lai VO NGHIA.
+Mot bo cap THANH CONG khi KHONG cap nao trung. Xac suat thanh cong ~ (so ve con lai) / (to hop): cang chon nhieu cap, ve con lai cang it nhung xac suat thanh cong cang thap.
+
+QUY TRINH moi ky (chon_cap_release.py, goi tu scan_v2_auto.yml cho Lotto va Mega):
+ 1. TAI HET moi cap tren Release (khong chi cap duoc chon -> het thien lech chon tap). Cap nao xu ly xong xoa gz ngay.
+    Cap nhat lich su TAT CA cap: chon_cap/cap_lich_su_<game>.txt (cap | so seed | cac ky cap da trung | den ky | tu ky), cua so HIST=120 ky.
+ 2. NGHIEN CUU + BACKTEST MU (nghien_cuu_chon_cap.py) tren lich su TOAN BO cap -> bao_cao/nghien_cuu_chon_cap_<game>.txt
+    - So cac quy tac xep hang: ngau nhien (doi chung), kich thuoc cap, lich su (K=20, K=5), gan day (10 ky).
+    - Ky D chi dung lich su ky < D. Nua dau = train, nua sau = test. Do bang z (hypergeometric, cung tap cap tung ky).
+    - CHI duyet quy tac neu z_test <= -2.5 va z_train <= -1.0 va >= 15 ky test. Khong quy tac nao dat -> chon theo ly thuyet (it seed nhat) + hoa ngau nhien,
+      va ghi ro "chua hon ngau nhien".
+ 3. MOI CHON CAP: chon_cap/chon_cap_<game>_<ky>.txt (file CHINH). KEEP cap (Lotto 40, Mega 400) hoac P_SONG=0.3 (so cap lon nhat giu xac suat thanh cong >= 30%).
+    chon_cap/bang_k_<game>_<ky>.txt = bang K -> xac suat thanh cong -> ve con lai.
+    So du doan cap ghi truoc ky quay: chon_cap/du_doan_cap_<game>.jsonl.
+ 4. DOI CHIEU THAT: chon_cap/ket_qua_chon_cap_<game>.txt = moi ky da quay, bao nhieu cap da chon bi trung, ky do THANH CONG khong (ngoai mau).
+ 5. PHU: du_doan/<game>_<ky>.txt = ve con lai. CHI co nghia khi khong cap chon nao trung.
+
+LUU Y TRUNG THUC: ky quay doc lap nen cap trung ky D khong phu thuoc cac ky truoc; so seed moi cap gan nhau (chenh ~0.4% Lotto, ~1% Mega).
+Neu backtest khong quy tac nao hon ngau nhien thi chon cap nao cung nhu cap nao; xac suat thanh cong chi phu thuoc so cap chon (K). Khong co "cach chon cap" thang duoc ngau nhien
+tru khi nghien cuu chung minh. Muon xac suat thanh cong cao thi chon it cap (K nho) - doi lai ve con lai con nhieu.
+
+CHAY TAY: python3 chon_cap_release.py lotto535|mega TAG_RELEASE [KY]      (can gh CLI + GH_TOKEN)
+          python3 nghien_cuu_chon_cap.py lotto535|mega                     (chi nghien cuu tren lich su da co, khong tai)
+env: KEEP, P_SONG, TARGET, HIST, BATCH (tai song song, mac dinh 6), FORCE=1 (chay lai ky da co), WARM/ZPASS/ZTRAIN/PRIMARY (nghien cuu).

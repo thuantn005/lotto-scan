@@ -65,6 +65,9 @@ on:
       so_ve:
         description: "0 = KHONG rang buoc so ve: chon dung N cap (chon_pairs) roi lay MOI ve con lai lam du doan (ghi toi da 100 ve). >0 = chon them cap cho toi khi con <= N ve"
         default: "0"
+      p_song:
+        description: "Xac suat thanh cong mong muon (khong cap chon nao trung), vd 0.3 = chon so cap LON NHAT giu xac suat >= 30%. De trong = dung chon_pairs (Lotto) / 400 (Mega)"
+        default: ""
       levels_backfill:
         description: "So ky cuoi duoc tinh lai muc seed moi lan chay (3 binh thuong; dat lon, vd 300, de backfill lan dau)"
         default: "3"
@@ -145,22 +148,26 @@ jobs:
         run: python3 luu_ve_trung.py
 
       # DU DOAN MOI: chon CAP khong trung truoc (chi tai cap duoc chon tu Release), VE CON LAI = du doan
-      - name: LOTTO - chon cap khong trung -> ve con lai = du doan ky tiep (du_doan/ + chon_cap/)
+      - name: LOTTO - TAI HET cap -> nghien cuu/backtest -> moi chon cap khong trung (chon_cap/, bao_cao/nghien_cuu_*; ve con lai chi la phu)
         continue-on-error: true
         env:
           KEEP: ${{ inputs.chon_pairs || '40' }}
           TARGET: ${{ inputs.so_ve || '0' }}
+          P_SONG: ${{ inputs.p_song || '' }}
+          HIST: "120"
         run: python3 chon_cap_release.py lotto535 "$TAG"
 
       - name: LOTTO - bao cao tom tat moi ky (bao_cao/tom_tat_lotto535.txt)
         continue-on-error: true
         run: python3 bao_cao_tom_tat.py || echo "::warning::bao_cao_tom_tat loi"
 
-      - name: MEGA - chon cap khong trung -> ve con lai = du doan ky tiep (du_doan/ + chon_cap/)
+      - name: MEGA - TAI HET cap -> nghien cuu/backtest -> moi chon cap khong trung (chon_cap/, bao_cao/nghien_cuu_*; ve con lai chi la phu)
         continue-on-error: true
         env:
           KEEP: "400"
           TARGET: ${{ inputs.so_ve || '0' }}
+          P_SONG: ${{ inputs.p_song || '' }}
+          HIST: "120"
         run: python3 chon_cap_release.py mega mega-inverse-archive
 
       - name: Don file nang cu (muc_trung, muc_theo_cap, ve_con_lai...) - chi giu 100 ve du doan + ve trung

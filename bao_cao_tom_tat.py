@@ -78,5 +78,10 @@ if nk:
     out.append('Moi ve van chi co xac suat 1/%s.' % f'{CT:,}')
 if tk:
     s3 = sum(v['tr3'] for v in tk.values()); kv = sum(0.013866 * v['sove'] for v in tk.values()); out.append(f'Ve du doan: {len(tk)} ky, tong ve trung>=3 so = {s3} (ky vong ngau nhien ~{kv:.1f}).')
+for g_, t_ in (('lotto535', 'LOTTO'), ('mega', 'MEGA')):
+    kq_ = 'chon_cap/ket_qua_chon_cap_%s.txt' % g_
+    if os.path.exists(kq_):
+        tg_ = [l.strip() for l in open(kq_, encoding='utf-8') if l.startswith('# TONG')]
+        if tg_: out.append('Chon cap %s (ket qua THAT): %s' % (t_, tg_[-1].lstrip('# ').strip()))
 open('bao_cao/tom_tat_lotto535.txt', 'w').write('\n'.join(out) + '\n')
 print('\n'.join(out))
