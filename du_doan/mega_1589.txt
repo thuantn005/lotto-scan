@@ -1,13 +1,13 @@
-# Ky 1589 (mega): 10 ve du doan | 456 cap, 126,770,882 seed (126,763,788 seed hit dung 2 ky, loai 0 seed trung them, 0 seed bi loai o buoc kiem tra cuoi) | ve con lai (khong seed nao sinh): 3
-# nguon: seed 2 hit 10 | con_lai 0 | it_seed 0 | seed hit>=3 ky giu de loai: 0. Moi ve chi co xac suat ngau nhien 1/8,145,060.
+# Ky 1589 (mega): 10 ve du doan = VE CON LAI sau khi loai ve cua 417 cap duoc chon (cap khong trung) | ve con lai: 10
+# nguon: con_lai 10 | KY 1589 CHUA CO KET QUA: khong the biet truoc cap nao trung; xac suat 417 cap chon deu khong chua ve that ~ 1.05e-06. Moi ve chi co xac suat ngau nhien 1/8,145,060.
 # ve | nguon | chi tiet
-02-17-22-32-39-43 | seed2hit | cap 1563_1564 (da co 2 seed muc>=1, ti le 2.45x ngau nhien, 1 ve): muc 1, ngau nhien trong 267,992 seed hit dung 2 ky (seed 9088202368579451383)
-01-18-19-22-24-29 | seed2hit | cap 1503_1504 (da co 7 seed muc>=1, ti le 2.44x ngau nhien, 1 ve): muc 1, ngau nhien trong 268,751 seed hit dung 2 ky (seed 13804791402890579668)
-02-21-23-24-36-43 | seed2hit | cap 1501_1502 (da co 7 seed muc>=1, ti le 2.38x ngau nhien, 1 ve): muc 1, ngau nhien trong 269,506 seed hit dung 2 ky (seed 3256186265200780045)
-02-04-07-11-12-33 | seed2hit | cap 1439_1440 (da co 12 seed muc>=1, ti le 2.38x ngau nhien, 1 ve): muc 1, ngau nhien trong 268,720 seed hit dung 2 ky (seed 14346974140370968698)
-08-10-11-17-19-24 | seed2hit | cap 1359_1360 (da co 17 seed muc>=1, ti le 2.19x ngau nhien, 1 ve): muc 1, ngau nhien trong 268,554 seed hit dung 2 ky (seed 5307922050341144900)
-04-13-15-17-22-31 | seed2hit | cap 1545_1546 (da co 3 seed muc>=1, ti le 2.09x ngau nhien, 1 ve): muc 1, ngau nhien trong 268,543 seed hit dung 2 ky (seed 11878511316710831140)
-07-08-16-22-25-39 | seed2hit | cap 1445_1446 (da co 10 seed muc>=1, ti le 2.06x ngau nhien, 1 ve): muc 1, ngau nhien trong 268,741 seed hit dung 2 ky (seed 9127888353085446815)
-05-14-22-32-35-39 | seed2hit | cap 1529_1530 (da co 4 seed muc>=1, ti le 2.02x ngau nhien, 1 ve): muc 1, ngau nhien trong 268,288 seed hit dung 2 ky (seed 3388869095767993246)
-17-27-28-30-35-41 | seed2hit | cap 1265_1266 (da co 21 seed muc>=1, ti le 1.92x ngau nhien, 1 ve): muc 1, ngau nhien trong 267,562 seed hit dung 2 ky (seed 12377867642042306278)
-05-08-15-28-38-43 | seed2hit | cap 1401_1402 (da co 12 seed muc>=1, ti le 1.89x ngau nhien, 1 ve): muc 1, ngau nhien trong 268,404 seed hit dung 2 ky (seed 12139479109802794657)
+03-05-10-18-24-27 | con_lai | khong seed nao cua 417 cap chon sinh ra
+09-17-18-20-27-29 | con_lai | khong seed nao cua 417 cap chon sinh ra
+06-08-12-19-31-34 | con_lai | khong seed nao cua 417 cap chon sinh ra
+06-08-21-22-34-35 | con_lai | khong seed nao cua 417 cap chon sinh ra
+04-14-17-25-35-36 | con_lai | khong seed nao cua 417 cap chon sinh ra
+09-15-23-29-37-38 | con_lai | khong seed nao cua 417 cap chon sinh ra
+01-06-08-09-37-39 | con_lai | khong seed nao cua 417 cap chon sinh ra
+04-11-14-32-35-41 | con_lai | khong seed nao cua 417 cap chon sinh ra
+02-13-14-24-33-42 | con_lai | khong seed nao cua 417 cap chon sinh ra
+10-12-17-18-35-42 | con_lai | khong seed nao cua 417 cap chon sinh ra

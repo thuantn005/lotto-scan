@@ -1,0 +1,6 @@
+# LICH SU CAP: cap | so seed | ky cap da sinh dung ve that | da kiem tra den ky | ky bat dau tinh (chi cap da tung duoc chon/tai)
+987_988 | 1215966 | 989,992,1002,1005 | 1006 | 989
+1002_1003 | 1215791 | 1004,1006 | 1006 | 1004
+1003_1004 | 1214316 | - | 1006 | 1005
+1004_1005 | 1213871 | - | 1006 | 1006
+1005_1006 | 1215708 | - | 1006 | 1007
