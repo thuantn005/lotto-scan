@@ -22,7 +22,7 @@ on:
         default: "lich_quay"
       total_pairs:
         description: "Tong so cap can co (0 = TAT CA cap tu 1_2 den ky moi nhat; khuyen dung)"
-        default: "0"
+        default: "480"
       keep_pairs:
         description: "So cap duoc chon moi ky de loai ve"
         default: "400"
