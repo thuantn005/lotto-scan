@@ -77,6 +77,6 @@ if nk:
     else: out.append('KET LUAN: khong khac biet co y nghia so voi ngau nhien.')
     out.append('Moi ve van chi co xac suat 1/%s.' % f'{CT:,}')
 if tk:
-    s3 = sum(v['tr3'] for v in tk.values()); out.append(f'Ve du doan: {len(tk)} ky, tong ve trung>=3 so = {s3} (ky vong ngau nhien ~{sum(0.013866 * v['sove'] for v in tk.values()):.1f}).')
+    s3 = sum(v['tr3'] for v in tk.values()); kv = sum(0.013866 * v['sove'] for v in tk.values()); out.append(f'Ve du doan: {len(tk)} ky, tong ve trung>=3 so = {s3} (ky vong ngau nhien ~{kv:.1f}).')
 open('bao_cao/tom_tat_lotto535.txt', 'w').write('\n'.join(out) + '\n')
 print('\n'.join(out))

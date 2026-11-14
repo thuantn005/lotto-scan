@@ -126,7 +126,8 @@ note = (f'KY {N} DA CO KET QUA: bo {len(skipped_hit)} cap co seed trung ky nay; 
 out = f'chon_cap/chon_cap_loai_{game}_{N}.txt'
 for old in glob.glob(f'chon_cap/chon_cap_loai_{game}_*.txt'): os.remove(old)
 with open(out, 'w', encoding='utf-8') as f:
-    f.write(f'# CHON CAP LOAI VE | {game} ky {N} | {len(SIZE)} cap tren Release | chon {len(chosen)} cap (chi tai {downloaded}) | CON LAI {len(rem):,} ve ({'khong rang buoc so ve' if TARGET == 0 else f'muc tieu {TARGET}'})\n# {note}\n')
+    rb = 'khong rang buoc so ve' if TARGET == 0 else f'muc tieu {TARGET}'
+    f.write(f'# CHON CAP LOAI VE | {game} ky {N} | {len(SIZE)} cap tren Release | chon {len(chosen)} cap (chi tai {downloaded}) | CON LAI {len(rem):,} ve ({rb})\n# {note}\n')
     if TARGET and len(rem) > TARGET: f.write(f'# CHUA DU CAP: can them cap de con <= {TARGET} ve\n')
     f.write('# cap | P(trung) uoc luong\n')
     for p in chosen: f.write(f'{p[0]}_{p[1]} | {pcover(p, N):.3f}\n')
